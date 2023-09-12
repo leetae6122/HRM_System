@@ -17,10 +17,10 @@ module.exports = {
       },
       minSalary: {
         allowNull: false,
-        type: Sequelize.FLOAT(9,2)
+        type: Sequelize.FLOAT(10)
       },
       maxSalary: {
-        type: Sequelize.FLOAT(9,2)
+        type: Sequelize.FLOAT(10)
       },
       currencyId: {
         type: Sequelize.INTEGER,

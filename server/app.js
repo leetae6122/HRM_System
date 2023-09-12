@@ -9,6 +9,8 @@ import { verifyAccessToken } from './app/middlewares/auth.middleware';
 const authRouter = require("./app/routes/auth.route");
 const userRouter = require("./app/routes/user.route");
 const employeeRouter = require("./app/routes/employee.route");
+const positionRouter = require("./app/routes/position.route");
+const currencyRouter = require("./app/routes/currency.route");
 
 const app = express();
 
@@ -27,7 +29,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/user", verifyAccessToken, userRouter);
 app.use("/api/employee", verifyAccessToken, employeeRouter);
-
+app.use("/api/position", verifyAccessToken, positionRouter);
+app.use("/api/currency", verifyAccessToken, currencyRouter);
 
 // handle 404 response 
 app.use((req, res, next) => {

@@ -6,4 +6,11 @@ const createCurrencySchema = Joi.object({
     symbol: Joi.string().max(20)
 });
 
-module.exports = { createCurrencySchema };
+const updateCurrencySchema = Joi.object({
+    currencyId: Joi.number().integer().required(),
+    name: Joi.string().max(40).optional(),
+    code: Joi.string().max(20).optional(),
+    symbol: Joi.string().max(20).optional()
+}).required().min(1);
+
+module.exports = { createCurrencySchema, updateCurrencySchema };
