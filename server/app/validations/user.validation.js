@@ -19,7 +19,7 @@ const changPasswordSchema = Joi.object({
         .required()
         .invalid(Joi.ref('currentPassword'))
         .label('New Password must be different from your Current Password')
-}).required().min(1);
+});
 
 const adminUpdateUserSchema = Joi.object({
     userId: Joi.string().required(),

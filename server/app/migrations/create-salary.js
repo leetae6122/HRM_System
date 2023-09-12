@@ -12,15 +12,15 @@ module.exports = {
             },
             basicSalary: {
                 allowNull: false,
-                type: Sequelize.FLOAT(9,2)
+                type: Sequelize.FLOAT(10)
             },
             allowance: {
-                type: Sequelize.FLOAT(9,2),
+                type: Sequelize.FLOAT(10),
                 defaultValue: 0
             },
             totalSalary: {
                 allowNull: false,
-                type: Sequelize.FLOAT(9,2),
+                type: Sequelize.FLOAT(10),
             },
             currencyId: {
                 type: Sequelize.INTEGER,

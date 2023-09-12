@@ -27,11 +27,6 @@ exports.findProfileById = async (req, res, next) => {
 exports.findAll = async (req, res, next) => {
     try {
         const data = await employeeService.findAll();
-        if (!data) {
-            return next(
-                createError.NotFound("Employee not found")
-            );
-        }
         return res.send({ data });
     } catch (error) {
         return next(

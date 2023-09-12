@@ -22,9 +22,6 @@ exports.findById = async (req, res, next) => {
 exports.findAll = async (req, res, next) => {
     try {
         const data = await userService.findAll();
-        if (data.length <= 0){
-            return next(createError.BadRequest("User not found"));
-        }
         return res.send({ data });
     } catch (error) {
         return next(
@@ -62,7 +59,7 @@ exports.updateUser = async (req, res, next) => {
         }
 
         await userService.updateUser(req.body.userId, req.body);
-        return res.send({ message: "Update successful" });
+        return res.send({ message: "Successful update" });
     } catch (error) {
         return next(
             createError.InternalServerError(error.message)
@@ -81,7 +78,7 @@ exports.changePassword = async (req, res, next) => {
         }
 
         await userService.updateUser(req.user.id, { password: newPassword });
-        return res.send({ message: "Update successful" });
+        return res.send({ message: "Successful update" });
     } catch (error) {
         return next(
             createError.InternalServerError(error.message)
