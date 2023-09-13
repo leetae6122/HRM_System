@@ -39,6 +39,19 @@ class UserService {
         return result ? result.dataValues : result;
     }
 
+    async findByEmail(email) {
+        const result = await db.User.findAll({
+            include: {
+                model: db.Employee,
+                as: 'profile',
+                where: {
+                    email,
+                }
+            },
+        });
+        return result;
+    }
+
     async findAll() {
         const result = await db.User.scope('secret').findAll({
             include: [{ model: db.Employee, as: 'profile' }]

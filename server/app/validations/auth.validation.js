@@ -7,7 +7,8 @@ const loginSchema = Joi.object({
 });
 
 const forgotPasswordSchema = Joi.object({
-    username: Joi.string().max(100).required()
+    username: Joi.string().max(100).required(),
+    email: Joi.string().max(100).required()
 });
 
 const resetPasswordSchema = Joi.object({
