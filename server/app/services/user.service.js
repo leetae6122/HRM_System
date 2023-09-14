@@ -59,6 +59,41 @@ class UserService {
         return result;
     }
 
+    async filterListUser(body) {
+        const page = body.page || 1;
+        const limit = body.size || 10;
+        const where = body.where;
+        const attributes = body.attributes;
+        const order = body.order;
+
+        const offset = (page - 1) * limit;
+
+        const total = await db.User.count({
+            where,
+        });
+
+        const data = await db.User.findAll({
+            where,
+            offset,
+            limit,
+            order,
+            attributes,
+            include: [{ model: db.Employee, as: 'profile' }]
+        });
+
+        const nextPage = page + 1 > Math.ceil(total / limit) ? null : page + 1;
+        const prevPage = page - 1 < 1 ? null : page - 1;
+
+        return {
+            total,
+            currentPage: page,
+            nextPage,
+            prevPage,
+            data,
+        };
+    }
+
+
     async createUser(payload) {
         const { password } = payload;
         const hashPassword = hashData(password);

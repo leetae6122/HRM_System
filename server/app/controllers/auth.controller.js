@@ -167,7 +167,6 @@ exports.resetPassword = async (req, res, next) => {
         await userService.updateUser(foundUser.id, { password: newPassword });
         return res.send({ message: "Successful password reset" });
     } catch (error) {
-        console.log(error);
         return next(
             createError.InternalServerError(`Error reset password`)
         );

@@ -7,12 +7,17 @@ import {
     updateEmployeeSchema,
     adminUpdateEmployeeSchema
 } from "../validations/employee.validation";
+import { filterSchema } from '../validations/common.validation';
 
 const router = express.Router();
 
 router.route("/")
     .get(employeeController.findProfileById)
     .patch(validation(updateEmployeeSchema), employeeController.updateEmployee)
+
+router.route("/filter")
+    .post(validation(filterSchema), employeeController.getListEmployee)
+
 
 router.route("/admin")
     .all(verifyAdmin)

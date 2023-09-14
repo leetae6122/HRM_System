@@ -24,7 +24,7 @@ class PositionService {
         return result;
     }
 
-    async getListPosition(body) {
+    async filterListPosition(body) {
         const page = body.page || 1;
         const limit = body.size || 10;
         const where = body.where;
@@ -50,7 +50,7 @@ class PositionService {
         const prevPage = page - 1 < 1 ? null : page - 1;
 
         return {
-            total: total,
+            total,
             currentPage: page,
             nextPage,
             prevPage,

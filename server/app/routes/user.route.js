@@ -7,11 +7,15 @@ import {
     adminUpdateUserSchema,
     changPasswordSchema
 } from './../validations/user.validation';
+import { filterSchema } from '../validations/common.validation';
 
 const router = express.Router();
 
 router.route("/")
     .get(userController.findById)
+
+router.route("/filter")
+    .post(validation(filterSchema), userController.getListUser)
 
 router.route("/change-password")
     .patch(validation(changPasswordSchema), userController.changePassword)

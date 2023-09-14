@@ -35,6 +35,17 @@ exports.findAll = async (req, res, next) => {
     }
 }
 
+exports.getListEmployee = async (req, res, next) => {
+    try {
+        const data = await employeeService.filterListEmployee(req.body);
+        return res.send({ data });
+    } catch (error) {
+        return next(
+            createError.InternalServerError(error.message)
+        );
+    }
+}
+
 exports.createEmployee = async (req, res, next) => {
     try {
         const {email} = req.body;

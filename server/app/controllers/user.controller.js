@@ -30,6 +30,18 @@ exports.findAll = async (req, res, next) => {
     }
 }
 
+exports.getListUser = async (req, res, next) => {
+    try {
+        const data = await userService.filterListUser(req.body);
+        return res.send({ data });
+    } catch (error) {
+        return next(
+            createError.InternalServerError(error.message)
+        );
+    }
+}
+
+
 exports.createUser = async (req, res, next) => {
     try {
         const employeeHasAcc = await userService.findByEmployeeId(req.body.employeeId);

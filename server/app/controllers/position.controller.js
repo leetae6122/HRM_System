@@ -28,7 +28,7 @@ exports.findAll = async (req, res, next) => {
 
 exports.getListPosition = async (req, res, next) => {
     try {
-        const data = await positionService.getListPosition(req.body);
+        const data = await positionService.filterListPosition(req.body);
         return res.send({ data });
     } catch (error) {
         return next(

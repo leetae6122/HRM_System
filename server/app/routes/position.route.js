@@ -11,6 +11,9 @@ import { filterSchema } from '../validations/common.validation';
 const router = express.Router();
 
 router.route("/")
+    .get(positionController.findAll)
+
+router.route("/filter")
     .post(validation(filterSchema), positionController.getListPosition)
 
 router.route("/admin")
