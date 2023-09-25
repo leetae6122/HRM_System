@@ -1,0 +1,18 @@
+.demo-logo-vertical {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    img {
+        width: 95%;
+        margin: 4px;
+        border-radius: 5px;
+    }
+}
+.sider-bar{
+    overflow: auto !important;
+    height: 100vh !important;
+    position: sticky !important;
+    top: 0;
+    left: 0;
+}
