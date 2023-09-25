@@ -4,7 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import createError from 'http-errors';
-import { verifyAccessToken } from './app/middlewares/auth.middleware'; 
+import { verifyAccessToken, verifyAdmin } from './app/middlewares/auth.middleware';
 
 const authRouter = require("./app/routes/auth.route");
 const userRouter = require("./app/routes/user.route");
@@ -28,9 +28,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", verifyAccessToken, userRouter);
-app.use("/api/employee", verifyAccessToken, employeeRouter);
-app.use("/api/position", verifyAccessToken, positionRouter);
-app.use("/api/currency", verifyAccessToken, currencyRouter);
+app.use("/api/employee", verifyAccessToken, verifyAdmin, employeeRouter);
+app.use("/api/position", verifyAccessToken, verifyAdmin, positionRouter);
+app.use("/api/currency", verifyAccessToken, verifyAdmin, currencyRouter);
 
 // handle 404 response 
 app.use((req, res, next) => {
@@ -40,10 +40,8 @@ app.use((req, res, next) => {
 //define error-handling middleware last, after other app.use() and routes calls 
 app.use((error, req, res, next) => {
     return res.status(error.statusCode || 500).json({
-        error: {
-            status: error.status || "error",
-            message: error.message || "Internal Server Error",
-        }
+        status: error.status || "error",
+        message: error.message || "Internal Server Error",
     });
 });
 

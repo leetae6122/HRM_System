@@ -51,37 +51,23 @@ class EmployeeService {
 
         const offset = (page - 1) * limit;
 
-        const total = await db.Employee.count({
-            where,
-        });
-
-        const data = await db.Employee.findAll({
+        const {count, rows} = await db.Employee.findAndCountAll({
             where,
             offset,
             limit,
             order,
-            attributes,
-            include: [
-                { model: db.User.scope('secret'), as: 'userData' },
-                {
-                    model: db.Position, as: 'positionData',
-                },
-                {
-                    model: db.Salary, as: 'salaryData',
-                    include: { model: db.Currency, as: 'currencyData' }
-                },
-            ]
+            attributes
         });
 
-        const nextPage = page + 1 > Math.ceil(total / limit) ? null : page + 1;
+        const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;
         const prevPage = page - 1 < 1 ? null : page - 1;
 
         return {
-            total,
+            total: count,
             currentPage: page,
             nextPage,
             prevPage,
-            data,
+            data: rows,
         };
     }
 

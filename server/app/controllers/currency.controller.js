@@ -26,6 +26,18 @@ exports.findAll = async (req, res, next) => {
     }
 }
 
+exports.getListCurrency = async (req, res, next) => {
+    try {
+        const data = await currencyService.filterListCurrency(req.body);
+        return res.send({data});
+    } catch (error) {
+        console.log(error);
+        return next(
+            createError.InternalServerError(error.message)
+        );
+    }
+}
+
 exports.createCurrency = async (req, res, next) => {
     try {
         const currencyExist = await currencyService.findByCurrencyCode(req.body.code);
@@ -34,7 +46,7 @@ exports.createCurrency = async (req, res, next) => {
         }
 
         const data = await currencyService.createCurrency(req.body);
-        return res.send({ data });
+        return res.send({message: "Successfully added new currency", data });
     } catch (error) {
         return next(
             createError.InternalServerError(error.message)
@@ -48,9 +60,9 @@ exports.updateCurrency = async (req, res, next) => {
         if (!foundCurrency) {
             return next(createError.BadRequest("Currency not found"));
         }
-        if (foundCurrency.code === req.body.code) {
-            return next(createError.BadRequest("Currency code already exists"));
-        }
+        // if (foundCurrency.code === req.body.code) {
+        //     return next(createError.BadRequest("Currency code already exists"));
+        // }
 
         await currencyService.updateCurrency(req.body.currencyId, req.body);
         return res.send({ message: "Successful update" });

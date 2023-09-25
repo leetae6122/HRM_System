@@ -1,4 +1,5 @@
-const { Sequelize } = require('sequelize');
+import Sequelize from "sequelize";
+
 const sequelize = new Sequelize(
     process.env.SEQUELIZE_DATABASE,
     process.env.SEQUELIZE_USERNAME,
@@ -6,7 +7,7 @@ const sequelize = new Sequelize(
     {
         host: process.env.SEQUELIZE_HOST,
         dialect: process.env.SEQUELIZE_DIALECT,
-        logging: false
+        logging: false,
     },
 );
 

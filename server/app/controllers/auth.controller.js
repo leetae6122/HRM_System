@@ -7,7 +7,8 @@ import {
     MSG_INVALID_TOKEN,
     MSG_REFRESH_TOKEN_DOES_NOT_MATCH,
     MSG_SENT_MAIL_FORGOT_PASSWORD,
-    MSG_TOKEN_DOES_NOT_MATCH
+    MSG_TOKEN_DOES_NOT_MATCH,
+    MSG_NOT_TOKEN_FOR_AUTH
 } from '../utils/message.util';
 import { compareHashedData } from "../utils/hash.util";
 import config from '../config';
@@ -21,7 +22,7 @@ exports.login = async (req, res, next) => {
             return next(createError.BadRequest(MSG_ERROR_WRONG_LOGIN_INFORMATION));
         }
 
-        if (!foundUser.isActive) {
+        if (!foundUser.isActived) {
             return next(createError.BadRequest("The user is not activated"));
         }
 
@@ -35,16 +36,16 @@ exports.login = async (req, res, next) => {
             employeeId: foundUser.employeeId
         }
         const accessToken = await authService.createJwtAccess(jwtPayload);
-        if (isRemember && isRemember === true && typeof isRemember === 'boolean') {
+        if (isRemember) {
             const refreshToken = await authService.createJwtRefresh(jwtPayload);
-            authService.setCookie(res, "refreshToken", refreshToken);
 
             return res.send({
-                accessToken: accessToken,
+                accessToken,
+                refreshToken,
                 data: foundUser
             });
         }
-        return res.send({ accessToken: accessToken, data: foundUser });
+        return res.send({ accessToken, data: foundUser });
     } catch (error) {
         return next(
             createError.InternalServerError("An error occurred while logging the user")
@@ -54,11 +55,13 @@ exports.login = async (req, res, next) => {
 
 exports.refreshToken = async (req, res, next) => {
     try {
-        const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) {
-            return next(
-                createError.BadRequest("You're not authenticated")
-            );
+        const authHeader = await req.header('Authorization');
+        if (!authHeader) return next(createError.BadRequest(MSG_NOT_TOKEN_FOR_AUTH));
+        const bearer = await authHeader.split(' ')[0];
+        const refreshToken = await authHeader.split(' ')[1];
+
+        if (!refreshToken && bearer !== "Bearer") {
+            return next(createError.BadRequest(MSG_NOT_TOKEN_FOR_AUTH));
         }
 
         const payload = verifyToken(refreshToken, config.jwt.refresh.secret);
@@ -89,10 +92,10 @@ exports.refreshToken = async (req, res, next) => {
         }
         const newAccessToken = await authService.createJwtAccess(jwtPayload);
         const newRefreshToken = await authService.createJwtRefresh(jwtPayload);
-        authService.setCookie(res, "refreshToken", newRefreshToken);
 
         return res.send({
             accessToken: newAccessToken,
+            refreshToken: newRefreshToken
         });
     } catch (error) {
         next(createError.InternalServerError("An error occurred while refresh token"))
@@ -110,9 +113,7 @@ exports.logout = async (req, res, next) => {
         if (foundUser.refreshTokenHash) {
             await authService.logout(user.id);
         }
-        res.clearCookie("refreshToken");
         res.send({ message: "Log Out" });
-        res.end();
     } catch (error) {
         return next(
             createError.InternalServerError(`Error logout`)
@@ -164,11 +165,9 @@ exports.resetPassword = async (req, res, next) => {
             return next(createError.BadRequest(MSG_TOKEN_DOES_NOT_MATCH));
         }
 
-        await userService.updateUser(foundUser.id, { password: newPassword });
+        await userService.updateUser(foundUser.id, { password: newPassword, resetPasswordHash: null });
         return res.send({ message: "Successful password reset" });
     } catch (error) {
-        return next(
-            createError.InternalServerError(`Error reset password`)
-        );
+        return next(createError.BadRequest(MSG_INVALID_TOKEN));
     }
 }

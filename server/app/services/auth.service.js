@@ -38,16 +38,7 @@ class AuthService {
     async logout(id) {
         await userService.updateUser(id, { refreshTokenHash: null });
     }
-
-    setCookie(res, key, value) {
-        res.cookie(key, value, {
-            httpOnly: true,
-            secure: false,
-            path: "/",
-            sameSite: "strict",
-        });
-    }
-
+    
     async sendMailForgotPassword(receiverEmail, token) {
         const url = `${config.app.client_url}/auth/reset-password?token=${token}`
         const payload = {

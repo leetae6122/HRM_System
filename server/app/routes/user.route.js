@@ -12,10 +12,7 @@ import { filterSchema } from '../validations/common.validation';
 const router = express.Router();
 
 router.route("/")
-    .get(userController.findById)
-
-router.route("/filter")
-    .post(validation(filterSchema), userController.getListUser)
+    .get(userController.getUserProfile)
 
 router.route("/change-password")
     .patch(validation(changPasswordSchema), userController.changePassword)
@@ -29,5 +26,8 @@ router.route("/admin")
 router.route("/admin/:id")
     .all(verifyAdmin)
     .get(userController.findById)
+
+router.route("/admin/filter")
+    .post(verifyAdmin, validation(filterSchema), userController.getListUser)
 
 module.exports = router;

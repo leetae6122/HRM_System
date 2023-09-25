@@ -13,7 +13,7 @@ module.exports = {
       username: 'admin.hrms',
       password: await hashPassword('admin123'),
       isAdmin: true,
-      isActive: true,
+      isActived: true,
       employeeId: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9'
     },
     {
@@ -21,7 +21,7 @@ module.exports = {
       username: 'steven.askew',
       password: await hashPassword('07444440001'),
       isAdmin: false,
-      isActive: true,
+      isActived: true,
       employeeId: 'b8dc485c-bf86-46c2-b8fc-78ad135278cc'
     },
     // {
@@ -29,7 +29,7 @@ module.exports = {
     //   username: 'tatiana.breit',
     //   password: await hashPassword('07402222220'),
     //   isAdmin: false,
-    //   isActive: true,
+    //   isActived: true,
     //   employeeId: '478bfe9a-1f75-40e7-830c-5803991d10a9'
     // }
   ], {

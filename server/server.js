@@ -5,10 +5,8 @@ import connectDB from './connectDB';
 async function startServer() {
     try {
         await connectDB();
-        app.listen(process.env.PORT, () => {
-            console.log(`Server is running on port ${process.env.PORT}.`);
-            console.log('------------------------------------------------------------------');
-        });
+        app.listen(process.env.PORT, "127.0.0.1");
+        console.log(`Server is running on 127.0.0.1:${process.env.PORT}.`);
     } catch (error) {
         console.log("Cannot connect to the database!", error);
         process.exit();
