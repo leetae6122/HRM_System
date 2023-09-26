@@ -15,15 +15,15 @@ router.route("/")
     .get(employeeController.findProfileById)
     .patch(validation(updateEmployeeSchema), employeeController.updateEmployee)
 
-router.route("/filter")
-    .post(validation(filterSchema), employeeController.getListEmployee)
-
 
 router.route("/admin")
     .all(verifyAdmin)
     .get(employeeController.findAll)
     .post(validation(adminCreateEmployeeSchema), employeeController.createEmployee)
     .patch(validation(adminUpdateEmployeeSchema), employeeController.updateEmployee)
+    
+router.route("/admin/filter")
+    .post(verifyAdmin, validation(filterSchema), employeeController.getListEmployee)
 
 router.route("/:id")
     .get(verifyAdminOrSelf, employeeController.findProfileById)

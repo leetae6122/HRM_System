@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Position.init({
-    positionName: DataTypes.STRING,
+    name: DataTypes.STRING,
     minSalary: DataTypes.FLOAT,
     maxSalary: DataTypes.FLOAT,
     currencyId: DataTypes.INTEGER

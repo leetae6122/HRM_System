@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Office.init({
-    officeTitle: DataTypes.STRING,
+    title: DataTypes.STRING,
     streetAddress: DataTypes.STRING,
     postalCode: DataTypes.STRING,
     city: DataTypes.STRING,

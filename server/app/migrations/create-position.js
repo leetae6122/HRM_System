@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         autoIncrement: true
       },
-      positionName: {
+      name: {
         allowNull: false,
         type: Sequelize.STRING(60),
         unique: true,

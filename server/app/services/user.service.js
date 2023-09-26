@@ -9,7 +9,10 @@ class UserService {
                 as: 'profile',
                 include: [
                     { model: db.Position, as: 'positionData' },
-                    { model: db.Salary, as: 'salaryData' },
+                    {
+                        model: db.Salary, as: 'salaryData',
+                        include: { model: db.Currency, as: 'currencyData' }
+                    },
                 ]
             },
         });
@@ -82,7 +85,7 @@ class UserService {
 
         const offset = (page - 1) * limit;
 
-        const {count, rows} = await db.User.scope('secret').findAndCountAll({
+        const { count, rows } = await db.User.scope('secret').findAndCountAll({
             where,
             offset,
             limit,
