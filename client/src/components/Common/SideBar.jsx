@@ -3,6 +3,7 @@ import {
   GlobalOutlined,
   IdcardOutlined,
   PieChartOutlined,
+  SolutionOutlined,
   UserDeleteOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -44,19 +45,21 @@ function SideBar() {
     getItem("Employee", "sub1", <UserOutlined />, [
       getItem(<Link to={"/admin/employee"}>Employee</Link>, "/admin/employee"),
       getItem(
-        <Link to={"/admin/employee/salary"}>Salary</Link>,
-        "/admin/employee/salary"
-      ),
-      getItem(
         <Link to={"/admin/employee/position"}>Position</Link>,
         "/admin/employee/position"
       ),
+    ]),
+    getItem("Payroll", "sub2", <SolutionOutlined />, [
       getItem(
-        <Link to={"/admin/employee/currency"}>Currency</Link>,
-        "/admin/employee/currency"
+        <Link to={"/admin/payroll/salary"}>Salary</Link>,
+        "/admin/payroll/salary"
+      ),
+      getItem(
+        <Link to={"/admin/payroll/currency"}>Currency</Link>,
+        "/admin/payroll/currency"
       ),
     ]),
-    getItem("Organization", "sub2", <GlobalOutlined />, [
+    getItem("Organization", "sub3", <GlobalOutlined />, [
       getItem("Office", "7"),
       getItem("Department", "8"),
       getItem("Country", "9"),

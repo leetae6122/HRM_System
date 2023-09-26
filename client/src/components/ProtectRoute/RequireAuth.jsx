@@ -3,6 +3,9 @@ import { Navigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import jwtDecode from "jwt-decode";
 import authApi from "api/authApi";
+import { useDispatch } from "react-redux";
+import userApi from "api/userApi";
+import { login } from "reducers/auth";
 
 const cookies = new Cookies();
 
@@ -11,9 +14,16 @@ const checkExp = (tokenExp) => {
   return tokenExp > dateNow.getTime() / 1000;
 };
 
+const getUserProfile = async (dispatch) => {
+  const data = (await userApi.getUserProfile()).data;
+  dispatch(login(data));
+};
+
 const useAuth = () => {
+  const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(null);
   useEffect(() => {
+    const controller = new AbortController();
     const checkToken = async () => {
       try {
         const accessToken = cookies.get("access_token");
@@ -21,14 +31,12 @@ const useAuth = () => {
 
         if (accessToken) {
           const accessTokenExp = jwtDecode(accessToken).exp;
-
           if (checkExp(accessTokenExp)) {
-            setIsAuth(true);
-            return;
+            getUserProfile(dispatch);
+            return setIsAuth(true);
           }
 
-          setIsAuth(false);
-          return;
+          return setIsAuth(false);
         }
 
         if (refreshToken) {
@@ -39,12 +47,11 @@ const useAuth = () => {
             cookies.set("refresh_token", response.refreshToken, {
               path: "/",
             });
-            setIsAuth(true);
-            return;
+            getUserProfile(dispatch);
+            return setIsAuth(true);
           }
 
-          setIsAuth(false);
-          return;
+          return setIsAuth(false);
         }
 
         setIsAuth(false);
@@ -53,7 +60,8 @@ const useAuth = () => {
       }
     };
     checkToken();
-  }, []);
+    return () => controller.abort();
+  }, [dispatch]);
   return isAuth;
 };
 

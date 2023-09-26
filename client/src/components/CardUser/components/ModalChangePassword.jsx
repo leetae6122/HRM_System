@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import PropsTypes from "prop-types";
+import PropTypes from "prop-types";
 import { Modal } from "antd";
 import ChangePasswordForm from "./ChangePasswordForm";
 import Swal from "sweetalert2";
 import userApi from "api/userApi";
 
 ModalChangePassword.propTypes = {
-  openModal: PropsTypes.bool,
-  toggleShowModal: PropsTypes.func,
+  openModal: PropTypes.bool,
+  toggleShowModal: PropTypes.func,
 };
 
 ModalChangePassword.defaultProps = {

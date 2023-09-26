@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import PropsTypes from "prop-types";
+import PropTypes from "prop-types";
 import { Button, Modal } from "antd";
 
 ModalEditUser.propTypes = {
-  openModal: PropsTypes.bool,
-  handleShowModal: PropsTypes.func,
+  openModal: PropTypes.bool,
+  handleShowModal: PropTypes.func,
 };
 
 ModalEditUser.defaultProps = {

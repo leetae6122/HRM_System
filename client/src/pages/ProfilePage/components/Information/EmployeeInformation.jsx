@@ -1,0 +1,67 @@
+import React from "react";
+import { Card, Descriptions } from "antd";
+import { useSelector } from "react-redux";
+import { getFullDate } from "utils/handleDate";
+
+const labelStyle = {
+  fontWeight: "bold",
+  color: "grey",
+};
+const createItems = (profile, department, office, salary, position) => [
+  {
+    key: "1",
+    label: <span style={labelStyle}>Date Hired</span>,
+    children: getFullDate(profile.hireDate),
+  },
+  {
+    key: "2",
+    label: <span style={labelStyle}>Department</span>,
+    children: department?.name,
+  },
+  {
+    key: "3",
+    label: <span style={labelStyle}>Position</span>,
+    children: position.name,
+  },
+  {
+    key: "4",
+    label: <span style={labelStyle}>Office</span>,
+    children: office?.title,
+  },
+  {
+    key: "4",
+    label: <span style={labelStyle}>Office Location</span>,
+    children: office
+      ? `${office.streetAddress}, ${office.city}, ${office.stateProvince}`
+      : "",
+  },
+  {
+    key: "5",
+    label: <span style={labelStyle}>Salary</span>,
+    children: `${salary.totalSalary} ${salary.currencyData.code}`,
+  },
+];
+
+function EmployeeInformation() {
+  const { user } = useSelector((state) => state.auth);
+  const items = createItems(
+    user.profile,
+    user.profile.departmentData,
+    user.profile.officeData,
+    user.profile.salaryData,
+    user.profile.positionData
+  );
+  return (
+    <>
+      <Card>
+        <Descriptions
+          layout="horizontal"
+          title={<h3>Employee Information</h3>}
+          column={2}
+          items={items}
+        />
+      </Card>
+    </>
+  );
+}
+export default EmployeeInformation;

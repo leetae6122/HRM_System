@@ -1,10 +1,10 @@
-import PropsTypes from "prop-types";
+import PropTypes from "prop-types";
 import "./HobbyList.css";
 
 HobbyList.propTypes = {
-  hobbyList: PropsTypes.array,
-  activeId: PropsTypes.number,
-  onHobbyClick: PropsTypes.func,
+  hobbyList: PropTypes.array,
+  activeId: PropTypes.number,
+  onHobbyClick: PropTypes.func,
 };
 
 HobbyList.defaultProps = {

@@ -10,7 +10,9 @@ import RequireAuth from "components/ProtectRoute/RequireAuth";
 import DashboardPage from "pages/admin/DashboardPage";
 import UserPage from "pages/admin/UserPage";
 import CurrencyPage from "pages/admin/CurrencyPage";
-import PositionPage from "pages/admin/PositionPage.jsx";
+import PositionPage from "pages/admin/PositionPage";
+import ProfilePage from "pages/ProfilePage";
+import EmployeePage from "pages/admin/EmployeePage";
 
 const AuthPage = React.lazy(() => import("pages/AuthPage"));
 const PageLayout = React.lazy(() => import("components/Common/PageLayout"));
@@ -35,6 +37,16 @@ function App() {
           <Routes>
             <Route path="/auth/*" element={<AuthPage />} />
             <Route
+              path="/profile"
+              element={
+                <RequireAuth>
+                  <PageLayout />
+                </RequireAuth>
+              }
+            >
+              <Route path="" element={<ProfilePage />} />
+            </Route>
+            <Route
               path="/admin/*"
               element={
                 <RequireAuth>
@@ -43,12 +55,14 @@ function App() {
               }
             >
               <Route path="dashboard" element={<DashboardPage />} />
-              <Route path="user" element={<UserPage/>} />
+              <Route path="user" element={<UserPage />} />
               <Route path="employee">
-                <Route path="" element={<div>Employee</div>} />
-                <Route path="position" element={<PositionPage/>} />
+                <Route path="" element={<EmployeePage />} />
+                <Route path="position" element={<PositionPage />} />
+              </Route>
+              <Route path="payroll">
                 <Route path="salary" element={<div>Salary</div>} />
-                <Route path="currency" element={<CurrencyPage/>} />
+                <Route path="currency" element={<CurrencyPage />} />
               </Route>
             </Route>
             {/* <Route path="/admin/*" element={<RequireAuth>
@@ -67,11 +81,6 @@ function App() {
               />
               <Route
                 exact
-                path={"/admin"}
-                element={<Navigate to="/admin/dashboard" replace />}
-              />
-              <Route
-                exact
                 path={"/auth"}
                 element={<Navigate to="/auth/login" replace />}
               />
@@ -79,6 +88,16 @@ function App() {
                 exact
                 path={"/login"}
                 element={<Navigate to="/auth/login" replace />}
+              />
+              <Route
+                exact
+                path={"/admin"}
+                element={<Navigate to="/admin/dashboard" replace />}
+              />
+              <Route
+                exact
+                path={"/admin/payroll"}
+                element={<Navigate to="/admin/payroll/salary" replace />}
               />
             </>
           </Routes>

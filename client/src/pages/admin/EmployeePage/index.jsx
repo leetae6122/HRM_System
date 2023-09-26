@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Col, Divider, Row, Space, Table, Tag } from "antd";
-import userApi from "api/userApi";
+import { Button, Col, Divider, Row, Space, Table } from "antd";
 import { toast } from "react-toastify";
 import { getFullDate } from "utils/handleDate";
 import {
   DeleteFilled,
   EditFilled,
+  FilterFilled,
   PlusCircleFilled,
   ReloadOutlined,
 } from "@ant-design/icons";
@@ -17,7 +17,8 @@ import {
   setData,
   setDefaultFilterData,
   setFilterData,
-} from "reducers/user";
+} from "reducers/employee";
+import employeeApi from "api/employeeApi";
 
 const columns = [
   {
@@ -26,89 +27,63 @@ const columns = [
     key: "id",
   },
   {
-    title: "Username",
-    dataIndex: "username",
-    key: "username",
-    sorter: (a, b) => a.username.localeCompare(b.username),
+    title: "First Name",
+    dataIndex: "firstName",
+    key: "firstName",
+    sorter: (a, b) => a.firstName.localeCompare(b.firstName),
   },
   {
-    title: "Name",
-    key: "name",
-    render: (_, record) =>
-      `${record.profile.firstName} ${record.profile.lastName}`,
+    title: "Last Name",
+    key: "lastName",
+    dataIndex: "lastName",
+    sorter: (a, b) => a.lastName.localeCompare(b.lastName),
   },
   {
     title: "Email",
-    dataIndex: ["profile", "email"],
+    dataIndex: "email",
     key: "email",
     sorter: (a, b) => a.profile.email.localeCompare(b.email),
   },
   {
-    title: "Status",
-    key: "status",
-    dataIndex: "isActived",
-    render: (_, { isActived }) => (
-      <>
-        {isActived ? (
-          <Badge status="success" text="Actived" />
-        ) : (
-          <Badge status="error" text="Not activated" />
-        )}
-      </>
-    ),
+    title: "Phone Number",
+    dataIndex: "phoneNumber",
+    key: "phoneNumber",
+  },
+  {
+    title: "Gender",
+    key: "gender",
+    dataIndex: "gender",
+    render: (_, { gender }) => (gender ? "Male" : "Female"),
     filters: [
       {
-        text: "Actived",
+        text: "Male",
         value: true,
       },
       {
-        text: "Not activated",
+        text: "Female",
         value: false,
       },
     ],
     filterMultiple: false,
-    onFilter: (value, record) => record.isActived === value,
+    onFilter: (value, record) => record.gender === value,
   },
   {
-    title: "Role",
-    key: "role",
-    dataIndex: "isAdmin",
-    render: (_, { isAdmin }) => (
-      <>
-        <Tag
-          style={{ padding: 8 }}
-          color={isAdmin ? "green" : "default"}
-          key={isAdmin}
-        >
-          {isAdmin ? "Admin" : "Staff"}
-        </Tag>
-      </>
-    ),
-    filters: [
-      {
-        text: "Admin",
-        value: true,
-      },
-      {
-        text: "Staff",
-        value: false,
-      },
-    ],
-    filterMultiple: false,
-    onFilter: (value, record) => record.isActived === value,
+    title: "Address",
+    dataIndex: "address",
+    key: "address",
   },
   {
-    title: "Create At",
-    dataIndex: "createdAt",
-    key: "createdAt",
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    title: "Date of Birth",
+    dataIndex: "dateBirth",
+    key: "dateBirth",
+    sorter: (a, b) => new Date(a.dateBirth) - new Date(b.dateBirth),
     render: (date) => getFullDate(date),
   },
   {
-    title: "Update At",
-    dataIndex: "updatedAt",
-    key: "updatedAt",
-    sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
+    title: "Date of Job",
+    dataIndex: "hireDate",
+    key: "hireDate",
+    sorter: (a, b) => new Date(a.hireDate) - new Date(b.hireDate),
     render: (date) => getFullDate(date),
   },
   {
@@ -129,17 +104,17 @@ const defaultFilter = {
   where: {},
 };
 
-function UserPage() {
+function EmployeePage() {
   const dispatch = useDispatch();
-  const { filterData, userList, total, currentPage } = useSelector(
-    (state) => state.user
+  const { filterData, employeeList, total, currentPage } = useSelector(
+    (state) => state.employee
   );
   const [loadingData, setLoadingData] = useState(false);
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const [openModalAddUser, setOpenModalAddUser] = useState(false);
+  const [openModalAddEmployee, setOpenModalAddEmployee] = useState(false);
 
-  const toggleModalAddUser = () => {
-    setOpenModalAddUser(!openModalAddUser);
+  const toggleModalAddEmployee = () => {
+    setOpenModalAddEmployee(!openModalAddEmployee);
   };
 
   useEffect(() => {
@@ -147,11 +122,11 @@ function UserPage() {
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = (await userApi.getList(filterData)).data;
+        const response = (await employeeApi.getList(filterData)).data;
         const data = response.data.map((item) => ({ key: item.id, ...item }));
         dispatch(
           setData({
-            userList: data,
+            employeeList: data,
             total: response.total,
             currentPage: response.currentPage,
           })
@@ -174,22 +149,16 @@ function UserPage() {
         where: {
           $or: [
             {
-              username: { $like: `%${value}%` },
+              email: { $like: `%${value}%` },
             },
             {
-              profile: {
-                $or: [
-                  {
-                    email: { $like: `%${value}%` },
-                  },
-                  {
-                    firstName: { $like: `%${value}%` },
-                  },
-                  {
-                    lastName: { $like: `%${value}%` },
-                  },
-                ],
-              },
+              firstName: { $like: `%${value}%` },
+            },
+            {
+              lastName: { $like: `%${value}%` },
+            },
+            {
+              phoneNumber: { $like: `%${value}%` },
             },
           ],
         },
@@ -203,7 +172,7 @@ function UserPage() {
       <Row>
         <Col span={8}>
           <Search
-            placeholder="Input search name or email or username"
+            placeholder="Input search name, email or phone number"
             allowClear
             loading={loadingSearch}
             enterButton
@@ -226,9 +195,12 @@ function UserPage() {
               type="primary"
               style={{ backgroundColor: green.primary }}
               icon={<PlusCircleFilled />}
-              onClick={toggleModalAddUser}
+              onClick={toggleModalAddEmployee}
             >
               Add User
+            </Button>
+            <Button type="primary" icon={<FilterFilled />}>
+              Filter
             </Button>
           </Space>
         </Col>
@@ -238,10 +210,10 @@ function UserPage() {
 
   return (
     <>
-      <Divider style={{ fontSize: 20 }}>User List</Divider>
+      <Divider style={{ fontSize: 20 }}>Employee List</Divider>
       <Table
         columns={columns}
-        dataSource={userList}
+        dataSource={employeeList}
         bordered
         title={() => <HeaderTable />}
         pagination={{
@@ -263,9 +235,9 @@ function UserPage() {
       />
       {/* <ModalAddCurrency
         openModal={openModalAddCurrency}
-        toggleShowModal={toggleModalAddUser}
+        toggleShowModal={toggleModalAddEmployee}
       /> */}
     </>
   );
 }
-export default UserPage;
+export default EmployeePage;

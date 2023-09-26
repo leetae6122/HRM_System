@@ -120,7 +120,7 @@ function ChangePasswordForm(props) {
             Cancel
           </Button>
           <Button type="primary" htmlType="submit">
-            Submit
+            Save
           </Button>
         </Space>
       </Form.Item>

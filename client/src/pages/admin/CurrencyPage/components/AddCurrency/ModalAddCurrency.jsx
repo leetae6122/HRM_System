@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PropsTypes from "prop-types";
+import PropTypes from "prop-types";
 import { Modal } from "antd";
 import Swal from "sweetalert2";
 import currencyApi from "api/currencyApi";
@@ -9,8 +9,8 @@ import { setDefaultFilterData } from "reducers/currency";
 import { toast } from "react-toastify";
 
 ModalAddCurrency.propTypes = {
-  openModal: PropsTypes.bool,
-  toggleShowModal: PropsTypes.func,
+  openModal: PropTypes.bool,
+  toggleShowModal: PropTypes.func,
 };
 
 ModalAddCurrency.defaultProps = {

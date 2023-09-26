@@ -37,14 +37,14 @@ function PageLayout() {
         </Header>
         <Content
           style={{
-            margin: "0 16px",
+            margin: "0 14px",
           }}
         >
           <Breadcrumbs />
           <div
             style={{
-              padding: 24,
-              minHeight: 360,
+              padding: 16,
+              minHeight: 400,
               background: colorBgContainer,
             }}
           >

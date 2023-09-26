@@ -9,7 +9,7 @@ const initialState = {
     currencyList: null,
     total: 0,
     currentPage: 1,
-    editIdCurrency: null
+    editIdCurrency: null,
 }
 
 export const currencySlice = createSlice({

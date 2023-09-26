@@ -19,11 +19,27 @@ EditCurrencyForm.defaultProps = {
   editCurrency: {},
 };
 
+const wrapperCol = { offset: 8, span: 16 };
+
 function EditCurrencyForm(props) {
   const { onCancel, onSubmit, loading, editCurrency } = props;
   const [currencyCodeList, setCurrencyCodeList] = useState([]);
-  const [isDataChange, setIsDataChange] = useState(false);
+  const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
+  const values = Form.useWatch([], form);
+
+  useEffect(() => {
+    form.validateFields({ validateOnly: true }).then(
+      () => {
+        if (!_.isEqual(editCurrency, values)) {
+          setSubmittable(true);
+        } else {
+          setSubmittable(false);
+        }
+      },
+      () => setSubmittable(false)
+    );
+  }, [values, form, editCurrency]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -55,20 +71,16 @@ function EditCurrencyForm(props) {
       initialValues={editCurrency}
       onFinish={onFinish}
       form={form}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 18 }}
+      style={{
+        maxWidth: 600,
+      }}
     >
-      <Form.Item
-        name="name"
-        label="Name"
-        rules={[
-          () => {
-            if (_.isEqual(editCurrency, form.getFieldValue())) {
-              setIsDataChange(true);
-            } else {
-              setIsDataChange(false);
-            }
-          },
-        ]}
-      >
+      <Form.Item name="currencyId" label="Currency Id">
+        <Input size="large" disabled={true} />
+      </Form.Item>
+      <Form.Item name="name" label="Name">
         <Input
           size="large"
           placeholder="Enter the currency name"
@@ -93,13 +105,6 @@ function EditCurrencyForm(props) {
               );
             },
           }),
-          () => {
-            if (_.isEqual(editCurrency, form.getFieldValue())) {
-              setIsDataChange(true);
-            } else {
-              setIsDataChange(false);
-            }
-          },
         ]}
       >
         <Input
@@ -111,15 +116,6 @@ function EditCurrencyForm(props) {
       <Form.Item
         name="symbol"
         label="Symbol"
-        rules={[
-          () => {
-            if (_.isEqual(editCurrency, form.getFieldValue())) {
-              setIsDataChange(true);
-            } else {
-              setIsDataChange(false);
-            }
-          },
-        ]}
       >
         <Input
           size="large"
@@ -127,13 +123,13 @@ function EditCurrencyForm(props) {
           disabled={loading}
         />
       </Form.Item>
-      <Form.Item>
+      <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: "right" }}>
           <Button htmlType="button" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" disabled={isDataChange}>
-            Submit
+          <Button type="primary" htmlType="submit" disabled={!submittable}>
+            Save
           </Button>
         </Space>
       </Form.Item>

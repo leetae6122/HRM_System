@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Divider, Row, Space, Table } from "antd";
+import { Button, Divider, Space, Table } from "antd";
 import currencyApi from "api/currencyApi";
 import { toast } from "react-toastify";
 import { getFullDate } from "utils/handleDate";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusCircleFilled,
-  ReloadOutlined,
-} from "@ant-design/icons";
-import { green, gold } from "@ant-design/colors";
-import Search from "antd/es/input/Search";
-import _ from "lodash";
+import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setData,
@@ -19,10 +11,16 @@ import {
   setEditIdCurrency,
   setFilterData,
 } from "reducers/currency";
-import ModalAddCurrency from "./components/ModalAddCurrency";
-import ModalEditCurrency from "./components/ModalEditCurrency";
+import ModalAddCurrency from "./components/AddCurrency/ModalAddCurrency";
+import ModalEditCurrency from "./components/EditCurrency/ModalEditCurrency";
+import TableTitle from "./components/TableTitle";
+import Swal from "sweetalert2";
 
-const createColumns = (toggleModalEditCurrency, dispatch) => [
+const createColumns = (
+  toggleModalEditCurrency,
+  handleDeleteCurrency,
+  dispatch
+) => [
   {
     title: "Id",
     dataIndex: "id",
@@ -47,14 +45,12 @@ const createColumns = (toggleModalEditCurrency, dispatch) => [
     title: "Symbol",
     dataIndex: "symbol",
     key: "symbol",
-    width: 100,
     sorter: (a, b) => a.symbol.localeCompare(b.symbol),
   },
   {
     title: "Create At",
     dataIndex: "createdAt",
     key: "createdAt",
-    width: 120,
     sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     render: (date) => getFullDate(date),
   },
@@ -62,39 +58,32 @@ const createColumns = (toggleModalEditCurrency, dispatch) => [
     title: "Update At",
     dataIndex: "updatedAt",
     key: "updatedAt",
-    width: 120,
     sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
     render: (date) => getFullDate(date),
   },
   {
     title: "Action",
     key: "action",
-    width: 220,
     render: (_, record) => (
       <Space size="middle">
         <Button
           type="primary"
-          icon={<EditOutlined />}
+          icon={<EditFilled />}
           onClick={() =>
             dispatch(setEditIdCurrency(record.id)) &&
             toggleModalEditCurrency(record)
           }
-        >
-          Edit
-        </Button>
-        <Button type="primary" danger icon={<DeleteOutlined />}>
-          Delete
-        </Button>
+        />
+        <Button
+          type="primary"
+          danger
+          icon={<DeleteFilled />}
+          onClick={() => handleDeleteCurrency(record.id)}
+        />
       </Space>
     ),
   },
 ];
-
-const defaultFilter = {
-  page: 1,
-  size: 10,
-  where: {},
-};
 
 function CurrencyPage() {
   const dispatch = useDispatch();
@@ -102,7 +91,6 @@ function CurrencyPage() {
     (state) => state.currency
   );
   const [loadingData, setLoadingData] = useState(false);
-  const [loadingSearch, setLoadingSearch] = useState(false);
   const [openModalAddCurrency, setOpenModalAddCurrency] = useState(false);
   const [openModalEditCurrency, setOpenModalEditCurrency] = useState(false);
 
@@ -138,65 +126,33 @@ function CurrencyPage() {
     setOpenModalAddCurrency(!openModalAddCurrency);
   };
 
-  const columns = createColumns(toggleModalEditCurrency, dispatch);
-
-  const handleSearch = (value) => {
-    setLoadingSearch(true);
-    dispatch(
-      setFilterData({
-        ...filterData,
-        where: {
-          $or: [
-            {
-              name: { $like: `%${value}%` },
-            },
-            {
-              code: { $like: `%${value}%` },
-            },
-          ],
-        },
+  const handleDeleteCurrency = async (currencyId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await currencyApi.delete(currencyId);
+          Swal.fire("Deleted!", "Currency has been deleted.", "success");
+          dispatch(setDefaultFilterData());
+        }
       })
-    );
-    setLoadingSearch(false);
+      .catch((error) => {
+        toast.error(error);
+      });
   };
 
-  const HeaderTable = () => {
-    return (
-      <Row>
-        <Col span={8}>
-          <Search
-            placeholder="Input search name or code"
-            allowClear
-            loading={loadingSearch}
-            enterButton
-            onSearch={handleSearch}
-          />
-        </Col>
-        <Col span={16}>
-          <Space style={{ float: "right" }}>
-            {!_.isEqual(filterData, defaultFilter) && (
-              <Button
-                type="primary"
-                icon={<ReloadOutlined />}
-                onClick={() => dispatch(setDefaultFilterData())}
-                style={{ backgroundColor: gold.primary }}
-              >
-                Reset
-              </Button>
-            )}
-            <Button
-              type="primary"
-              style={{ backgroundColor: green.primary }}
-              icon={<PlusCircleFilled />}
-              onClick={toggleModalAddCurrency}
-            >
-              Add Currency
-            </Button>
-          </Space>
-        </Col>
-      </Row>
-    );
-  };
+  const columns = createColumns(
+    toggleModalEditCurrency,
+    handleDeleteCurrency,
+    dispatch
+  );
 
   return (
     <>
@@ -205,7 +161,9 @@ function CurrencyPage() {
         columns={columns}
         dataSource={currencyList}
         bordered
-        title={() => <HeaderTable />}
+        title={() => (
+          <TableTitle toggleModalAddCurrency={toggleModalAddCurrency} />
+        )}
         pagination={{
           total,
           current: currentPage,

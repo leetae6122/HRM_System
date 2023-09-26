@@ -30,10 +30,7 @@ const Breadcrumbs = () => {
   return (
     <>
       <Row>
-        <Col
-          style={{ marginBlock: 4, fontSize: 14, fontWeight: "bold" }}
-          className="flex items-center gap-2 p-4"
-        >
+        <Col style={{ marginBlock: 4, fontWeight: "bold" }}>
           <Breadcrumb
             items={[
               {

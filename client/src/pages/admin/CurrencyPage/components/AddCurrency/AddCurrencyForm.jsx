@@ -16,10 +16,21 @@ AddCurrencyForm.defaultProps = {
   loading: false,
 };
 
+const wrapperCol = { offset: 8, span: 16 };
+
 function AddCurrencyForm(props) {
   const { onCancel, onSubmit, loading } = props;
   const [currencyCodeList, setCurrencyCodeList] = useState([]);
+  const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
+  const values = Form.useWatch([], form);
+
+  useEffect(() => {
+    form.validateFields({ validateOnly: true }).then(
+      () => setSubmittable(true),
+      () => setSubmittable(false)
+    );
+  }, [values, form]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -59,6 +70,11 @@ function AddCurrencyForm(props) {
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
+      labelCol={{ span: 4 }}
+      wrapperCol={{ span: 20 }}
+      style={{
+        maxWidth: 600,
+      }}
     >
       <Form.Item
         name="name"
@@ -105,13 +121,13 @@ function AddCurrencyForm(props) {
           disabled={loading}
         />
       </Form.Item>
-      <Form.Item>
+      <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: "right" }}>
           <Button htmlType="button" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit">
-            Submit
+          <Button type="primary" htmlType="submit" disabled={!submittable}>
+            Add
           </Button>
         </Space>
       </Form.Item>
