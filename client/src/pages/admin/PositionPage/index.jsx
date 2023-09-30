@@ -19,10 +19,18 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setData,
   setDefaultFilterData,
+  setEditPositionId,
   setFilterData,
 } from "reducers/position";
+import ModalAddPosition from "./components/ComponentAddEdit/ModalAddPosition";
+import Swal from "sweetalert2";
+import ModalEditPosition from "./components/ComponentAddEdit/ModalEditPosition";
 
-const createColumns = (filtersCurrency) => [
+const createColumns = (
+  filtersCurrency,
+  toggleModalEditPosition,
+  handleDeletePosition
+) => [
   {
     title: "Id",
     dataIndex: "id",
@@ -53,7 +61,7 @@ const createColumns = (filtersCurrency) => [
     title: "Currency Code",
     dataIndex: ["currencyData", "code"],
     key: "currencyCode",
-    filters: filtersCurrency,
+    filters: filtersCurrency || null,
     onFilter: (value, record) => record.currencyData.code.indexOf(value) === 0,
   },
   {
@@ -75,8 +83,17 @@ const createColumns = (filtersCurrency) => [
     key: "action",
     render: (_, record) => (
       <Space size="middle">
-        <Button type="primary" icon={<EditFilled />} />
-        <Button type="primary" danger icon={<DeleteFilled />} />
+        <Button
+          type="primary"
+          icon={<EditFilled />}
+          onClick={() => toggleModalEditPosition(record.id)}
+        />
+        <Button
+          type="primary"
+          danger
+          icon={<DeleteFilled />}
+          onClick={() => handleDeletePosition(record.id)}
+        />
       </Space>
     ),
   },
@@ -97,8 +114,8 @@ function PositionPage() {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [filtersCurrency, setFiltersCurrency] = useState([]);
   const [openDrawer, setOpenDrawer] = useState(false);
-
-  const columns = createColumns(filtersCurrency);
+  const [openModalAddPosition, setOpenModalAddPosition] = useState(false);
+  const [openModalEditPosition, setOpenModalEditPosition] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -156,13 +173,50 @@ function PositionPage() {
     setLoadingSearch(false);
   };
 
+  const handleDeletePosition = async (positionId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await positionApi.delete(positionId);
+          Swal.fire("Deleted!", "Currency has been deleted.", "success");
+          dispatch(setDefaultFilterData());
+        }
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
+  };
+
   const toggleShowDrawer = () => {
     setOpenDrawer(!openDrawer);
+  };
+
+  const toggleModalEditPosition = (id) => {
+    dispatch(setEditPositionId(id));
+    setOpenModalEditPosition(!openModalEditPosition);
+  };
+
+  const toggleModalAddPosition = () => {
+    setOpenModalAddPosition(!openModalAddPosition);
   };
 
   const onFilter = (values) => {
     console.log("filter", values);
   };
+
+  const columns = createColumns(
+    filtersCurrency,
+    toggleModalEditPosition,
+    handleDeletePosition
+  );
 
   const HeaderTable = () => {
     return (
@@ -192,8 +246,9 @@ function PositionPage() {
               type="primary"
               style={{ backgroundColor: green.primary }}
               icon={<PlusCircleFilled />}
+              onClick={toggleModalAddPosition}
             >
-              Add Currency
+              Add Position
             </Button>
             <Button
               type="primary"
@@ -233,11 +288,25 @@ function PositionPage() {
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      <FilterDrawer
-        onFilter={onFilter}
-        toggleShowDrawer={toggleShowDrawer}
-        openDrawer={openDrawer}
-      />
+      {openDrawer && (
+        <FilterDrawer
+          onFilter={onFilter}
+          toggleShowDrawer={toggleShowDrawer}
+          openDrawer={openDrawer}
+        />
+      )}
+      {openModalAddPosition && (
+        <ModalAddPosition
+          openModal={openModalAddPosition}
+          toggleShowModal={toggleModalAddPosition}
+        />
+      )}
+      {openModalEditPosition && (
+        <ModalEditPosition
+          openModal={openModalEditPosition}
+          toggleShowModal={toggleModalEditPosition}
+        />
+      )}
     </>
   );
 }

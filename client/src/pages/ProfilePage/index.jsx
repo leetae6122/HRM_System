@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Col, Row, Space } from "antd";
 import ProfileCard from "./components/ProfileCard";
 import BasicInformation from "./components/Information/BasicInformation";
 import PersonalInformation from "./components/Information/PersonalInfomation";
 import EmployeeInformation from "./components/Information/EmployeeInformation";
+import ModalEditProfile from "./components/EditProfile/ModalEditProfile";
 
 function ProfilePage() {
+  const [openModalEditProfile, setOpenModalEditProfile] = useState(false);
+
+  const toggleModalEditProfile = () => {
+    setOpenModalEditProfile(!openModalEditProfile);
+  };
+
   return (
     <>
       <Row>
@@ -15,11 +22,19 @@ function ProfilePage() {
         <Col span={18}>
           <Space direction="vertical" style={{ marginLeft: 8 }}>
             <BasicInformation />
-            <PersonalInformation/>
-            <EmployeeInformation/>
+            <PersonalInformation
+              toggleModalEditProfile={toggleModalEditProfile}
+            />
+            <EmployeeInformation />
           </Space>
         </Col>
       </Row>
+      {openModalEditProfile && (
+        <ModalEditProfile
+          openModal={openModalEditProfile}
+          toggleShowModal={toggleModalEditProfile}
+        />
+      )}
     </>
   );
 }

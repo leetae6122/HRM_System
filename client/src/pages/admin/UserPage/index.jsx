@@ -13,11 +13,7 @@ import { green, gold } from "@ant-design/colors";
 import Search from "antd/es/input/Search";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setData,
-  setDefaultFilterData,
-  setFilterData,
-} from "reducers/user";
+import { setData, setDefaultFilterData, setFilterData } from "reducers/user";
 
 const columns = [
   {
@@ -172,26 +168,16 @@ function UserPage() {
       setFilterData({
         ...filterData,
         where: {
-          $or: [
-            {
-              username: { $like: `%${value}%` },
-            },
-            {
-              profile: {
-                $or: [
-                  {
-                    email: { $like: `%${value}%` },
-                  },
-                  {
-                    firstName: { $like: `%${value}%` },
-                  },
-                  {
-                    lastName: { $like: `%${value}%` },
-                  },
-                ],
-              },
-            },
-          ],
+          username: { $like: `%${value}%` },
+        },
+        modelWhere: {
+          $or: _.flatten(
+            _.map(["firstName", "lastName", "email"], function (item) {
+              return _.map(value.split(" "), function (q) {
+                return { [item]: { $like: "%" + q + "%" } };
+              });
+            })
+          ),
         },
       })
     );

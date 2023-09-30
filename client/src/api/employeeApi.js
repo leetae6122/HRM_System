@@ -1,4 +1,5 @@
 import axiosClient from "./axiosClient";
+import FormData from 'form-data';
 
 const employeeApi = {
     getAll: () => {
@@ -13,7 +14,7 @@ const employeeApi = {
         const url = '/employee/admin/filter';
         return axiosClient.post(url, data);
     },
-    updatePersonal:(data) => {
+    updatePersonal: (data) => {
         const url = '/employee';
         return axiosClient.patch(url, data);
     },
@@ -29,6 +30,16 @@ const employeeApi = {
         const url = `/employee/${id}`;
         return axiosClient.delete(url);
     },
+    updateAvatar: (file) => {
+        const url = `/employee/avatar`;
+        const data = new FormData();
+        data.append("user-avatar", file);
+        return axiosClient.put(url, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+    }
 }
 
 export default employeeApi;

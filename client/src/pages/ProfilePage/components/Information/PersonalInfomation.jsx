@@ -3,6 +3,7 @@ import { Button, Card, Col, Descriptions, Row } from "antd";
 import { useSelector } from "react-redux";
 import { getFullDate } from "utils/handleDate";
 import { EditFilled } from "@ant-design/icons";
+import PropTypes from "prop-types";
 
 const labelStyle = {
   fontWeight: "bold",
@@ -48,7 +49,17 @@ const createItems = (user) => [
   },
 ];
 
-function PersonalInformation() {
+PersonalInformation.propTypes = {
+  toggleModalEditProfile: PropTypes.func,
+};
+
+PersonalInformation.defaultProps = {
+  handleShowModal: null,
+};
+
+
+function PersonalInformation(props) {
+  const { toggleModalEditProfile } = props;
   const { user } = useSelector((state) => state.auth);
   const items = createItems(user);
 
@@ -58,7 +69,12 @@ function PersonalInformation() {
         <h2>Personal Information</h2>
       </Col>
       <Col span={12}>
-        <Button style={{ float: "right" }} type="primary" icon={<EditFilled />}>
+        <Button
+          style={{ float: "right" }}
+          type="primary"
+          icon={<EditFilled />}
+          onClick={toggleModalEditProfile}
+        >
           Edit
         </Button>
       </Col>

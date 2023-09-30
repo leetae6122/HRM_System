@@ -2,40 +2,42 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "antd";
 import Swal from "sweetalert2";
-import currencyApi from "api/currencyApi";
 import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData } from "reducers/currency";
+import { setDefaultFilterData } from "reducers/position";
 import { toast } from "react-toastify";
-import EditCurrencyForm from "./EditCurrencyForm";
 import _ from "lodash";
+import positionApi from "api/positionApi";
+import PositionForm from "./PositionForm";
 
-ModalEditCurrency.propTypes = {
+ModalEditPosition.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
 };
 
-ModalEditCurrency.defaultProps = {
+ModalEditPosition.defaultProps = {
   openModal: false,
   toggleShowModal: null,
 };
 
-function ModalEditCurrency(props) {
+function ModalEditPosition(props) {
   const dispatch = useDispatch();
-  const { editIdCurrency } = useSelector((state) => state.currency);
+  const { editPositionId } = useSelector((state) => state.position);
   const { openModal, toggleShowModal } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [editCurrency, setEditCurrency] = useState({});
-
+  const [editPosition, setEditPosition] = useState({});
+  
   useEffect(() => {
+    const controller = new AbortController();
     const fetchData = async () => {
       try {
-        if (editIdCurrency) {
-          const data = (await currencyApi.getById(editIdCurrency)).data;
-          setEditCurrency({
-            currencyId: data.id,
+        if (editPositionId) {
+          const data = (await positionApi.getById(editPositionId)).data;
+          setEditPosition({
+            positionId: data.id,
             name: data.name,
-            code: data.code,
-            symbol: data.symbol,
+            minSalary: data.minSalary,
+            maxSalary: data.maxSalary,
+            currencyId: data.currencyId,
           });
         }
       } catch (error) {
@@ -43,16 +45,14 @@ function ModalEditCurrency(props) {
       }
     };
     fetchData();
-  }, [editIdCurrency]);
-
-  const handleEditCurrency = async (values) => {
+    return () => controller.abort();
+  }, [editPositionId]);
+  console.log(editPosition);
+  const handleEditPosition = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = {
-        currencyId: editIdCurrency,
-        ...values,
-      };
-      const response = await currencyApi.update(data);
+      const data = _.omitBy(values, _.isNil);
+      const response = await positionApi.update(data);
       Swal.fire({
         icon: "success",
         title: response.message,
@@ -78,22 +78,21 @@ function ModalEditCurrency(props) {
   return (
     <>
       <Modal
-        title="Edit Currency"
+        title="Edit Position"
         open={openModal}
-        closable={false}
-        maskClosable={false}
+        onCancel={handleCancel}
         footer={null}
       >
-        {!_.isEmpty(editCurrency) && (
-          <EditCurrencyForm
+        {!_.isEmpty(editPosition) && (
+          <PositionForm
             onCancel={handleCancel}
-            onSubmit={handleEditCurrency}
+            onSubmit={handleEditPosition}
             loading={confirmLoading}
-            editCurrency={editCurrency}
+            initialValues={editPosition}
           />
         )}
       </Modal>
     </>
   );
 }
-export default ModalEditCurrency;
+export default ModalEditPosition;

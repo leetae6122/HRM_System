@@ -25,7 +25,7 @@ function ResetPasswordForm(props) {
   return (
     <Card className="wrapper">
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <Title level={1}>Reset password</Title>
+        <Title level={2}>Reset password</Title>
       </div>
 
       <Form

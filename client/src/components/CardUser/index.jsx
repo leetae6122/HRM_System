@@ -34,7 +34,7 @@ function CardUser() {
       await authApi.logout();
       cookies.remove("access_token", { path: "/" });
       cookies.remove("refresh_token", { path: "/" });
-      navigate("/auth/login", {});
+      navigate("/auth/login");
       dispatch(logout());
     } catch (error) {
       toast.error(error);
@@ -45,7 +45,7 @@ function CardUser() {
     {
       label: (
         <div
-          style={{ fontSize: 16 }}
+          style={{ fontSize: 18 }}
           onClick={() => navigate("/profile", { replace: true })}
         >
           <ProfileOutlined />
@@ -56,7 +56,7 @@ function CardUser() {
     },
     {
       label: (
-        <div style={{ fontSize: 16 }} onClick={toggleModalChangePassword}>
+        <div style={{ fontSize: 18 }} onClick={toggleModalChangePassword}>
           <FormOutlined />
           <span style={{ marginLeft: 8 }}>Change Password</span>
         </div>
@@ -68,7 +68,7 @@ function CardUser() {
     },
     {
       label: (
-        <div style={{ color: "red", fontSize: 16 }} onClick={handleLogout}>
+        <div style={{ color: "red", fontSize: 18 }} onClick={handleLogout}>
           <LogoutOutlined />
           <span style={{ marginLeft: 8 }}>Logout</span>
         </div>
@@ -89,7 +89,7 @@ function CardUser() {
             onClick={() => setChangeDropDown(!changeDropDown)}
             style={{ height: "100%" }}
           >
-            <Space style={{ fontSize: 16 }}>
+            <Space style={{ fontSize: 18 }}>
               <Avatar
                 size={40}
                 src={user?.profile.avatarUrl ?? defaultAvatar}
@@ -100,10 +100,12 @@ function CardUser() {
           </Button>
         </Dropdown>
 
-      <ModalChangePassword
+      {openModalChangePassword &&
+        <ModalChangePassword
         openModal={openModalChangePassword}
         toggleShowModal={toggleModalChangePassword}
       />
+      }
     </>
   );
 }

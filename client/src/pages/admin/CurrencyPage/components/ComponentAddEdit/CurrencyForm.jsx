@@ -1,57 +1,46 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Form, Input, Button, Space } from "antd";
-import currencyApi from "api/currencyApi";
-import { toast } from "react-toastify";
+import _ from "lodash";
 
-AddCurrencyForm.propTypes = {
+CurrencyForm.propTypes = {
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
+  initialValues: PropTypes.object,
 };
 
-AddCurrencyForm.defaultProps = {
+CurrencyForm.defaultProps = {
   onCancel: null,
   onSubmit: null,
   loading: false,
+  initialValues: {
+    name: "",
+    code: "",
+    symbol: "",
+  },
 };
 
 const wrapperCol = { offset: 8, span: 16 };
 
-function AddCurrencyForm(props) {
-  const { onCancel, onSubmit, loading } = props;
-  const [currencyCodeList, setCurrencyCodeList] = useState([]);
+function CurrencyForm(props) {
+  const { onCancel, onSubmit, loading, initialValues } = props;
   const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
 
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
-      () => setSubmittable(true),
+      () => {
+        if (!_.isEqual(initialValues, values)) {
+          setSubmittable(true);
+        } else {
+          setSubmittable(false);
+        }
+      },
       () => setSubmittable(false)
     );
-  }, [values, form]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchData = async () => {
-      try {
-        const response = await currencyApi.getAll();
-        const list = response.data.map((currency) => currency.code);
-        setCurrencyCodeList(list);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    fetchData();
-    return () => controller.abort();
-  }, []);
-
-  const initialValues = {
-    name: "",
-    code: "",
-    symbol: "",
-  };
+  }, [values, form, initialValues]);
 
   const onFinish = (values) => {
     onSubmit(values);
@@ -65,8 +54,8 @@ function AddCurrencyForm(props) {
 
   return (
     <Form
-      name="normal_add_currency"
-      className="add_currency-form"
+      name="normal_currency"
+      className="currency-form"
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
@@ -75,7 +64,13 @@ function AddCurrencyForm(props) {
       style={{
         maxWidth: 600,
       }}
+      size="large"
     >
+      {initialValues.currencyId ? (
+        <Form.Item name="currencyId" label="Currency Id">
+          <Input disabled={true} />
+        </Form.Item>
+      ) : null}
       <Form.Item
         name="name"
         label="Name"
@@ -85,9 +80,10 @@ function AddCurrencyForm(props) {
         ]}
       >
         <Input
-          size="large"
           placeholder="Enter the currency name"
           disabled={loading}
+          showCount
+          maxLength={40}
         />
       </Form.Item>
       <Form.Item
@@ -96,29 +92,21 @@ function AddCurrencyForm(props) {
         hasFeedback
         rules={[
           { required: true, message: "Please input the code of the currency!" },
-          () => ({
-            validator(_, value) {
-              if (!value || !currencyCodeList.includes(value)) {
-                return Promise.resolve();
-              }
-              return Promise.reject(
-                new Error("Currency code has been created!")
-              );
-            },
-          }),
         ]}
       >
         <Input
-          size="large"
           placeholder="Enter the currency code"
           disabled={loading}
+          showCount
+          maxLength={20}
         />
       </Form.Item>
       <Form.Item name="symbol" label="Symbol" hasFeedback>
         <Input
-          size="large"
           placeholder="Enter the currency symbol"
           disabled={loading}
+          showCount
+          maxLength={20}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
@@ -127,7 +115,7 @@ function AddCurrencyForm(props) {
             Cancel
           </Button>
           <Button type="primary" htmlType="submit" disabled={!submittable}>
-            Add
+            {initialValues.currencyId ? "Save" : "Add"}
           </Button>
         </Space>
       </Form.Item>
@@ -135,4 +123,4 @@ function AddCurrencyForm(props) {
   );
 }
 
-export default AddCurrencyForm;
+export default CurrencyForm;

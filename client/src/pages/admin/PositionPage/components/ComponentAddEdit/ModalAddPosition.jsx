@@ -1,44 +1,46 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "antd";
-import ChangePasswordForm from "./ChangePasswordForm";
 import Swal from "sweetalert2";
-import userApi from "api/userApi";
+import { useDispatch } from "react-redux";
+import { setDefaultFilterData } from "reducers/position";
+import { toast } from "react-toastify";
+import positionApi from "api/positionApi";
+import PositionForm from "./PositionForm";
 
-ModalChangePassword.propTypes = {
+ModalAddPosition.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
 };
 
-ModalChangePassword.defaultProps = {
+ModalAddPosition.defaultProps = {
   openModal: false,
   toggleShowModal: null,
 };
 
-function ModalChangePassword(props) {
+function ModalAddPosition(props) {
+  const dispatch = useDispatch();
   const { openModal, toggleShowModal } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const handleChangePassword = async (values) => {
+  const handleAddPosition = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = {
-        currentPassword: values.currentPassword,
-        newPassword: values.newPassword,
-      };
-      const response = await userApi.changePassword(data);
+      const response = await positionApi.create(values);
       Swal.fire({
         icon: "success",
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: "Done",
       }).then((result) => {
+        dispatch(setDefaultFilterData());
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
         }
       });
     } catch (error) {
+      toast.error(error);
       setConfirmLoading(false);
     }
   };
@@ -50,18 +52,18 @@ function ModalChangePassword(props) {
   return (
     <>
       <Modal
-        title="Change Password"
+        title="Add Position"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
       >
-        <ChangePasswordForm
+        <PositionForm
           onCancel={handleCancel}
-          onSubmit={handleChangePassword}
+          onSubmit={handleAddPosition}
           loading={confirmLoading}
         />
       </Modal>
     </>
   );
 }
-export default ModalChangePassword;
+export default ModalAddPosition;

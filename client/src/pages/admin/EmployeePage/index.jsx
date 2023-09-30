@@ -5,6 +5,7 @@ import { getFullDate } from "utils/handleDate";
 import {
   DeleteFilled,
   EditFilled,
+  EyeOutlined,
   FilterFilled,
   PlusCircleFilled,
   ReloadOutlined,
@@ -16,11 +17,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setData,
   setDefaultFilterData,
+  setEditEmployeeId,
   setFilterData,
 } from "reducers/employee";
 import employeeApi from "api/employeeApi";
+import Swal from "sweetalert2";
+import ModalEditEmployee from "./components/ComponentAddEdit/ModalEditEmployee";
+import ModalAddEmployee from "./components/ComponentAddEdit/ModalAddEmployee";
 
-const columns = [
+const createColumns = (toggleModalEditEmployee, handleDeleteEmployee) => [
   {
     title: "Id",
     dataIndex: "id",
@@ -42,12 +47,13 @@ const columns = [
     title: "Email",
     dataIndex: "email",
     key: "email",
-    sorter: (a, b) => a.profile.email.localeCompare(b.email),
+    sorter: (a, b) => a.email.localeCompare(b.email),
   },
   {
     title: "Phone Number",
     dataIndex: "phoneNumber",
     key: "phoneNumber",
+    sorter: (a, b) => a.phoneNumber.localeCompare(b.phoneNumber),
   },
   {
     title: "Gender",
@@ -89,10 +95,25 @@ const columns = [
   {
     title: "Action",
     key: "action",
+    width: 145,
     render: (_, record) => (
-      <Space size="middle">
-        <Button type="primary" icon={<EditFilled />} />
-        <Button type="primary" danger icon={<DeleteFilled />} />
+      <Space size="small">
+        <Button
+          type="primary"
+          style={{ background: gold[5] }}
+          icon={<EyeOutlined />}
+        />
+        <Button
+          type="primary"
+          icon={<EditFilled />}
+          onClick={() => toggleModalEditEmployee(record.id)}
+        />
+        <Button
+          type="primary"
+          danger
+          icon={<DeleteFilled />}
+          onClick={() => handleDeleteEmployee(record.id)}
+        />
       </Space>
     ),
   },
@@ -112,9 +133,15 @@ function EmployeePage() {
   const [loadingData, setLoadingData] = useState(false);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [openModalAddEmployee, setOpenModalAddEmployee] = useState(false);
+  const [openModalEditEmployee, setOpenModalEditEmployee] = useState(false);
 
   const toggleModalAddEmployee = () => {
     setOpenModalAddEmployee(!openModalAddEmployee);
+  };
+
+  const toggleModalEditEmployee = (id) => {
+    dispatch(setEditEmployeeId(id));
+    setOpenModalEditEmployee(!openModalEditEmployee);
   };
 
   useEffect(() => {
@@ -147,24 +174,42 @@ function EmployeePage() {
       setFilterData({
         ...filterData,
         where: {
-          $or: [
-            {
-              email: { $like: `%${value}%` },
-            },
-            {
-              firstName: { $like: `%${value}%` },
-            },
-            {
-              lastName: { $like: `%${value}%` },
-            },
-            {
-              phoneNumber: { $like: `%${value}%` },
-            },
-          ],
+          $or: _.flatten(
+            _.map(
+              ["firstName", "lastName", "email", "phoneNumber"],
+              function (item) {
+                return _.map(value.split(" "), function (q) {
+                  return { [item]: { $like: "%" + q + "%" } };
+                });
+              }
+            )
+          ),
         },
       })
     );
     setLoadingSearch(false);
+  };
+
+  const handleDeleteEmployee = async (employeeId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await employeeApi.delete(employeeId);
+          Swal.fire("Deleted!", "Currency has been deleted.", "success");
+          dispatch(setDefaultFilterData());
+        }
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
   };
 
   const HeaderTable = () => {
@@ -197,7 +242,7 @@ function EmployeePage() {
               icon={<PlusCircleFilled />}
               onClick={toggleModalAddEmployee}
             >
-              Add User
+              Add Employee
             </Button>
             <Button type="primary" icon={<FilterFilled />}>
               Filter
@@ -207,6 +252,8 @@ function EmployeePage() {
       </Row>
     );
   };
+
+  const columns = createColumns(toggleModalEditEmployee, handleDeleteEmployee);
 
   return (
     <>
@@ -233,10 +280,18 @@ function EmployeePage() {
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      {/* <ModalAddCurrency
-        openModal={openModalAddCurrency}
-        toggleShowModal={toggleModalAddEmployee}
-      /> */}
+      {openModalAddEmployee && (
+        <ModalAddEmployee
+          openModal={openModalAddEmployee}
+          toggleShowModal={toggleModalAddEmployee}
+        />
+      )}
+      {openModalEditEmployee && (
+        <ModalEditEmployee
+          openModal={openModalEditEmployee}
+          toggleShowModal={toggleModalEditEmployee}
+        />
+      )}
     </>
   );
 }

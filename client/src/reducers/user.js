@@ -6,13 +6,13 @@ const initialState = {
         size: 10,
         where: {},
     },
-    userList: null,
+    userList: [],
     total: 0,
     currentPage: 1
 }
 
 export const userSlice = createSlice({
-    name: 'currency',
+    name: 'user',
     initialState,
     reducers: {
         setFilterData: (state, action) => {

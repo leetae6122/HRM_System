@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
 import Cookies from "universal-cookie";
 import "assets/styles/authPage.scss";
-
+import logoHrm from "assets/images/logo-app.jpg";
+import Swal from "sweetalert2";
 import LoginForm from "./components/LoginForm";
 import ForgotPasswordForm from "pages/AuthPage/components/ForgotPasswordForm";
 import ResetPasswordForm from "./components/ResetPasswordForm";
 import authApi from "api/authApi";
-import Swal from "sweetalert2";
+import { Col, Row } from "antd";
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -82,32 +83,41 @@ function AuthPage() {
   return (
     <>
       <div className="body-auth">
-        <Routes>
-          <Route
-            path="login"
-            element={
-              <LoginForm onSubmit={handleLogin} loading={loadingLogin} />
-            }
-          />
-          <Route
-            path="forgot-password"
-            element={
-              <ForgotPasswordForm
-                onSubmit={handleForgotPassword}
-                loading={loadingForgot}
+        <Row>
+          <Col className="gutter-row" span={24}>
+            <div className="logo">
+              <img src={logoHrm} alt="logo" />
+            </div>
+          </Col>
+          <Col className="gutter-row routes" span={24}>
+            <Routes>
+              <Route
+                path="login"
+                element={
+                  <LoginForm onSubmit={handleLogin} loading={loadingLogin} />
+                }
               />
-            }
-          />
-          <Route
-            path="reset-password"
-            element={
-              <ResetPasswordForm
-                onSubmit={handleResetPassword}
-                loading={loadingReset}
+              <Route
+                path="forgot-password"
+                element={
+                  <ForgotPasswordForm
+                    onSubmit={handleForgotPassword}
+                    loading={loadingForgot}
+                  />
+                }
               />
-            }
-          />
-        </Routes>
+              <Route
+                path="reset-password"
+                element={
+                  <ResetPasswordForm
+                    onSubmit={handleResetPassword}
+                    loading={loadingReset}
+                  />
+                }
+              />
+            </Routes>
+          </Col>
+        </Row>
       </div>
     </>
   );

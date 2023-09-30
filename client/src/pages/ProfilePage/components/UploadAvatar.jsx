@@ -1,72 +1,83 @@
 import React, { useState } from "react";
-import { message, Skeleton, Upload } from "antd";
+import { Upload } from "antd";
 import defaultAvatar from "assets/images/avatar-user.jpg";
+import employeeApi from "api/employeeApi";
+import { toast } from "react-toastify";
+import userApi from "api/userApi";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "reducers/auth";
+import { LoadingOutlined } from "@ant-design/icons";
 
-const getBase64 = (img, callback) => {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-};
-const beforeUpload = (file) => {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
-  }
-  return isJpgOrPng && isLt2M;
-};
-
-function UploadAvatar(props) {
+function UploadAvatar() {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(props.url);
 
-  const handleChange = (info) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
+  const checkFile = (file) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      toast.error("You can only upload JPG/PNG file!");
     }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      toast.error("Image must smaller than 2MB!");
     }
+    return isJpgOrPng && isLt2M;
   };
+
+  const beforeUpload = async (file) => {
+    if (!checkFile(file)) {
+      return true;
+    }
+    try {
+      setLoading(true);
+      await employeeApi.updateAvatar(file);
+      const data = (await userApi.getUserProfile()).data;
+      dispatch(login(data));
+      setLoading(false);
+    } catch (error) {
+      toast.error(error);
+    }
+    return false;
+  };
+
+  const uploadButton = (
+    <div>
+      <LoadingOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </div>
+  );
 
   return (
     <>
       <Upload.Dragger
         name="avatar"
-        listType="picture-circle"
+        listType="picture-card"
         className="avatar-uploader"
-        showUploadList={false}
-        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+        fileList={[]}
+        // showUploadList={false}
         beforeUpload={beforeUpload}
-        onChange={handleChange}
+        // onChange={handleChange}
+        style={{ width: "100%" }}
       >
-        {loading ? (
-          <Skeleton.Image
-            active
-            loading={loading}
-            style={{
-              width: 200,
-              height: 200,
-            }}
-          />
-        ) : (
+        {!loading ? (
           <img
-            src={imageUrl ? imageUrl : defaultAvatar}
+            src={user?.profile.avatarUrl ?? defaultAvatar}
             alt="avatar"
             style={{
               width: "100%",
               border: "1px solid #a1a1a1",
-              borderRadius: 5
+              borderRadius: 5,
             }}
           />
+        ) : (
+          uploadButton
         )}
       </Upload.Dragger>
     </>

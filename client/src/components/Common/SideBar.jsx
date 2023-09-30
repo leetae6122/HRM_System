@@ -33,12 +33,12 @@ function SideBar() {
 
   const items = [
     getItem(
-      <Link to={"/admin/dashboard"}>Dashboard</Link>,
+      <Link to={"/admin/dashboard"} replace>Dashboard</Link>,
       "/admin/dashboard",
       <PieChartOutlined />
     ),
     getItem(
-      <Link to={"/admin/user"}>User</Link>,
+      <Link to={"/admin/user"} replace>User</Link>,
       "/admin/user",
       <IdcardOutlined />
     ),
@@ -55,7 +55,7 @@ function SideBar() {
         "/admin/payroll/salary"
       ),
       getItem(
-        <Link to={"/admin/payroll/currency"}>Currency</Link>,
+        <Link to={"/admin/payroll/currency"} replace>Currency</Link>,
         "/admin/payroll/currency"
       ),
     ]),
@@ -76,7 +76,7 @@ function SideBar() {
       onCollapse={toggleCollapsed}
     >
       <div className="demo-logo-vertical">
-        <img src={logoHrm} alt="..." />
+        <img src={logoHrm} alt="logo" />
       </div>
       <Menu
         theme="dark"

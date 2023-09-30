@@ -35,7 +35,7 @@ function ProfileCard() {
         display: "block",
       }}
     >
-      <UploadAvatar url={profile.avatarUrl} />
+      <UploadAvatar />
       <Meta
         title={`${profile.firstName} ${profile.lastName}`}
         description={profile.positionData.name}

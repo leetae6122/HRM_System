@@ -29,7 +29,6 @@ function LoginForm(props) {
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Title level={1}>Login</Title>
       </div>
-
       <Form
         name="normal_login"
         className="login-form"

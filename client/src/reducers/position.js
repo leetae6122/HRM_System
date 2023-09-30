@@ -6,13 +6,14 @@ const initialState = {
         size: 10,
         where: {},
     },
-    positionList: null,
+    positionList: [],
     total: 0,
-    currentPage: 1
+    currentPage: 1,
+    editPositionId: null,
 }
 
 export const positionSlice = createSlice({
-    name: 'currency',
+    name: 'position',
     initialState,
     reducers: {
         setFilterData: (state, action) => {
@@ -30,8 +31,16 @@ export const positionSlice = createSlice({
             state.total = action.payload.total;
             state.currentPage = action.payload.currentPage;
         },
+        setEditPositionId: (state, action) => {
+            state.editPositionId = action.payload;
+        }
     },
 })
 
-export const { setFilterData, setData, setDefaultFilterData } = positionSlice.actions;
+export const { 
+    setFilterData, 
+    setData, 
+    setDefaultFilterData, 
+    setEditPositionId 
+} = positionSlice.actions;
 export default positionSlice.reducer;

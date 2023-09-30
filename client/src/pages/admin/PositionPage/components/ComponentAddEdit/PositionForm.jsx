@@ -5,24 +5,28 @@ import currencyApi from "api/currencyApi";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-FilterDrawerForm.propTypes = {
+PositionForm.propTypes = {
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
-  editPosition: PropTypes.object,
+  initialValues: PropTypes.object,
 };
 
-FilterDrawerForm.defaultProps = {
+PositionForm.defaultProps = {
   onCancel: null,
   onSubmit: null,
   loading: false,
-  editPosition: {},
+  initialValues: {
+    name: "",
+    minSalary: 0,
+    MaxSalary: null,
+  },
 };
 
 const wrapperCol = { offset: 8, span: 16 };
 
-function FilterDrawerForm(props) {
-  const { onCancel, onSubmit, loading, editPosition } = props;
+function PositionForm(props) {
+  const { onCancel, onSubmit, loading, initialValues } = props;
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
@@ -31,7 +35,7 @@ function FilterDrawerForm(props) {
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
       () => {
-        if (!_.isEqual(editPosition, values)) {
+        if (!_.isEqual(initialValues, values)) {
           setSubmittable(true);
         } else {
           setSubmittable(false);
@@ -39,7 +43,7 @@ function FilterDrawerForm(props) {
       },
       () => setSubmittable(false)
     );
-  }, [values, form, editPosition]);
+  }, [values, form, initialValues]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -63,17 +67,19 @@ function FilterDrawerForm(props) {
 
   const onFinish = (values) => {
     onSubmit(values);
+    form.resetFields();
   };
 
   const handleCancel = () => {
     onCancel();
+    form.resetFields();
   };
 
   return (
     <Form
-      name="normal_edit_position"
-      className="edit_position-form"
-      initialValues={editPosition}
+      name="normal_position"
+      className="position-form"
+      initialValues={initialValues}
       onFinish={onFinish}
       form={form}
       labelCol={{ span: 6 }}
@@ -83,10 +89,19 @@ function FilterDrawerForm(props) {
       }}
       size="large"
     >
-      <Form.Item name="positionId" label="Position Id">
-        <Input disabled={true} />
-      </Form.Item>
-      <Form.Item name="name" label="Name" hasFeedback>
+      {initialValues.positionId ? (
+        <Form.Item name="positionId" label="Position Id">
+          <Input disabled={true} />
+        </Form.Item>
+      ) : null}
+      <Form.Item
+        name="name"
+        label="Name"
+        hasFeedback
+        rules={[
+          { required: true, message: "Please input the name of the position!" },
+        ]}
+      >
         <Input
           placeholder="Enter position name"
           disabled={loading}
@@ -94,7 +109,12 @@ function FilterDrawerForm(props) {
           maxLength={60}
         />
       </Form.Item>
-      <Form.Item name="currencyId" label="Currency" hasFeedback>
+      <Form.Item
+        name="currencyId"
+        label="Currency"
+        hasFeedback
+        rules={[{ required: true, message: "Please select currency!" }]}
+      >
         <Select
           showSearch
           style={{
@@ -118,6 +138,7 @@ function FilterDrawerForm(props) {
         label="Min Salary"
         hasFeedback
         rules={[
+          { required: true, message: "Please input minimum salary!" },
           () => ({
             validator(_, value) {
               if (
@@ -145,7 +166,7 @@ function FilterDrawerForm(props) {
       <Form.Item
         name="maxSalary"
         label="Max Salary"
-        hasFeedback
+        hasFeedbac
         rules={[
           () => ({
             validator(_, value) {
@@ -163,13 +184,17 @@ function FilterDrawerForm(props) {
           style={{
             width: "100%",
           }}
+          min={0}
           disabled={loading}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: "right" }}>
+          <Button htmlType="button" onClick={handleCancel}>
+            Cancel
+          </Button>
           <Button type="primary" htmlType="submit" disabled={!submittable}>
-            Filter
+            {initialValues.positionId ? "Save" : "Add"}
           </Button>
         </Space>
       </Form.Item>
@@ -177,4 +202,4 @@ function FilterDrawerForm(props) {
   );
 }
 
-export default FilterDrawerForm;
+export default PositionForm;

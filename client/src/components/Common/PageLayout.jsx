@@ -56,7 +56,7 @@ function PageLayout() {
             textAlign: "center",
           }}
         >
-          Ant Design ©2023 Created by Ant UED
+          Human Resource Management System ©2023 Created by Le Duong Tri
         </Footer>
       </Layout>
     </Layout>

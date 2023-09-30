@@ -39,7 +39,7 @@ function ForgotPasswordForm(props) {
   return (
     <Card className="wrapper">
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <Title level={1}>Forgot Password</Title>
+        <Title level={2}>Forgot Password</Title>
       </div>
 
       <Form

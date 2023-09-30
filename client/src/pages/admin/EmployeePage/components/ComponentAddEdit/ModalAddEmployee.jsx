@@ -2,31 +2,31 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "antd";
 import Swal from "sweetalert2";
-import currencyApi from "api/currencyApi";
-import AddCurrencyForm from "./AddCurrencyForm";
 import { useDispatch } from "react-redux";
-import { setDefaultFilterData } from "reducers/currency";
+import { setDefaultFilterData } from "reducers/employee";
 import { toast } from "react-toastify";
+import EmployeeForm from "./EmployeeForm";
+import employeeApi from "api/employeeApi";
 
-ModalAddCurrency.propTypes = {
+ModalAddEmployee.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
 };
 
-ModalAddCurrency.defaultProps = {
+ModalAddEmployee.defaultProps = {
   openModal: false,
   toggleShowModal: null,
 };
 
-function ModalAddCurrency(props) {
+function ModalAddEmployee(props) {
   const dispatch = useDispatch();
   const { openModal, toggleShowModal } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  
-  const handleAddCurrency = async (values) => {
+
+  const handleAddEmployee = async (values) => {
     try {
       setConfirmLoading(true);
-      const response = await currencyApi.create(values);
+      const response = await employeeApi.create(values);
       Swal.fire({
         icon: "success",
         title: response.message,
@@ -52,19 +52,20 @@ function ModalAddCurrency(props) {
   return (
     <>
       <Modal
-        title="Add Currency"
+        title="Add Employee"
         open={openModal}
-        closable={false}
-        maskClosable={false}
+        onCancel={handleCancel}
         footer={null}
+        width={"100vh"}
+        style={{ top: 40 }}
       >
-        <AddCurrencyForm
+        <EmployeeForm
           onCancel={handleCancel}
-          onSubmit={handleAddCurrency}
+          onSubmit={handleAddEmployee}
           loading={confirmLoading}
         />
       </Modal>
     </>
   );
 }
-export default ModalAddCurrency;
+export default ModalAddEmployee;

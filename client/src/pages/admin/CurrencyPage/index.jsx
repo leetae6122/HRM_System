@@ -8,18 +8,17 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setData,
   setDefaultFilterData,
-  setEditIdCurrency,
+  setEditCurrencyId,
   setFilterData,
 } from "reducers/currency";
-import ModalAddCurrency from "./components/AddCurrency/ModalAddCurrency";
-import ModalEditCurrency from "./components/EditCurrency/ModalEditCurrency";
+import ModalAddCurrency from "./components/ComponentAddEdit/ModalAddCurrency";
+import ModalEditCurrency from "./components/ComponentAddEdit/ModalEditCurrency";
 import TableTitle from "./components/TableTitle";
 import Swal from "sweetalert2";
 
 const createColumns = (
   toggleModalEditCurrency,
-  handleDeleteCurrency,
-  dispatch
+  handleDeleteCurrency
 ) => [
   {
     title: "Id",
@@ -69,10 +68,7 @@ const createColumns = (
         <Button
           type="primary"
           icon={<EditFilled />}
-          onClick={() =>
-            dispatch(setEditIdCurrency(record.id)) &&
-            toggleModalEditCurrency(record)
-          }
+          onClick={() => toggleModalEditCurrency(record.id)}
         />
         <Button
           type="primary"
@@ -118,7 +114,8 @@ function CurrencyPage() {
     return () => controller.abort();
   }, [dispatch, filterData]);
 
-  const toggleModalEditCurrency = () => {
+  const toggleModalEditCurrency = (id) => {
+    dispatch(setEditCurrencyId(id));
     setOpenModalEditCurrency(!openModalEditCurrency);
   };
 
@@ -150,8 +147,7 @@ function CurrencyPage() {
 
   const columns = createColumns(
     toggleModalEditCurrency,
-    handleDeleteCurrency,
-    dispatch
+    handleDeleteCurrency
   );
 
   return (
