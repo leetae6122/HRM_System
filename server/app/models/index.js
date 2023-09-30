@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
+const createError = require('http-errors');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(path.join(__dirname, '../config/config.json'))[env];
@@ -49,9 +50,9 @@ const operatorsAliases = {
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], {operatorsAliases, ...config});
+  sequelize = new Sequelize(process.env[config.use_env_variable], { operatorsAliases, ...config });
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, {operatorsAliases, ...config});
+  sequelize = new Sequelize(config.database, config.username, config.password, { operatorsAliases, ...config });
 }
 fs
   .readdirSync(__dirname)
@@ -73,6 +74,17 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+
+sequelize.query = async function () {
+  return Sequelize.prototype.query.apply(this, arguments).catch(function (error) {
+    if (error.name === "SequelizeUniqueConstraintError") {
+      throw new createError(400, error.errors[0].message)
+    }
+    if (error.name === "SequelizeForeignKeyConstraintError") {
+      throw new createError(400, `This ${error.table} cannot be deleted`);
+    }
+  });
+};
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

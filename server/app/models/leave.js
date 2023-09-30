@@ -15,13 +15,13 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     Leave.init({
-        employeeId: DataTypes.UUID,
         title: DataTypes.STRING,
-        description: DataTypes.STRING,
-        status: DataTypes.BOOLEAN,
+        description: DataTypes.TEXT,
+        status: DataTypes.INTEGER,
         leaveFrom: DataTypes.DATE,
         leaveTo: DataTypes.DATE,
-        acceptBy: DataTypes.UUID
+        employeeId: DataTypes.UUID,
+        acceptBy: DataTypes.UUID,
     }, {
         sequelize,
         modelName: 'Leave',

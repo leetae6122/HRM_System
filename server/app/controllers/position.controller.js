@@ -9,9 +9,7 @@ exports.findById = async (req, res, next) => {
         }
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -20,9 +18,7 @@ exports.findAll = async (req, res, next) => {
         const data = await positionService.findAll();
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -31,44 +27,40 @@ exports.getListPosition = async (req, res, next) => {
         const data = await positionService.filterListPosition(req.body);
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
 exports.createPosition = async (req, res, next) => {
     try {
-        const positionExist = await positionService.findByPositionName(req.body.positionName);
-        if (positionExist) {
+        const positionExisted = await positionService.findByPositionName(req.body.name);
+        if (positionExisted) {
             return next(createError.BadRequest("Position already exists"));
         }
 
         const data = await positionService.createPosition(req.body);
-        return res.send({ data });
+        return res.send({ message: "Successfully added new position", data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
 exports.updatePosition = async (req, res, next) => {
     try {
+        const positionExisted = await positionService.findByPositionName(req.body.name);
+        if (positionExisted && positionExisted.id !== req.body.positionId) {
+            return next(createError.BadRequest("Position name already exists"));
+        }
+
         const foundPosition = await positionService.findById(req.body.positionId);
         if (!foundPosition) {
             return next(createError.BadRequest("Currency not found"));
-        }
-        if (foundPosition.positionName === req.body.positionName) {
-            return next(createError.BadRequest("Position already exists"));
         }
 
         await positionService.updatePosition(req.body.positionId, req.body);
         return res.send({ message: "Successful update" });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -81,7 +73,7 @@ exports.deletePosition = async (req, res, next) => {
         return res.send({ message: "Successful deletion" });
     } catch (error) {
         return next(
-            createError.BadRequest("Deletion cannot be performed with this position")
+            createError.BadRequest("This position cannot be deleted")
         );
     }
 }

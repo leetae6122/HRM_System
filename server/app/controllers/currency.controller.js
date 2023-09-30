@@ -9,9 +9,7 @@ exports.findById = async (req, res, next) => {
         }
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -20,56 +18,48 @@ exports.findAll = async (req, res, next) => {
         const data = await currencyService.findAll();
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
 exports.getListCurrency = async (req, res, next) => {
     try {
         const data = await currencyService.filterListCurrency(req.body);
-        return res.send({data});
+        return res.send({ data });
     } catch (error) {
-        console.log(error);
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
 exports.createCurrency = async (req, res, next) => {
     try {
-        const currencyExist = await currencyService.findByCurrencyCode(req.body.code);
-        if (currencyExist) {
+        const currencyExisted = await currencyService.findByCurrencyCode(req.body.code);
+        if (currencyExisted) {
             return next(createError.BadRequest("Currency code already exists"));
         }
 
         const data = await currencyService.createCurrency(req.body);
-        return res.send({message: "Successfully added new currency", data });
+        return res.send({ message: "Successfully added new currency", data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
 exports.updateCurrency = async (req, res, next) => {
     try {
+        const currencyExisted = await currencyService.findByCurrencyCode(req.body.code);
+        if (currencyExisted && currencyExisted.id !== req.body.currencyId) {
+            return next(createError.BadRequest("Currency code already exists"));
+        }
         const foundCurrency = await currencyService.findById(req.body.currencyId);
         if (!foundCurrency) {
             return next(createError.BadRequest("Currency not found"));
         }
-        // if (foundCurrency.code === req.body.code) {
-        //     return next(createError.BadRequest("Currency code already exists"));
-        // }
 
         await currencyService.updateCurrency(req.body.currencyId, req.body);
         return res.send({ message: "Successful update" });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -82,7 +72,7 @@ exports.deleteCurrency = async (req, res, next) => {
         return res.send({ message: "Successful deletion" });
     } catch (error) {
         return next(
-            createError.BadRequest("Deletion cannot be performed with this currency")
+            createError.BadRequest("This currency cannot be deleted")
         );
     }
 }

@@ -5,7 +5,7 @@ import {
     createPositionSchema,
     updatePositionSchema
 } from "../validations/position.validation";
-import { filterSchema } from '../validations/common.validation';
+import { filterSchema } from '../validations/filter.validation';
 
 const router = express.Router();
 

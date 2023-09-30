@@ -82,10 +82,13 @@ class UserService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
+        const modelWhere = body.modelWhere;
 
         const offset = (page - 1) * limit;
 
-        const { count, rows } = await db.User.scope('secret').findAndCountAll({
+        let count = 0;
+        let rows = [];
+        const data1 = await db.User.scope('secret').findAndCountAll({
             where,
             offset,
             limit,
@@ -93,6 +96,24 @@ class UserService {
             attributes,
             include: [{ model: db.Employee, as: 'profile' }]
         });
+
+        if (data1.count === 0) {
+            const data2 = await db.User.scope('secret').findAndCountAll({
+                where:{},
+                offset,
+                limit,
+                order,
+                attributes,
+                include: [{ model: db.Employee, as: 'profile', where: modelWhere }]
+            });
+            count = data2.count;
+            rows = data2.rows;
+        } else {
+            count = data1.count;
+            rows = data1.rows;
+        }
+
+
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;
         const prevPage = page - 1 < 1 ? null : page - 1;

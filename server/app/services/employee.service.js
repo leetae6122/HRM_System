@@ -51,7 +51,7 @@ class EmployeeService {
 
         const offset = (page - 1) * limit;
 
-        const {count, rows} = await db.Employee.findAndCountAll({
+        const { count, rows } = await db.Employee.findAndCountAll({
             where,
             offset,
             limit,
@@ -86,6 +86,16 @@ class EmployeeService {
                 where: { id },
             }
         );
+    }
+
+    async deleteEmployee(id) {
+        await db.Employee.destroy({
+            where: { id }
+        });
+    }
+    
+    getFileName(avatarUrl) {
+        return avatarUrl.slice(avatarUrl.indexOf('hrm_system'), avatarUrl.lastIndexOf('.'));
     }
 }
 

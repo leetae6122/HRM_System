@@ -5,7 +5,7 @@ import {
     createCurrencySchema,
     updateCurrencySchema
 } from "../validations/currency.validation";
-import { filterSchema } from "../validations/common.validation";
+import { filterSchema } from "../validations/filter.validation";
 
 const router = express.Router();
 

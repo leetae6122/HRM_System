@@ -10,9 +10,7 @@ exports.getUserProfile = async (req, res, next) => {
         }
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -24,9 +22,7 @@ exports.findById = async (req, res, next) => {
         }
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -35,9 +31,7 @@ exports.findAll = async (req, res, next) => {
         const data = await userService.findAll();
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -46,9 +40,7 @@ exports.getListUser = async (req, res, next) => {
         const data = await userService.filterListUser(req.body);
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -68,9 +60,7 @@ exports.createUser = async (req, res, next) => {
         const data = await userService.createUser(req.body);
         return res.send({ data });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -84,9 +74,7 @@ exports.updateUser = async (req, res, next) => {
         await userService.updateUser(req.body.userId, req.body);
         return res.send({ message: "Successful update" });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }
 
@@ -102,8 +90,6 @@ exports.changePassword = async (req, res, next) => {
         await userService.updateUser(req.user.id, { password: newPassword });
         return res.send({ message: "Successful update" });
     } catch (error) {
-        return next(
-            createError.InternalServerError(error.message)
-        );
+        return next(error);
     }
 }

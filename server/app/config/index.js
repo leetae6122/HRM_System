@@ -25,6 +25,11 @@ const config = {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASSWORD,
         from: process.env.MAIL_FROM
+    },
+    upload: {
+        name: process.env.CLOUDINARY_NAME,
+        key: process.env.CLOUDINARY_KEY,
+        secret: process.env.CLOUDINARY_SECRET,
     }
 };
 module.exports = config;

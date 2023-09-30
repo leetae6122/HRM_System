@@ -11,7 +11,7 @@ class PositionService {
 
     async findByPositionName(positionName) {
         const result = await db.Position.findOne({
-            where: { positionName },
+            where: { name: positionName },
             include: { model: db.Currency, as: 'currencyData' }
         });
         return result ? result.dataValues : result;
@@ -33,7 +33,7 @@ class PositionService {
 
         const offset = (page - 1) * limit;
 
-        const {count, rows} = await db.Position.findAndCountAll({
+        const { count, rows } = await db.Position.findAndCountAll({
             where,
             offset,
             limit,
