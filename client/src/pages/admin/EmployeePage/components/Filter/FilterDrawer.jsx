@@ -3,19 +3,21 @@ import { Drawer } from "antd";
 import PropTypes from "prop-types";
 
 FilterDrawer.propTypes = {
-  onFilter: PropTypes.func,
   toggleShowDrawer: PropTypes.func,
   openDrawer: PropTypes.bool,
 };
 
 FilterDrawer.defaultProps = {
-  onFilter: null,
   toggleShowDrawer: null,
   openDrawer: false,
 };
 
 function FilterDrawer(props) {
-  const { onFilter, toggleShowDrawer, openDrawer } = props;
+  const { toggleShowDrawer, openDrawer } = props;
+
+  const onFilter = (values) => {
+    console.log("filter", values);
+  };
 
   return (
     <Drawer

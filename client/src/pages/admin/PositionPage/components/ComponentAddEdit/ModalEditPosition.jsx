@@ -47,7 +47,7 @@ function ModalEditPosition(props) {
     fetchData();
     return () => controller.abort();
   }, [editPositionId]);
-  console.log(editPosition);
+
   const handleEditPosition = async (values) => {
     try {
       setConfirmLoading(true);

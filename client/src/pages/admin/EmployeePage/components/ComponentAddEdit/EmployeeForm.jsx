@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Form, Input, Button, Space, Col, DatePicker, Select, Row } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Space,
+  Col,
+  DatePicker,
+  Select,
+  Row,
+  Upload,
+} from "antd";
 import _ from "lodash";
 import positionApi from "api/positionApi";
 import { toast } from "react-toastify";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
 EmployeeForm.propTypes = {
   onCancel: PropTypes.func,
@@ -24,9 +35,21 @@ EmployeeForm.defaultProps = {
     gender: null,
     address: "",
     dateBirth: null,
-    hireDate: null,
+    dateHired: null,
     positionId: null,
   },
+};
+
+const checkFile = (file) => {
+  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+  if (!isJpgOrPng) {
+    toast.error("You can only upload JPG/PNG file!");
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    toast.error("Image must smaller than 2MB!");
+  }
+  return isJpgOrPng && isLt2M;
 };
 
 const dateFormat = "DD/MM/YYYY";
@@ -37,7 +60,10 @@ function EmployeeForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
   const [submittable, setSubmittable] = useState(false);
   const [positionOptions, setPositionOptions] = useState([]);
+  const [loadingUpload, setLoadingUpload] = useState(false);
+  const [imageUrl, setImageUrl] = useState(initialValues.avatarUrl);
   const [form] = Form.useForm();
+
   const values = Form.useWatch([], form);
 
   useEffect(() => {
@@ -71,15 +97,34 @@ function EmployeeForm(props) {
     return () => controller.abort();
   }, []);
 
+  const handleChange = (info) => {
+    if (!checkFile) return;
+    setLoadingUpload(true);
+    const src = URL.createObjectURL(info.file);
+    setImageUrl(src);
+    setLoadingUpload(false);
+  };
+
   const onFinish = (values) => {
     onSubmit(values);
-    form.resetFields();
   };
 
   const handleCancel = () => {
     onCancel();
-    form.resetFields();
   };
+
+  const UploadButton = () => (
+    <div>
+      {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </div>
+  );
 
   return (
     <Form
@@ -97,7 +142,7 @@ function EmployeeForm(props) {
     >
       <Row>
         {initialValues.employeeId ? (
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item
               name="employeeId"
               label="Currency Id"
@@ -108,13 +153,45 @@ function EmployeeForm(props) {
             </Form.Item>
           </Col>
         ) : null}
+        <Col span={initialValues.employeeId ? 12 : 24}>
+          <Form.Item
+            name="avatar"
+            label="Avatar"
+            valuePropName="file"
+            getValueFromEvent={(e) => e.file}
+          >
+            <Upload
+              name="avatar"
+              listType="picture-card"
+              showUploadList={false}
+              maxCount={1}
+              beforeUpload={() => false}
+              onChange={handleChange}
+            >
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="avatar"
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <UploadButton />
+              )}
+            </Upload>
+          </Form.Item>
+        </Col>
         <Col span={12}>
           <Form.Item
             name="firstName"
             label="First Name"
             rules={[{ required: true, message: "Please input first name!" }]}
           >
-            <Input placeholder="Enter first name" disabled={loading} />
+            <Input
+              placeholder="Enter first name"
+              disabled={loading}
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -123,7 +200,10 @@ function EmployeeForm(props) {
             label="Last Name"
             rules={[{ required: true, message: "Please input last name!" }]}
           >
-            <Input placeholder="Enter last name" disabled={loading} />
+            <Input
+              placeholder="Enter last name"
+              disabled={loading}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>
@@ -210,7 +290,7 @@ function EmployeeForm(props) {
         </Col>
         <Col span={11}>
           <Form.Item
-            name="hireDate"
+            name="dateHired"
             label="Date of hire"
             labelCol={{ span: 9 }}
             wrapperCol={{ span: 15 }}
@@ -246,6 +326,7 @@ function EmployeeForm(props) {
                   .localeCompare((optionB?.label ?? "").toLowerCase())
               }
               options={positionOptions}
+              disabled={loading}
             />
           </Form.Item>
         </Col>

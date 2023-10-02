@@ -3,48 +3,41 @@ import PropTypes from "prop-types";
 import { Modal } from "antd";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData } from "reducers/employee";
+import { setDefaultFilterData } from "reducers/position";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import EmployeeForm from "./EmployeeForm";
-import employeeApi from "api/employeeApi";
-import dayjs from "dayjs";
+import positionApi from "api/positionApi";
+import UserForm from "./UserForm";
 
-ModalEditEmployee.propTypes = {
+ModalEditUser.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
 };
 
-ModalEditEmployee.defaultProps = {
+ModalEditUser.defaultProps = {
   openModal: false,
   toggleShowModal: null,
 };
 
-function ModalEditEmployee(props) {
+function ModalEditUser(props) {
   const dispatch = useDispatch();
-  const { editEmployeeId } = useSelector((state) => state.employee);
+  const { editPositionId } = useSelector((state) => state.position);
   const { openModal, toggleShowModal } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [editEmployee, setEditEmployee] = useState({});
-
+  const [editPosition, setEditPosition] = useState({});
+  
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
-        if (editEmployeeId) {
-          const data = (await employeeApi.getById(editEmployeeId)).data;
-          setEditEmployee({
-            employeeId: data.id,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
-            gender: data.gender,
-            address: data.address,
-            dateBirth: dayjs(data.dateBirth),
-            dateHired: dayjs(data.dateHired),
-            avatarUrl: data.avatarUrl,
-            positionId: data.positionId,
+        if (editPositionId) {
+          const data = (await positionApi.getById(editPositionId)).data;
+          setEditPosition({
+            positionId: data.id,
+            name: data.name,
+            minSalary: data.minSalary,
+            maxSalary: data.maxSalary,
+            currencyId: data.currencyId,
           });
         }
       } catch (error) {
@@ -53,13 +46,13 @@ function ModalEditEmployee(props) {
     };
     fetchData();
     return () => controller.abort();
-  }, [editEmployeeId]);
+  }, [editPositionId]);
 
-  const handleEditEmployee = async (values) => {
+  const handleEditPosition = async (values) => {
     try {
       setConfirmLoading(true);
       const data = _.omitBy(values, _.isNil);
-      const response = await employeeApi.update(data);
+      const response = await positionApi.update(data);
       Swal.fire({
         icon: "success",
         title: response.message,
@@ -85,23 +78,22 @@ function ModalEditEmployee(props) {
   return (
     <>
       <Modal
-        title="Edit Employee"
+        title="Edit Position"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
         width={"100vh"}
-        style={{ top: 20 }}
       >
-        {!_.isEmpty(editEmployee) && (
-          <EmployeeForm
+        {!_.isEmpty(editPosition) && (
+          <UserForm
             onCancel={handleCancel}
-            onSubmit={handleEditEmployee}
+            onSubmit={handleEditPosition}
             loading={confirmLoading}
-            initialValues={editEmployee}
+            initialValues={editPosition}
           />
         )}
       </Modal>
     </>
   );
 }
-export default ModalEditEmployee;
+export default ModalEditUser;

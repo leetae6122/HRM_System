@@ -43,8 +43,8 @@ function ForgotPasswordForm(props) {
       </div>
 
       <Form
-        name="normal_login"
-        className="login-form"
+        name="normal_forgot_pass"
+        className="forgot-pass-form"
         initialValues={initialValues}
         onFinish={onSubmit}
         validateMessages={validateMessages}

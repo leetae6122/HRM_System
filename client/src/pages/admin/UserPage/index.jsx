@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Col, Divider, Row, Space, Table, Tag } from "antd";
+import { Badge, Button, Divider, Space, Table, Tag } from "antd";
 import userApi from "api/userApi";
 import { toast } from "react-toastify";
 import { getFullDate } from "utils/handleDate";
-import {
-  DeleteFilled,
-  EditFilled,
-  PlusCircleFilled,
-  ReloadOutlined,
-} from "@ant-design/icons";
-import { green, gold } from "@ant-design/colors";
-import Search from "antd/es/input/Search";
-import _ from "lodash";
+import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { setData, setDefaultFilterData, setFilterData } from "reducers/user";
+import {
+  setData,
+  setDefaultFilterData,
+  setEditUserId,
+  setFilterData,
+} from "reducers/user";
+import UserTableHeader from "./components/UserTableHeader";
+import ModalAddUser from "./components/ComponentAddEdit/ModalAddUser";
+import Swal from "sweetalert2";
 
-const columns = [
+const createColumns = (toggleModalEditUser, handleDeleteUser) => [
   {
     title: "Id",
     dataIndex: "id",
@@ -94,14 +94,14 @@ const columns = [
     onFilter: (value, record) => record.isActived === value,
   },
   {
-    title: "Create At",
+    title: "Date created",
     dataIndex: "createdAt",
     key: "createdAt",
     sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     render: (date) => getFullDate(date),
   },
   {
-    title: "Update At",
+    title: "Date update",
     dataIndex: "updatedAt",
     key: "updatedAt",
     sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
@@ -112,18 +112,21 @@ const columns = [
     key: "action",
     render: (_, record) => (
       <Space size="middle">
-        <Button type="primary" icon={<EditFilled />} />
-        <Button type="primary" danger icon={<DeleteFilled />} />
+        <Button
+          type="primary"
+          icon={<EditFilled />}
+          onClick={() => toggleModalEditUser(record.id)}
+        />
+        <Button
+          type="primary"
+          danger
+          icon={<DeleteFilled />}
+          onClick={() => handleDeleteUser(record.id)}
+        />
       </Space>
     ),
   },
 ];
-
-const defaultFilter = {
-  page: 1,
-  size: 10,
-  where: {},
-};
 
 function UserPage() {
   const dispatch = useDispatch();
@@ -131,12 +134,8 @@ function UserPage() {
     (state) => state.user
   );
   const [loadingData, setLoadingData] = useState(false);
-  const [loadingSearch, setLoadingSearch] = useState(false);
   const [openModalAddUser, setOpenModalAddUser] = useState(false);
-
-  const toggleModalAddUser = () => {
-    setOpenModalAddUser(!openModalAddUser);
-  };
+  const [openModalEditUser, setOpenModalEditUser] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -162,74 +161,49 @@ function UserPage() {
     return () => controller.abort();
   }, [dispatch, filterData]);
 
-  const handleSearch = (value) => {
-    setLoadingSearch(true);
-    dispatch(
-      setFilterData({
-        ...filterData,
-        where: {
-          username: { $like: `%${value}%` },
-        },
-        modelWhere: {
-          $or: _.flatten(
-            _.map(["firstName", "lastName", "email"], function (item) {
-              return _.map(value.split(" "), function (q) {
-                return { [item]: { $like: "%" + q + "%" } };
-              });
-            })
-          ),
-        },
+  const handleDeleteUser = async (userId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await userApi.delete(userId);
+          Swal.fire("Deleted!", "Currency has been deleted.", "success");
+          dispatch(setDefaultFilterData());
+        }
       })
-    );
-    setLoadingSearch(false);
+      .catch((error) => {
+        toast.error(error);
+      });
   };
 
-  const HeaderTable = () => {
-    return (
-      <Row>
-        <Col span={8}>
-          <Search
-            placeholder="Input search name or email or username"
-            allowClear
-            loading={loadingSearch}
-            enterButton
-            onSearch={handleSearch}
-          />
-        </Col>
-        <Col span={16}>
-          <Space style={{ float: "right" }}>
-            {!_.isEqual(filterData, defaultFilter) && (
-              <Button
-                type="primary"
-                icon={<ReloadOutlined />}
-                onClick={() => dispatch(setDefaultFilterData())}
-                style={{ backgroundColor: gold.primary }}
-              >
-                Reset
-              </Button>
-            )}
-            <Button
-              type="primary"
-              style={{ backgroundColor: green.primary }}
-              icon={<PlusCircleFilled />}
-              onClick={toggleModalAddUser}
-            >
-              Add User
-            </Button>
-          </Space>
-        </Col>
-      </Row>
-    );
+  const toggleModalAddUser = () => {
+    setOpenModalAddUser(!openModalAddUser);
   };
+
+  const toggleModalEditUser = (id) => {
+    dispatch(setEditUserId(id));
+    setOpenModalEditUser(!openModalEditUser);
+  };
+
+  const columns = createColumns(toggleModalEditUser, handleDeleteUser);
 
   return (
     <>
-      <Divider style={{ fontSize: 20 }}>User List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: "bold" }}>User List</Divider>
       <Table
         columns={columns}
         dataSource={userList}
         bordered
-        title={() => <HeaderTable />}
+        title={() => (
+          <UserTableHeader toggleModalAddUser={toggleModalAddUser} />
+        )}
         pagination={{
           total,
           current: currentPage,
@@ -247,10 +221,18 @@ function UserPage() {
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      {/* <ModalAddCurrency
-        openModal={openModalAddCurrency}
-        toggleShowModal={toggleModalAddUser}
-      /> */}
+      {openModalAddUser && (
+        <ModalAddUser
+          openModal={openModalAddUser}
+          toggleShowModal={toggleModalAddUser}
+        />
+      )}
+      {/* {openModalEditPosition && (
+        <ModalEditPosition
+          openModal={openModalEditPosition}
+          toggleShowModal={toggleModalEditPosition}
+        />
+      )} */}
     </>
   );
 }

@@ -51,7 +51,6 @@ function EditProfileForm(props) {
 
   const handleCancel = () => {
     onCancel();
-    form.resetFields();
   };
 
   return (

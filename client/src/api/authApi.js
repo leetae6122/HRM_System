@@ -25,8 +25,6 @@ const authApi = {
 
     resetPassword: (data) => {
         const url = '/auth/reset-password';
-        console.log(data);
-        
         return axiosClient.post(url, data);
     },
 }

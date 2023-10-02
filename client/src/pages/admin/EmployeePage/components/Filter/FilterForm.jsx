@@ -111,6 +111,7 @@ function FilterDrawerForm(props) {
               .localeCompare((optionB?.label ?? "").toLowerCase())
           }
           options={currencyOptions}
+          disabled={loading}
         />
       </Form.Item>
       <Form.Item

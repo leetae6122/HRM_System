@@ -1,8 +1,8 @@
 import React from "react";
 import { Card, List, Typography } from "antd";
-import UploadAvatar from "./UploadAvatar";
 import { useSelector } from "react-redux";
 import { getFullDate } from "utils/handleDate";
+import UploadAvatar from "./UploadAvatar";
 
 const { Meta } = Card;
 
@@ -12,14 +12,14 @@ const createData = (user) => [
     title: "Username",
     content: user.username,
   },
-  { title: "Office", content: user.officeData?.name},
+  { title: "Office", content: user.officeData?.name },
   {
     title: "Department",
     content: user.departmentData?.name,
   },
   {
     title: "Date of Job",
-    content: getFullDate(user.profile.hireDate),
+    content: getFullDate(user.profile.dateHired),
   },
 ];
 
@@ -37,8 +37,14 @@ function ProfileCard() {
     >
       <UploadAvatar />
       <Meta
-        title={`${profile.firstName} ${profile.lastName}`}
-        description={profile.positionData.name}
+        title={
+          <Typography.Title level={3}>
+            {profile.firstName} {profile.lastName}
+          </Typography.Title>
+        }
+        description={
+          <span style={{ fontSize: 16 }}>{profile.positionData.name}</span>
+        }
         style={{ textAlign: "center" }}
       />
       <hr style={{ borderTop: "1px solid #ccc" }} />

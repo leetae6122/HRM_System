@@ -61,9 +61,7 @@ function UploadAvatar() {
         listType="picture-card"
         className="avatar-uploader"
         fileList={[]}
-        // showUploadList={false}
         beforeUpload={beforeUpload}
-        // onChange={handleChange}
         style={{ width: "100%" }}
       >
         {!loading ? (

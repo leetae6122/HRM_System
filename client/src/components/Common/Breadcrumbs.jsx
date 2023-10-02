@@ -17,12 +17,12 @@ const Breadcrumbs = () => {
   }
   const breadcrumbItems = pathSnippets.map((snippet, index) => {
     const url = `/${pathSnippets.slice(0, index + 1).join("/")}`;
-    const title = snippet.replace(/-/g, " ");
+    // const title = snippet.replace(/-/g, " ");
 
     return {
       title: (
         <NavLink to={pathAdmin ? pathAdmin + url : url}>
-          {capitalizeChar(title)}
+          {capitalizeChar(snippet)}
         </NavLink>
       ),
     };
@@ -32,11 +32,12 @@ const Breadcrumbs = () => {
       <Row>
         <Col style={{ marginBlock: 4, fontWeight: "bold" }}>
           <Breadcrumb
+            style={{ fontSize: 18 }}
             items={[
               {
                 title: (
                   <NavLink to="/">
-                    <HomeOutlined />
+                    <HomeOutlined style={{fontSize: 18}}/>
                   </NavLink>
                 ),
               },

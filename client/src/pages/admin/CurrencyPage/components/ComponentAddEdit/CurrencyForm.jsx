@@ -44,12 +44,10 @@ function CurrencyForm(props) {
 
   const onFinish = (values) => {
     onSubmit(values);
-    form.resetFields();
   };
 
   const handleCancel = () => {
     onCancel();
-    form.resetFields();
   };
 
   return (

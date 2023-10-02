@@ -45,18 +45,18 @@ function SideBar() {
     getItem("Employee", "sub1", <UserOutlined />, [
       getItem(<Link to={"/admin/employee"}>Employee</Link>, "/admin/employee"),
       getItem(
-        <Link to={"/admin/employee/position"}>Position</Link>,
-        "/admin/employee/position"
+        <Link to={"/admin/position"}>Position</Link>,
+        "/admin/position"
       ),
     ]),
     getItem("Payroll", "sub2", <SolutionOutlined />, [
       getItem(
-        <Link to={"/admin/payroll/salary"}>Salary</Link>,
-        "/admin/payroll/salary"
+        <Link to={"/admin/salary"}>Salary</Link>,
+        "/admin/salary"
       ),
       getItem(
-        <Link to={"/admin/payroll/currency"} replace>Currency</Link>,
-        "/admin/payroll/currency"
+        <Link to={"/admin/currency"} replace>Currency</Link>,
+        "/admin/currency"
       ),
     ]),
     getItem("Organization", "sub3", <GlobalOutlined />, [

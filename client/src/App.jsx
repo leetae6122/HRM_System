@@ -56,20 +56,11 @@ function App() {
             >
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="user" element={<UserPage />} />
-              <Route path="employee">
-                <Route path="" element={<EmployeePage />} />
-                <Route path="position" element={<PositionPage />} />
-              </Route>
-              <Route path="payroll">
-                <Route path="salary" element={<div>Salary</div>} />
-                <Route path="currency" element={<CurrencyPage />} />
-              </Route>
+              <Route exact path="employee/*" element={<EmployeePage />}/>
+              <Route path="position" element={<PositionPage />} />
+              <Route path="salary" element={<div>Salary</div>} />
+              <Route path="currency" element={<CurrencyPage />} />
             </Route>
-            {/* <Route path="/admin/*" element={<RequireAuth>
-                  <PageLayout />
-                </RequireAuth>}>
-              <Route path="dashboard" element={<DashboardPage />} />
-            </Route> */}
             <Route path="*" element={<NotFound />} />
 
             <>

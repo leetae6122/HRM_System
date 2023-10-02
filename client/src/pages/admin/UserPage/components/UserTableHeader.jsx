@@ -4,16 +4,16 @@ import { Button, Col, Row, Space } from "antd";
 import { PlusCircleFilled, ReloadOutlined } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData, setFilterData } from "reducers/currency";
+import { setDefaultFilterData, setFilterData } from "reducers/position";
 import { gold, green } from "@ant-design/colors";
 import _ from "lodash";
 
-TableTitle.propTypes = {
-  toggleModalAddCurrency: PropTypes.func,
+UserTableHeader.propTypes = {
+  toggleModalAddUser: PropTypes.func,
 };
 
-TableTitle.defaultProps = {
-  toggleModalAddCurrency: null,
+UserTableHeader.defaultProps = {
+  toggleModalAddUser: null,
 };
 
 const defaultFilter = {
@@ -22,11 +22,11 @@ const defaultFilter = {
   where: {},
 };
 
-function TableTitle(props) {
-  const { toggleModalAddCurrency } = props;
+function UserTableHeader(props) {
+  const { toggleModalAddUser } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData } = useSelector((state) => state.currency);
+  const { filterData } = useSelector((state) => state.position);
 
   const handleSearch = (value) => {
     setLoadingSearch(true);
@@ -35,13 +35,18 @@ function TableTitle(props) {
         ...filterData,
         where: {
           $or: [
-            {
-              name: { $like: `%${value}%` },
-            },
-            {
-              code: { $like: `%${value}%` },
-            },
+            { id: { $like: `%${value}%` } },
+            { username: { $like: `%${value}%` } },
           ],
+        },
+        modelWhere: {
+          $or: _.flatten(
+            _.map(["firstName", "lastName", "email"], function (item) {
+              return _.map(value.split(" "), function (q) {
+                return { [item]: { $like: "%" + q + "%" } };
+              });
+            })
+          ),
         },
       })
     );
@@ -50,16 +55,16 @@ function TableTitle(props) {
 
   return (
     <Row>
-      <Col span={8}>
+      <Col span={10}>
         <Search
-          placeholder="Input search name or code"
+          placeholder="Input search id, name, email or username"
           allowClear
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}
         />
       </Col>
-      <Col span={16}>
+      <Col span={14}>
         <Space style={{ float: "right" }}>
           {!_.isEqual(filterData, defaultFilter) && (
             <Button
@@ -75,9 +80,9 @@ function TableTitle(props) {
             type="primary"
             style={{ backgroundColor: green.primary }}
             icon={<PlusCircleFilled />}
-            onClick={toggleModalAddCurrency}
+            onClick={toggleModalAddUser}
           >
-            Add Currency
+            Add User
           </Button>
         </Space>
       </Col>
@@ -85,4 +90,4 @@ function TableTitle(props) {
   );
 }
 
-export default TableTitle;
+export default UserTableHeader;

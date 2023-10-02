@@ -13,7 +13,7 @@ import {
 } from "reducers/currency";
 import ModalAddCurrency from "./components/ComponentAddEdit/ModalAddCurrency";
 import ModalEditCurrency from "./components/ComponentAddEdit/ModalEditCurrency";
-import TableTitle from "./components/TableTitle";
+import CurrencyTableHeader from "./components/CurrencyTableHeader";
 import Swal from "sweetalert2";
 
 const createColumns = (
@@ -47,14 +47,14 @@ const createColumns = (
     sorter: (a, b) => a.symbol.localeCompare(b.symbol),
   },
   {
-    title: "Create At",
+    title: "Date created",
     dataIndex: "createdAt",
     key: "createdAt",
     sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     render: (date) => getFullDate(date),
   },
   {
-    title: "Update At",
+    title: "Date update",
     dataIndex: "updatedAt",
     key: "updatedAt",
     sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
@@ -152,13 +152,13 @@ function CurrencyPage() {
 
   return (
     <>
-      <Divider style={{ fontSize: 20 }}>Currency List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: "bold" }}>Currency List</Divider>
       <Table
         columns={columns}
         dataSource={currencyList}
         bordered
         title={() => (
-          <TableTitle toggleModalAddCurrency={toggleModalAddCurrency} />
+          <CurrencyTableHeader toggleModalAddCurrency={toggleModalAddCurrency} />
         )}
         pagination={{
           total,

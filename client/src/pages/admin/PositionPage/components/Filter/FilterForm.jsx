@@ -5,28 +5,24 @@ import currencyApi from "api/currencyApi";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-PositionForm.propTypes = {
+FilterDrawerForm.propTypes = {
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
-  initialValues: PropTypes.object,
+  editPosition: PropTypes.object,
 };
 
-PositionForm.defaultProps = {
+FilterDrawerForm.defaultProps = {
   onCancel: null,
   onSubmit: null,
   loading: false,
-  initialValues: {
-    name: "",
-    minSalary: 0,
-    MaxSalary: null,
-  },
+  editPosition: {},
 };
 
 const wrapperCol = { offset: 8, span: 16 };
 
-function PositionForm(props) {
-  const { onCancel, onSubmit, loading, initialValues } = props;
+function FilterDrawerForm(props) {
+  const { onCancel, onSubmit, loading, editPosition } = props;
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
@@ -35,7 +31,7 @@ function PositionForm(props) {
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
       () => {
-        if (!_.isEqual(initialValues, values)) {
+        if (!_.isEqual(editPosition, values)) {
           setSubmittable(true);
         } else {
           setSubmittable(false);
@@ -43,7 +39,7 @@ function PositionForm(props) {
       },
       () => setSubmittable(false)
     );
-  }, [values, form, initialValues]);
+  }, [values, form, editPosition]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -75,9 +71,9 @@ function PositionForm(props) {
 
   return (
     <Form
-      name="normal_position"
-      className="position-form"
-      initialValues={initialValues}
+      name="normal_edit_position"
+      className="edit_position-form"
+      initialValues={editPosition}
       onFinish={onFinish}
       form={form}
       labelCol={{ span: 6 }}
@@ -87,19 +83,10 @@ function PositionForm(props) {
       }}
       size="large"
     >
-      {initialValues.positionId ? (
-        <Form.Item name="positionId" label="Position Id">
-          <Input disabled={true} />
-        </Form.Item>
-      ) : null}
-      <Form.Item
-        name="name"
-        label="Name"
-        hasFeedback
-        rules={[
-          { required: true, message: "Please input the name of the position!" },
-        ]}
-      >
+      <Form.Item name="positionId" label="Position Id">
+        <Input disabled={true} />
+      </Form.Item>
+      <Form.Item name="name" label="Name" hasFeedback>
         <Input
           placeholder="Enter position name"
           disabled={loading}
@@ -107,12 +94,7 @@ function PositionForm(props) {
           maxLength={60}
         />
       </Form.Item>
-      <Form.Item
-        name="currencyId"
-        label="Currency"
-        hasFeedback
-        rules={[{ required: true, message: "Please select currency!" }]}
-      >
+      <Form.Item name="currencyId" label="Currency" hasFeedback>
         <Select
           showSearch
           style={{
@@ -137,7 +119,6 @@ function PositionForm(props) {
         label="Min Salary"
         hasFeedback
         rules={[
-          { required: true, message: "Please input minimum salary!" },
           () => ({
             validator(_, value) {
               if (
@@ -165,7 +146,7 @@ function PositionForm(props) {
       <Form.Item
         name="maxSalary"
         label="Max Salary"
-        hasFeedbac
+        hasFeedback
         rules={[
           () => ({
             validator(_, value) {
@@ -183,17 +164,13 @@ function PositionForm(props) {
           style={{
             width: "100%",
           }}
-          min={0}
           disabled={loading}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: "right" }}>
-          <Button htmlType="button" onClick={handleCancel}>
-            Cancel
-          </Button>
           <Button type="primary" htmlType="submit" disabled={!submittable}>
-            {initialValues.positionId ? "Save" : "Add"}
+            Filter
           </Button>
         </Space>
       </Form.Item>
@@ -201,4 +178,4 @@ function PositionForm(props) {
   );
 }
 
-export default PositionForm;
+export default FilterDrawerForm;
