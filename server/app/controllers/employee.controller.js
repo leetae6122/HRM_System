@@ -36,6 +36,18 @@ exports.findAll = async (req, res, next) => {
     }
 }
 
+exports.getEmployeeNotHaveUser = async (req, res, next) => {
+    try {
+        const data = await employeeService.getEmployeeNotHaveUser();
+        return res.send({ data });
+    } catch (error) {
+        return next(
+            createError.InternalServerError("An error occurred while retrieving the employees")
+        );
+    }
+}
+
+
 exports.getListEmployee = async (req, res, next) => {
     try {
         const data = await employeeService.filterListEmployee(req.body);
@@ -47,16 +59,21 @@ exports.getListEmployee = async (req, res, next) => {
 
 exports.createEmployee = async (req, res, next) => {
     try {
-        const { email } = req.body;
-        const foundEmail = await employeeService.findByEmail(email);
-        if (foundEmail) {
-            return next(
-                createError.BadRequest("Email already exists")
-            );
+        await employeeService.checkEmailExisted(req.body.email, next);
+        await employeeService.checkPhoneNumberExisted(req.body.phoneNumber, next);
+        let payload = {
+            ...req.body,
+            addedBy: req.user.employeeId
         }
-
-        const data = await employeeService.createEmployee(req.body);
-        return res.send({message: "Successfully added employee", data });
+        const fileData = req.file;
+        if (fileData) {
+            payload = {
+                ...payload,
+                avatarUrl: fileData.path,
+            }
+        }
+        const data = await employeeService.createEmployee(payload);
+        return res.send({ message: "Successfully added employee", data });
     } catch (error) {
         return next(
             createError.InternalServerError("An error occurred while retrieving the employees")
@@ -66,12 +83,36 @@ exports.createEmployee = async (req, res, next) => {
 
 exports.updateEmployee = async (req, res, next) => {
     try {
-        const employeeId = req.body.employeeId
-            ? req.body.employeeId
-            : req.user.employeeId;
-        if (req.body.employeeId) delete req.body.employeeId;
+        const employee = await employeeService.findById(req.body.employeeId);
+        if (!employee) {
+            return next(
+                createError.NotFound("Employee not found")
+            );
+        }
+        if (employee.email !== req.body.email) {
+            await employeeService.checkEmailExisted(req.body.email, next);
+        }
+        if (employee.phoneNumber !== req.body.phoneNumber) {
+            await employeeService.checkPhoneNumberExisted(req.body.phoneNumber, next);
+        }
 
-        await employeeService.updateEmployee(employeeId, req.body);
+        let payload = {
+            ...req.body,
+            addedBy: req.user.employeeId
+        }
+
+        const fileData = req.file;
+        if (fileData) {
+            payload = {
+                ...payload,
+                avatarUrl: fileData.path,
+            }
+            if (employee.avatarUrl) {
+                cloudinary.uploader.destroy(employeeService.getFileName(employee.avatarUrl));
+            }
+        }
+
+        await employeeService.updateEmployee(req.body.employeeId, payload);
         return res.send({ message: "Successfully update employee profiles" });
     } catch (error) {
         return next(
@@ -90,6 +131,24 @@ exports.deleteEmployee = async (req, res, next) => {
     } catch (error) {
         return next(
             createError.BadRequest("Deletion cannot be performed with this employee")
+        );
+    }
+}
+
+exports.updateProfile = async (req, res, next) => {
+    try {
+        const employee = await employeeService.findById(req.user.employeeId);
+        if (!employee) {
+            return next(
+                createError.NotFound("Employee not found")
+            );
+        }
+
+        await employeeService.updateEmployee(req.user.employeeId, req.body);
+        return res.send({ message: "Successfully update employee profiles" });
+    } catch (error) {
+        return next(
+            createError.InternalServerError("An error occurred while retrieving the employees")
         );
     }
 }

@@ -1,4 +1,5 @@
 import db from "../models/index";
+import createError from 'http-errors';
 
 class EmployeeService {
     async findById(id) {
@@ -26,6 +27,14 @@ class EmployeeService {
         return result ? result.dataValues : result;
     }
 
+    async findByPhoneNumber(phoneNumber) {
+        const result = await db.Employee.findOne({
+            where: { phoneNumber },
+            include: [{ model: db.User.scope('secret'), as: 'userData' }]
+        });
+        return result ? result.dataValues : result;
+    }
+
     async findAll() {
         const result = await db.Employee.findAll({
             include: [
@@ -39,6 +48,16 @@ class EmployeeService {
                 },
             ]
         });
+        return result;
+    }
+
+    async getEmployeeNotHaveUser() {
+        const data = await db.Employee.findAll({
+            include: [
+                { model: db.User.scope('secret'), as: 'userData' },
+            ]
+        });
+        const result = data.filter((employee) => employee.userData === null);
         return result;
     }
 
@@ -93,7 +112,25 @@ class EmployeeService {
             where: { id }
         });
     }
-    
+
+    async checkEmailExisted(email, next) {
+        const emailExist = await this.findByEmail(email);
+        if (emailExist) {
+            return next(
+                createError.BadRequest("Email already exists")
+            );
+        }
+    }
+
+    async checkPhoneNumberExisted(phoneNumber, next) {
+        const phoneNumberExist = await this.findByPhoneNumber(phoneNumber);
+        if (phoneNumberExist) {
+            return next(
+                createError.BadRequest("Phone number already exists")
+            );
+        }
+    }
+
     getFileName(avatarUrl) {
         return avatarUrl.slice(avatarUrl.indexOf('hrm_system'), avatarUrl.lastIndexOf('.'));
     }

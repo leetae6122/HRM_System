@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             // Employee.hasMany(models.Leave, { foreignKey: 'employeeId', as: 'employeeData' });
             // Employee.hasMany(models.Leave, { foreignKey: 'acceptBy', as: 'accepterData' });
             Employee.belongsTo(models.Position, {foreignKey: 'positionId', as: 'positionData'});
+            Employee.belongsTo(models.Employee, { foreignKey: 'addedBy', as: 'adderData' });
         }
     }
     Employee.init({
@@ -30,10 +31,12 @@ module.exports = (sequelize, DataTypes) => {
         gender: DataTypes.BOOLEAN,
         address: DataTypes.TEXT,
         dateBirth: DataTypes.DATE,
-        hireDate: DataTypes.DATE,
+        dateHired: DataTypes.DATE,
+        dateOff: DataTypes.DATE,
         avatarUrl: DataTypes.STRING,
         positionId: DataTypes.INTEGER,
         // departmentId: DataTypes.INTEGER
+        addedBy: DataTypes.UUID,
     }, {
         sequelize,
         modelName: 'Employee',

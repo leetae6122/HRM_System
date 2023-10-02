@@ -58,7 +58,7 @@ exports.createUser = async (req, res, next) => {
         }
 
         const data = await userService.createUser(req.body);
-        return res.send({ data });
+        return res.send({ message: "Successfully added employee", data });
     } catch (error) {
         return next(error);
     }
@@ -75,6 +75,20 @@ exports.updateUser = async (req, res, next) => {
         return res.send({ message: "Successful update" });
     } catch (error) {
         return next(error);
+    }
+}
+
+exports.deleteUser = async (req, res, next) => {
+    try {
+        if (!req.params.id && Number(req.params.id)) {
+            return next(createError.BadRequest("UserId cannot be empty"));
+        }
+        await userService.deleteUser(req.params.id);
+        return res.send({ message: "Successful deletion" });
+    } catch (error) {
+        return next(
+            createError.BadRequest("This user cannot be deleted")
+        );
     }
 }
 

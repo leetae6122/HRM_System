@@ -25,6 +25,7 @@ module.exports = {
       phoneNumber: {
         allowNull: false,
         type: Sequelize.STRING(11),
+        unique: true,
       },
       gender: {
         allowNull: false,
@@ -34,10 +35,14 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       dateBirth: {
+        allowNull: false,
         type: Sequelize.DATEONLY,
       },
-      hireDate: {
+      dateHired: {
         allowNull: false,
+        type: Sequelize.DATEONLY,
+      },
+      dateOff: {
         type: Sequelize.DATEONLY,
       },
       avatarUrl: {
@@ -58,6 +63,13 @@ module.exports = {
       //       key: 'id'
       //     }
       //   },
+      addedBy: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'Employee',
+          key: 'id',
+        },
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

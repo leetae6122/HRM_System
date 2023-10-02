@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
         leaveFrom: DataTypes.DATE,
         leaveTo: DataTypes.DATE,
         employeeId: DataTypes.UUID,
-        acceptBy: DataTypes.UUID,
+        handledBy: DataTypes.UUID,
+        reasonRejection: DataTypes.TEXT,
     }, {
         sequelize,
         modelName: 'Leave',

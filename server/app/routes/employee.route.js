@@ -14,19 +14,22 @@ const router = express.Router();
 
 router.route("/")
     .get(employeeController.findProfileById)
-    .patch(validation(updateEmployeeSchema), employeeController.updateEmployee)
+    .patch(validation(updateEmployeeSchema), employeeController.updateProfile)
 
 router.route("/avatar")
-    .put(verifyAdminOrSelf, uploadCloud.single('user-avatar'), employeeController.updateAvatar)
+    .put(verifyAdminOrSelf, uploadCloud.single('avatar'), employeeController.updateAvatar)
 
 router.route("/admin")
     .all(verifyAdmin)
     .get(employeeController.findAll)
-    .post(validation(adminCreateEmployeeSchema), employeeController.createEmployee)
-    .patch(validation(adminUpdateEmployeeSchema), employeeController.updateEmployee)
+    .post(uploadCloud.single('avatar'), validation(adminCreateEmployeeSchema), employeeController.createEmployee)
+    .patch(uploadCloud.single('avatar'), validation(adminUpdateEmployeeSchema), employeeController.updateEmployee)
 
 router.route("/admin/filter")
     .post(verifyAdmin, validation(filterSchema), employeeController.getListEmployee)
+
+router.route("/admin/not-have-user")
+    .get(verifyAdmin, employeeController.getEmployeeNotHaveUser)
 
 router.route("/:id")
     .get(verifyAdminOrSelf, employeeController.findProfileById)

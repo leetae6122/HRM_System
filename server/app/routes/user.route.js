@@ -25,8 +25,9 @@ router.route("/admin")
 
 router.route("/admin/:id")
     .all(verifyAdmin)
+    .delete(userController.deleteUser)
     .get(userController.findById)
-
+    
 router.route("/admin/filter")
     .post(verifyAdmin, validation(userFilterSchema), userController.getListUser)
 

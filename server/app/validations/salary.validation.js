@@ -8,4 +8,12 @@ const createSalarySchema = Joi.object({
     employeeId: Joi.string().required()
 });
 
-module.exports = { createSalarySchema };
+const updateSalarySchema = Joi.object({
+    salaryId: Joi.number().integer().required(),
+    basicSalary: Joi.string().min(0).optional(),
+    allowance: Joi.string().min(0).optional(),
+    totalSalary: Joi.string().min(0).optional(),
+    currencyId: Joi.number().integer().optional(),
+}).required().min(1);
+
+module.exports = { createSalarySchema, updateSalarySchema };

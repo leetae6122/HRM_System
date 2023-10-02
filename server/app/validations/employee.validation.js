@@ -11,7 +11,8 @@ const adminCreateEmployeeSchema = Joi.object({
     gender: Joi.boolean().truthy('male').falsy('female').required(),
     address: Joi.string().required(),
     dateBirth: Joi.date().less('now').required(),
-    hireDate: Joi.date().max('now'),
+    dateHired: Joi.date().max('now'),
+    avatar: Joi.any().optional(),
     positionId: Joi.number().integer().required(),
 });
 
@@ -30,7 +31,9 @@ const adminUpdateEmployeeSchema = updateEmployeeSchema.keys({
     lastName: Joi.string().max(80).optional(),
     email: Joi.string().email({ minDomainSegments: 2 }).max(100).optional(),
     gender: Joi.boolean().truthy('male').falsy('female').optional(),
-    hireDate: Joi.date().max('now').optional(),
+    dateHired: Joi.date().max('now').optional(),
+    dateOff: Joi.date().allow(null).optional(),
+    avatar: Joi.any().optional(),
     positionId: Joi.number().integer().optional()
 }).required().min(1);
 
