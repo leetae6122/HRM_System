@@ -23,6 +23,7 @@ const useAuth = () => {
   return isAuth;
 };
 
+// eslint-disable-next-line react/prop-types
 function AdminAuth({ redirectPath, children }) {
   const isAuth = useAuth();
 

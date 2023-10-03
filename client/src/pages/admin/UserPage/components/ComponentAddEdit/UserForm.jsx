@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Form, Input, Button, Space, Select, Switch, Row, Col } from "antd";
-import { toast } from "react-toastify";
-import _ from "lodash";
-import employeeApi from "api/employeeApi";
-import { LockOutlined } from "@ant-design/icons";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Form, Input, Button, Space, Select, Switch, Row, Col } from 'antd';
+import { toast } from 'react-toastify';
+import _ from 'lodash';
+import employeeApi from 'api/employeeApi';
+import { LockOutlined } from '@ant-design/icons';
 
 UserForm.propTypes = {
   onCancel: PropTypes.func,
@@ -18,8 +18,8 @@ UserForm.defaultProps = {
   onSubmit: null,
   loading: false,
   initialValues: {
-    username: "",
-    password: "",
+    username: '',
+    password: '',
     isAdmin: null,
     isActived: null,
     employeeId: null,
@@ -32,8 +32,9 @@ function UserForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
   const [employeeOptions, setEmployeeOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState();
   const [isChangePass, setIsChangePass] = useState(
-    initialValues.userId ? false : true
+    initialValues.userId ? false : true,
   );
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
@@ -47,7 +48,7 @@ function UserForm(props) {
           setSubmittable(false);
         }
       },
-      () => setSubmittable(false)
+      () => setSubmittable(false),
     );
   }, [values, form, initialValues]);
 
@@ -69,6 +70,18 @@ function UserForm(props) {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchData = async () => {
+      if (initialValues.employeeId) {
+        const data = (await employeeApi.getById(initialValues.employeeId)).data;
+        setSelectedEmployee(data);
+      }
+    };
+    fetchData();
+    return () => controller.abort();
+  }, [initialValues.employeeId]);
+
   const onFinish = (values) => {
     onSubmit(values);
   };
@@ -79,8 +92,8 @@ function UserForm(props) {
 
   const onEmployeeChange = (value) => {
     const findEmployee = employeeOptions.find((item) => item.value === value);
-    const data = _.lowerCase(findEmployee.label).replace(/\s/g, ".");
-    form.setFieldValue("username", data);
+    const data = _.lowerCase(findEmployee.label).replace(/\s/g, '.');
+    form.setFieldValue('username', data);
   };
 
   return (
@@ -103,30 +116,33 @@ function UserForm(props) {
         </Form.Item>
       ) : null}
       {initialValues.userId ? (
-        <Form.Item name="employeeId" label="Employee Id">
-          <Input disabled={true} />
+        <Form.Item label="Employee">
+          <Input
+            disabled={true}
+            value={`${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`}
+          />
         </Form.Item>
       ) : (
         <Form.Item
           name="employeeId"
           label="Employee"
           hasFeedback
-          rules={[{ required: true, message: "Please select employee!" }]}
+          rules={[{ required: true, message: 'Please select employee!' }]}
         >
           <Select
             showSearch
             style={{
-              width: "100%",
+              width: '100%',
             }}
             placeholder="Search to Select"
             optionFilterProp="children"
             filterOption={(input, option) =>
-              (option?.label ?? "").includes(input)
+              (option?.label ?? '').includes(input)
             }
             filterSort={(optionA, optionB) =>
-              (optionA?.label ?? "")
+              (optionA?.label ?? '')
                 .toLowerCase()
-                .localeCompare((optionB?.label ?? "").toLowerCase())
+                .localeCompare((optionB?.label ?? '').toLowerCase())
             }
             options={employeeOptions}
             onChange={onEmployeeChange}
@@ -142,7 +158,7 @@ function UserForm(props) {
         rules={[
           {
             required: true,
-            message: "Please input the username of the employee!",
+            message: 'Please input the username of the employee!',
           },
         ]}
       >
@@ -172,14 +188,14 @@ function UserForm(props) {
             rules={[
               {
                 required: true,
-                message: "Please input the password of the employee!",
+                message: 'Please input the password of the employee!',
               },
               {
                 pattern: new RegExp(
-                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
+                  '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$',
                 ),
                 message:
-                  "Password must contain at least one lowercase letter, uppercase letter, number, and special character",
+                  'Password must contain at least one lowercase letter, uppercase letter, number, and special character',
               },
             ]}
           >
@@ -199,17 +215,17 @@ function UserForm(props) {
             rules={[
               {
                 required: true,
-                message: "Please confirm password!",
+                message: 'Please confirm password!',
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
+                  if (!value || getFieldValue('password') === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
                     new Error(
-                      "The confirm password that you entered do not match!"
-                    )
+                      'The confirm password that you entered do not match!',
+                    ),
                   );
                 },
               }),
@@ -237,12 +253,12 @@ function UserForm(props) {
         </Col>
       </Row>
       <Form.Item wrapperCol={wrapperCol}>
-        <Space style={{ float: "right" }}>
+        <Space style={{ float: 'right' }}>
           <Button htmlType="button" onClick={handleCancel}>
             Cancel
           </Button>
           <Button type="primary" htmlType="submit" disabled={!submittable}>
-            {initialValues.positionId ? "Save" : "Add"}
+            {initialValues.positionId ? 'Save' : 'Add'}
           </Button>
         </Space>
       </Form.Item>

@@ -33,7 +33,7 @@ function EmployeeDetailPage(props) {
     fetchData();
     return () => controller.abort();
   }, [params]);
-  console.log(employee);
+
   return (
     <>
       {!loading && !_.isEmpty(employee) && (

@@ -3,6 +3,7 @@ import authReducer from 'reducers/auth';
 import currencyReducer from 'reducers/currency';
 import employeeReducer from 'reducers/employee';
 import positionReducer from 'reducers/position';
+import salaryReducer from 'reducers/salary';
 import userReducer from 'reducers/user';
 
 const rootReducer = {
@@ -11,6 +12,7 @@ const rootReducer = {
     user: userReducer,
     employee: employeeReducer,
     position: positionReducer,
+    salary: salaryReducer
 }
 
 const store = configureStore({

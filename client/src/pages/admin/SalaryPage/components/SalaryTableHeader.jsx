@@ -1,19 +1,25 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Col, Row, Space } from "antd";
-import { PlusCircleFilled, ReloadOutlined } from "@ant-design/icons";
+import {
+  FilterFilled,
+  PlusCircleFilled,
+  ReloadOutlined,
+} from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData, setFilterData } from "reducers/position";
+import { setDefaultFilterData, setFilterData } from "reducers/salary";
 import { gold, green } from "@ant-design/colors";
 import _ from "lodash";
 
-UserTableHeader.propTypes = {
-  toggleModalAddUser: PropTypes.func,
+SalaryTableHeader.propTypes = {
+  toggleModalAddSalary: PropTypes.func,
+  toggleShowFilterDrawer: PropTypes.func,
 };
 
-UserTableHeader.defaultProps = {
-  toggleModalAddUser: null,
+SalaryTableHeader.defaultProps = {
+  toggleModalAddSalary: null,
+  toggleShowFilterDrawer: null,
 };
 
 const defaultFilter = {
@@ -22,11 +28,11 @@ const defaultFilter = {
   where: {},
 };
 
-function UserTableHeader(props) {
-  const { toggleModalAddUser } = props;
+function SalaryTableHeader(props) {
+  const { toggleModalAddSalary, toggleShowFilterDrawer } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData } = useSelector((state) => state.position);
+  const { filterData } = useSelector((state) => state.salary);
   const [inputValue, setInputValue] = useState("");
 
   const handleSearch = (value) => {
@@ -37,7 +43,6 @@ function UserTableHeader(props) {
         where: {
           $or: [
             { id: { $like: `%${value}%` } },
-            { username: { $like: `%${value}%` } },
           ],
         },
         employeeWhere: {
@@ -63,7 +68,7 @@ function UserTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search id, name, email or username"
+          placeholder="Input search employee name or salary id"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}
@@ -87,9 +92,16 @@ function UserTableHeader(props) {
             type="primary"
             style={{ backgroundColor: green.primary }}
             icon={<PlusCircleFilled />}
-            onClick={toggleModalAddUser}
+            onClick={toggleModalAddSalary}
           >
-            Add User
+            Add Salary
+          </Button>
+          <Button
+            type="primary"
+            icon={<FilterFilled />}
+            onClick={toggleShowFilterDrawer}
+          >
+            Filter
           </Button>
         </Space>
       </Col>
@@ -97,4 +109,4 @@ function UserTableHeader(props) {
   );
 }
 
-export default UserTableHeader;
+export default SalaryTableHeader;

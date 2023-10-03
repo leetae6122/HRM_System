@@ -186,10 +186,10 @@ function EmployeeForm(props) {
         </Col>
         {initialValues.employeeId ? (
           <Col span={12}>
-            <Form.Item name="dateOff" label="Date of off">
+            <Form.Item name="dateOff" label="Days off work">
               <DatePicker
                 disabled={loading}
-                placeholder="Enter date of off"
+                placeholder="Enter days off work"
                 format={dateFormat}
               />
             </Form.Item>

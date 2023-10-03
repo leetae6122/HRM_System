@@ -1,14 +1,14 @@
-
 import { Card, List, Typography } from "antd";
 import defaultAvatar from "assets/images/avatar-user.jpg";
+import PropTypes from "prop-types";
 
 const { Meta } = Card;
 
 const createData = (employee) => [
-  // {
-  //   title: "Status",
-  //   content: (employee.userData.isActived ? "Actived" : "Not actived") ?? "",
-  // },
+  {
+    title: "Status",
+    content: (employee.dateOff ? "Retired from work" : "Working") ?? "",
+  },
   {
     title: "Username",
     content: employee.userData?.username ?? "",
@@ -19,6 +19,16 @@ const createData = (employee) => [
     content: employee?.phoneNumber,
   },
 ];
+
+ProfileCard.propTypes = {
+  employee: PropTypes.object,
+  loading: PropTypes.bool,
+};
+
+ProfileCard.defaultProps = {
+  employee: {},
+  loading: false,
+};
 
 function ProfileCard(props) {
   const { employee, loading } = props;
@@ -43,12 +53,12 @@ function ProfileCard(props) {
       />
       <Meta
         title={
-          <Typography.Title level={3}>
+          <Typography.Title level={4}>
             {employee.firstName} {employee.lastName}
           </Typography.Title>
         }
         description={
-          <span style={{ fontSize: 16 }}>{employee.positionData.name}</span>
+          <span style={{ fontSize: 15 }}>{employee.positionData.name}</span>
         }
         style={{ textAlign: "center" }}
       />

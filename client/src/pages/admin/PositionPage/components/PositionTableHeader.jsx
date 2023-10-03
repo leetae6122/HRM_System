@@ -33,6 +33,7 @@ function PositionTableHeader(props) {
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData } = useSelector((state) => state.position);
+  const [inputValue, setInputValue] = useState("");
 
   const handleSearch = (value) => {
     setLoadingSearch(true);
@@ -47,15 +48,21 @@ function PositionTableHeader(props) {
     setLoadingSearch(false);
   };
 
+  const resetFilter = () => {
+    dispatch(setDefaultFilterData());
+    setInputValue("");
+  };
+
   return (
     <Row>
       <Col span={10}>
         <Search
           placeholder="Input search name"
-          allowClear
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
         />
       </Col>
       <Col span={14}>
@@ -64,7 +71,7 @@ function PositionTableHeader(props) {
             <Button
               type="primary"
               icon={<ReloadOutlined />}
-              onClick={() => dispatch(setDefaultFilterData())}
+              onClick={resetFilter}
               style={{ backgroundColor: gold.primary }}
             >
               Reset

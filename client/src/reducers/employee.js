@@ -4,7 +4,16 @@ const initialState = {
     filterData: {
         page: 1,
         size: 10,
-        where: {},
+        where: {
+            dateOff: { $is: null }
+        },
+    },
+    defaultFilter: {
+        page: 1,
+        size: 10,
+        where: {
+            dateOff: { $is: null }
+        },
     },
     employeeList: [],
     total: 0,
@@ -20,11 +29,7 @@ export const employeeSlice = createSlice({
             state.filterData = action.payload;
         },
         setDefaultFilterData: (state) => {
-            state.filterData = {
-                page: 1,
-                size: 10,
-                where: {},
-            };
+            state.filterData = state.defaultFilter;
         },
         setData: (state, action) => {
             state.employeeList = action.payload.employeeList;
@@ -38,9 +43,9 @@ export const employeeSlice = createSlice({
 })
 
 export const {
-    setFilterData, 
-    setData, 
-    setDefaultFilterData, 
+    setFilterData,
+    setData,
+    setDefaultFilterData,
     setEditEmployeeId
 } = employeeSlice.actions;
 export default employeeSlice.reducer;

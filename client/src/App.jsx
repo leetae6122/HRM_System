@@ -13,6 +13,7 @@ import CurrencyPage from "pages/admin/CurrencyPage";
 import PositionPage from "pages/admin/PositionPage";
 import ProfilePage from "pages/ProfilePage";
 import EmployeePage from "pages/admin/EmployeePage";
+import SalaryPage from "pages/admin/SalaryPage";
 
 const AuthPage = React.lazy(() => import("pages/AuthPage"));
 const PageLayout = React.lazy(() => import("components/Common/PageLayout"));
@@ -56,9 +57,9 @@ function App() {
             >
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="user" element={<UserPage />} />
-              <Route exact path="employee/*" element={<EmployeePage />}/>
+              <Route exact path="employee/*" element={<EmployeePage />} />
               <Route path="position" element={<PositionPage />} />
-              <Route path="salary" element={<div>Salary</div>} />
+              <Route path="salary" element={<SalaryPage />} />
               <Route path="currency" element={<CurrencyPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />

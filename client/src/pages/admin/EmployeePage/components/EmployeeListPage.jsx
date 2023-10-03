@@ -91,13 +91,6 @@ const createColumns = (
     render: (date) => getFullDate(date),
   },
   {
-    title: "Date of Job",
-    dataIndex: "dateHired",
-    key: "dateHired",
-    sorter: (a, b) => new Date(a.dateHired) - new Date(b.dateHired),
-    render: (date) => getFullDate(date),
-  },
-  {
     title: "Action",
     key: "action",
     width: 145,

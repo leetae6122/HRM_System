@@ -32,12 +32,12 @@ const Breadcrumbs = () => {
       <Row>
         <Col style={{ marginBlock: 4, fontWeight: "bold" }}>
           <Breadcrumb
-            style={{ fontSize: 18 }}
+            style={{ fontSize: 16 }}
             items={[
               {
                 title: (
                   <NavLink to="/">
-                    <HomeOutlined style={{fontSize: 18}}/>
+                    <HomeOutlined style={{fontSize: 16}}/>
                   </NavLink>
                 ),
               },

@@ -1,4 +1,3 @@
-
 import { Button, Card, Col, Descriptions, Row } from "antd";
 import { getFullDate } from "utils/handleDate";
 import { EditFilled } from "@ant-design/icons";

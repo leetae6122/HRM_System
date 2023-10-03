@@ -18,6 +18,10 @@ const employeeApi = {
         const url = '/employee/admin/not-have-user';
         return axiosClient.get(url);
     },
+    getEmployeeNotHaveSalary: () => {
+        const url = '/employee/admin/not-have-salary';
+        return axiosClient.get(url);
+    },
     updatePersonal: (data) => {
         const url = '/employee';
         return axiosClient.patch(url, data);
