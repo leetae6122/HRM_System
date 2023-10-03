@@ -14,6 +14,7 @@ import {
 import UserTableHeader from "./components/UserTableHeader";
 import ModalAddUser from "./components/ComponentAddEdit/ModalAddUser";
 import Swal from "sweetalert2";
+import ModalEditUser from "./components/ComponentAddEdit/ModalEditUser";
 
 const createColumns = (toggleModalEditUser, handleDeleteUser) => [
   {
@@ -227,12 +228,12 @@ function UserPage() {
           toggleShowModal={toggleModalAddUser}
         />
       )}
-      {/* {openModalEditPosition && (
-        <ModalEditPosition
-          openModal={openModalEditPosition}
-          toggleShowModal={toggleModalEditPosition}
+      {openModalEditUser && (
+        <ModalEditUser
+          openModal={openModalEditUser}
+          toggleShowModal={toggleModalEditUser}
         />
-      )} */}
+      )}
     </>
   );
 }

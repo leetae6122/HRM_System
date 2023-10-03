@@ -37,6 +37,8 @@ EmployeeForm.defaultProps = {
     dateBirth: null,
     dateHired: null,
     positionId: null,
+    dateOff: null,
+    avatar: null,
   },
 };
 
@@ -61,7 +63,7 @@ function EmployeeForm(props) {
   const [submittable, setSubmittable] = useState(false);
   const [positionOptions, setPositionOptions] = useState([]);
   const [loadingUpload, setLoadingUpload] = useState(false);
-  const [imageUrl, setImageUrl] = useState(initialValues.avatarUrl);
+  const [imageUrl, setImageUrl] = useState(initialValues.avatar);
   const [form] = Form.useForm();
 
   const values = Form.useWatch([], form);
@@ -142,7 +144,7 @@ function EmployeeForm(props) {
     >
       <Row>
         {initialValues.employeeId ? (
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               name="employeeId"
               label="Currency Id"
@@ -182,16 +184,24 @@ function EmployeeForm(props) {
             </Upload>
           </Form.Item>
         </Col>
+        {initialValues.employeeId ? (
+          <Col span={12}>
+            <Form.Item name="dateOff" label="Date of off">
+              <DatePicker
+                disabled={loading}
+                placeholder="Enter date of off"
+                format={dateFormat}
+              />
+            </Form.Item>
+          </Col>
+        ) : null}
         <Col span={12}>
           <Form.Item
             name="firstName"
             label="First Name"
             rules={[{ required: true, message: "Please input first name!" }]}
           >
-            <Input
-              placeholder="Enter first name"
-              disabled={loading}
-            />
+            <Input placeholder="Enter first name" disabled={loading} />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -200,10 +210,7 @@ function EmployeeForm(props) {
             label="Last Name"
             rules={[{ required: true, message: "Please input last name!" }]}
           >
-            <Input
-              placeholder="Enter last name"
-              disabled={loading}
-            />
+            <Input placeholder="Enter last name" disabled={loading} />
           </Form.Item>
         </Col>
         <Col span={24}>

@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { Modal } from "antd";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData } from "reducers/position";
+import { setDefaultFilterData } from "reducers/user";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import positionApi from "api/positionApi";
 import UserForm from "./UserForm";
+import userApi from "api/userApi";
 
 ModalEditUser.propTypes = {
   openModal: PropTypes.bool,
@@ -21,23 +21,24 @@ ModalEditUser.defaultProps = {
 
 function ModalEditUser(props) {
   const dispatch = useDispatch();
-  const { editPositionId } = useSelector((state) => state.position);
+  const { editUserId } = useSelector((state) => state.user);
   const { openModal, toggleShowModal } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [editPosition, setEditPosition] = useState({});
+  const [editUser, setEditUser] = useState({});
   
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
-        if (editPositionId) {
-          const data = (await positionApi.getById(editPositionId)).data;
-          setEditPosition({
-            positionId: data.id,
-            name: data.name,
-            minSalary: data.minSalary,
-            maxSalary: data.maxSalary,
-            currencyId: data.currencyId,
+        if (editUserId) {
+          const data = (await userApi.getById(editUserId)).data;
+          setEditUser({
+            userId: data.id,
+            username: data.username,
+            password: data.password,
+            isAdmin: data.isAdmin,
+            isActived: data.isActived,
+            employeeId: data.employeeId,
           });
         }
       } catch (error) {
@@ -46,13 +47,13 @@ function ModalEditUser(props) {
     };
     fetchData();
     return () => controller.abort();
-  }, [editPositionId]);
+  }, [editUserId]);
 
-  const handleEditPosition = async (values) => {
+  const handleEditUser = async (values) => {
     try {
       setConfirmLoading(true);
       const data = _.omitBy(values, _.isNil);
-      const response = await positionApi.update(data);
+      const response = await userApi.update(data);
       Swal.fire({
         icon: "success",
         title: response.message,
@@ -78,18 +79,18 @@ function ModalEditUser(props) {
   return (
     <>
       <Modal
-        title="Edit Position"
+        title="Edit User"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
         width={"100vh"}
       >
-        {!_.isEmpty(editPosition) && (
+        {!_.isEmpty(editUser) && (
           <UserForm
             onCancel={handleCancel}
-            onSubmit={handleEditPosition}
+            onSubmit={handleEditUser}
             loading={confirmLoading}
-            initialValues={editPosition}
+            initialValues={editUser}
           />
         )}
       </Modal>

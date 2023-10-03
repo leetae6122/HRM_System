@@ -43,7 +43,8 @@ function ModalEditEmployee(props) {
             address: data.address,
             dateBirth: dayjs(data.dateBirth),
             dateHired: dayjs(data.dateHired),
-            avatarUrl: data.avatarUrl,
+            dateOff: data.dateOff ? dayjs(data.dateOff) : null,
+            avatar: data.avatarUrl,
             positionId: data.positionId,
           });
         }

@@ -32,6 +32,9 @@ function UserForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
   const [employeeOptions, setEmployeeOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
+  const [isChangePass, setIsChangePass] = useState(
+    initialValues.userId ? false : true
+  );
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
 
@@ -99,32 +102,39 @@ function UserForm(props) {
           <Input disabled={true} />
         </Form.Item>
       ) : null}
-      <Form.Item
-        name="employeeId"
-        label="Employee"
-        hasFeedback
-        rules={[{ required: true, message: "Please select employee!" }]}
-      >
-        <Select
-          showSearch
-          style={{
-            width: "100%",
-          }}
-          placeholder="Search to Select"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            (option?.label ?? "").includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? "")
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? "").toLowerCase())
-          }
-          options={employeeOptions}
-          onChange={onEmployeeChange}
-          disabled={loading}
-        />
-      </Form.Item>
+      {initialValues.userId ? (
+        <Form.Item name="employeeId" label="Employee Id">
+          <Input disabled={true} />
+        </Form.Item>
+      ) : (
+        <Form.Item
+          name="employeeId"
+          label="Employee"
+          hasFeedback
+          rules={[{ required: true, message: "Please select employee!" }]}
+        >
+          <Select
+            showSearch
+            style={{
+              width: "100%",
+            }}
+            placeholder="Search to Select"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? "").includes(input)
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            options={employeeOptions}
+            onChange={onEmployeeChange}
+            disabled={loading}
+          />
+        </Form.Item>
+      )}
+
       <Form.Item
         name="username"
         label="Username"
@@ -143,61 +153,77 @@ function UserForm(props) {
           maxLength={100}
         />
       </Form.Item>
-      <Form.Item
-        name="password"
-        label="Password"
-        hasFeedback
-        rules={[
-          {
-            required: true,
-            message: "Please input the password of the employee!",
-          },
-          {
-            pattern: new RegExp(
-              "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
-            ),
-            message:
-              "Password must contain at least one lowercase letter, uppercase letter, number, and special character",
-          },
-        ]}
-      >
-        <Input.Password
-          size="large"
-          prefix={<LockOutlined className="site-form-item-icon" />}
-          placeholder="Enter password"
-          disabled={loading}
-          showCount
-          maxLength={100}
-        />
-      </Form.Item>
-      <Form.Item
-        name="confirmPassword"
-        label="Confirm Password"
-        hasFeedback
-        rules={[
-          {
-            required: true,
-            message: "Please confirm password!",
-          },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue("password") === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(
-                new Error("The confirm password that you entered do not match!")
-              );
-            },
-          }),
-        ]}
-      >
-        <Input.Password
-          size="large"
-          prefix={<LockOutlined className="site-form-item-icon" />}
-          placeholder="Enter your confirm password"
-          disabled={loading}
-        />
-      </Form.Item>
+      {initialValues.userId ? (
+        <Form.Item label="Change Password" valuePropName="checked">
+          <Switch
+            disabled={loading}
+            checked={isChangePass}
+            onClick={() => setIsChangePass(!isChangePass)}
+          />
+        </Form.Item>
+      ) : null}
+
+      {isChangePass ? (
+        <>
+          <Form.Item
+            name="password"
+            label="Password"
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: "Please input the password of the employee!",
+              },
+              {
+                pattern: new RegExp(
+                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
+                ),
+                message:
+                  "Password must contain at least one lowercase letter, uppercase letter, number, and special character",
+              },
+            ]}
+          >
+            <Input.Password
+              size="large"
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              placeholder="Enter password"
+              disabled={loading}
+              showCount
+              maxLength={100}
+            />
+          </Form.Item>
+          <Form.Item
+            name="confirmPassword"
+            label="Confirm Password"
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: "Please confirm password!",
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error(
+                      "The confirm password that you entered do not match!"
+                    )
+                  );
+                },
+              }),
+            ]}
+          >
+            <Input.Password
+              size="large"
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              placeholder="Enter your confirm password"
+              disabled={loading}
+            />
+          </Form.Item>
+        </>
+      ) : null}
       <Row justify="center">
         <Col span={8}>
           <Form.Item name="isAdmin" label="Admin" valuePropName="checked">

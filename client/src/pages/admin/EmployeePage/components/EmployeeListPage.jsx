@@ -1,5 +1,6 @@
 import { Button, Divider, Space, Table } from "antd";
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import EmployeeTableHeader from "./EmployeeTableHeader";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,7 +37,7 @@ const createColumns = (
       <img
         src={value ? value : defaultAvatar}
         alt="avatar"
-        style={{ width: 70 }}
+        style={{ width: "100%" }}
       />
     ),
   },
@@ -123,6 +124,14 @@ const createColumns = (
     ),
   },
 ];
+
+EmployeeListPage.propTypes = {
+  toggleModalEditEmployee: PropTypes.func,
+};
+
+EmployeeListPage.defaultProps = {
+  toggleModalEditEmployee: null,
+};
 
 function EmployeeListPage(props) {
   const navigator = useNavigate();
