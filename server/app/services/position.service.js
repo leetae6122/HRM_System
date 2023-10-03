@@ -12,7 +12,6 @@ class PositionService {
     async findByPositionName(positionName) {
         const result = await db.Position.findOne({
             where: { name: positionName },
-            include: { model: db.Currency, as: 'currencyData' }
         });
         return result ? result.dataValues : result;
     }

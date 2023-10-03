@@ -61,6 +61,16 @@ class EmployeeService {
         return result;
     }
 
+    async getEmployeeNotHaveSalary() {
+        const data = await db.Employee.findAll({
+            include: [
+                { model: db.Salary, as: 'salaryData' },
+            ]
+        });
+        const result = data.filter((employee) => employee.salaryData === null);
+        return result;
+    }
+
     async filterListEmployee(body) {
         const page = body.page || 1;
         const limit = body.size || 10;

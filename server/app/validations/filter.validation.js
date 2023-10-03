@@ -8,9 +8,9 @@ const filterSchema = Joi.object().keys({
     order: Joi.array().items(Joi.array().items(Joi.string())).default([]).optional(),
 }).required().min(1);
 
-const userFilterSchema = filterSchema.keys({
-    modelWhere: Joi.object().default({}),
+const modelEmployeeFilterSchema = filterSchema.keys({
+    employeeWhere: Joi.object().default({}),
 });
 
 
-module.exports = { filterSchema, userFilterSchema };
+module.exports = { filterSchema, modelEmployeeFilterSchema };

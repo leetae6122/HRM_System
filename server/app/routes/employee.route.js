@@ -28,8 +28,12 @@ router.route("/admin")
 router.route("/admin/filter")
     .post(verifyAdmin, validation(filterSchema), employeeController.getListEmployee)
 
+router.route("/admin/not-have-salary")
+    .get(verifyAdmin, employeeController.getEmployeeNotHaveSalary)
+
 router.route("/admin/not-have-user")
     .get(verifyAdmin, employeeController.getEmployeeNotHaveUser)
+
 
 router.route("/:id")
     .get(verifyAdminOrSelf, employeeController.findProfileById)

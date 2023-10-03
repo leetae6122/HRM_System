@@ -29,8 +29,7 @@ const adminUpdateUserSchema = Joi.object({
         .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'))
         .optional(),
     isAdmin: Joi.boolean().optional(),
-    isActived: Joi.boolean().optional(),
-    employeeId: Joi.string().optional()
+    isActived: Joi.boolean().optional()
 }).required().min(1);
 
 

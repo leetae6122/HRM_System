@@ -82,7 +82,7 @@ class UserService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const modelWhere = body.modelWhere;
+        const employeeWhere = body.employeeWhere;
 
         const offset = (page - 1) * limit;
 
@@ -104,7 +104,7 @@ class UserService {
                 limit,
                 order,
                 attributes,
-                include: [{ model: db.Employee, as: 'profile', where: modelWhere }]
+                include: [{ model: db.Employee, as: 'profile', where: employeeWhere }]
             });
             count = data2.count;
             rows = data2.rows;

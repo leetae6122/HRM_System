@@ -7,7 +7,7 @@ import {
     adminUpdateUserSchema,
     changPasswordSchema
 } from './../validations/user.validation';
-import { userFilterSchema } from '../validations/filter.validation';
+import { modelEmployeeFilterSchema } from '../validations/filter.validation';
 
 const router = express.Router();
 
@@ -29,6 +29,6 @@ router.route("/admin/:id")
     .get(userController.findById)
     
 router.route("/admin/filter")
-    .post(verifyAdmin, validation(userFilterSchema), userController.getListUser)
+    .post(verifyAdmin, validation(modelEmployeeFilterSchema), userController.getListUser)
 
 module.exports = router;

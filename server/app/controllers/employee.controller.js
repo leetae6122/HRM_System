@@ -47,6 +47,17 @@ exports.getEmployeeNotHaveUser = async (req, res, next) => {
     }
 }
 
+exports.getEmployeeNotHaveSalary = async (req, res, next) => {
+    try {
+        const data = await employeeService.getEmployeeNotHaveSalary();
+        return res.send({ data });
+    } catch (error) {
+        return next(
+            createError.InternalServerError("An error occurred while retrieving the employees")
+        );
+    }
+}
+
 
 exports.getListEmployee = async (req, res, next) => {
     try {
