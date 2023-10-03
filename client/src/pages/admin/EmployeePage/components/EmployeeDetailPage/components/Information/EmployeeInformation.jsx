@@ -1,65 +1,67 @@
-import { Card, Descriptions } from "antd";
-import { getFullDate } from "utils/handleDate";
-import { numberWithDot } from "utils/format";
-import dayjs from "dayjs";
-import PropTypes from "prop-types";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { now } from "lodash";
+import { Card, Descriptions } from 'antd';
+import { getFullDate } from 'utils/handleDate';
+import { numberWithDot } from 'utils/format';
+import dayjs from 'dayjs';
+import PropTypes from 'prop-types';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { now } from 'lodash';
+import { calcDate } from 'utils/handleDate';
 
 dayjs.extend(relativeTime);
 
 const labelStyle = {
-  fontWeight: "bold",
-  color: "grey",
+  fontWeight: 'bold',
+  color: 'grey',
 };
 const createItems = (employee) => [
   {
-    key: "1",
+    key: '1',
     label: <span style={labelStyle}>Employee Id</span>,
     children: employee.id,
   },
   {
-    key: "2",
+    key: '2',
     label: <span style={labelStyle}>Date Hired</span>,
-    children: `${getFullDate(employee.dateHired)} ( ${dayjs(
-      employee.dateHired
-    ).to(employee.dateOff ?? new Date(now()))} )`,
+    children: `${getFullDate(employee.dateHired)} ( ${calcDate(
+      employee.dateHired,
+      now(),
+    )} )`,
   },
   {
-    key: "3",
+    key: '3',
     label: <span style={labelStyle}>Days off work</span>,
     children: employee.dateOff ? getFullDate(employee.dateOff) : '',
   },
   {
-    key: "4",
+    key: '4',
     label: <span style={labelStyle}>Department</span>,
     children: employee.departmentData?.name,
   },
   {
-    key: "5",
+    key: '5',
     label: <span style={labelStyle}>Position</span>,
     children: employee.positionData.name,
   },
   {
-    key: "6",
+    key: '6',
     label: <span style={labelStyle}>Office</span>,
     children: employee.officeData?.title,
   },
   {
-    key: "7",
+    key: '7',
     label: <span style={labelStyle}>Office Location</span>,
     children: employee.officeData
       ? `${employee.officeData.streetAddress}, ${employee.officeData.city}, ${employee.officeData.stateProvince}`
-      : "",
+      : '',
   },
   {
-    key: "8",
+    key: '8',
     label: <span style={labelStyle}>Salary</span>,
     children: employee.salaryData
       ? `${numberWithDot(employee.salaryData.totalSalary)} ${
           employee.salaryData.currencyData.code
         }`
-      : "",
+      : '',
   },
 ];
 
