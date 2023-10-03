@@ -1,5 +1,5 @@
 import { Card } from "antd";
-import React from "react";
+
 import PropTypes from "prop-types";
 
 QualityCard.propTypes = {

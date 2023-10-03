@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Upload } from "antd";
 import { toast } from "react-toastify";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";

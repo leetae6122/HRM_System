@@ -6,7 +6,7 @@ const authApi = {
         return axiosClient.post(url, data);
     },
 
-    logout: (data) => {
+    logout: () => {
         const url = '/auth/logout';
         return axiosClient.post(url);
     },

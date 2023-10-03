@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Card, Table, Tag, Typography } from "antd";
 const columns = [
   {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Form, Input, Button, Space, InputNumber, Select } from "antd";
 import currencyApi from "api/currencyApi";

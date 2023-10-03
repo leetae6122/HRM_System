@@ -25,8 +25,7 @@ const useAuth = () => {
   useEffect(() => {
     const controller = new AbortController();
     const checkToken = async () => {
-      try {
-        const accessToken = cookies.get("access_token");
+      const accessToken = cookies.get("access_token");
         const refreshToken = cookies.get("refresh_token");
 
         if (accessToken) {
@@ -55,9 +54,6 @@ const useAuth = () => {
         }
 
         setIsAuth(false);
-      } catch (error) {
-        throw error;
-      }
     };
     checkToken();
     return () => controller.abort();

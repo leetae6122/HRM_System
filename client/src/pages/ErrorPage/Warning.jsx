@@ -1,7 +1,16 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import { Button, Result } from "antd";
+
+Warning.propTypes = {
+  title: PropTypes.string,
+};
+
+Warning.defaultProps = {
+  title: '',
+};
+
 
 const Warning = (props) => {
   const navigate = useNavigate();

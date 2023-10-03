@@ -1,6 +1,6 @@
 // import { useDispatch, useSelector } from "react-redux";
 // import { addNewHobby, setActiveHobby } from "../../actions/hobby";
-// import HobbyList from "../../components/HomePage/HobbList/HobbList";
+// import HobbyList from "../.components/HomePage/HobbList/HobbList";
 
 // const randomNumber = () => {
 //   return 1000 + Math.trunc(Math.floor(Math.random() * 9000));

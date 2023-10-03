@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Avatar, Button, Dropdown, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,6 +15,7 @@ import { logout } from "reducers/auth";
 import Cookies from "universal-cookie";
 import ModalChangePassword from "./components/ModalChangePassword";
 import { toast } from "react-toastify";
+
 
 const cookies = new Cookies();
 

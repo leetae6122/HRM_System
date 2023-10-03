@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Divider, Space, Table } from "antd";
 import currencyApi from "api/currencyApi";
 import { toast } from "react-toastify";

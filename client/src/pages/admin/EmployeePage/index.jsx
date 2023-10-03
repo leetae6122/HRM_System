@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { Route, Routes } from "react-router-dom";
 import { setEditEmployeeId } from "reducers/employee";
 import ModalEditEmployee from "./components/ComponentAddEdit/ModalEditEmployee";
-import { Route, Routes } from "react-router-dom";
 import EmployeeListPage from "./components/EmployeeListPage";
 import EmployeeDetailPage from "./components/EmployeeDetailPage";
 

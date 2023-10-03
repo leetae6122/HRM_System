@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Card, List, Typography } from "antd";
 import defaultAvatar from "assets/images/avatar-user.jpg";
 

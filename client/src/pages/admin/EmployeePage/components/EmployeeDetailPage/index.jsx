@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Row, Space } from "antd";
 import ProfileCard from "./components/ProfileCard";
 import PersonalInformation from "./components/Information/PersonalInfomation";
@@ -6,6 +6,15 @@ import EmployeeInformation from "./components/Information/EmployeeInformation";
 import { useParams } from "react-router-dom";
 import _ from "lodash";
 import employeeApi from "api/employeeApi";
+import PropTypes from "prop-types";
+
+EmployeeDetailPage.propTypes = {
+  toggleModalEditEmployee: PropTypes.func,
+};
+
+EmployeeDetailPage.defaultProps = {
+  toggleModalEditEmployee: null,
+};
 
 function EmployeeDetailPage(props) {
   const { toggleModalEditEmployee } = props;

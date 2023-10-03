@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Form, Input, Button, Space, Select, Switch, Row, Col } from "antd";
 import { toast } from "react-toastify";

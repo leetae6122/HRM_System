@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Divider, Space, Table } from "antd";
 import { toast } from "react-toastify";
 import { getFullDate } from "utils/handleDate";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import positionApi from "api/positionApi";
 import currencyApi from "api/currencyApi";
-import FilterDrawer from "./components/Filter/FilterDrawer";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setData,
@@ -13,10 +12,11 @@ import {
   setEditPositionId,
   setFilterData,
 } from "reducers/position";
-import ModalAddPosition from "./components/ComponentAddEdit/ModalAddPosition";
-import Swal from "sweetalert2";
-import ModalEditPosition from "./components/ComponentAddEdit/ModalEditPosition";
 import { numberWithDot } from "utils/format";
+import Swal from "sweetalert2";
+import FilterDrawer from "./components/Filter/FilterDrawer";
+import ModalAddPosition from "./components/ComponentAddEdit/ModalAddPosition";
+import ModalEditPosition from "./components/ComponentAddEdit/ModalEditPosition";
 import PositionTableHeader from "./components/PositionTableHeader";
 
 const createColumns = (

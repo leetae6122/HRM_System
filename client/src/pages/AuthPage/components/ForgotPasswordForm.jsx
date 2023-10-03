@@ -1,5 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
-import React from "react";
+
 import PropTypes from "prop-types";
 import { Form, Input, Button, Card, Typography, Row, Col } from "antd";
 import { UserOutlined, MailOutlined, RollbackOutlined, SendOutlined } from "@ant-design/icons";

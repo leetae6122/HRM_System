@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Card, List, Typography } from "antd";
 import { useSelector } from "react-redux";
 import { getFullDate } from "utils/handleDate";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Col, Row, Space } from "antd";
 import ProfileCard from "./components/ProfileCard";
 import BasicInformation from "./components/Information/BasicInformation";

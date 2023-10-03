@@ -5,7 +5,7 @@ import {
   UserDeleteOutlined,
 } from "@ant-design/icons";
 import { Col, Row } from "antd";
-import React from "react";
+
 import LinkIconCard from "./components/LinkIconCard";
 import QualityCard from "./components/QualityCard";
 import RunningProjectsTable from "./components/RunningProjectsTable";

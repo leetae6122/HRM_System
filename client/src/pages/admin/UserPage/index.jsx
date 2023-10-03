@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge, Button, Divider, Space, Table, Tag } from "antd";
 import userApi from "api/userApi";
 import { toast } from "react-toastify";

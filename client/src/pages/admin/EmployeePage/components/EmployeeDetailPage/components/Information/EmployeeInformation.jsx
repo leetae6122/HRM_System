@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Card, Descriptions } from "antd";
 import { getFullDate } from "utils/handleDate";
 import { numberWithDot } from "utils/format";

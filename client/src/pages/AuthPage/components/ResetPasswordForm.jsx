@@ -1,4 +1,4 @@
-import React from "react";
+
 import PropTypes from "prop-types";
 import { Form, Input, Button, Card, Typography } from "antd";
 import { LockOutlined, SendOutlined } from "@ant-design/icons";

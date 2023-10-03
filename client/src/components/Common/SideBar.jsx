@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "assets/styles/sidebar.scss";
 import logoHrm from "assets/images/logo-app.jpg";

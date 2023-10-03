@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Upload } from "antd";
 import defaultAvatar from "assets/images/avatar-user.jpg";
 import employeeApi from "api/employeeApi";

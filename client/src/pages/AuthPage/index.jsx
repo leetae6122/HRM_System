@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
 import Cookies from "universal-cookie";
 import "assets/styles/authPage.scss";
 import logoHrm from "assets/images/logo-app.jpg";
 import Swal from "sweetalert2";
 import LoginForm from "./components/LoginForm";
-import ForgotPasswordForm from "pages/AuthPage/components/ForgotPasswordForm";
 import ResetPasswordForm from "./components/ResetPasswordForm";
+import ForgotPasswordForm from "pages/AuthPage/components/ForgotPasswordForm";
 import authApi from "api/authApi";
 import { Col, Row } from "antd";
 
