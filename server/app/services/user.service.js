@@ -15,30 +15,43 @@ class UserService {
                     },
                 ]
             },
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findById(id) {
-        const result = await db.User.findByPk(id);
-        return result ? result.dataValues : result;
+        const result = await db.User.findByPk(id, {
+            raw: true,
+            nest: true
+        });
+        return result;
     }
 
     async findByIdSecret(id) {
-        const result = await db.User.scope('secret').findByPk(id);
-        return result ? result.dataValues : result;
+        const result = await db.User.scope('secret').findByPk(id, {
+            raw: true,
+            nest: true
+        });
+        return result;
     }
 
     async findByIdHidePass(id) {
-        const result = await db.User.scope('hidePassword').findByPk(id);
-        return result ? result.dataValues : result;
+        const result = await db.User.scope('hidePassword').findByPk(id, {
+            raw: true,
+            nest: true
+        });
+        return result;
     }
 
     async findByEmployeeId(employeeId) {
         const result = await db.User.findOne({
-            where: { employeeId }
+            where: { employeeId },
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findByUsernameHideToken(username) {
@@ -52,8 +65,10 @@ class UserService {
                     { model: db.Salary, as: 'salaryData' },
                 ]
             },
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findByEmail(email) {
@@ -99,7 +114,7 @@ class UserService {
 
         if (data1.count === 0) {
             const data2 = await db.User.scope('secret').findAndCountAll({
-                where:{},
+                where: {},
                 offset,
                 limit,
                 order,
@@ -135,9 +150,13 @@ class UserService {
             {
                 ...payload,
                 password: hashPassword
+            },
+            {
+                raw: true,
+                nest: true
             }
         );
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async updateUser(id, payload) {

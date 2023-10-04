@@ -4,16 +4,20 @@ class PositionService {
     async findById(id) {
         const result = await db.Position.findOne({
             where: { id },
-            include: { model: db.Currency, as: 'currencyData' }
+            include: { model: db.Currency, as: 'currencyData' },
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findByPositionName(positionName) {
         const result = await db.Position.findOne({
             where: { name: positionName },
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findAll() {
@@ -55,9 +59,13 @@ class PositionService {
 
     async createPosition(payload) {
         const result = await db.Position.create(
-            payload
+            payload,
+            {
+                raw: true,
+                nest: true
+            }
         );
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async updatePosition(id, payload) {

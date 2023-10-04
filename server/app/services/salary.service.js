@@ -8,16 +8,20 @@ class SalaryService {
                 { model: db.Currency, as: 'currencyData' },
                 { model: db.Employee, as: 'employeeData' },
                 { model: db.Employee, as: 'adderData' }
-            ]
+            ],
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findByEmployeeId(employeeId) {
         const result = await db.Salary.findOne({
-            where: { employeeId }
+            where: { employeeId },
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findAll() {
@@ -90,9 +94,13 @@ class SalaryService {
 
     async createSalary(payload) {
         const result = await db.Salary.create(
-            payload
+            payload,
+            {
+                raw: true,
+                nest: true
+            }
         );
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async updateSalary(id, payload) {
@@ -107,7 +115,7 @@ class SalaryService {
 
     async deleteSalary(id) {
         await db.Salary.destroy({
-            where: { id }
+            where: { id },
         });
     }
 }

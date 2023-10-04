@@ -56,14 +56,15 @@ module.exports = {
           key: 'id'
         }
       },
-      //   departmentId: {
-      //     type: Sequelize.INTEGER,
-      //     references: {
-      //       model: 'Department',
-      //       key: 'id'
-      //     }
-      //   },
-      addedBy: {
+      departmentId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Department',
+          key: 'id',
+        },
+      },
+      managerId: {
         type: Sequelize.UUID,
         references: {
           model: 'Employee',

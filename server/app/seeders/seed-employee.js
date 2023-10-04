@@ -14,7 +14,7 @@ module.exports = {
             avatarUrl: null,
             address: '3/2 Xuan Khanh, Ninh Kieu, Can Tho',
             positionId: 1,
-            // departmentId: null,
+            departmentId: 1,
         },
         {
             id: 'b8dc485c-bf86-46c2-b8fc-78ad135278cc',
@@ -28,8 +28,8 @@ module.exports = {
             avatarUrl: null,
             address: '3721 Hill Croft Farm Road, BURLINGTON, MI',
             positionId: 2,
-            // departmentId: null,
-            addedBy: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9'
+            departmentId: 2,
+            managerId: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9'
         },
         {
             id: '478bfe9a-1f75-40e7-830c-5803991d10a9',
@@ -43,8 +43,8 @@ module.exports = {
             avatarUrl: null,
             address: '3397  Happy Hollow Road, Jacksonville, NC',
             positionId: 3,
-            // departmentId: null,
-            addedBy: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
+            departmentId: 3,
+            managerId: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
         }], {
 
         });

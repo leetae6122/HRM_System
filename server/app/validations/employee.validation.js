@@ -14,6 +14,8 @@ const adminCreateEmployeeSchema = Joi.object({
     dateHired: Joi.date().max('now'),
     avatar: Joi.any().optional(),
     positionId: Joi.number().integer().required(),
+    departmentId: Joi.number().integer().required(),
+    managerId: Joi.string().required(),
 });
 
 const updateEmployeeSchema = Joi.object().keys({
@@ -34,7 +36,9 @@ const adminUpdateEmployeeSchema = updateEmployeeSchema.keys({
     dateHired: Joi.date().max('now').optional(),
     dateOff: Joi.date().allow(null).optional(),
     avatar: Joi.any().optional(),
-    positionId: Joi.number().integer().optional()
+    positionId: Joi.number().integer().optional(),
+    departmentId: Joi.number().integer().optional(),
+    managerId: Joi.string().optional(),
 }).required().min(1);
 
 module.exports = { 

@@ -14,25 +14,31 @@ class EmployeeService {
                     model: db.Salary, as: 'salaryData',
                     include: { model: db.Currency, as: 'currencyData' }
                 },
-            ]
+            ],
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findByEmail(email) {
         const result = await db.Employee.findOne({
             where: { email },
-            include: [{ model: db.User.scope('secret'), as: 'userData' }]
+            include: [{ model: db.User.scope('secret'), as: 'userData' }],
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findByPhoneNumber(phoneNumber) {
         const result = await db.Employee.findOne({
             where: { phoneNumber },
-            include: [{ model: db.User.scope('secret'), as: 'userData' }]
+            include: [{ model: db.User.scope('secret'), as: 'userData' }],
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findAll() {
@@ -102,9 +108,12 @@ class EmployeeService {
 
     async createEmployee(payload) {
         const result = await db.Employee.create(
-            payload
+            payload, {
+            raw: true,
+            nest: true
+        }
         );
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async updateEmployee(id, payload) {

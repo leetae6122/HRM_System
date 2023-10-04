@@ -72,10 +72,7 @@ exports.createEmployee = async (req, res, next) => {
     try {
         await employeeService.checkEmailExisted(req.body.email, next);
         await employeeService.checkPhoneNumberExisted(req.body.phoneNumber, next);
-        let payload = {
-            ...req.body,
-            addedBy: req.user.employeeId
-        }
+        let payload = req.body
         const fileData = req.file;
         if (fileData) {
             payload = {
@@ -107,11 +104,7 @@ exports.updateEmployee = async (req, res, next) => {
             await employeeService.checkPhoneNumberExisted(req.body.phoneNumber, next);
         }
 
-        let payload = {
-            ...req.body,
-            addedBy: req.user.employeeId
-        }
-
+        let payload = req.body
         const fileData = req.file;
         if (fileData) {
             payload = {

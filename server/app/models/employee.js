@@ -13,14 +13,16 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             Employee.hasOne(models.User, { foreignKey: 'employeeId', as: 'userData' });
+
             Employee.hasOne(models.Salary, { foreignKey: 'employeeId', as: 'salaryData' });
             Employee.hasMany(models.Salary, { foreignKey: 'addedBy', as: 'salaryAddedData' });
-            // Employee.hasMany(models.Department, { foreignKey: 'managerId', as: 'managerData' });
-            // Employee.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'departmentData' });
+
+            Employee.belongsTo(models.Position, { foreignKey: 'positionId', as: 'positionData' });
+            Employee.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData' });
+            Employee.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'departmentData' });
+
             // Employee.hasMany(models.Leave, { foreignKey: 'employeeId', as: 'employeeData' });
             // Employee.hasMany(models.Leave, { foreignKey: 'acceptBy', as: 'accepterData' });
-            Employee.belongsTo(models.Position, {foreignKey: 'positionId', as: 'positionData'});
-            Employee.belongsTo(models.Employee, { foreignKey: 'addedBy', as: 'adderData' });
         }
     }
     Employee.init({
@@ -34,9 +36,9 @@ module.exports = (sequelize, DataTypes) => {
         dateHired: DataTypes.DATE,
         dateOff: DataTypes.DATE,
         avatarUrl: DataTypes.STRING,
+        managerId: DataTypes.UUID,
         positionId: DataTypes.INTEGER,
-        // departmentId: DataTypes.INTEGER
-        addedBy: DataTypes.UUID,
+        departmentId: DataTypes.INTEGER
     }, {
         sequelize,
         modelName: 'Employee',

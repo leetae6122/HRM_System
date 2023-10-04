@@ -10,16 +10,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // Location.hasMany(models.Department, { foreignKey: 'locationId', as: 'locationData' });
-      // Location.belongsTo(models.Country, { foreignKey: 'countryId', as: 'countryData' });
+      Office.hasMany(models.Department, { foreignKey: 'officeId', as: 'officeData' });
+      Office.belongsTo(models.Country, { foreignKey: 'countryId', as: 'countryData' });
     }
   }
   Office.init({
     title: DataTypes.STRING,
     streetAddress: DataTypes.STRING,
-    postalCode: DataTypes.STRING,
-    city: DataTypes.STRING,
+    postalCode: DataTypes.INTEGER,
     stateProvince: DataTypes.STRING,
+    city: DataTypes.STRING,
     countryId: DataTypes.INTEGER
   }, {
     sequelize,

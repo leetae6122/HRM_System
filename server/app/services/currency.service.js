@@ -2,15 +2,20 @@ import db from "./../models/index";
 
 class CurrencyService {
     async findById(id) {
-        const result = await db.Currency.findByPk(id);
-        return result ? result.dataValues : result;
+        const result = await db.Currency.findByPk(id, {
+            raw: true,
+            nest: true
+        });
+        return result;
     }
 
     async findByCurrencyCode(code) {
         const result = await db.Currency.findOne({
-            where: { code }
+            where: { code },
+            raw: true,
+            nest: true
         });
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async findAll() {
@@ -27,7 +32,7 @@ class CurrencyService {
 
         const offset = (page - 1) * limit;
 
-        const {count, rows} = await db.Currency.findAndCountAll({
+        const { count, rows } = await db.Currency.findAndCountAll({
             where,
             offset,
             limit,
@@ -49,9 +54,13 @@ class CurrencyService {
 
     async createCurrency(payload) {
         const result = await db.Currency.create(
-            payload
+            payload,
+            {
+                raw: true,
+                nest: true
+            }
         );
-        return result ? result.dataValues : result;
+        return result;
     }
 
     async updateCurrency(id, payload) {

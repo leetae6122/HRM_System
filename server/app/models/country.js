@@ -4,13 +4,8 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Country extends Model {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
         static associate(models) {
-            // Country.hasMany(models.Location, { foreignKey: 'countryId', as: 'countryData' });
+            Country.hasMany(models.Office, { foreignKey: 'countryId', as: 'countryData' });
         }
     }
     Country.init({
