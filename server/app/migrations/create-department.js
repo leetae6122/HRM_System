@@ -17,6 +17,14 @@ module.exports = {
             shortName: {
                 type: Sequelize.STRING(8),
             },
+            managerId: {
+                type: Sequelize.UUID,
+                references: {
+                    model: 'Employee',
+                    key: 'id',
+                    deferrable: Sequelize.Deferrable.INITIALLY_DEFERRED
+                },
+            },
             officeId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
@@ -33,7 +41,7 @@ module.exports = {
             updatedAt: {
                 allowNull: false,
                 type: Sequelize.DATE,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
             }
         });
     },

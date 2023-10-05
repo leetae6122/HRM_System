@@ -25,8 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         reasonRejection: DataTypes.TEXT,
     }, {
         sequelize,
-        modelName: 'Leave',
-        tableName: 'leave'
+        modelName: 'Leave'
     });
 
     return Leave;

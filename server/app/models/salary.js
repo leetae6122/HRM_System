@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Salary.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true
+    },
     basicSalary: DataTypes.FLOAT,
     allowance: DataTypes.FLOAT,
     totalSalary: DataTypes.FLOAT,
@@ -24,8 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     addedBy: DataTypes.UUID
   }, {
     sequelize,
-    modelName: 'Salary',
-    tableName: 'salary'
+    modelName: 'Salary'
   });
 
   return Salary;

@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Office.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true
+    },
     title: DataTypes.STRING,
     streetAddress: DataTypes.STRING,
     postalCode: DataTypes.INTEGER,
@@ -23,8 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     countryId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Office',
-    tableName: 'office'
+    modelName: 'Office'
   });
 
   return Office;

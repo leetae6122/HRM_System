@@ -48,11 +48,21 @@ const operatorsAliases = {
   $col: Op.col
 };
 
+const hook = {
+  beforeCreate: (record) => {
+    record.dataValues.createdAt = Sequelize.fn('statement_timestamp');
+    record.dataValues.updatedAt = Sequelize.fn('statement_timestamp');
+  },
+  beforeUpdate: (record) => {
+    record.dataValues.updatedAt = Sequelize.fn('statement_timestamp');
+  }
+}
+
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], { operatorsAliases, ...config });
+if (config.url) {
+  sequelize = new Sequelize(config.url, { operatorsAliases, ...config, hook });
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, { operatorsAliases, ...config });
+  sequelize = new Sequelize(config.database, config.username, config.password, { operatorsAliases, ...config, hook });
 }
 fs
   .readdirSync(__dirname)

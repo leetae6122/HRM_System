@@ -41,6 +41,7 @@ exports.createCurrency = async (req, res, next) => {
         const data = await currencyService.createCurrency(req.body);
         return res.send({ message: "Successfully added new currency", data });
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }

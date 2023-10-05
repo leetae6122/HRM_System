@@ -24,8 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     // projectId: DataTypes.UUID
   }, {
     sequelize,
-    modelName: 'Attendance',
-    tableName: 'attendance'
+    modelName: 'Attendance'
   });
 
   return Attendance;

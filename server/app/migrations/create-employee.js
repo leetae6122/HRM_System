@@ -62,15 +62,16 @@ module.exports = {
         references: {
           model: 'Department',
           key: 'id',
+          deferrable: Sequelize.Deferrable.INITIALLY_DEFERRED
         },
       },
-      managerId: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'Employee',
-          key: 'id',
-        },
-      },
+      // managerId: {
+      //   type: Sequelize.UUID,
+      //   references: {
+      //     model: 'Employee',
+      //     key: 'id',
+      //   },
+      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -79,7 +80,7 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },

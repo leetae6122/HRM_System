@@ -20,8 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         managerId: DataTypes.UUID
     }, {
         sequelize,
-        modelName: 'Project',
-        tableName: 'project'
+        modelName: 'Project'
     });
 
     return Project;

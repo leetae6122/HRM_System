@@ -9,13 +9,16 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     Country.init({
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true
+        },
         name: DataTypes.STRING,
         countryCode: DataTypes.STRING,
         isoCode: DataTypes.STRING
     }, {
         sequelize,
-        modelName: 'Country',
-        tableName: 'country'
+        modelName: 'Country'
     });
 
     return Country;

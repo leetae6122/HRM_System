@@ -18,14 +18,20 @@ module.exports = (sequelize, DataTypes) => {
             Employee.hasMany(models.Salary, { foreignKey: 'addedBy', as: 'salaryAddedData' });
 
             Employee.belongsTo(models.Position, { foreignKey: 'positionId', as: 'positionData' });
-            Employee.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData' });
-            Employee.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'departmentData' });
+            // Employee.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData' });
+
+            // Employee.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'departmentData' });
+            Employee.hasOne(models.Department, { foreignKey: 'managerId', as: 'managerData'});
 
             // Employee.hasMany(models.Leave, { foreignKey: 'employeeId', as: 'employeeData' });
             // Employee.hasMany(models.Leave, { foreignKey: 'acceptBy', as: 'accepterData' });
         }
     }
     Employee.init({
+        id: {
+            type: DataTypes.UUID,
+            primaryKey: true
+        },
         firstName: DataTypes.STRING,
         lastName: DataTypes.STRING,
         email: DataTypes.STRING,
@@ -36,13 +42,11 @@ module.exports = (sequelize, DataTypes) => {
         dateHired: DataTypes.DATE,
         dateOff: DataTypes.DATE,
         avatarUrl: DataTypes.STRING,
-        managerId: DataTypes.UUID,
         positionId: DataTypes.INTEGER,
-        departmentId: DataTypes.INTEGER
+        // departmentId: DataTypes.INTEGER
     }, {
         sequelize,
-        modelName: 'Employee',
-        tableName: 'employee'
+        modelName: 'Employee'
     });
 
     Employee.beforeCreate((employee) => {

@@ -15,14 +15,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Position.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true
+    },
     name: DataTypes.STRING,
     minSalary: DataTypes.FLOAT,
     maxSalary: DataTypes.FLOAT,
     currencyId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Position',
-    tableName: 'position'
+    modelName: 'Position'
   });
 
   return Position;

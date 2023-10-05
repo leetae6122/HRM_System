@@ -16,9 +16,12 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     User.init({
+        id: {
+            type: DataTypes.UUID,
+            primaryKey: true
+        },
         username: DataTypes.STRING,
         password: DataTypes.STRING,
-        // avatarUrl: DataTypes.STRING,
         refreshTokenHash: DataTypes.STRING,
         resetPasswordHash: DataTypes.STRING,
         isAdmin: DataTypes.BOOLEAN,
@@ -27,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'User',
-        tableName: 'user',
         scopes: {
             hideToken: {
                 attributes: { exclude: ['refreshTokenHash', 'resetPasswordHash'] },

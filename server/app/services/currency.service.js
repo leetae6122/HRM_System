@@ -53,14 +53,14 @@ class CurrencyService {
     }
 
     async createCurrency(payload) {
-        const result = await db.Currency.create(
+        await db.Currency.create(
             payload,
             {
                 raw: true,
                 nest: true
             }
         );
-        return result;
+        // return result;
     }
 
     async updateCurrency(id, payload) {

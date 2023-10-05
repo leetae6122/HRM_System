@@ -29,7 +29,6 @@ module.exports = {
             address: '3721 Hill Croft Farm Road, BURLINGTON, MI',
             positionId: 2,
             departmentId: 2,
-            managerId: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9'
         },
         {
             id: '478bfe9a-1f75-40e7-830c-5803991d10a9',
@@ -44,7 +43,6 @@ module.exports = {
             address: '3397  Happy Hollow Road, Jacksonville, NC',
             positionId: 3,
             departmentId: 3,
-            managerId: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
         }], {
 
         });
