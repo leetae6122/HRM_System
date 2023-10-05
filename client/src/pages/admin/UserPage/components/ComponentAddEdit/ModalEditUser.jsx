@@ -36,8 +36,8 @@ function ModalEditUser(props) {
             userId: data.id,
             username: data.username,
             password: data.password,
-            isAdmin: data.isAdmin,
-            isActived: data.isActived,
+            isAdmin: !!data.isAdmin,
+            isActived: !!data.isActived,
             employeeId: data.employeeId,
           });
         }

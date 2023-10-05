@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button, Space, Select, Switch, Row, Col } from 'antd';
+import { Form, Input, Button, Space, Select, Switch, Radio } from 'antd';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 import employeeApi from 'api/employeeApi';
@@ -20,8 +20,8 @@ UserForm.defaultProps = {
   initialValues: {
     username: '',
     password: '',
-    isAdmin: null,
-    isActived: null,
+    isAdmin: false,
+    isActived: false,
     employeeId: null,
   },
 };
@@ -240,18 +240,18 @@ function UserForm(props) {
           </Form.Item>
         </>
       ) : null}
-      <Row justify="center">
-        <Col span={8}>
-          <Form.Item name="isAdmin" label="Admin" valuePropName="checked">
-            <Switch disabled={loading} />
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item name="isActived" label="Active" valuePropName="checked">
-            <Switch disabled={loading} />
-          </Form.Item>
-        </Col>
-      </Row>
+      <Form.Item name="isAdmin" label="Role">
+        <Radio.Group disabled={loading} buttonStyle="solid">
+          <Radio.Button value={false}>Staff</Radio.Button>
+          <Radio.Button value={true}>Admin</Radio.Button>
+        </Radio.Group>
+      </Form.Item>
+      <Form.Item name="isActived" label="Status">
+        <Radio.Group disabled={loading} buttonStyle="solid">
+          <Radio.Button value={false}>Not Actived</Radio.Button>
+          <Radio.Button value={true}>Actived</Radio.Button>
+        </Radio.Group>
+      </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
           <Button htmlType="button" onClick={handleCancel}>
