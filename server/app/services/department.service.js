@@ -1,29 +1,20 @@
 import db from "./../models/index";
 
-class CurrencyService {
+class DepartmentService {
     async findById(id) {
-        const result = await db.Currency.findByPk(id, {
+        const result = await db.Department.findByPk(id, {
             raw: true,
             nest: true
         });
         return result;
     }
-
-    async findByCurrencyCode(code) {
-        const result = await db.Currency.findOne({
-            where: { code },
-            raw: true,
-            nest: true
-        });
-        return result;
-    }
-
+    
     async findAll() {
-        const result = await db.Currency.findAll({});
+        const result = await db.Department.findAll({});
         return result;
     }
 
-    async filterListCurrency(body) {
+    async filterListDepartment(body) {
         const page = body.page || 1;
         const limit = body.size || 10;
         const where = body.where;
@@ -32,7 +23,7 @@ class CurrencyService {
 
         const offset = (page - 1) * limit;
 
-        const { count, rows } = await db.Currency.findAndCountAll({
+        const { count, rows } = await db.Department.findAndCountAll({
             where,
             offset,
             limit,
@@ -52,8 +43,8 @@ class CurrencyService {
         };
     }
 
-    async createCurrency(payload) {
-        const result = await db.Currency.create(
+    async createDepartment(payload) {
+        const result = await db.Department.create(
             payload,
             {
                 raw: true,
@@ -63,8 +54,8 @@ class CurrencyService {
         return result;
     }
 
-    async updateCurrency(id, payload) {
-        await db.Currency.update(
+    async updateDepartment(id, payload) {
+        await db.Department.update(
             payload
             ,
             {
@@ -73,11 +64,11 @@ class CurrencyService {
         );
     }
 
-    async deleteCurrency(id) {
-        await db.Currency.destroy({
+    async deleteDepartment(id) {
+        await db.Department.destroy({
             where: { id }
         });
     }
 }
 
-module.exports = new CurrencyService;
+module.exports = new DepartmentService;
