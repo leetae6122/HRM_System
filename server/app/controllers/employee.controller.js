@@ -1,20 +1,28 @@
 import employeeService from "./../services/employee.service";
 import createError from 'http-errors';
 import cloudinary from 'cloudinary';
+import {
+    MSG_CREATED_SUCCESSFUL,
+    MSG_DELETE_SUCCESSFUL,
+    MSG_ERROR_DELETE,
+    MSG_ERROR_ID_EMPTY,
+    MSG_ERROR_NOT_FOUND,
+    MSG_UPDATE_SUCCESSFUL
+} from "../utils/message.util";
 
 exports.findProfileById = async (req, res, next) => {
     try {
         const employeeId = req.params.id ? req.params.id : req.user.employeeId;
         if (!employeeId) {
             return next(
-                createError.BadRequest("EmployeeId cannot be empty")
+                createError.BadRequest(MSG_ERROR_ID_EMPTY("EmployeeId"))
             );
         }
 
         const data = await employeeService.findById(employeeId);
         if (!data) {
             return next(
-                createError.NotFound("Employee not found")
+                createError.NotFound(MSG_ERROR_NOT_FOUND("Employee"))
             );
         }
         return res.send({ data });
@@ -81,7 +89,7 @@ exports.createEmployee = async (req, res, next) => {
             }
         }
         const data = await employeeService.createEmployee(payload);
-        return res.send({ message: "Successfully added employee", data });
+        return res.send({ message: MSG_CREATED_SUCCESSFUL("Employee"), data });
     } catch (error) {
         return next(
             createError.InternalServerError("An error occurred while retrieving the employees")
@@ -94,7 +102,7 @@ exports.updateEmployee = async (req, res, next) => {
         const employee = await employeeService.findById(req.body.employeeId);
         if (!employee) {
             return next(
-                createError.NotFound("Employee not found")
+                createError.NotFound(MSG_ERROR_NOT_FOUND("Employee"))
             );
         }
         if (employee.email !== req.body.email) {
@@ -117,7 +125,7 @@ exports.updateEmployee = async (req, res, next) => {
         }
 
         await employeeService.updateEmployee(req.body.employeeId, payload);
-        return res.send({ message: "Successfully update employee profiles" });
+        return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(
             createError.InternalServerError("An error occurred while retrieving the employees")
@@ -128,13 +136,18 @@ exports.updateEmployee = async (req, res, next) => {
 exports.deleteEmployee = async (req, res, next) => {
     try {
         if (!req.params.id && Number(req.params.id)) {
-            return next(createError.BadRequest("EmployeeId cannot be empty"));
+            return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("employeeId")));
         }
+        const foundEmployee = await employeeService.findById(req.params.id);
+        if (!foundEmployee) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Employee")));
+        }
+
         await employeeService.deleteEmployee(req.params.id);
-        return res.send({ message: "Successful deletion" });
+        return res.send({ message: MSG_DELETE_SUCCESSFUL });
     } catch (error) {
         return next(
-            createError.BadRequest("Deletion cannot be performed with this employee")
+            createError.BadRequest(MSG_ERROR_DELETE("Employee"))
         );
     }
 }
@@ -144,7 +157,7 @@ exports.updateProfile = async (req, res, next) => {
         const employee = await employeeService.findById(req.user.employeeId);
         if (!employee) {
             return next(
-                createError.NotFound("Employee not found")
+                createError.NotFound(MSG_ERROR_NOT_FOUND("Employee"))
             );
         }
 
@@ -162,7 +175,7 @@ exports.updateAvatar = async (req, res, next) => {
         const employee = await employeeService.findById(req.user.employeeId);
         if (!employee) {
             return next(
-                createError.NotFound("Employee not found")
+                createError.NotFound(MSG_ERROR_NOT_FOUND("Employee"))
             );
         }
         const fileData = req.file;

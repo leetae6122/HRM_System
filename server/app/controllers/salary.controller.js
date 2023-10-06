@@ -1,3 +1,12 @@
+import {
+    MSG_ADDED_SALARY_SUCCESSFUL,
+    MSG_DELETE_SUCCESSFUL,
+    MSG_EMPLOYEE_CREATED_SALARY,
+    MSG_ERROR_DELETE,
+    MSG_ERROR_ID_EMPTY,
+    MSG_ERROR_NOT_FOUND,
+    MSG_UPDATE_SUCCESSFUL
+} from "../utils/message.util";
 import salaryService from "./../services/salary.service";
 import createError from 'http-errors';
 
@@ -5,7 +14,7 @@ exports.findById = async (req, res, next) => {
     try {
         const data = await salaryService.findById(req.params.id);
         if (!data) {
-            return next(createError.BadRequest("Salary not found"));
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Salary")));
         }
         return res.send({ data });
     } catch (error) {
@@ -35,7 +44,7 @@ exports.createSalary = async (req, res, next) => {
     try {
         const salaryExisted = await salaryService.findByEmployeeId(req.body.employeeId);
         if (salaryExisted) {
-            return next(createError.BadRequest("Employee have created salary"));
+            return next(createError.BadRequest(MSG_EMPLOYEE_CREATED_SALARY));
         }
         let payload = { ...req.body, addedBy: req.user.employeeId }
         if (!req.body.totalSalary || req.body.totalSalary === 0) {
@@ -46,7 +55,7 @@ exports.createSalary = async (req, res, next) => {
         }
 
         const data = await salaryService.createSalary(payload);
-        return res.send({ message: "Added salary for successful a employee", data });
+        return res.send({ message: MSG_ADDED_SALARY_SUCCESSFUL, data });
     } catch (error) {
         return next(error);
     }
@@ -56,7 +65,7 @@ exports.updateSalary = async (req, res, next) => {
     try {
         const foundSalary = await salaryService.findById(req.body.salaryId);
         if (!foundSalary) {
-            return next(createError.BadRequest("Salary not found"));
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Salary")));
         }
         let payload = { ...req.body, addedBy: req.user.employeeId }
         if ((req.body.totalSalary === foundSalary.totalSalary) &&
@@ -69,7 +78,7 @@ exports.updateSalary = async (req, res, next) => {
         }
 
         await salaryService.updateSalary(req.body.salaryId, payload);
-        return res.send({ message: "Successful update" });
+        return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(error);
     }
@@ -78,14 +87,18 @@ exports.updateSalary = async (req, res, next) => {
 exports.deleteSalary = async (req, res, next) => {
     try {
         if (!req.params.id && Number(req.params.id)) {
-            return next(createError.BadRequest("SalaryId cannot be empty"));
+            return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("SalaryId")));
         }
+        const foundSalary = await salaryService.findById(req.params.id);
+        if (!foundSalary) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Salary")));
+        }
+
         await salaryService.deleteSalary(req.params.id);
-        return res.send({ message: "Successful deletion" });
+        return res.send({ message: MSG_DELETE_SUCCESSFUL });
     } catch (error) {
-        console.log(error);
         return next(
-            createError.BadRequest("This salary cannot be deleted")
+            createError.BadRequest(MSG_ERROR_DELETE("Salary"))
         );
     }
 }

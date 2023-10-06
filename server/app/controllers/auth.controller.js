@@ -8,7 +8,8 @@ import {
     MSG_REFRESH_TOKEN_DOES_NOT_MATCH,
     MSG_SENT_MAIL_FORGOT_PASSWORD,
     MSG_TOKEN_DOES_NOT_MATCH,
-    MSG_NOT_TOKEN_FOR_AUTH
+    MSG_NOT_TOKEN_FOR_AUTH,
+    MSG_ERROR_WRONG_FORGOT_PASS_INFORMATION
 } from '../utils/message.util';
 import { compareHashedData } from "../utils/hash.util";
 import config from '../config';
@@ -126,10 +127,10 @@ exports.forgotPassword = async (req, res, next) => {
         const { username, email } = req.body;
         const foundUser = await userService.findByUsernameHideToken(username);
         if (!foundUser) {
-            return next(createError.BadRequest("Your username/email is incorrect"));
+            return next(createError.BadRequest(MSG_ERROR_WRONG_FORGOT_PASS_INFORMATION));
         }
         if (foundUser.profile.email !== email) {
-            return next(createError.BadRequest("Your username/email is incorrect"));
+            return next(createError.BadRequest(MSG_ERROR_WRONG_FORGOT_PASS_INFORMATION));
         }
 
         const jwtPayload = {

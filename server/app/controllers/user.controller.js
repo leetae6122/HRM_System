@@ -72,7 +72,7 @@ exports.updateUser = async (req, res, next) => {
         }
 
         await userService.updateUser(req.body.userId, req.body);
-        return res.send({ message: "Successful update" });
+        return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(error);
     }
@@ -83,8 +83,13 @@ exports.deleteUser = async (req, res, next) => {
         if (!req.params.id && Number(req.params.id)) {
             return next(createError.BadRequest("UserId cannot be empty"));
         }
+        const foundUser = await userService.findById(req.params.id);
+        if (!foundUser) {
+            return next(createError.BadRequest("User not found"));
+        }
+        
         await userService.deleteUser(req.params.id);
-        return res.send({ message: "Successful deletion" });
+        return res.send({ message: MSG_DELETE_SUCCESSFUL });
     } catch (error) {
         return next(
             createError.BadRequest("This user cannot be deleted")
@@ -102,7 +107,7 @@ exports.changePassword = async (req, res, next) => {
         }
 
         await userService.updateUser(req.user.id, { password: newPassword });
-        return res.send({ message: "Successful update" });
+        return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(error);
     }

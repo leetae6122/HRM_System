@@ -1,5 +1,4 @@
 {
     "singleQuote": true,
-    "trailingComma": "all",
-    "eslintIntegration": true
+    "trailingComma": "all"
 }

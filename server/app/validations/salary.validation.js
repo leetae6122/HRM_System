@@ -5,7 +5,11 @@ const createSalarySchema = Joi.object({
     allowance: Joi.number().min(0).default(0),
     totalSalary: Joi.number().min(0).optional(),
     currencyId: Joi.number().integer().required(),
-    employeeId: Joi.string().required()
+    employeeId: Joi.string().guid({
+        version: [
+            'uuidv4'
+        ]
+    }).required()
 });
 
 const updateSalarySchema = Joi.object({

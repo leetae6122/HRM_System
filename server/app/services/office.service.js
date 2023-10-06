@@ -1,17 +1,17 @@
 import db from "./../models/index";
 
-class CurrencyService {
+class OfficeService {
     async findById(id) {
-        const result = await db.Currency.findByPk(id, {
+        const result = await db.Office.findByPk(id, {
             raw: true,
             nest: true
         });
         return result;
     }
 
-    async findByCurrencyCode(code) {
-        const result = await db.Currency.findOne({
-            where: { code },
+    async findByTitleOffice(title) {
+        const result = await db.Office.findOne({
+            where: { title },
             raw: true,
             nest: true
         });
@@ -19,11 +19,11 @@ class CurrencyService {
     }
 
     async findAll() {
-        const result = await db.Currency.findAll({});
+        const result = await db.Office.findAll({});
         return result;
     }
 
-    async filterListCurrency(body) {
+    async filterListOffice(body) {
         const page = body.page || 1;
         const limit = body.size || 10;
         const where = body.where;
@@ -32,7 +32,7 @@ class CurrencyService {
 
         const offset = (page - 1) * limit;
 
-        const { count, rows } = await db.Currency.findAndCountAll({
+        const { count, rows } = await db.Office.findAndCountAll({
             where,
             offset,
             limit,
@@ -52,8 +52,8 @@ class CurrencyService {
         };
     }
 
-    async createCurrency(payload) {
-        const result = await db.Currency.create(
+    async createOffice(payload) {
+        const result = await db.Office.create(
             payload,
             {
                 raw: true,
@@ -63,8 +63,8 @@ class CurrencyService {
         return result;
     }
 
-    async updateCurrency(id, payload) {
-        await db.Currency.update(
+    async updateOffice(id, payload) {
+        await db.Office.update(
             payload
             ,
             {
@@ -73,11 +73,11 @@ class CurrencyService {
         );
     }
 
-    async deleteCurrency(id) {
-        await db.Currency.destroy({
+    async deleteOffice(id) {
+        await db.Office.destroy({
             where: { id }
         });
     }
 }
 
-module.exports = new CurrencyService;
+module.exports = new OfficeService;

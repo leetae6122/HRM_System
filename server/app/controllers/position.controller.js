@@ -1,3 +1,12 @@
+import {
+    MSG_CREATED_SUCCESSFUL,
+    MSG_DELETE_SUCCESSFUL,
+    MSG_ERROR_DELETE,
+    MSG_ERROR_EXISTED,
+    MSG_ERROR_ID_EMPTY,
+    MSG_ERROR_NOT_FOUND,
+    MSG_UPDATE_SUCCESSFUL
+} from "../utils/message.util";
 import positionService from "./../services/position.service";
 import createError from 'http-errors';
 
@@ -5,7 +14,7 @@ exports.findById = async (req, res, next) => {
     try {
         const data = await positionService.findById(req.params.id);
         if (!data) {
-            return next(createError.BadRequest("Position not found"));
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Position")));
         }
         return res.send({ data });
     } catch (error) {
@@ -35,11 +44,11 @@ exports.createPosition = async (req, res, next) => {
     try {
         const positionExisted = await positionService.findByPositionName(req.body.name);
         if (positionExisted) {
-            return next(createError.BadRequest("Position already exists"));
+            return next(createError.BadRequest(MSG_ERROR_EXISTED("Position name")));
         }
 
         const data = await positionService.createPosition(req.body);
-        return res.send({ message: "Successfully added new position", data });
+        return res.send({ message: MSG_CREATED_SUCCESSFUL("Position"), data });
     } catch (error) {
         return next(error);
     }
@@ -49,16 +58,16 @@ exports.updatePosition = async (req, res, next) => {
     try {
         const positionExisted = await positionService.findByPositionName(req.body.name);
         if (positionExisted && positionExisted.id !== req.body.positionId) {
-            return next(createError.BadRequest("Position name already exists"));
+            return next(createError.BadRequest(MSG_ERROR_EXISTED("Position name")));
         }
 
         const foundPosition = await positionService.findById(req.body.positionId);
         if (!foundPosition) {
-            return next(createError.BadRequest("Currency not found"));
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Position")));
         }
 
         await positionService.updatePosition(req.body.positionId, req.body);
-        return res.send({ message: "Successful update" });
+        return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(error);
     }
@@ -67,13 +76,18 @@ exports.updatePosition = async (req, res, next) => {
 exports.deletePosition = async (req, res, next) => {
     try {
         if (!req.params.id && Number(req.params.id)) {
-            return next(createError.BadRequest("PositionId cannot be empty"));
+            return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("PositionId")));
         }
+        const foundPosition = await positionService.findById(req.params.id);
+        if (!foundPosition) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Position")));
+        }
+
         await positionService.deletePosition(req.params.id);
-        return res.send({ message: "Successful deletion" });
+        return res.send({ message: MSG_DELETE_SUCCESSFUL });
     } catch (error) {
         return next(
-            createError.BadRequest("This position cannot be deleted")
+            createError.BadRequest(MSG_ERROR_DELETE("Position"))
         );
     }
 }

@@ -8,7 +8,11 @@ const adminCreateUserSchema = Joi.object({
         .required(),
     isAdmin: Joi.boolean().default(false),
     isActived: Joi.boolean().default(false),
-    employeeId: Joi.string().required()
+    employeeId: Joi.string().guid({
+        version: [
+            'uuidv4'
+        ]
+    }).required()
 });
 
 const changPasswordSchema = Joi.object({

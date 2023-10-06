@@ -1,17 +1,17 @@
 import db from "./../models/index";
 
-class CurrencyService {
+class CountryService {
     async findById(id) {
-        const result = await db.Currency.findByPk(id, {
+        const result = await db.Country.findByPk(id, {
             raw: true,
             nest: true
         });
         return result;
     }
 
-    async findByCurrencyCode(code) {
-        const result = await db.Currency.findOne({
-            where: { code },
+    async findByIsoCode(isoCode) {
+        const result = await db.Country.findOne({
+            where: { isoCode },
             raw: true,
             nest: true
         });
@@ -19,11 +19,11 @@ class CurrencyService {
     }
 
     async findAll() {
-        const result = await db.Currency.findAll({});
+        const result = await db.Country.findAll({});
         return result;
     }
 
-    async filterListCurrency(body) {
+    async filterListCountry(body) {
         const page = body.page || 1;
         const limit = body.size || 10;
         const where = body.where;
@@ -32,7 +32,7 @@ class CurrencyService {
 
         const offset = (page - 1) * limit;
 
-        const { count, rows } = await db.Currency.findAndCountAll({
+        const { count, rows } = await db.Country.findAndCountAll({
             where,
             offset,
             limit,
@@ -52,8 +52,8 @@ class CurrencyService {
         };
     }
 
-    async createCurrency(payload) {
-        const result = await db.Currency.create(
+    async createCountry(payload) {
+        const result = await db.Country.create(
             payload,
             {
                 raw: true,
@@ -63,8 +63,8 @@ class CurrencyService {
         return result;
     }
 
-    async updateCurrency(id, payload) {
-        await db.Currency.update(
+    async updateCountry(id, payload) {
+        await db.Country.update(
             payload
             ,
             {
@@ -73,11 +73,11 @@ class CurrencyService {
         );
     }
 
-    async deleteCurrency(id) {
-        await db.Currency.destroy({
+    async deleteCountry(id) {
+        await db.Country.destroy({
             where: { id }
         });
     }
 }
 
-module.exports = new CurrencyService;
+module.exports = new CountryService;

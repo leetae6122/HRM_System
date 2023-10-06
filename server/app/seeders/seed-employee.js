@@ -28,7 +28,7 @@ module.exports = {
             avatarUrl: null,
             address: '3721 Hill Croft Farm Road, BURLINGTON, MI',
             positionId: 2,
-            departmentId: 2,
+            departmentId: 4,
         },
         {
             id: '478bfe9a-1f75-40e7-830c-5803991d10a9',
@@ -42,7 +42,7 @@ module.exports = {
             avatarUrl: null,
             address: '3397  Happy Hollow Road, Jacksonville, NC',
             positionId: 3,
-            departmentId: 3,
+            departmentId: 4,
         }], {
 
         });
