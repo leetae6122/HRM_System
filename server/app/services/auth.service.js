@@ -1,4 +1,4 @@
-import config from './../config';
+import config from '../config/configServer';
 import { createJwt } from './../utils/jwt.util';
 import { hashToken } from "./../utils/hash.util";
 import userService from "./user.service";

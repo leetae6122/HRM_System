@@ -12,7 +12,7 @@ import {
     MSG_ERROR_WRONG_FORGOT_PASS_INFORMATION
 } from '../utils/message.util';
 import { compareHashedData } from "../utils/hash.util";
-import config from '../config';
+import config from '../config/configServer';
 import { verifyToken } from '../utils/jwt.util';
 
 exports.login = async (req, res, next) => {

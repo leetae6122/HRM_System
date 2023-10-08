@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import userService from "./../services/user.service";
-import config from './../config';
+import config from '../config/configServer';
 import { 
     MSG_INVALID_TOKEN, 
     MSG_ERROR_USER_NOT_FOUND,

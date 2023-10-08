@@ -1,4 +1,4 @@
-import config from '../../config';
+import config from '../../config/configServer';
 import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars';
 import { join } from 'path';
