@@ -1,10 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
+    defaultFilter: {
+        page: 1,
+        size: 10,
+        where: {},
+        order: [['id', 'ASC']]
+    },
     filterData: {
         page: 1,
         size: 10,
         where: {},
+        order: [['id', 'ASC']]
     },
     currencyList: [],
     total: 0,
@@ -20,11 +27,7 @@ export const currencySlice = createSlice({
             state.filterData = action.payload;
         },
         setDefaultFilterData: (state) => {
-            state.filterData = {
-                page: 1,
-                size: 10,
-                where: {},
-            };
+            state.filterData = state.defaultFilter;
         },
         setData: (state, action) => {
             state.currencyList = action.payload.currencyList;

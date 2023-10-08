@@ -7,15 +7,14 @@ import UploadAvatar from "./UploadAvatar";
 const { Meta } = Card;
 
 const createData = (user) => [
-  { title: "Status", content: user.isActived ? "Actived" : "Not actived" },
   {
     title: "Username",
     content: user.username,
   },
-  { title: "Office", content: user.officeData?.name },
+  { title: "Office", content: user.profile.departmentData.officeData?.title },
   {
     title: "Department",
-    content: user.departmentData?.name,
+    content: user.profile.departmentData?.name,
   },
   {
     title: "Date of Job",

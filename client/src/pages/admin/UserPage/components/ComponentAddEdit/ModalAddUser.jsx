@@ -1,27 +1,26 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Modal } from "antd";
-import Swal from "sweetalert2";
-import { useDispatch } from "react-redux";
-import { setDefaultFilterData } from "reducers/user";
-import { toast } from "react-toastify";
-import UserForm from "./UserForm";
-import userApi from "api/userApi";
-import _ from "lodash";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Modal } from 'antd';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
+import UserForm from './UserForm';
+import userApi from 'api/userApi';
+import _ from 'lodash';
 
 ModalAddUser.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
+  refreshUserList: PropTypes.func,
 };
 
 ModalAddUser.defaultProps = {
   openModal: false,
   toggleShowModal: null,
+  refreshUserList: null,
 };
 
 function ModalAddUser(props) {
-  const dispatch = useDispatch();
-  const { openModal, toggleShowModal } = props;
+  const { openModal, toggleShowModal, refreshUserList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const handleAddUser = async (values) => {
@@ -31,12 +30,12 @@ function ModalAddUser(props) {
       const data = _.omitBy(values, _.isNil);
       const response = await userApi.create(data);
       Swal.fire({
-        icon: "success",
+        icon: 'success',
         title: response.message,
         showConfirmButton: true,
-        confirmButtonText: "Done",
-      }).then((result) => {
-        dispatch(setDefaultFilterData());
+        confirmButtonText: 'Done',
+      }).then(async (result) => {
+        await refreshUserList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -59,7 +58,7 @@ function ModalAddUser(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={"100vh"}
+        width={'100vh'}
       >
         <UserForm
           onCancel={handleCancel}

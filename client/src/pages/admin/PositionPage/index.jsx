@@ -1,81 +1,76 @@
-import { useEffect, useState } from "react";
-import { Button, Divider, Space, Table } from "antd";
-import { toast } from "react-toastify";
-import { getFullDate } from "utils/handleDate";
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
-import positionApi from "api/positionApi";
-import currencyApi from "api/currencyApi";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setData,
-  setDefaultFilterData,
-  setEditPositionId,
-  setFilterData,
-} from "reducers/position";
-import { numberWithDot } from "utils/format";
-import Swal from "sweetalert2";
-import FilterDrawer from "./components/Filter/FilterDrawer";
-import ModalAddPosition from "./components/ComponentAddEdit/ModalAddPosition";
-import ModalEditPosition from "./components/ComponentAddEdit/ModalEditPosition";
-import PositionTableHeader from "./components/PositionTableHeader";
+import { useEffect, useState } from 'react';
+import { Button, Divider, Space, Table } from 'antd';
+import { toast } from 'react-toastify';
+import { getFullDate } from 'utils/handleDate';
+import { DeleteFilled, EditFilled } from '@ant-design/icons';
+import positionApi from 'api/positionApi';
+import currencyApi from 'api/currencyApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { setData, setEditPositionId, setFilterData } from 'reducers/position';
+import { numberWithDot } from 'utils/format';
+import Swal from 'sweetalert2';
+import FilterDrawer from './components/Filter/FilterDrawer';
+import ModalAddPosition from './components/ComponentAddEdit/ModalAddPosition';
+import ModalEditPosition from './components/ComponentAddEdit/ModalEditPosition';
+import PositionTableHeader from './components/PositionTableHeader';
 
 const createColumns = (
   filtersCurrency,
   toggleModalEditPosition,
-  handleDeletePosition
+  handleDeletePosition,
 ) => [
   {
-    title: "Id",
-    dataIndex: "id",
-    key: "id",
+    title: 'Id',
+    dataIndex: 'id',
+    key: 'id',
     sorter: (a, b) => a.id - b.id,
     render: (id) => `#${id}`,
     width: 80,
   },
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
     sorter: (a, b) => a.name.localeCompare(b.name),
   },
   {
-    title: "Min Salary",
-    dataIndex: "minSalary",
-    key: "minSalary",
+    title: 'Min Salary',
+    dataIndex: 'minSalary',
+    key: 'minSalary',
     sorter: (a, b) => a.minSalary - b.minSalary,
     render: (value) => numberWithDot(value),
   },
   {
-    title: "Max Salary",
-    dataIndex: "maxSalary",
-    key: "maxSalary",
+    title: 'Max Salary',
+    dataIndex: 'maxSalary',
+    key: 'maxSalary',
     sorter: (a, b) => a.maxSalary - b.maxSalary,
-    render: (value) => (value ? numberWithDot(value) : ""),
+    render: (value) => (value ? numberWithDot(value) : ''),
   },
   {
-    title: "Currency Code",
-    dataIndex: ["currencyData", "code"],
-    key: "currencyCode",
+    title: 'Currency Code',
+    dataIndex: ['currencyData', 'code'],
+    key: 'currencyCode',
     filters: filtersCurrency || null,
     onFilter: (value, record) => record.currencyData.code.indexOf(value) === 0,
   },
   {
-    title: "Date created",
-    dataIndex: "createdAt",
-    key: "createdAt",
+    title: 'Date created',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
     sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     render: (date) => getFullDate(date),
   },
   {
-    title: "Date update",
-    dataIndex: "updatedAt",
-    key: "updatedAt",
+    title: 'Date update',
+    dataIndex: 'updatedAt',
+    key: 'updatedAt',
     sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
     render: (date) => getFullDate(date),
   },
   {
-    title: "Action",
-    key: "action",
+    title: 'Action',
+    key: 'action',
     render: (_, record) => (
       <Space size="middle">
         <Button
@@ -96,9 +91,8 @@ const createColumns = (
 
 function PositionPage() {
   const dispatch = useDispatch();
-  const { filterData, positionList, total, currentPage } = useSelector(
-    (state) => state.position
-  );
+  const { filterData, positionList, total, currentPage, defaultFilter } =
+    useSelector((state) => state.position);
   const [loadingData, setLoadingData] = useState(false);
   const [filtersCurrency, setFiltersCurrency] = useState([]);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
@@ -117,7 +111,7 @@ function PositionPage() {
             positionList: data,
             total: response.total,
             currentPage: response.currentPage,
-          })
+          }),
         );
         setLoadingData(false);
       } catch (error) {
@@ -148,21 +142,37 @@ function PositionPage() {
     return () => controller.abort();
   }, []);
 
+  const setFilter = (filter) => {
+    dispatch(setFilterData(filter));
+  };
+
+  const refreshPositionList = async () => {
+    const response = (await positionApi.getList(defaultFilter)).data;
+    const data = response.data.map((item) => ({ key: item.id, ...item }));
+    dispatch(
+      setData({
+        positionList: data,
+        total: response.total,
+        currentPage: response.currentPage,
+      }),
+    );
+  };
+
   const handleDeletePosition = async (positionId) => {
     Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
     })
       .then(async (result) => {
         if (result.isConfirmed) {
           await positionApi.delete(positionId);
-          Swal.fire("Deleted!", "Currency has been deleted.", "success");
-          dispatch(setDefaultFilterData());
+          Swal.fire('Deleted!', 'Position has been deleted.', 'success');
+          await refreshPositionList();
         }
       })
       .catch((error) => {
@@ -186,12 +196,14 @@ function PositionPage() {
   const columns = createColumns(
     filtersCurrency,
     toggleModalEditPosition,
-    handleDeletePosition
+    handleDeletePosition,
   );
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: "bold" }}>Position List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
+        Position List
+      </Divider>
       <Table
         columns={columns}
         dataSource={positionList}
@@ -200,6 +212,7 @@ function PositionPage() {
           <PositionTableHeader
             toggleModalAddPosition={toggleModalAddPosition}
             toggleShowFilterDrawer={toggleShowFilterDrawer}
+            setFilter={setFilter}
           />
         )}
         pagination={{
@@ -207,13 +220,11 @@ function PositionPage() {
           current: currentPage,
           pageSize: filterData.size,
           onChange: (page, pageSize) => {
-            dispatch(
-              setFilterData({
-                ...filterData,
-                page: page,
-                size: pageSize,
-              })
-            );
+            setFilter({
+              ...filterData,
+              page: page,
+              size: pageSize,
+            });
           },
         }}
         scroll={{ y: 500 }}
@@ -229,12 +240,14 @@ function PositionPage() {
         <ModalAddPosition
           openModal={openModalAddPosition}
           toggleShowModal={toggleModalAddPosition}
+          refreshPositionList={refreshPositionList}
         />
       )}
       {openModalEditPosition && (
         <ModalEditPosition
           openModal={openModalEditPosition}
           toggleShowModal={toggleModalEditPosition}
+          refreshPositionList={refreshPositionList}
         />
       )}
     </>

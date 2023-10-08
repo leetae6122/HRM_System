@@ -13,7 +13,7 @@ const labelStyle = {
   fontWeight: 'bold',
   color: 'grey',
 };
-const createItems = (employee) => [
+const createItems = (employee, department) => [
   {
     key: '1',
     label: <span style={labelStyle}>Employee Id</span>,
@@ -34,30 +34,39 @@ const createItems = (employee) => [
   },
   {
     key: '4',
+    label: <span style={labelStyle}>Manger</span>,
+    children: employee.managerId
+      ? `${employee.managerData.firstName} ${employee.managerData.lastName}`
+      : '',
+  },
+  {
+    key: '5',
     label: <span style={labelStyle}>Department</span>,
     children: employee.departmentData?.name,
   },
   {
-    key: '5',
+    key: '6',
     label: <span style={labelStyle}>Position</span>,
     children: employee.positionData.name,
   },
   {
-    key: '6',
-    label: <span style={labelStyle}>Office</span>,
-    children: employee.officeData?.title,
-  },
-  {
     key: '7',
-    label: <span style={labelStyle}>Office Location</span>,
-    children: employee.officeData
-      ? `${employee.officeData.streetAddress}, ${employee.officeData.city}, ${employee.officeData.stateProvince}`
-      : '',
+    label: <span style={labelStyle}>Office</span>,
+    children: department ? department.officeData.title : '',
   },
   {
     key: '8',
+    label: <span style={labelStyle}>Office Location</span>,
+    children: `${department.officeData.streetAddress}${
+      department.officeData.stateProvince
+        ? `, ${department.officeData.stateProvince}`
+        : ''
+    }, ${department.officeData.city}`,
+  },
+  {
+    key: '9',
     label: <span style={labelStyle}>Salary</span>,
-    children: employee.salaryData
+    children: employee.salaryData.totalSalary
       ? `${numberWithDot(employee.salaryData.totalSalary)} ${
           employee.salaryData.currencyData.code
         }`
@@ -77,8 +86,7 @@ EmployeeInformation.defaultProps = {
 
 function EmployeeInformation(props) {
   const { employee, loading } = props;
-  const items = createItems(employee);
-
+  const items = createItems(employee, employee.departmentData);
   return (
     <>
       <Card loading={loading}>

@@ -1,10 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
+    defaultFilter: {
+        page: 1,
+        size: 10,
+        where: {},
+        order: [['isActive', 'DESC'], ['username', 'ASC']]
+    },
     filterData: {
         page: 1,
         size: 10,
         where: {},
+        order: [['isActive', 'DESC'], ['username', 'ASC']]
     },
     userList: [],
     total: 0,
@@ -20,11 +27,7 @@ export const userSlice = createSlice({
             state.filterData = action.payload;
         },
         setDefaultFilterData: (state) => {
-            state.filterData = {
-                page: 1,
-                size: 10,
-                where: {},
-            };
+            state.filterData = state.defaultFilter;
         },
         setData: (state, action) => {
             state.userList = action.payload.userList;
@@ -37,10 +40,10 @@ export const userSlice = createSlice({
     },
 })
 
-export const { 
-    setFilterData, 
-    setData, 
-    setDefaultFilterData, 
-    setEditUserId 
+export const {
+    setFilterData,
+    setData,
+    setDefaultFilterData,
+    setEditUserId
 } = userSlice.actions;
 export default userSlice.reducer;

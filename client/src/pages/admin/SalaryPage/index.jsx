@@ -1,93 +1,88 @@
-import { useEffect, useState } from "react";
-import { Button, Divider, Space, Table } from "antd";
-import { toast } from "react-toastify";
-import { getFullDate } from "utils/handleDate";
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
-import currencyApi from "api/currencyApi";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setData,
-  setDefaultFilterData,
-  setEditSalaryId,
-  setFilterData,
-} from "reducers/salary";
-import { numberWithDot } from "utils/format";
-import Swal from "sweetalert2";
-import SalaryTableHeader from "./components/SalaryTableHeader";
-import salaryApi from "api/salaryApi";
-import ModalAddSalary from "./components/ComponentAddEdit/ModalAddSalary";
-import ModalEditSalary from "./components/ComponentAddEdit/ModalEditSalary";
+import { useEffect, useState } from 'react';
+import { Button, Divider, Space, Table } from 'antd';
+import { toast } from 'react-toastify';
+import { getFullDate } from 'utils/handleDate';
+import { DeleteFilled, EditFilled } from '@ant-design/icons';
+import currencyApi from 'api/currencyApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { setData, setEditSalaryId, setFilterData } from 'reducers/salary';
+import { numberWithDot } from 'utils/format';
+import Swal from 'sweetalert2';
+import SalaryTableHeader from './components/SalaryTableHeader';
+import salaryApi from 'api/salaryApi';
+import ModalAddSalary from './components/ComponentAddEdit/ModalAddSalary';
+import ModalEditSalary from './components/ComponentAddEdit/ModalEditSalary';
 
 const createColumns = (
   filtersCurrency,
   toggleModalEditSalary,
-  handleDeleteSalary
+  handleDeleteSalary,
 ) => [
   {
-    title: "Id",
-    dataIndex: "id",
-    key: "id",
+    title: 'Id',
+    dataIndex: 'id',
+    key: 'id',
     sorter: (a, b) => a.id - b.id,
     render: (id) => `#${id}`,
     width: 80,
   },
   {
-    title: "Basic Salary",
-    dataIndex: "basicSalary",
-    key: "basicSalary",
+    title: 'Basic Salary',
+    dataIndex: 'basicSalary',
+    key: 'basicSalary',
     sorter: (a, b) => a.basicSalary - b.basicSalary,
     render: (value) => numberWithDot(value),
   },
   {
-    title: "Allowance",
-    dataIndex: "allowance",
-    key: "allowance",
+    title: 'Allowance',
+    dataIndex: 'allowance',
+    key: 'allowance',
     sorter: (a, b) => a.allowance - b.allowance,
-    render: (value) => (value ? numberWithDot(value) : ""),
+    render: (value) => (value ? numberWithDot(value) : ''),
   },
   {
-    title: "Total Salary",
-    dataIndex: "totalSalary",
-    key: "totalSalary",
+    title: 'Total Salary',
+    dataIndex: 'totalSalary',
+    key: 'totalSalary',
     sorter: (a, b) => a.totalSalary - b.totalSalary,
     render: (value) => numberWithDot(value),
   },
   {
-    title: "Currency Code",
-    dataIndex: ["currencyData", "code"],
-    key: "currencyCode",
+    title: 'Currency Code',
+    dataIndex: ['currencyData', 'code'],
+    key: 'currencyCode',
     filters: filtersCurrency || null,
     onFilter: (value, record) => record.currencyData.code.indexOf(value) === 0,
   },
   {
-    title: "Employee",
-    dataIndex: "employeeData",
-    key: "employeeData",
+    title: 'Employee',
+    dataIndex: 'employeeData',
+    key: 'employeeData',
     render: (employee) => `${employee.firstName} ${employee.lastName}`,
   },
   {
-    title: "Added By",
-    dataIndex: "adderData",
-    key: "adderData",
+    title: 'Added By',
+    dataIndex: 'adderData',
+    key: 'adderData',
     render: (adder) => `${adder.firstName} ${adder.lastName}`,
   },
   {
-    title: "Date created",
-    dataIndex: "createdAt",
-    key: "createdAt",
+    title: 'Date created',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
     sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     render: (date) => getFullDate(date),
   },
   {
-    title: "Date update",
-    dataIndex: "updatedAt",
-    key: "updatedAt",
+    title: 'Date update',
+    dataIndex: 'updatedAt',
+    key: 'updatedAt',
     sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
     render: (date) => getFullDate(date),
   },
   {
-    title: "Action",
-    key: "action",
+    title: 'Action',
+    key: 'action',
     render: (_, record) => (
       <Space size="middle">
         <Button
@@ -108,9 +103,8 @@ const createColumns = (
 
 function SalaryPage() {
   const dispatch = useDispatch();
-  const { filterData, salaryList, total, currentPage } = useSelector(
-    (state) => state.salary
-  );
+  const { filterData, salaryList, total, currentPage, defaultFilter } =
+    useSelector((state) => state.salary);
   const [loadingData, setLoadingData] = useState(false);
   const [filtersCurrency, setFiltersCurrency] = useState([]);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
@@ -129,7 +123,7 @@ function SalaryPage() {
             salaryList: data,
             total: response.total,
             currentPage: response.currentPage,
-          })
+          }),
         );
         setLoadingData(false);
       } catch (error) {
@@ -160,21 +154,37 @@ function SalaryPage() {
     return () => controller.abort();
   }, []);
 
+  const setFilter = (filter) => {
+    dispatch(setFilterData(filter));
+  };
+
+  const refreshSalaryList = async () => {
+    const response = (await salaryApi.getList(defaultFilter)).data;
+    const data = response.data.map((item) => ({ key: item.id, ...item }));
+    dispatch(
+      setData({
+        salaryList: data,
+        total: response.total,
+        currentPage: response.currentPage,
+      }),
+    );
+  };
+
   const handleDeleteSalary = async (salaryId) => {
     Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
     })
       .then(async (result) => {
         if (result.isConfirmed) {
           await salaryApi.delete(salaryId);
-          Swal.fire("Deleted!", "Currency has been deleted.", "success");
-          dispatch(setDefaultFilterData());
+          Swal.fire('Deleted!', 'Salary has been deleted.', 'success');
+          await refreshSalaryList();
         }
       })
       .catch((error) => {
@@ -198,12 +208,12 @@ function SalaryPage() {
   const columns = createColumns(
     filtersCurrency,
     toggleModalEditSalary,
-    handleDeleteSalary
+    handleDeleteSalary,
   );
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: "bold" }}>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
         Salary List
       </Divider>
       <Table
@@ -214,6 +224,7 @@ function SalaryPage() {
           <SalaryTableHeader
             toggleModalAddSalary={toggleModalAddSalary}
             toggleShowFilterDrawer={toggleShowFilterDrawer}
+            setFilter={setFilter}
           />
         )}
         pagination={{
@@ -221,13 +232,11 @@ function SalaryPage() {
           current: currentPage,
           pageSize: filterData.size,
           onChange: (page, pageSize) => {
-            dispatch(
-              setFilterData({
-                ...filterData,
-                page: page,
-                size: pageSize,
-              })
-            );
+            setFilter({
+              ...filterData,
+              page: page,
+              size: pageSize,
+            });
           },
         }}
         scroll={{ y: 500 }}
@@ -243,12 +252,14 @@ function SalaryPage() {
         <ModalAddSalary
           openModal={openModalAddSalary}
           toggleShowModal={toggleModalAddSalary}
+          refreshSalaryList={refreshSalaryList}
         />
       )}
       {openModalEditSalary && (
         <ModalEditSalary
           openModal={openModalEditSalary}
           toggleShowModal={toggleModalEditSalary}
+          refreshSalaryList={refreshSalaryList}
         />
       )}
     </>

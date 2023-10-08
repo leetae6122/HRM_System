@@ -1,29 +1,29 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Modal } from "antd";
-import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData } from "reducers/employee";
-import { toast } from "react-toastify";
-import _ from "lodash";
-import EmployeeForm from "./EmployeeForm";
-import employeeApi from "api/employeeApi";
-import dayjs from "dayjs";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Modal } from 'antd';
+import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import _ from 'lodash';
+import EmployeeForm from './EmployeeForm';
+import employeeApi from 'api/employeeApi';
+import dayjs from 'dayjs';
 
 ModalEditEmployee.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
+  refreshEmployeeList: PropTypes.func,
 };
 
 ModalEditEmployee.defaultProps = {
   openModal: false,
   toggleShowModal: null,
+  refreshEmployeeList: null,
 };
 
 function ModalEditEmployee(props) {
-  const dispatch = useDispatch();
   const { editEmployeeId } = useSelector((state) => state.employee);
-  const { openModal, toggleShowModal } = props;
+  const { openModal, toggleShowModal, refreshEmployeeList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [editEmployee, setEditEmployee] = useState({});
 
@@ -35,11 +35,13 @@ function ModalEditEmployee(props) {
           const data = (await employeeApi.getById(editEmployeeId)).data;
           setEditEmployee({
             employeeId: data.id,
+            departmentId: data.departmentId,
+            managerId: data.managerId,
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
             phoneNumber: data.phoneNumber,
-            gender: data.gender,
+            gender: !!data.gender,
             address: data.address,
             dateBirth: dayjs(data.dateBirth),
             dateHired: dayjs(data.dateHired),
@@ -62,12 +64,12 @@ function ModalEditEmployee(props) {
       const data = _.omitBy(values, _.isNil);
       const response = await employeeApi.update(data);
       Swal.fire({
-        icon: "success",
+        icon: 'success',
         title: response.message,
         showConfirmButton: true,
-        confirmButtonText: "Done",
-      }).then((result) => {
-        dispatch(setDefaultFilterData());
+        confirmButtonText: 'Done',
+      }).then(async (result) => {
+        await refreshEmployeeList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -90,7 +92,7 @@ function ModalEditEmployee(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={"100vh"}
+        width={'100vh'}
         style={{ top: 20 }}
       >
         {!_.isEmpty(editEmployee) && (

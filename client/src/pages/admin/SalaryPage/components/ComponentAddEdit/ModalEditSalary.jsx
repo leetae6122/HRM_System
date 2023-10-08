@@ -1,28 +1,28 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Modal } from "antd";
-import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData } from "reducers/salary";
-import { toast } from "react-toastify";
-import _ from "lodash";
-import SalaryForm from "./SalaryForm";
-import salaryApi from "api/salaryApi";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Modal } from 'antd';
+import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import _ from 'lodash';
+import SalaryForm from './SalaryForm';
+import salaryApi from 'api/salaryApi';
 
 ModalEditSalary.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
+  refreshSalaryList: PropTypes.func,
 };
 
 ModalEditSalary.defaultProps = {
   openModal: false,
   toggleShowModal: null,
+  refreshSalaryList: null,
 };
 
 function ModalEditSalary(props) {
-  const dispatch = useDispatch();
   const { editSalaryId } = useSelector((state) => state.salary);
-  const { openModal, toggleShowModal } = props;
+  const { openModal, toggleShowModal, refreshSalaryList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [editSalary, setEditSalary] = useState({});
 
@@ -55,12 +55,12 @@ function ModalEditSalary(props) {
       const data = _.omitBy(values, _.isNil);
       const response = await salaryApi.update(data);
       Swal.fire({
-        icon: "success",
+        icon: 'success',
         title: response.message,
         showConfirmButton: true,
-        confirmButtonText: "Done",
-      }).then((result) => {
-        dispatch(setDefaultFilterData());
+        confirmButtonText: 'Done',
+      }).then(async (result) => {
+        await refreshSalaryList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();

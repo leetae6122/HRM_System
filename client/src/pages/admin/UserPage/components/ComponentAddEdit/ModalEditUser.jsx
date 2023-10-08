@@ -1,31 +1,31 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Modal } from "antd";
-import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData } from "reducers/user";
-import { toast } from "react-toastify";
-import _ from "lodash";
-import UserForm from "./UserForm";
-import userApi from "api/userApi";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Modal } from 'antd';
+import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import _ from 'lodash';
+import UserForm from './UserForm';
+import userApi from 'api/userApi';
 
 ModalEditUser.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
+  refreshUserList: PropTypes.func,
 };
 
 ModalEditUser.defaultProps = {
   openModal: false,
   toggleShowModal: null,
+  refreshUserList: null,
 };
 
 function ModalEditUser(props) {
-  const dispatch = useDispatch();
   const { editUserId } = useSelector((state) => state.user);
-  const { openModal, toggleShowModal } = props;
+  const { openModal, toggleShowModal, refreshUserList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [editUser, setEditUser] = useState({});
-  
+
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
@@ -37,7 +37,7 @@ function ModalEditUser(props) {
             username: data.username,
             password: data.password,
             isAdmin: !!data.isAdmin,
-            isActived: !!data.isActived,
+            isActive: !!data.isActive,
             employeeId: data.employeeId,
           });
         }
@@ -55,12 +55,12 @@ function ModalEditUser(props) {
       const data = _.omitBy(values, _.isNil);
       const response = await userApi.update(data);
       Swal.fire({
-        icon: "success",
+        icon: 'success',
         title: response.message,
         showConfirmButton: true,
-        confirmButtonText: "Done",
-      }).then((result) => {
-        dispatch(setDefaultFilterData());
+        confirmButtonText: 'Done',
+      }).then(async (result) => {
+        await refreshUserList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -83,7 +83,7 @@ function ModalEditUser(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={"100vh"}
+        width={'100vh'}
       >
         {!_.isEmpty(editUser) && (
           <UserForm

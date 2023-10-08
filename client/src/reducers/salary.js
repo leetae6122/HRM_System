@@ -1,10 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
+    defaultFilter: {
+        page: 1,
+        size: 10,
+        where: {},
+        order: [['id', 'ASC']]
+    },
     filterData: {
         page: 1,
         size: 10,
         where: {},
+        order: [['id', 'ASC']]
     },
     salaryList: [],
     total: 0,
@@ -20,11 +27,7 @@ export const salarySlice = createSlice({
             state.filterData = action.payload;
         },
         setDefaultFilterData: (state) => {
-            state.filterData = {
-                page: 1,
-                size: 10,
-                where: {},
-            };
+            state.filterData = state.defaultFilter;
         },
         setData: (state, action) => {
             state.salaryList = action.payload.salaryList;
@@ -37,10 +40,10 @@ export const salarySlice = createSlice({
     },
 })
 
-export const { 
-    setFilterData, 
-    setData, 
-    setDefaultFilterData, 
-    setEditSalaryId 
+export const {
+    setFilterData,
+    setData,
+    setDefaultFilterData,
+    setEditSalaryId
 } = salarySlice.actions;
 export default salarySlice.reducer;

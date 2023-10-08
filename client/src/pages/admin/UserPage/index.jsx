@@ -1,52 +1,47 @@
-import { useEffect, useState } from "react";
-import { Badge, Button, Divider, Space, Table, Tag } from "antd";
-import userApi from "api/userApi";
-import { toast } from "react-toastify";
-import { getFullDate } from "utils/handleDate";
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setData,
-  setDefaultFilterData,
-  setEditUserId,
-  setFilterData,
-} from "reducers/user";
-import UserTableHeader from "./components/UserTableHeader";
-import ModalAddUser from "./components/ComponentAddEdit/ModalAddUser";
-import Swal from "sweetalert2";
-import ModalEditUser from "./components/ComponentAddEdit/ModalEditUser";
+import { useEffect, useState } from 'react';
+import { Badge, Button, Divider, Space, Table, Tag } from 'antd';
+import userApi from 'api/userApi';
+import { toast } from 'react-toastify';
+import { getFullDate } from 'utils/handleDate';
+import { DeleteFilled, EditFilled } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { setData, setEditUserId, setFilterData } from 'reducers/user';
+import UserTableHeader from './components/UserTableHeader';
+import ModalAddUser from './components/ComponentAddEdit/ModalAddUser';
+import Swal from 'sweetalert2';
+import ModalEditUser from './components/ComponentAddEdit/ModalEditUser';
 
 const createColumns = (toggleModalEditUser, handleDeleteUser) => [
   {
-    title: "Id",
-    dataIndex: "id",
-    key: "id",
+    title: 'Id',
+    dataIndex: 'id',
+    key: 'id',
   },
   {
-    title: "Username",
-    dataIndex: "username",
-    key: "username",
+    title: 'Username',
+    dataIndex: 'username',
+    key: 'username',
     sorter: (a, b) => a.username.localeCompare(b.username),
   },
   {
-    title: "Name",
-    key: "name",
+    title: 'Name',
+    key: 'name',
     render: (_, record) =>
       `${record.profile.firstName} ${record.profile.lastName}`,
   },
   {
-    title: "Email",
-    dataIndex: ["profile", "email"],
-    key: "email",
+    title: 'Email',
+    dataIndex: ['profile', 'email'],
+    key: 'email',
     sorter: (a, b) => a.profile.email.localeCompare(b.email),
   },
   {
-    title: "Status",
-    key: "status",
-    dataIndex: "isActived",
-    render: (_, { isActived }) => (
+    title: 'Status',
+    key: 'status',
+    dataIndex: 'isActive',
+    render: (_, { isActive }) => (
       <>
-        {isActived ? (
+        {isActive ? (
           <Badge status="success" text="Actived" />
         ) : (
           <Badge status="error" text="Not activated" />
@@ -55,62 +50,62 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
     ),
     filters: [
       {
-        text: "Actived",
+        text: 'Actived',
         value: true,
       },
       {
-        text: "Not activated",
+        text: 'Not activated',
         value: false,
       },
     ],
     filterMultiple: false,
-    onFilter: (value, record) => record.isActived === value,
+    onFilter: (value, record) => record.isActive === value,
   },
   {
-    title: "Role",
-    key: "role",
-    dataIndex: "isAdmin",
+    title: 'Role',
+    key: 'role',
+    dataIndex: 'isAdmin',
     render: (_, { isAdmin }) => (
       <>
         <Tag
           style={{ padding: 8 }}
-          color={isAdmin ? "green" : "default"}
+          color={isAdmin ? 'green' : 'default'}
           key={isAdmin}
         >
-          {isAdmin ? "Admin" : "Staff"}
+          {isAdmin ? 'Admin' : 'Staff'}
         </Tag>
       </>
     ),
     filters: [
       {
-        text: "Admin",
+        text: 'Admin',
         value: true,
       },
       {
-        text: "Staff",
+        text: 'Staff',
         value: false,
       },
     ],
     filterMultiple: false,
-    onFilter: (value, record) => record.isActived === value,
+    onFilter: (value, record) => record.isActive === value,
   },
   {
-    title: "Date created",
-    dataIndex: "createdAt",
-    key: "createdAt",
+    title: 'Date created',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
     sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     render: (date) => getFullDate(date),
   },
   {
-    title: "Date update",
-    dataIndex: "updatedAt",
-    key: "updatedAt",
+    title: 'Date update',
+    dataIndex: 'updatedAt',
+    key: 'updatedAt',
     sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
     render: (date) => getFullDate(date),
   },
   {
-    title: "Action",
-    key: "action",
+    title: 'Action',
+    key: 'action',
     render: (_, record) => (
       <Space size="middle">
         <Button
@@ -131,9 +126,8 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
 
 function UserPage() {
   const dispatch = useDispatch();
-  const { filterData, userList, total, currentPage } = useSelector(
-    (state) => state.user
-  );
+  const { filterData, userList, total, currentPage, defaultFilter } =
+    useSelector((state) => state.user);
   const [loadingData, setLoadingData] = useState(false);
   const [openModalAddUser, setOpenModalAddUser] = useState(false);
   const [openModalEditUser, setOpenModalEditUser] = useState(false);
@@ -150,7 +144,7 @@ function UserPage() {
             userList: data,
             total: response.total,
             currentPage: response.currentPage,
-          })
+          }),
         );
         setLoadingData(false);
       } catch (error) {
@@ -162,21 +156,37 @@ function UserPage() {
     return () => controller.abort();
   }, [dispatch, filterData]);
 
+  const setFilter = (filter) => {
+    dispatch(setFilterData(filter));
+  };
+
+  const refreshUserList = async () => {
+    const response = (await userApi.getList(defaultFilter)).data;
+    const data = response.data.map((item) => ({ key: item.id, ...item }));
+    dispatch(
+      setData({
+        userList: data,
+        total: response.total,
+        currentPage: response.currentPage,
+      }),
+    );
+  };
+
   const handleDeleteUser = async (userId) => {
     Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
     })
       .then(async (result) => {
         if (result.isConfirmed) {
           await userApi.delete(userId);
-          Swal.fire("Deleted!", "Currency has been deleted.", "success");
-          dispatch(setDefaultFilterData());
+          Swal.fire('Deleted!', 'User has been deleted.', 'success');
+          await refreshUserList();
         }
       })
       .catch((error) => {
@@ -197,26 +207,27 @@ function UserPage() {
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: "bold" }}>User List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>User List</Divider>
       <Table
         columns={columns}
         dataSource={userList}
         bordered
         title={() => (
-          <UserTableHeader toggleModalAddUser={toggleModalAddUser} />
+          <UserTableHeader
+            toggleModalAddUser={toggleModalAddUser}
+            setFilter={setFilter}
+          />
         )}
         pagination={{
           total,
           current: currentPage,
           pageSize: filterData.size,
           onChange: (page, pageSize) => {
-            dispatch(
-              setFilterData({
-                ...filterData,
-                page: page,
-                size: pageSize,
-              })
-            );
+            setFilter({
+              ...filterData,
+              page: page,
+              size: pageSize,
+            });
           },
         }}
         scroll={{ y: 500 }}
@@ -226,12 +237,14 @@ function UserPage() {
         <ModalAddUser
           openModal={openModalAddUser}
           toggleShowModal={toggleModalAddUser}
+          refreshUserList={refreshUserList}
         />
       )}
       {openModalEditUser && (
         <ModalEditUser
           openModal={openModalEditUser}
           toggleShowModal={toggleModalEditUser}
+          refreshUserList={refreshUserList}
         />
       )}
     </>

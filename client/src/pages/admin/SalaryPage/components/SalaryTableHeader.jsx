@@ -1,67 +1,61 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Button, Col, Row, Space } from "antd";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Button, Col, Row, Space } from 'antd';
 import {
   FilterFilled,
   PlusCircleFilled,
   ReloadOutlined,
-} from "@ant-design/icons";
-import Search from "antd/es/input/Search";
-import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData, setFilterData } from "reducers/salary";
-import { gold, green } from "@ant-design/colors";
-import _ from "lodash";
+} from '@ant-design/icons';
+import Search from 'antd/es/input/Search';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDefaultFilterData } from 'reducers/salary';
+import { gold, green } from '@ant-design/colors';
+import _ from 'lodash';
 
 SalaryTableHeader.propTypes = {
   toggleModalAddSalary: PropTypes.func,
   toggleShowFilterDrawer: PropTypes.func,
+  setFilter: PropTypes.func,
 };
 
 SalaryTableHeader.defaultProps = {
   toggleModalAddSalary: null,
   toggleShowFilterDrawer: null,
-};
-
-const defaultFilter = {
-  page: 1,
-  size: 10,
-  where: {},
+  setFilter: null,
 };
 
 function SalaryTableHeader(props) {
-  const { toggleModalAddSalary, toggleShowFilterDrawer } = props;
+  const { toggleModalAddSalary, toggleShowFilterDrawer, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData } = useSelector((state) => state.salary);
-  const [inputValue, setInputValue] = useState("");
+  const { filterData, defaultFilter } = useSelector((state) => state.salary);
+  const [inputValue, setInputValue] = useState('');
 
   const handleSearch = (value) => {
     setLoadingSearch(true);
-    dispatch(
-      setFilterData({
-        ...filterData,
-        where: {
-          $or: [
-            { id: { $like: `%${value}%` } },
-          ],
-        },
-        employeeWhere: {
-          $or: _.flatten(
-            _.map(["firstName", "lastName", "email"], function (item) {
-              return _.map(value.split(" "), function (q) {
-                return { [item]: { $like: "%" + q + "%" } };
-              });
-            })
-          ),
-        },
-      })
-    );
+    setFilter({
+      ...filterData,
+      page: 1,
+      size: 10,
+      where: {
+        $or: [{ id: { $like: `%${value}%` } }],
+      },
+      employeeWhere: {
+        $or: _.flatten(
+          _.map(['firstName', 'lastName', 'email'], function (item) {
+            return _.map(value.split(' '), function (q) {
+              return { [item]: { $like: '%' + q + '%' } };
+            });
+          }),
+        ),
+      },
+    });
     setLoadingSearch(false);
   };
 
   const resetFilter = () => {
     dispatch(setDefaultFilterData());
-    setInputValue("");
+    setInputValue('');
   };
 
   return (
@@ -77,7 +71,7 @@ function SalaryTableHeader(props) {
         />
       </Col>
       <Col span={14}>
-        <Space style={{ float: "right" }}>
+        <Space style={{ float: 'right' }}>
           {!_.isEqual(filterData, defaultFilter) && (
             <Button
               type="primary"

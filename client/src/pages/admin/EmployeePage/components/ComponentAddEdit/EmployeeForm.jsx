@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Form,
   Input,
@@ -10,11 +10,13 @@ import {
   Select,
   Row,
   Upload,
-} from "antd";
-import _ from "lodash";
-import positionApi from "api/positionApi";
-import { toast } from "react-toastify";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+} from 'antd';
+import _ from 'lodash';
+import positionApi from 'api/positionApi';
+import { toast } from 'react-toastify';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import departmentApi from 'api/departmentApi';
+import employeeApi from 'api/employeeApi';
 
 EmployeeForm.propTypes = {
   onCancel: PropTypes.func,
@@ -28,12 +30,14 @@ EmployeeForm.defaultProps = {
   onSubmit: null,
   loading: false,
   initialValues: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
+    departmentId: null,
+    managerId: null,
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
     gender: null,
-    address: "",
+    address: '',
     dateBirth: null,
     dateHired: null,
     positionId: null,
@@ -43,18 +47,18 @@ EmployeeForm.defaultProps = {
 };
 
 const checkFile = (file) => {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
-    toast.error("You can only upload JPG/PNG file!");
+    toast.error('You can only upload JPG/PNG file!');
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    toast.error("Image must smaller than 2MB!");
+    toast.error('Image must smaller than 2MB!');
   }
   return isJpgOrPng && isLt2M;
 };
 
-const dateFormat = "DD/MM/YYYY";
+const dateFormat = 'DD/MM/YYYY';
 
 const wrapperCol = { offset: 8, span: 16 };
 
@@ -62,6 +66,8 @@ function EmployeeForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
   const [submittable, setSubmittable] = useState(false);
   const [positionOptions, setPositionOptions] = useState([]);
+  const [managerOptions, setManagerOptions] = useState([]);
+  const [departmentOptions, setDepartmentOptions] = useState([]);
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [imageUrl, setImageUrl] = useState(initialValues.avatar);
   const [form] = Form.useForm();
@@ -77,13 +83,13 @@ function EmployeeForm(props) {
           setSubmittable(false);
         }
       },
-      () => setSubmittable(false)
+      () => setSubmittable(false),
     );
   }, [values, form, initialValues]);
 
   useEffect(() => {
     const controller = new AbortController();
-    const fetchData = async () => {
+    const fetchPositionOptions = async () => {
       try {
         const response = await positionApi.getAll();
         const options = response.data.map((position) => ({
@@ -95,7 +101,33 @@ function EmployeeForm(props) {
         toast.error(error);
       }
     };
-    fetchData();
+    const fetchDepartmentOptions = async () => {
+      try {
+        const response = await departmentApi.getAll();
+        const options = response.data.map((department) => ({
+          value: department.id,
+          label: `${department.name} - ${department.officeData.title}`,
+        }));
+        setDepartmentOptions(options);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    const fetchManagerOptions = async () => {
+      try {
+        const response = await employeeApi.getAll();
+        const options = response.data.map((employee) => ({
+          value: employee.id,
+          label: `${employee.firstName} ${employee.lastName} - ${employee.departmentData.officeData.title}`,
+        }));
+        setManagerOptions(options);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchPositionOptions();
+    fetchManagerOptions();
+    fetchDepartmentOptions();
     return () => controller.abort();
   }, []);
 
@@ -175,7 +207,7 @@ function EmployeeForm(props) {
                   src={imageUrl}
                   alt="avatar"
                   style={{
-                    width: "100%",
+                    width: '100%',
                   }}
                 />
               ) : (
@@ -195,11 +227,69 @@ function EmployeeForm(props) {
             </Form.Item>
           </Col>
         ) : null}
+        <Col span={24}>
+          <Form.Item
+            name="departmentId"
+            label="Department"
+            hasFeedback
+            rules={[{ required: true, message: 'Please select department!' }]}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
+          >
+            <Select
+              showSearch
+              style={{
+                width: '100%',
+              }}
+              placeholder="Search to Select"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.label ?? '').includes(input)
+              }
+              filterSort={(optionA, optionB) =>
+                (optionA?.label ?? '')
+                  .toLowerCase()
+                  .localeCompare((optionB?.label ?? '').toLowerCase())
+              }
+              options={departmentOptions}
+              disabled={loading}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item
+            name="managerId"
+            label="Manager"
+            hasFeedback
+            rules={[{ required: true, message: 'Please select manager!' }]}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
+          >
+            <Select
+              showSearch
+              style={{
+                width: '100%',
+              }}
+              placeholder="Search to Select"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.label ?? '').includes(input)
+              }
+              filterSort={(optionA, optionB) =>
+                (optionA?.label ?? '')
+                  .toLowerCase()
+                  .localeCompare((optionB?.label ?? '').toLowerCase())
+              }
+              options={managerOptions}
+              disabled={loading}
+            />
+          </Form.Item>
+        </Col>
         <Col span={12}>
           <Form.Item
             name="firstName"
             label="First Name"
-            rules={[{ required: true, message: "Please input first name!" }]}
+            rules={[{ required: true, message: 'Please input first name!' }]}
           >
             <Input placeholder="Enter first name" disabled={loading} />
           </Form.Item>
@@ -208,7 +298,7 @@ function EmployeeForm(props) {
           <Form.Item
             name="lastName"
             label="Last Name"
-            rules={[{ required: true, message: "Please input last name!" }]}
+            rules={[{ required: true, message: 'Please input last name!' }]}
           >
             <Input placeholder="Enter last name" disabled={loading} />
           </Form.Item>
@@ -220,10 +310,10 @@ function EmployeeForm(props) {
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
             rules={[
-              { required: true, message: "Please input email!" },
+              { required: true, message: 'Please input email!' },
               {
-                type: "email",
-                message: "The email entered is not a valid email!",
+                type: 'email',
+                message: 'The email entered is not a valid email!',
               },
             ]}
           >
@@ -237,14 +327,14 @@ function EmployeeForm(props) {
             labelCol={{ span: 5 }}
             wrapperCol={{ span: 19 }}
             rules={[
-              { required: true, message: "Please input phone number!" },
+              { required: true, message: 'Please input phone number!' },
               () => ({
                 validator(_, value) {
                   if (!value || Number(value)) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error("The phone number must have a number!")
+                    new Error('The phone number must have a number!'),
                   );
                 },
               }),
@@ -254,7 +344,7 @@ function EmployeeForm(props) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error("Phone number must have 10 digits!")
+                    new Error('Phone number must have 10 digits!'),
                   );
                 },
               }),
@@ -272,7 +362,7 @@ function EmployeeForm(props) {
           <Form.Item
             name="gender"
             label="Gender"
-            rules={[{ required: true, message: "Please select gender!" }]}
+            rules={[{ required: true, message: 'Please select gender!' }]}
           >
             <Select disabled={loading} placeholder="Select gender">
               <Select.Option value={true}>Male</Select.Option>
@@ -285,7 +375,7 @@ function EmployeeForm(props) {
             name="dateBirth"
             label="Date of birth"
             rules={[
-              { required: true, message: "Please select date of birth!" },
+              { required: true, message: 'Please select date of birth!' },
             ]}
           >
             <DatePicker
@@ -301,7 +391,7 @@ function EmployeeForm(props) {
             label="Date of hire"
             labelCol={{ span: 9 }}
             wrapperCol={{ span: 15 }}
-            rules={[{ required: true, message: "Please select date of hire!" }]}
+            rules={[{ required: true, message: 'Please select date of hire!' }]}
           >
             <DatePicker
               disabled={loading}
@@ -315,22 +405,22 @@ function EmployeeForm(props) {
             name="positionId"
             label="Position"
             hasFeedback
-            rules={[{ required: true, message: "Please select position!" }]}
+            rules={[{ required: true, message: 'Please select position!' }]}
           >
             <Select
               showSearch
               style={{
-                width: "100%",
+                width: '100%',
               }}
               placeholder="Search to Select"
               optionFilterProp="children"
               filterOption={(input, option) =>
-                (option?.label ?? "").includes(input)
+                (option?.label ?? '').includes(input)
               }
               filterSort={(optionA, optionB) =>
-                (optionA?.label ?? "")
+                (optionA?.label ?? '')
                   .toLowerCase()
-                  .localeCompare((optionB?.label ?? "").toLowerCase())
+                  .localeCompare((optionB?.label ?? '').toLowerCase())
               }
               options={positionOptions}
               disabled={loading}
@@ -343,7 +433,7 @@ function EmployeeForm(props) {
             label="Address"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
-            rules={[{ required: true, message: "Please input address!" }]}
+            rules={[{ required: true, message: 'Please input address!' }]}
           >
             <Input.TextArea
               rows={3}
@@ -354,12 +444,12 @@ function EmployeeForm(props) {
         </Col>
         <Col span={24}>
           <Form.Item wrapperCol={wrapperCol}>
-            <Space style={{ float: "right" }}>
+            <Space style={{ float: 'right' }}>
               <Button htmlType="button" onClick={handleCancel}>
                 Cancel
               </Button>
               <Button type="primary" htmlType="submit" disabled={!submittable}>
-                {initialValues.employeeId ? "Save" : "Add"}
+                {initialValues.employeeId ? 'Save' : 'Add'}
               </Button>
             </Space>
           </Form.Item>

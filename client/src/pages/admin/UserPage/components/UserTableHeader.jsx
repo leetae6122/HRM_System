@@ -1,62 +1,58 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Button, Col, Row, Space } from "antd";
-import { PlusCircleFilled, ReloadOutlined } from "@ant-design/icons";
-import Search from "antd/es/input/Search";
-import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData, setFilterData } from "reducers/position";
-import { gold, green } from "@ant-design/colors";
-import _ from "lodash";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Button, Col, Row, Space } from 'antd';
+import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
+import Search from 'antd/es/input/Search';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDefaultFilterData } from 'reducers/user';
+import { gold, green } from '@ant-design/colors';
+import _ from 'lodash';
 
 UserTableHeader.propTypes = {
   toggleModalAddUser: PropTypes.func,
+  setFilter: PropTypes.func,
 };
 
 UserTableHeader.defaultProps = {
   toggleModalAddUser: null,
-};
-
-const defaultFilter = {
-  page: 1,
-  size: 10,
-  where: {},
+  setFilter: null,
 };
 
 function UserTableHeader(props) {
-  const { toggleModalAddUser } = props;
+  const { toggleModalAddUser, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData } = useSelector((state) => state.position);
-  const [inputValue, setInputValue] = useState("");
+  const { filterData, defaultFilter } = useSelector((state) => state.user);
+  const [inputValue, setInputValue] = useState('');
 
   const handleSearch = (value) => {
     setLoadingSearch(true);
-    dispatch(
-      setFilterData({
-        ...filterData,
-        where: {
-          $or: [
-            { id: { $like: `%${value}%` } },
-            { username: { $like: `%${value}%` } },
-          ],
-        },
-        employeeWhere: {
-          $or: _.flatten(
-            _.map(["firstName", "lastName", "email"], function (item) {
-              return _.map(value.split(" "), function (q) {
-                return { [item]: { $like: "%" + q + "%" } };
-              });
-            })
-          ),
-        },
-      })
-    );
+    setFilter({
+      ...filterData,
+      page: 1,
+      size: 10,
+      where: {
+        $or: [
+          { id: { $like: `%${value}%` } },
+          { username: { $like: `%${value}%` } },
+        ],
+      },
+      employeeWhere: {
+        $or: _.flatten(
+          _.map(['firstName', 'lastName', 'email'], function (item) {
+            return _.map(value.split(' '), function (q) {
+              return { [item]: { $like: '%' + q + '%' } };
+            });
+          }),
+        ),
+      },
+    });
     setLoadingSearch(false);
   };
 
   const resetFilter = () => {
     dispatch(setDefaultFilterData());
-    setInputValue("");
+    setInputValue('');
   };
 
   return (
@@ -72,7 +68,7 @@ function UserTableHeader(props) {
         />
       </Col>
       <Col span={14}>
-        <Space style={{ float: "right" }}>
+        <Space style={{ float: 'right' }}>
           {!_.isEqual(filterData, defaultFilter) && (
             <Button
               type="primary"

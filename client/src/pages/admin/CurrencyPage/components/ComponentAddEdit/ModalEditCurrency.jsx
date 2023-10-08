@@ -1,28 +1,28 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Modal } from "antd";
-import Swal from "sweetalert2";
-import currencyApi from "api/currencyApi";
-import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData } from "reducers/currency";
-import { toast } from "react-toastify";
-import _ from "lodash";
-import CurrencyForm from "./CurrencyForm";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Modal } from 'antd';
+import Swal from 'sweetalert2';
+import currencyApi from 'api/currencyApi';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import _ from 'lodash';
+import CurrencyForm from './CurrencyForm';
 
 ModalEditCurrency.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
+  refreshCurrencyList: PropTypes.func,
 };
 
 ModalEditCurrency.defaultProps = {
   openModal: false,
   toggleShowModal: null,
+  refreshCurrencyList: null,
 };
 
 function ModalEditCurrency(props) {
-  const dispatch = useDispatch();
   const { editCurrencyId } = useSelector((state) => state.currency);
-  const { openModal, toggleShowModal } = props;
+  const { openModal, toggleShowModal, refreshCurrencyList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [editCurrency, setEditCurrency] = useState({});
 
@@ -53,12 +53,12 @@ function ModalEditCurrency(props) {
       const data = _.omitBy(values, _.isNil);
       const response = await currencyApi.update(data);
       Swal.fire({
-        icon: "success",
+        icon: 'success',
         title: response.message,
         showConfirmButton: true,
-        confirmButtonText: "Done",
-      }).then((result) => {
-        dispatch(setDefaultFilterData());
+        confirmButtonText: 'Done',
+      }).then(async (result) => {
+        await refreshCurrencyList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();

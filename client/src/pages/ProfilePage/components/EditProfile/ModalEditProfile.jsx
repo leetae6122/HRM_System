@@ -13,12 +13,12 @@ import dayjs from "dayjs";
 
 ModalEditProfile.propTypes = {
   openModal: PropTypes.bool,
-  handleShowModal: PropTypes.func,
+  toggleShowModal: PropTypes.func,
 };
 
 ModalEditProfile.defaultProps = {
   openModal: false,
-  handleShowModal: null,
+  toggleShowModal: null,
 };
 
 function ModalEditProfile(props) {

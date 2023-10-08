@@ -21,7 +21,7 @@ UserForm.defaultProps = {
     username: '',
     password: '',
     isAdmin: false,
-    isActived: false,
+    isActive: false,
     employeeId: null,
   },
 };
@@ -246,7 +246,7 @@ function UserForm(props) {
           <Radio.Button value={true}>Admin</Radio.Button>
         </Radio.Group>
       </Form.Item>
-      <Form.Item name="isActived" label="Status">
+      <Form.Item name="isActive" label="Status">
         <Radio.Group disabled={loading} buttonStyle="solid">
           <Radio.Button value={false}>Not Actived</Radio.Button>
           <Radio.Button value={true}>Actived</Radio.Button>
@@ -258,7 +258,7 @@ function UserForm(props) {
             Cancel
           </Button>
           <Button type="primary" htmlType="submit" disabled={!submittable}>
-            {initialValues.positionId ? 'Save' : 'Add'}
+            {initialValues.userId ? 'Save' : 'Add'}
           </Button>
         </Space>
       </Form.Item>

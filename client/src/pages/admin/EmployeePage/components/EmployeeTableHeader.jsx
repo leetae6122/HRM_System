@@ -1,59 +1,61 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Button, Col, Row, Space } from "antd";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Button, Col, Row, Space } from 'antd';
 import {
   FilterFilled,
   PlusCircleFilled,
   ReloadOutlined,
-} from "@ant-design/icons";
-import Search from "antd/es/input/Search";
-import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData, setFilterData } from "reducers/employee";
-import { gold, green } from "@ant-design/colors";
-import _ from "lodash";
+} from '@ant-design/icons';
+import Search from 'antd/es/input/Search';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDefaultFilterData } from 'reducers/employee';
+import { gold, green } from '@ant-design/colors';
+import _ from 'lodash';
 
 EmployeeTableHeader.propTypes = {
   toggleModalAddEmployee: PropTypes.func,
   toggleShowFilterDrawer: PropTypes.func,
+  setFilter: PropTypes.func,
 };
 
 EmployeeTableHeader.defaultProps = {
   toggleModalAddEmployee: null,
   toggleShowFilterDrawer: null,
+  setFilter: null,
 };
 
 function EmployeeTableHeader(props) {
-  const { toggleModalAddEmployee, toggleShowFilterDrawer } = props;
+  const { toggleModalAddEmployee, toggleShowFilterDrawer, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector((state) => state.employee);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
 
   const handleSearch = (value) => {
     setLoadingSearch(true);
-    dispatch(
-      setFilterData({
-        ...filterData,
-        where: {
-          $or: _.flatten(
-            _.map(
-              ["firstName", "lastName", "email", "phoneNumber", "id"],
-              function (item) {
-                return _.map(value.split(" "), function (q) {
-                  return { [item]: { $like: "%" + q + "%" } };
-                });
-              }
-            )
+    setFilter({
+      ...filterData,
+      page: 1,
+      size: 10,
+      where: {
+        $or: _.flatten(
+          _.map(
+            ['firstName', 'lastName', 'email', 'phoneNumber', 'id'],
+            function (item) {
+              return _.map(value.split(' '), function (q) {
+                return { [item]: { $like: '%' + q + '%' } };
+              });
+            },
           ),
-        },
-      })
-    );
+        ),
+      },
+    });
     setLoadingSearch(false);
   };
 
   const resetFilter = () => {
     dispatch(setDefaultFilterData());
-    setInputValue("");
+    setInputValue('');
   };
 
   return (
@@ -69,7 +71,7 @@ function EmployeeTableHeader(props) {
         />
       </Col>
       <Col span={14}>
-        <Space style={{ float: "right" }}>
+        <Space style={{ float: 'right' }}>
           {!_.isEqual(filterData, defaultFilter) && (
             <Button
               type="primary"

@@ -1,19 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    filterData: {
-        page: 1,
-        size: 10,
-        where: {
-            dateOff: { $is: null }
-        },
-    },
     defaultFilter: {
         page: 1,
         size: 10,
         where: {
             dateOff: { $is: null }
         },
+        order: [['firstName', 'ASC']]
+    },
+    filterData: {
+        page: 1,
+        size: 10,
+        where: {
+            dateOff: { $is: null }
+        },
+        order: [['firstName', 'ASC']]
     },
     employeeList: [],
     total: 0,

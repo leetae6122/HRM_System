@@ -1,26 +1,25 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Modal } from "antd";
-import Swal from "sweetalert2";
-import { useDispatch } from "react-redux";
-import { setDefaultFilterData } from "reducers/employee";
-import { toast } from "react-toastify";
-import EmployeeForm from "./EmployeeForm";
-import employeeApi from "api/employeeApi";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Modal } from 'antd';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
+import EmployeeForm from './EmployeeForm';
+import employeeApi from 'api/employeeApi';
 
 ModalAddEmployee.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
+  refreshEmployeeList: PropTypes.func,
 };
 
 ModalAddEmployee.defaultProps = {
   openModal: false,
   toggleShowModal: null,
+  refreshEmployeeList: null,
 };
 
 function ModalAddEmployee(props) {
-  const dispatch = useDispatch();
-  const { openModal, toggleShowModal } = props;
+  const { openModal, toggleShowModal, refreshEmployeeList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const handleAddEmployee = async (values) => {
@@ -28,12 +27,12 @@ function ModalAddEmployee(props) {
       setConfirmLoading(true);
       const response = await employeeApi.create(values);
       Swal.fire({
-        icon: "success",
+        icon: 'success',
         title: response.message,
         showConfirmButton: true,
-        confirmButtonText: "Done",
-      }).then((result) => {
-        dispatch(setDefaultFilterData());
+        confirmButtonText: 'Done',
+      }).then(async (result) => {
+        await refreshEmployeeList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -56,7 +55,7 @@ function ModalAddEmployee(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={"100vh"}
+        width={'100vh'}
         style={{ top: 40 }}
       >
         <EmployeeForm

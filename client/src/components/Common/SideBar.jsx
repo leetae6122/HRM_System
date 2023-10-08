@@ -60,9 +60,18 @@ function SideBar() {
       ),
     ]),
     getItem("Organization", "sub3", <GlobalOutlined />, [
-      getItem("Office", "7"),
-      getItem("Department", "8"),
-      getItem("Country", "9"),
+      getItem(
+        <Link to={"/admin/country"} replace>Country</Link>,
+        "/admin/country"
+      ),
+      getItem(
+        <Link to={"/admin/office"} replace>Office</Link>,
+        "/admin/office"
+      ),
+      getItem(
+        <Link to={"/admin/department"} replace>Department</Link>,
+        "/admin/department"
+      ),
     ]),
     getItem("Attendance", "10", <CalendarOutlined />),
     getItem("Leave", "11", <UserDeleteOutlined />),

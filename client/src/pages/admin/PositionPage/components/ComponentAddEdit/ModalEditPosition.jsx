@@ -1,31 +1,33 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Modal } from "antd";
-import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-import { setDefaultFilterData } from "reducers/position";
-import { toast } from "react-toastify";
-import _ from "lodash";
-import positionApi from "api/positionApi";
-import PositionForm from "./PositionForm";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Modal } from 'antd';
+import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import _ from 'lodash';
+import positionApi from 'api/positionApi';
+import PositionForm from './PositionForm';
 
 ModalEditPosition.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
+  refreshPositionList: PropTypes.func,
 };
 
 ModalEditPosition.defaultProps = {
   openModal: false,
   toggleShowModal: null,
+  refreshPositionList: null,
 };
 
 function ModalEditPosition(props) {
-  const dispatch = useDispatch();
-  const { editPositionId } = useSelector((state) => state.position);
-  const { openModal, toggleShowModal } = props;
+  const { editPositionId } = useSelector(
+    (state) => state.position,
+  );
+  const { openModal, toggleShowModal, refreshPositionList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [editPosition, setEditPosition] = useState({});
-  
+
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
@@ -54,12 +56,12 @@ function ModalEditPosition(props) {
       const data = _.omitBy(values, _.isNil);
       const response = await positionApi.update(data);
       Swal.fire({
-        icon: "success",
+        icon: 'success',
         title: response.message,
         showConfirmButton: true,
-        confirmButtonText: "Done",
-      }).then((result) => {
-        dispatch(setDefaultFilterData());
+        confirmButtonText: 'Done',
+      }).then(async (result) => {
+        await refreshPositionList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
