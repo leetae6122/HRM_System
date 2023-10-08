@@ -37,7 +37,14 @@ class OfficeService {
             offset,
             limit,
             order,
-            attributes
+            attributes,
+            include: [
+                {
+                    model: db.Country, as: 'countryData',
+                },
+            ],
+            raw: true,
+            nest: true
         });
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;

@@ -37,7 +37,9 @@ class CurrencyService {
             offset,
             limit,
             order,
-            attributes
+            attributes,
+            raw: true,
+            nest: true
         });
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;

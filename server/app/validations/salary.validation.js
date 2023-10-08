@@ -5,18 +5,14 @@ const createSalarySchema = Joi.object({
     allowance: Joi.number().min(0).default(0),
     totalSalary: Joi.number().min(0).optional(),
     currencyId: Joi.number().integer().required(),
-    employeeId: Joi.string().guid({
-        version: [
-            'uuidv4'
-        ]
-    }).required()
+    employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
 });
 
 const updateSalarySchema = Joi.object({
     salaryId: Joi.number().integer().required(),
-    basicSalary: Joi.string().min(0).optional(),
-    allowance: Joi.string().min(0).optional(),
-    totalSalary: Joi.string().min(0).optional(),
+    basicSalary: Joi.number().min(0).optional(),
+    allowance: Joi.number().min(0).optional(),
+    totalSalary: Joi.number().min(0).optional(),
     currencyId: Joi.number().integer().optional(),
 }).required().min(1);
 

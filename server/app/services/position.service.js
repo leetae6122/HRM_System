@@ -42,7 +42,9 @@ class PositionService {
             limit,
             order,
             attributes,
-            include: { model: db.Currency, as: 'currencyData' }
+            include: { model: db.Currency, as: 'currencyData' },
+            raw: true,
+            nest: true
         });
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;

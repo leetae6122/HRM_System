@@ -7,12 +7,8 @@ const adminCreateUserSchema = Joi.object({
         .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'))
         .required(),
     isAdmin: Joi.boolean().default(false),
-    isActived: Joi.boolean().default(false),
-    employeeId: Joi.string().guid({
-        version: [
-            'uuidv4'
-        ]
-    }).required()
+    isActive: Joi.boolean().default(false),
+    employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
 });
 
 const changPasswordSchema = Joi.object({
@@ -26,14 +22,14 @@ const changPasswordSchema = Joi.object({
 });
 
 const adminUpdateUserSchema = Joi.object({
-    userId: Joi.string().required(),
+    userId: Joi.string().guid({ version: ['uuidv4'] }).required(),
     username: Joi.string().max(100).optional(),
     password: Joi.string()
         .max(100)
         .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'))
         .optional(),
     isAdmin: Joi.boolean().optional(),
-    isActived: Joi.boolean().optional()
+    isActive: Joi.boolean().optional()
 }).required().min(1);
 
 

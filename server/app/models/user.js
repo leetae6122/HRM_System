@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         refreshTokenHash: DataTypes.STRING,
         resetPasswordHash: DataTypes.STRING,
         isAdmin: DataTypes.BOOLEAN,
-        isActived: DataTypes.BOOLEAN,
+        isActive: DataTypes.BOOLEAN,
         employeeId: DataTypes.INTEGER,
     }, {
         sequelize,

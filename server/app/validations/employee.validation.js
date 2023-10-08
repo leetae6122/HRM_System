@@ -15,6 +15,7 @@ const adminCreateEmployeeSchema = Joi.object({
     avatar: Joi.any().optional(),
     positionId: Joi.number().integer().required(),
     departmentId: Joi.number().integer().required(),
+    managerId: Joi.string().guid({ version: ['uuidv4'] }).required(),
 });
 
 const updateEmployeeSchema = Joi.object().keys({
@@ -27,7 +28,7 @@ const updateEmployeeSchema = Joi.object().keys({
 }).required().min(1);
 
 const adminUpdateEmployeeSchema = updateEmployeeSchema.keys({
-    employeeId: Joi.string().required(),
+    employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
     firstName: Joi.string().max(80).optional(),
     lastName: Joi.string().max(80).optional(),
     email: Joi.string().email({ minDomainSegments: 2 }).max(100).optional(),
@@ -37,10 +38,11 @@ const adminUpdateEmployeeSchema = updateEmployeeSchema.keys({
     avatar: Joi.any().optional(),
     positionId: Joi.number().integer().optional(),
     departmentId: Joi.number().integer().optional(),
+    managerId: Joi.string().guid({ version: ['uuidv4'] }).optional(),
 }).required().min(1);
 
-module.exports = { 
-    adminCreateEmployeeSchema, 
-    updateEmployeeSchema, 
+module.exports = {
+    adminCreateEmployeeSchema,
+    updateEmployeeSchema,
     adminUpdateEmployeeSchema
 };

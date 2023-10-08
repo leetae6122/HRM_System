@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         name: DataTypes.STRING,
-        countryCode: DataTypes.STRING,
+        countryCode: DataTypes.INTEGER,
         isoCode: DataTypes.STRING
     }, {
         sequelize,

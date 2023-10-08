@@ -6,11 +6,6 @@ const uuid = require('uuid');
 
 module.exports = (sequelize, DataTypes) => {
     class Employee extends Model {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
         static associate(models) {
             Employee.hasOne(models.User, { foreignKey: 'employeeId', as: 'userData' });
 
@@ -18,13 +13,16 @@ module.exports = (sequelize, DataTypes) => {
             Employee.hasMany(models.Salary, { foreignKey: 'addedBy', as: 'salaryAddedData' });
 
             Employee.belongsTo(models.Position, { foreignKey: 'positionId', as: 'positionData' });
-            // Employee.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData' });
+            Employee.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData' });
 
-            // Employee.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'departmentData' });
-            Employee.hasOne(models.Department, { foreignKey: 'managerId', as: 'managerData'});
+            Employee.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'departmentData' });
+            Employee.hasOne(models.Department, { foreignKey: 'managerId', as: 'manageDepartment'});
 
             // Employee.hasMany(models.Leave, { foreignKey: 'employeeId', as: 'employeeData' });
             // Employee.hasMany(models.Leave, { foreignKey: 'acceptBy', as: 'accepterData' });
+
+            // Employee.hasMany(models.Attendance, { foreignKey: 'employeeId', as: 'employeeData' });
+            // Employee.hasMany(models.Attendance, { foreignKey: 'acceptBy', as: 'accepterData' });
         }
     }
     Employee.init({
@@ -43,7 +41,8 @@ module.exports = (sequelize, DataTypes) => {
         dateOff: DataTypes.DATE,
         avatarUrl: DataTypes.STRING,
         positionId: DataTypes.INTEGER,
-        // departmentId: DataTypes.INTEGER
+        departmentId: DataTypes.INTEGER,
+        managerId: DataTypes.UUID
     }, {
         sequelize,
         modelName: 'Employee'

@@ -8,9 +8,15 @@ class DepartmentService {
         });
         return result;
     }
-    
+
     async findAll() {
-        const result = await db.Department.findAll({});
+        const result = await db.Department.findAll({
+            include: [
+                {
+                    model: db.Office, as: 'officeData'
+                },
+            ],
+        });
         return result;
     }
 
@@ -28,7 +34,17 @@ class DepartmentService {
             offset,
             limit,
             order,
-            attributes
+            attributes,
+            include: [
+                {
+                    model: db.Office, as: 'officeData'
+                },
+                {
+                    model: db.Employee, as: 'managerData'
+                }
+            ],
+            raw: true,
+            nest: true
         });
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;

@@ -24,18 +24,9 @@ module.exports = {
                     model: 'Office',
                     key: 'id'
                 }
-            },
-            createdAt: {
-                allowNull: false,
-                type: Sequelize.DATE,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-            },
-            updatedAt: {
-                allowNull: false,
-                type: Sequelize.DATE,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
             }
         });
+
         await queryInterface.createTable('Employee', {
             id: {
                 allowNull: false,
@@ -89,6 +80,21 @@ module.exports = {
                     key: 'id'
                 }
             },
+            departmentId: {
+                allowNull: false,
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'Department',
+                    key: 'id'
+                },
+            },
+            managerId: {
+                type: Sequelize.UUID,
+                references: {
+                    model: 'Employee',
+                    key: 'id'
+                },
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE,
@@ -108,14 +114,16 @@ module.exports = {
                 key: 'id'
             },
         });
-        await queryInterface.addColumn('Employee', 'departmentId', {
+        await queryInterface.addColumn('Department', 'createdAt', {
             allowNull: false,
-            type: Sequelize.INTEGER,
-            references: {
-                model: 'Department',
-                key: 'id'
-            },
-        },)
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        });
+        await queryInterface.addColumn('Department', 'updatedAt', {
+            allowNull: false,
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        });
     },
 
     async down(queryInterface, Sequelize) {

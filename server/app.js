@@ -12,6 +12,9 @@ import employeeRouter from "./app/routes/employee.route";
 import positionRouter from "./app/routes/position.route";
 import currencyRouter from "./app/routes/currency.route";
 import salaryRouter from "./app/routes/salary.route";
+import countryRouter from "./app/routes/country.route";
+import officeRouter from "./app/routes/office.route";
+import departmentRouter from "./app/routes/department.route";
 
 const app = express();
 
@@ -33,6 +36,9 @@ app.use("/api/employee", verifyAccessToken, verifyAdmin, employeeRouter);
 app.use("/api/position", verifyAccessToken, verifyAdmin, positionRouter);
 app.use("/api/currency", verifyAccessToken, verifyAdmin, currencyRouter);
 app.use("/api/salary", verifyAccessToken, verifyAdmin, salaryRouter);
+app.use("/api/country", verifyAccessToken, verifyAdmin, countryRouter);
+app.use("/api/office", verifyAccessToken, verifyAdmin, officeRouter);
+app.use("/api/department", verifyAccessToken, verifyAdmin, departmentRouter);
 
 // handle 404 response 
 app.use((req, res, next) => {

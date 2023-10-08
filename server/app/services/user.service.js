@@ -8,10 +8,40 @@ class UserService {
                 model: db.Employee,
                 as: 'profile',
                 include: [
-                    { model: db.Position, as: 'positionData' },
+                    { model: db.User.scope('secret'), as: 'userData' },
+                    {
+                        model: db.Position, as: 'positionData',
+                        attributes: ['name'],
+                    },
                     {
                         model: db.Salary, as: 'salaryData',
-                        include: { model: db.Currency, as: 'currencyData' }
+                        attributes: ['totalSalary'],
+                        include: {
+                            model: db.Currency, as: 'currencyData',
+                            attributes: ['name', 'code', 'symbol'],
+                        }
+                    },
+                    {
+                        model: db.Department, as: 'departmentData',
+                        attributes: ['name', 'shortName'],
+                        include: [
+                            {
+                                model: db.Employee, as: 'managerData',
+                                attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
+                            },
+                            {
+                                model: db.Office, as: 'officeData',
+                                attributes: ['title', 'streetAddress', 'stateProvince', 'city'],
+                                include: {
+                                    model: db.Country, as: 'countryData',
+                                    attributes: ['name'],
+                                }
+                            },
+                        ],
+                    },
+                    {
+                        model: db.Employee, as: 'managerData',
+                        attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
                     },
                 ]
             },
@@ -61,8 +91,28 @@ class UserService {
                 model: db.Employee,
                 as: 'profile',
                 include: [
-                    { model: db.Position, as: 'positionData' },
-                    { model: db.Salary, as: 'salaryData' },
+                    { model: db.Position, as: 'positionData', attributes: ['name'], },
+                    {
+                        model: db.Salary, as: 'salaryData',
+                        attributes: ['basicSalary', 'allowance', 'totalSalary'],
+                        include: {
+                            model: db.Currency, as: 'currencyData',
+                            attributes: ['name', 'code', 'symbol'],
+                        }
+                    },
+                    {
+                        model: db.Department, as: 'departmentData',
+                        attributes: ['name', 'shortName'],
+                        include: [
+                            {
+                                model: db.Employee, as: 'managerData',
+                                attributes: ['firstName', 'lastName', 'email']
+                            },
+                            {
+                                model: db.Office, as: 'officeData',
+                            }
+                        ],
+                    },
                 ]
             },
             raw: true,
@@ -109,7 +159,9 @@ class UserService {
             limit,
             order,
             attributes,
-            include: [{ model: db.Employee, as: 'profile' }]
+            include: [{ model: db.Employee, as: 'profile' }],
+            raw: true,
+            nest: true
         });
 
         if (data1.count === 0) {
@@ -119,7 +171,9 @@ class UserService {
                 limit,
                 order,
                 attributes,
-                include: [{ model: db.Employee, as: 'profile', where: employeeWhere }]
+                include: [{ model: db.Employee, as: 'profile', where: employeeWhere }],
+                raw: true,
+                nest: true
             });
             count = data2.count;
             rows = data2.rows;
@@ -176,6 +230,18 @@ class UserService {
         await db.User.destroy({
             where: { id }
         });
+    }
+
+    async deactivateUserByEmployeeId(employeeId) {
+        await db.User.update(
+            {
+                isActive: false
+            }
+            ,
+            {
+                where: { employeeId },
+            }
+        );
     }
 }
 

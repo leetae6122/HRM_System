@@ -9,10 +9,37 @@ class EmployeeService {
                 { model: db.User.scope('secret'), as: 'userData' },
                 {
                     model: db.Position, as: 'positionData',
+                    attributes: ['name'],
                 },
                 {
                     model: db.Salary, as: 'salaryData',
-                    include: { model: db.Currency, as: 'currencyData' }
+                    attributes: ['totalSalary'],
+                    include: {
+                        model: db.Currency, as: 'currencyData',
+                        attributes: ['name', 'code', 'symbol'],
+                    }
+                },
+                {
+                    model: db.Department, as: 'departmentData',
+                    attributes: ['name', 'shortName'],
+                    include: [
+                        {
+                            model: db.Employee, as: 'managerData',
+                            attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
+                        },
+                        {
+                            model: db.Office, as: 'officeData',
+                            attributes: ['title', 'streetAddress', 'stateProvince', 'city'],
+                            include: {
+                                model: db.Country, as: 'countryData',
+                                attributes: ['name'],
+                            }
+                        },
+                    ],
+                },
+                {
+                    model: db.Employee, as: 'managerData',
+                    attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
                 },
             ],
             raw: true,
@@ -44,13 +71,19 @@ class EmployeeService {
     async findAll() {
         const result = await db.Employee.findAll({
             include: [
-                { model: db.User.scope('secret'), as: 'userData' },
                 {
-                    model: db.Position, as: 'positionData',
-                },
-                {
-                    model: db.Salary, as: 'salaryData',
-                    include: { model: db.Currency, as: 'currencyData' }
+                    model: db.Department, as: 'departmentData',
+                    attributes: ['name', 'shortName'],
+                    include: [
+                        {
+                            model: db.Office, as: 'officeData',
+                            attributes: ['title', 'streetAddress', 'stateProvince', 'city'],
+                            include: {
+                                model: db.Country, as: 'countryData',
+                                attributes: ['name'],
+                            }
+                        },
+                    ],
                 },
             ]
         });
@@ -91,7 +124,15 @@ class EmployeeService {
             offset,
             limit,
             order,
-            attributes
+            attributes,
+            include: [
+                {
+                    model: db.Employee, as: 'managerData',
+                    attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
+                },
+            ],
+            raw: true,
+            nest: true
         });
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;

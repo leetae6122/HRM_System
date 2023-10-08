@@ -23,7 +23,7 @@ exports.login = async (req, res, next) => {
             return next(createError.BadRequest(MSG_ERROR_WRONG_LOGIN_INFORMATION));
         }
 
-        if (!foundUser.isActived) {
+        if (!foundUser.isActive) {
             return next(createError.BadRequest("The user is not activated"));
         }
 

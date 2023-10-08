@@ -16,7 +16,7 @@ module.exports = {
       },
       countryCode: {
         allowNull: false,
-        type: Sequelize.STRING(20),
+        type: Sequelize.INTEGER(3),
       },
       isoCode: {
         allowNull: false,

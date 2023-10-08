@@ -1,4 +1,6 @@
 import employeeService from "./../services/employee.service";
+import userService from "./../services/user.service";
+import salaryService from "./../services/salary.service";
 import createError from 'http-errors';
 import cloudinary from 'cloudinary';
 import {
@@ -9,6 +11,7 @@ import {
     MSG_ERROR_NOT_FOUND,
     MSG_UPDATE_SUCCESSFUL
 } from "../utils/message.util";
+
 
 exports.findProfileById = async (req, res, next) => {
     try {
@@ -105,10 +108,10 @@ exports.updateEmployee = async (req, res, next) => {
                 createError.NotFound(MSG_ERROR_NOT_FOUND("Employee"))
             );
         }
-        if (employee.email !== req.body.email) {
+        if (req.body.email && employee.email !== req.body.email) {
             await employeeService.checkEmailExisted(req.body.email, next);
         }
-        if (employee.phoneNumber !== req.body.phoneNumber) {
+        if (req.body.phoneNumber && employee.phoneNumber !== req.body.phoneNumber) {
             await employeeService.checkPhoneNumberExisted(req.body.phoneNumber, next);
         }
 
@@ -125,6 +128,10 @@ exports.updateEmployee = async (req, res, next) => {
         }
 
         await employeeService.updateEmployee(req.body.employeeId, payload);
+        if (payload.dateOff) {
+            await userService.deactivateUserByEmployeeId(req.body.employeeId);
+            await salaryService.deleteSalaryByEmployeeId(req.body.employeeId);
+        }
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(

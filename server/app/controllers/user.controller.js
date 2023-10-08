@@ -1,12 +1,21 @@
 import userService from "./../services/user.service";
 import createError from 'http-errors';
 import { compareHashedData } from './../utils/hash.util';
+import {
+    MSG_CREATED_SUCCESSFUL,
+    MSG_DELETE_SUCCESSFUL,
+    MSG_ERROR_DELETE,
+    MSG_ERROR_EXISTED,
+    MSG_ERROR_ID_EMPTY,
+    MSG_ERROR_NOT_FOUND,
+    MSG_UPDATE_SUCCESSFUL
+} from "../utils/message.util";
 
 exports.getUserProfile = async (req, res, next) => {
     try {
         const data = await userService.getUserProfile(req.user.id);
         if (!data) {
-            return next(createError.BadRequest("User not found"));
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }
         return res.send({ data });
     } catch (error) {
@@ -18,7 +27,7 @@ exports.findById = async (req, res, next) => {
     try {
         const data = await userService.findByIdSecret(req.params.id);
         if (!data) {
-            return next(createError.BadRequest("User not found"));
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }
         return res.send({ data });
     } catch (error) {
@@ -54,11 +63,11 @@ exports.createUser = async (req, res, next) => {
 
         const foundUser = await userService.findByUsernameHideToken(req.body.username);
         if (foundUser) {
-            return next(createError.BadRequest("Username already exists"));
+            return next(createError.BadRequest(MSG_ERROR_EXISTED("Username")));
         }
 
         const data = await userService.createUser(req.body);
-        return res.send({ message: "Successfully added employee", data });
+        return res.send({ message: MSG_CREATED_SUCCESSFUL("User"), data });
     } catch (error) {
         return next(error);
     }
@@ -68,7 +77,7 @@ exports.updateUser = async (req, res, next) => {
     try {
         const foundUser = await userService.findById(req.body.userId);
         if (!foundUser) {
-            return next(createError.BadRequest("User not found"));
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }
 
         await userService.updateUser(req.body.userId, req.body);
@@ -81,18 +90,18 @@ exports.updateUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
     try {
         if (!req.params.id && Number(req.params.id)) {
-            return next(createError.BadRequest("UserId cannot be empty"));
+            return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("UserId")));
         }
         const foundUser = await userService.findById(req.params.id);
         if (!foundUser) {
-            return next(createError.BadRequest("User not found"));
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }
-        
+
         await userService.deleteUser(req.params.id);
         return res.send({ message: MSG_DELETE_SUCCESSFUL });
     } catch (error) {
         return next(
-            createError.BadRequest("This user cannot be deleted")
+            createError.BadRequest(MSG_ERROR_DELETE("User"))
         );
     }
 }

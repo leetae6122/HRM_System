@@ -57,7 +57,9 @@ class SalaryService {
                 { model: db.Currency, as: 'currencyData' },
                 { model: db.Employee, as: 'employeeData' },
                 { model: db.Employee, as: 'adderData' }
-            ]
+            ],
+            raw: true,
+            nest: true
         });
 
         if (data1.count === 0) {
@@ -71,7 +73,9 @@ class SalaryService {
                     { model: db.Currency, as: 'currencyData' },
                     { model: db.Employee, as: 'employeeData', where: employeeWhere },
                     { model: db.Employee, as: 'adderData' }
-                ]
+                ],
+                raw: true,
+                nest: true
             });
             count = data2.count;
             rows = data2.rows;
@@ -116,6 +120,11 @@ class SalaryService {
     async deleteSalary(id) {
         await db.Salary.destroy({
             where: { id },
+        });
+    }
+    async deleteSalaryByEmployeeId(employeeId) {
+        await db.Salary.destroy({
+            where: { employeeId },
         });
     }
 }
