@@ -10,14 +10,14 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            // Leave.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
-            // Leave.belongsTo(models.Employee, { foreignKey: 'acceptBy', as: 'accepterData' });
+            Leave.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
+            Leave.belongsTo(models.Employee, { foreignKey: 'handledBy', as: 'handlerData' });
         }
     }
     Leave.init({
         title: DataTypes.STRING,
         description: DataTypes.TEXT,
-        status: DataTypes.INTEGER,
+        status: DataTypes.ENUM('Pending', 'Reject', 'Approve'),
         leaveFrom: DataTypes.DATE,
         leaveTo: DataTypes.DATE,
         employeeId: DataTypes.UUID,

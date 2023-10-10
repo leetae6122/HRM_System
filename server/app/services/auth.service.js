@@ -2,7 +2,6 @@ import config from '../config/configServer';
 import { createJwt } from './../utils/jwt.util';
 import { hashToken } from "./../utils/hash.util";
 import userService from "./user.service";
-import { mailerSendMail } from '../utils/mailer/mailer.util';
 
 class AuthService {
     async createJwtAccess(payload) {
@@ -37,19 +36,6 @@ class AuthService {
 
     async logout(id) {
         await userService.updateUser(id, { refreshTokenHash: null });
-    }
-    
-    async sendMailForgotPassword(receiverEmail, token) {
-        const url = `${config.app.client_url}/auth/reset-password?token=${token}`
-        const payload = {
-            to: receiverEmail,
-            subject: 'Reset Your Password',
-            context: {
-                url,
-            },
-            template: 'forgot-password'
-        };
-        await mailerSendMail(payload);
     }
 }
 

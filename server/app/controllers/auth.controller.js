@@ -14,6 +14,7 @@ import {
 import { compareHashedData } from "../utils/hash.util";
 import config from '../config/configServer';
 import { verifyToken } from '../utils/jwt.util';
+import mailService from './../services/mail.service'
 
 exports.login = async (req, res, next) => {
     try {
@@ -139,7 +140,7 @@ exports.forgotPassword = async (req, res, next) => {
             employeeId: foundUser.employeeId
         }
         const tokenResetPassword = await authService.createJwtResetPassword(jwtPayload);
-        await authService.sendMailForgotPassword(email, tokenResetPassword)
+        await mailService.sendMailForgotPassword(email, tokenResetPassword)
 
         return res.send({ message: MSG_SENT_MAIL_FORGOT_PASSWORD });
     } catch (error) {
