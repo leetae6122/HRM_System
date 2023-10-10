@@ -4,15 +4,17 @@ import validation from '../middlewares/validation.middleware';
 import {
     employeeCreateLeaveSchema,
     adminCreateLeaveSchema,
-    adminUpdateLeaveSchema
+    adminUpdateLeaveSchema,
+    employeeUpdateLeaveSchema
 } from "../validations/leave.validation";
-import { filterSchema } from "../validations/filter.validation";
+import { filterSchema, modelEmployeeFilterSchema } from "../validations/filter.validation";
 import { verifyAdmin } from './../middlewares/auth.middleware';
 
 const router = express.Router();
 
 router.route("/")
     .post(validation(employeeCreateLeaveSchema), leaveController.createLeave)
+    .patch(validation(employeeUpdateLeaveSchema), leaveController.employeeUpdateLeave)
 
 router.route("/filter")
     .post(validation(filterSchema), leaveController.employeeGetListLeave)
@@ -21,10 +23,10 @@ router.route("/admin")
     .all(verifyAdmin)
     .get(leaveController.findAll)
     .post(validation(adminCreateLeaveSchema), leaveController.createLeave)
-    .patch(validation(adminUpdateLeaveSchema), leaveController.updateLeave)
+    .patch(validation(adminUpdateLeaveSchema), leaveController.adminUpdateLeave)
 
-router.route("admin/filter")
-    .post(verifyAdmin, validation(filterSchema), leaveController.adminGetListLeave)
+router.route("/admin/filter")
+    .post(verifyAdmin, validation(modelEmployeeFilterSchema), leaveController.adminGetListLeave)
 
 router.route("/:id")
     .get(leaveController.findById)

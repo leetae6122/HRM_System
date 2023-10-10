@@ -82,12 +82,11 @@ exports.createLeave = async (req, res, next) => {
         await mailService.sendMailRespondLeaveRequests(leaveData);
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Leave"), data });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 }
 
-exports.updateLeave = async (req, res, next) => {
+exports.adminUpdateLeave = async (req, res, next) => {
     try {
         const foundLeave = await leaveService.findById(req.body.leaveId);
         if (!foundLeave) {
@@ -105,6 +104,26 @@ exports.updateLeave = async (req, res, next) => {
 
         const leaveData = await leaveService.findById(req.body.leaveId);
         await mailService.sendMailRespondLeaveRequests(leaveData);
+        return res.send({ message: MSG_UPDATE_SUCCESSFUL });
+    } catch (error) {
+        return next(error);
+    }
+}
+
+exports.employeeUpdateLeave = async (req, res, next) => {
+    try {
+        const foundLeave = await leaveService.findById(req.body.leaveId);
+        if (!foundLeave) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Leave")));
+        }
+        if(foundLeave.employeeId !== req.user.employeeId){
+            return next(createError.Unauthorized("You do not have permission"));
+        }
+        if (foundLeave.status !== 'Pending') {
+            return next(createError.BadRequest("Leave status is not Pending"));
+        }
+
+        await leaveService.updateLeave(req.body.leaveId, req.body);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(error);

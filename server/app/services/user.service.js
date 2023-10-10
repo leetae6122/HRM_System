@@ -182,8 +182,6 @@ class UserService {
             rows = data1.rows;
         }
 
-
-
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;
         const prevPage = page - 1 < 1 ? null : page - 1;
 

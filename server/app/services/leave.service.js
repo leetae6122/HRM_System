@@ -39,6 +39,7 @@ class LeaveService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
+        const employeeWhere = body.employeeWhere;
 
         const offset = (page - 1) * limit;
 
@@ -49,7 +50,18 @@ class LeaveService {
             order,
             attributes,
             raw: true,
-            nest: true
+            nest: true,
+            include: [
+                {
+                    model: db.Employee, as: 'employeeData',
+                    attributes: ['firstName', 'lastName'],
+                    where: employeeWhere
+                },
+                {
+                    model: db.Employee, as: 'handlerData',
+                    attributes: ['firstName', 'lastName']
+                },
+            ],
         });
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;
