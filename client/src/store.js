@@ -8,6 +8,7 @@ import officeReducer from 'reducers/office';
 import positionReducer from 'reducers/position';
 import salaryReducer from 'reducers/salary';
 import userReducer from 'reducers/user';
+import leaveReducer from 'reducers/leave';
 
 const rootReducer = {
     auth: authReducer,
@@ -18,7 +19,8 @@ const rootReducer = {
     salary: salaryReducer,
     country: countryReducer,
     office: officeReducer,
-    department: departmentReducer
+    department: departmentReducer,
+    leave: leaveReducer
 }
 
 const store = configureStore({

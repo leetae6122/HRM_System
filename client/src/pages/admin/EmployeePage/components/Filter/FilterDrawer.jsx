@@ -1,6 +1,6 @@
-
-import { Drawer } from "antd";
-import PropTypes from "prop-types";
+import { Drawer } from 'antd';
+import PropTypes from 'prop-types';
+import FilterEmployeeForm from './FilterEmployeeForm';
 
 FilterDrawer.propTypes = {
   toggleShowDrawer: PropTypes.func,
@@ -15,9 +15,9 @@ FilterDrawer.defaultProps = {
 function FilterDrawer(props) {
   const { toggleShowDrawer, openDrawer } = props;
 
-  const onFilter = (values) => {
-    console.log("filter", values);
-  };
+  // const onFilter = (values) => {
+  //   console.log("filter", values);
+  // };
 
   return (
     <Drawer
@@ -26,9 +26,7 @@ function FilterDrawer(props) {
       onClose={toggleShowDrawer}
       open={openDrawer}
     >
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
+      <FilterEmployeeForm />
     </Drawer>
   );
 }

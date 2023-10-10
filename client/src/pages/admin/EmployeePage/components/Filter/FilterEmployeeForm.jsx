@@ -5,15 +5,13 @@ import currencyApi from "api/currencyApi";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-FilterDrawerForm.propTypes = {
-  onCancel: PropTypes.func,
+FilterEmployeeForm.propTypes = {
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
   editPosition: PropTypes.object,
 };
 
-FilterDrawerForm.defaultProps = {
-  onCancel: null,
+FilterEmployeeForm.defaultProps = {
   onSubmit: null,
   loading: false,
   editPosition: {},
@@ -21,8 +19,8 @@ FilterDrawerForm.defaultProps = {
 
 const wrapperCol = { offset: 8, span: 16 };
 
-function FilterDrawerForm(props) {
-  const { onCancel, onSubmit, loading, editPosition } = props;
+function FilterEmployeeForm(props) {
+  const { onSubmit, loading, editPosition } = props;
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
@@ -63,10 +61,6 @@ function FilterDrawerForm(props) {
 
   const onFinish = (values) => {
     onSubmit(values);
-  };
-
-  const handleCancel = () => {
-    onCancel();
   };
 
   return (
@@ -178,4 +172,4 @@ function FilterDrawerForm(props) {
   );
 }
 
-export default FilterDrawerForm;
+export default FilterEmployeeForm;

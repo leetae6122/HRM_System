@@ -39,7 +39,7 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
     title: 'Status',
     key: 'status',
     dataIndex: 'isActive',
-    render: (_, { isActive }) => (
+    render: (isActive) => (
       <>
         {isActive ? (
           <Badge status="success" text="Actived" />
@@ -58,8 +58,9 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
         value: false,
       },
     ],
+
     filterMultiple: false,
-    onFilter: (value, record) => record.isActive === value,
+    // onFilter: (value, record) => !!record.isActive === value,
   },
   {
     title: 'Role',
@@ -87,7 +88,7 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
       },
     ],
     filterMultiple: false,
-    onFilter: (value, record) => record.isActive === value,
+    // onFilter: (value, record) => !!record.isAdmin === value,
   },
   {
     title: 'Date created',
@@ -203,12 +204,20 @@ function UserPage() {
     setOpenModalEditUser(!openModalEditUser);
   };
 
-  const columns = createColumns(toggleModalEditUser, handleDeleteUser);
+  const columns = createColumns(
+    toggleModalEditUser,
+    handleDeleteUser,
+  );
+
+  const onChangeTable = (pagination, filters, sorter) => {
+    console.log(filters, sorter);
+  };
 
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>User List</Divider>
       <Table
+        onChange={onChangeTable}
         columns={columns}
         dataSource={userList}
         bordered

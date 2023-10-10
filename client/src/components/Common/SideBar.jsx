@@ -6,13 +6,13 @@ import {
   SolutionOutlined,
   UserDeleteOutlined,
   UserOutlined,
-} from "@ant-design/icons";
-import { Menu } from "antd";
-import Sider from "antd/es/layout/Sider";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import "assets/styles/sidebar.scss";
-import logoHrm from "assets/images/logo-app.jpg";
+} from '@ant-design/icons';
+import { Menu } from 'antd';
+import Sider from 'antd/es/layout/Sider';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import 'assets/styles/sidebar.scss';
+import logoHrm from 'assets/images/logo-app.jpg';
 
 const getItem = (label, key, icon, children) => {
   return {
@@ -33,48 +33,60 @@ function SideBar() {
 
   const items = [
     getItem(
-      <Link to={"/admin/dashboard"} replace>Dashboard</Link>,
-      "/admin/dashboard",
-      <PieChartOutlined />
+      <Link to={'/admin/dashboard'} replace>
+        Dashboard
+      </Link>,
+      '/admin/dashboard',
+      <PieChartOutlined />,
     ),
     getItem(
-      <Link to={"/admin/user"} replace>User</Link>,
-      "/admin/user",
-      <IdcardOutlined />
+      <Link to={'/admin/user'} replace>
+        User
+      </Link>,
+      '/admin/user',
+      <IdcardOutlined />,
     ),
-    getItem("Employee", "sub1", <UserOutlined />, [
-      getItem(<Link to={"/admin/employee"}>Employee</Link>, "/admin/employee"),
+    getItem('Employee', 'sub1', <UserOutlined />, [
+      getItem(<Link to={'/admin/employee'}>Employee</Link>, '/admin/employee'),
+      getItem(<Link to={'/admin/position'}>Position</Link>, '/admin/position'),
+    ]),
+    getItem('Payroll', 'sub2', <SolutionOutlined />, [
+      getItem(<Link to={'/admin/salary'}>Salary</Link>, '/admin/salary'),
       getItem(
-        <Link to={"/admin/position"}>Position</Link>,
-        "/admin/position"
+        <Link to={'/admin/currency'} replace>
+          Currency
+        </Link>,
+        '/admin/currency',
       ),
     ]),
-    getItem("Payroll", "sub2", <SolutionOutlined />, [
+    getItem('Organization', 'sub3', <GlobalOutlined />, [
       getItem(
-        <Link to={"/admin/salary"}>Salary</Link>,
-        "/admin/salary"
+        <Link to={'/admin/country'} replace>
+          Country
+        </Link>,
+        '/admin/country',
       ),
       getItem(
-        <Link to={"/admin/currency"} replace>Currency</Link>,
-        "/admin/currency"
-      ),
-    ]),
-    getItem("Organization", "sub3", <GlobalOutlined />, [
-      getItem(
-        <Link to={"/admin/country"} replace>Country</Link>,
-        "/admin/country"
+        <Link to={'/admin/office'} replace>
+          Office
+        </Link>,
+        '/admin/office',
       ),
       getItem(
-        <Link to={"/admin/office"} replace>Office</Link>,
-        "/admin/office"
-      ),
-      getItem(
-        <Link to={"/admin/department"} replace>Department</Link>,
-        "/admin/department"
+        <Link to={'/admin/department'} replace>
+          Department
+        </Link>,
+        '/admin/department',
       ),
     ]),
-    getItem("Attendance", "10", <CalendarOutlined />),
-    getItem("Leave", "11", <UserDeleteOutlined />),
+    getItem('Attendance', '10', <CalendarOutlined />),
+    getItem(
+      <Link to={'/admin/leave'} replace>
+        Leave
+      </Link>,
+      '/admin/leave',
+      <UserDeleteOutlined />,
+    ),
   ];
 
   return (

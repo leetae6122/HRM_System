@@ -17,6 +17,7 @@ import SalaryPage from "pages/admin/SalaryPage";
 import CountryPage from "pages/admin/CountryPage";
 import OfficePage from "pages/admin/OfficePage";
 import DepartmentPage from "pages/admin/DepartmentPage";
+import LeavePage from "pages/admin/LeavePage";
 
 const AuthPage = React.lazy(() => import("pages/AuthPage"));
 const PageLayout = React.lazy(() => import("components/Common/PageLayout"));
@@ -67,6 +68,7 @@ function App() {
               <Route path="country" element={<CountryPage />} />
               <Route path="office" element={<OfficePage />} />
               <Route path="department" element={<DepartmentPage />} />
+              <Route path="leave" element={<LeavePage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
 

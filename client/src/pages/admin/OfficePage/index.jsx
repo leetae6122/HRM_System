@@ -61,6 +61,7 @@ const createColumns = (
     dataIndex: ['countryData', 'name'],
     key: 'country',
     filters: filtersCountry || null,
+    filterSearch: true,
     onFilter: (value, record) => record.countryData.name.indexOf(value) === 0,
   },
   {

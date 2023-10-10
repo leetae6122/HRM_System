@@ -77,7 +77,7 @@ const createColumns = (
       },
     ],
     filterMultiple: false,
-    onFilter: (value, record) => record.gender === value,
+    onFilter: (value, record) => !!record.gender === value,
   },
   {
     title: 'Date of Birth',
