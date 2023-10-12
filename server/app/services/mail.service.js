@@ -30,7 +30,7 @@ class MailService {
             },
         };
 
-        if (leaveData.status === 'Approve') {
+        if (leaveData.status === 'Approved') {
             payload = {
                 ...payload,
                 template: 'approve-request-leave'

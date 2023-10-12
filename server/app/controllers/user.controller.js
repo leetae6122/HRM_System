@@ -79,7 +79,14 @@ exports.updateUser = async (req, res, next) => {
         if (!foundUser) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }
-
+        console.log(!!foundUser.isAdmin);
+        console.log(req.body.isActive);
+        if (!!foundUser.isAdmin && (!req.body.isActive || !req.body.isAdmin)) {
+            const count = await userService.countUserAdminActived();
+            if (count === 1) {
+                return next(createError.BadRequest("There must be at least one Admin in the system"));
+            }
+        }
         await userService.updateUser(req.body.userId, req.body);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
@@ -95,6 +102,12 @@ exports.deleteUser = async (req, res, next) => {
         const foundUser = await userService.findById(req.params.id);
         if (!foundUser) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
+        }
+        if (!!foundUser.isAdmin && foundUser.isActive) {
+            const count = await userService.countUserAdminActived();
+            if (count === 1) {
+                return next(createError.BadRequest("There must be at least one Admin in the system"));
+            }
         }
 
         await userService.deleteUser(req.params.id);

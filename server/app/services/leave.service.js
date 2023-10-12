@@ -1,3 +1,4 @@
+import sequelize from "sequelize";
 import db from "./../models/index";
 
 class LeaveService {
@@ -42,12 +43,15 @@ class LeaveService {
         const employeeWhere = body.employeeWhere;
 
         const offset = (page - 1) * limit;
-
+        
         const { count, rows } = await db.Leave.findAndCountAll({
             where,
             offset,
             limit,
-            order,
+            order: [
+                sequelize.fn('field', sequelize.col('status'), 'Pending', 'Reject', 'Approved'),
+                ...order
+            ],
             attributes,
             raw: true,
             nest: true,

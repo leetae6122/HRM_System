@@ -15,6 +15,7 @@ export const MSG_INVALID_TOKEN = "Invalid token";
 export const MSG_NOT_TOKEN_FOR_AUTH = "You don't have a token for authentication";
 export const MSG_REFRESH_TOKEN_DOES_NOT_MATCH = "Refresh Token does not match";
 export const MSG_ERROR_CREATE_TOKEN = "Token generation error";
+export const MSG_ERROR_NOT_HAVE_PERMISSION = "You do not have permission"
 
 export const MSG_ERROR_DELETE = (obj) => `This ${obj} cannot be deleted`;
 export const MSG_ERROR_NOT_FOUND = (obj) => `${obj} not found`;
@@ -26,3 +27,6 @@ export const MSG_EMAIL_ALREADY_EXISTS = "Email is already registered";
 export const MSG_ERROR_WRONG_FORGOT_PASS_INFORMATION = "Your username/email is incorrect";
 //SALARY API
 export const MSG_EMPLOYEE_CREATED_SALARY = "Employee have created salary";
+// Leave API
+export const MSG_LEAVE_STATUS_NOT_PENDING = "Leave status is not Pending";
+

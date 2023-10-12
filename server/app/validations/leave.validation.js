@@ -21,12 +21,12 @@ const employeeCreateLeaveSchema = createLeaveSchema.keys({
 
 const adminCreateLeaveSchema = createLeaveSchema.keys({
     employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
-    status: Joi.string().default('Approve'),
+    status: Joi.string().default('Approved'),
 });
 
 const adminUpdateLeaveSchema = Joi.object({
     leaveId: Joi.number().integer().required(),
-    status: Joi.string().valid('Reject', 'Approve').required(),
+    status: Joi.string().valid('Reject', 'Approved').required(),
     reasonRejection: Joi.when('status', {
         is: 'Reject',
         then: Joi.string().required(),

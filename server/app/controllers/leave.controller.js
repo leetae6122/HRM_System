@@ -4,7 +4,9 @@ import {
     MSG_ERROR_NOT_FOUND,
     MSG_ERROR_ID_EMPTY,
     MSG_UPDATE_SUCCESSFUL,
-    MSG_CREATED_SUCCESSFUL
+    MSG_CREATED_SUCCESSFUL,
+    MSG_LEAVE_STATUS_NOT_PENDING,
+    MSG_ERROR_NOT_HAVE_PERMISSION
 } from "../utils/message.util";
 import leaveService from "./../services/leave.service";
 import createError from 'http-errors';
@@ -15,7 +17,7 @@ exports.findById = async (req, res, next) => {
         const data = await leaveService.findById(req.params.id);
         if (!data) {
             if (req.user.employeeId === data.employeeId && !req.user.isAdmin) {
-                return next(createError.Unauthorized("You do not have permission"));
+                return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
             }
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Leave")));
         }
@@ -40,6 +42,7 @@ exports.adminGetListLeave = async (req, res, next) => {
         const data = await leaveService.filterListLeave(req.body);
         return res.send({ data });
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }
@@ -70,7 +73,7 @@ exports.createLeave = async (req, res, next) => {
                 employeeId
             }
         }
-        if (req.body.status === 'Approve') {
+        if (req.body.status === 'Approved') {
             payload = {
                 ...req.body,
                 handledBy: employeeId
@@ -93,7 +96,7 @@ exports.adminUpdateLeave = async (req, res, next) => {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Leave")));
         }
         if (foundLeave.status !== 'Pending') {
-            return next(createError.BadRequest("Leave status is not Pending"));
+            return next(createError.BadRequest(MSG_LEAVE_STATUS_NOT_PENDING));
         }
         const payload = {
             ...req.body,
@@ -117,10 +120,10 @@ exports.employeeUpdateLeave = async (req, res, next) => {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Leave")));
         }
         if(foundLeave.employeeId !== req.user.employeeId){
-            return next(createError.Unauthorized("You do not have permission"));
+            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
         if (foundLeave.status !== 'Pending') {
-            return next(createError.BadRequest("Leave status is not Pending"));
+            return next(createError.BadRequest(MSG_LEAVE_STATUS_NOT_PENDING));
         }
 
         await leaveService.updateLeave(req.body.leaveId, req.body);
@@ -140,7 +143,7 @@ exports.deleteLeave = async (req, res, next) => {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Leave")));
         }
         if (foundLeave.status !== 'Pending' && !req.user.isAdmin) {
-            return next(createError.BadRequest("Leave status is not Pending"));
+            return next(createError.BadRequest(MSG_LEAVE_STATUS_NOT_PENDING));
         }
 
         await leaveService.deleteLeave(req.params.id);

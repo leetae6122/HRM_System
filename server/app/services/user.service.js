@@ -241,6 +241,14 @@ class UserService {
             }
         );
     }
+
+    async countUserAdminActived() {
+        return await db.User.count(
+            {
+                where: { isAdmin: 1, isActive: 1 },
+            }
+        );
+    }
 }
 
 module.exports = new UserService;

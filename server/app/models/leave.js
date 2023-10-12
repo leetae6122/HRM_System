@@ -15,11 +15,15 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     Leave.init({
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true
+        },
         title: DataTypes.STRING,
         description: DataTypes.TEXT,
-        status: DataTypes.ENUM('Pending', 'Reject', 'Approve'),
-        leaveFrom: DataTypes.DATE,
-        leaveTo: DataTypes.DATE,
+        status: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
+        leaveFrom: DataTypes.DATEONLY,
+        leaveTo: DataTypes.DATEONLY,
         employeeId: DataTypes.UUID,
         handledBy: DataTypes.UUID,
         reasonRejection: DataTypes.TEXT,
