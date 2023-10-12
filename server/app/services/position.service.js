@@ -1,4 +1,6 @@
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
+import createError from 'http-errors';
 
 class PositionService {
     async findById(id) {
@@ -84,6 +86,16 @@ class PositionService {
         await db.Position.destroy({
             where: { id }
         });
+    }
+
+    async foundPosition(positionId, next) {
+        const foundPosition = await this.findById(positionId);
+        if (!foundPosition) {
+            return next(
+                createError.NotFound(MSG_ERROR_NOT_FOUND("Position"))
+            );
+        }
+        return foundPosition;
     }
 }
 

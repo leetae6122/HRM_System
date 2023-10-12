@@ -7,6 +7,8 @@ import {
     MSG_CREATED_SUCCESSFUL
 } from "../utils/message.util";
 import departmentService from "./../services/department.service";
+import employeeService from "./../services/employee.service";
+import officeService from "./../services/office.service";
 import createError from 'http-errors';
 
 exports.findById = async (req, res, next) => {
@@ -41,6 +43,9 @@ exports.getListDepartment = async (req, res, next) => {
 
 exports.createDepartment = async (req, res, next) => {
     try {
+        await employeeService.foundEmployee(req.body.managerId, next, true);
+        await officeService.foundOffice(req.body.officeId, next);
+
         const data = await departmentService.createDepartment(req.body);
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Department"), data });
     } catch (error) {
@@ -50,9 +55,12 @@ exports.createDepartment = async (req, res, next) => {
 
 exports.updateDepartment = async (req, res, next) => {
     try {
-        const foundDepartment = await departmentService.findById(req.body.departmentId);
-        if (!foundDepartment) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Department")));
+        const foundDepartment = await departmentService.foundDepartment(req.body.departmentId, next);
+        if (foundDepartment.managerId !== req.body.managerId && req.body.managerId) {
+            await employeeService.foundEmployee(req.body.managerId, next, true);
+        }
+        if (foundDepartment.officeId !== req.body.officeId) {
+            await officeService.foundOffice(req.body.officeId, next);
         }
 
         await departmentService.updateDepartment(req.body.departmentId, req.body);
@@ -67,10 +75,7 @@ exports.deleteDepartment = async (req, res, next) => {
         if (!req.params.id && Number(req.params.id)) {
             return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("DepartmentId")));
         }
-        const foundDepartment = await departmentService.findById(req.params.id);
-        if (!foundDepartment) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Department")));
-        }
+        await departmentService.foundDepartment(req.body.id, next);
 
         await departmentService.deleteDepartment(req.params.id);
         return res.send({ message: MSG_DELETE_SUCCESSFUL });

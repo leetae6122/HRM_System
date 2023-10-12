@@ -8,6 +8,7 @@ import {
     MSG_UPDATE_SUCCESSFUL
 } from "../utils/message.util";
 import officeService from "./../services/office.service";
+import countryService from "./../services/country.service";
 import createError from 'http-errors';
 
 exports.findById = async (req, res, next) => {
@@ -46,6 +47,7 @@ exports.createOffice = async (req, res, next) => {
         if (officeExisted) {
             return next(createError.BadRequest(MSG_ERROR_EXISTED("Title Office")));
         }
+        await countryService.foundCountry(req.body.countryId, next);
 
         const data = await officeService.createOffice(req.body);
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Office"), data });
@@ -60,10 +62,11 @@ exports.updateOffice = async (req, res, next) => {
         if (officeExisted && officeExisted.id !== req.body.officeId) {
             return next(createError.BadRequest(MSG_ERROR_EXISTED("Title Office")));
         }
-        const foundOffice = await officeService.findById(req.body.officeId);
-        if (!foundOffice) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Office")));
+        const foundOffice = await officeService.foundOffice(req.body.officeId, next);
+        if (foundOffice.countryId !== req.body.countryId) {
+            await countryService.foundCountry(req.body.countryId, next);
         }
+
 
         await officeService.updateOffice(req.body.officeId, req.body);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
@@ -77,10 +80,7 @@ exports.deleteOffice = async (req, res, next) => {
         if (!req.params.id && Number(req.params.id)) {
             return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("OfficeId")));
         }
-        const foundOffice = await officeService.findById(req.params.id);
-        if (!foundOffice) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Office")));
-        }
+        await officeService.foundOffice(req.params.id, next);
 
         await officeService.deleteOffice(req.params.id);
         return res.send({ message: MSG_DELETE_SUCCESSFUL });

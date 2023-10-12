@@ -79,8 +79,7 @@ exports.updateUser = async (req, res, next) => {
         if (!foundUser) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }
-        console.log(!!foundUser.isAdmin);
-        console.log(req.body.isActive);
+
         if (!!foundUser.isAdmin && (!req.body.isActive || !req.body.isAdmin)) {
             const count = await userService.countUserAdminActived();
             if (count === 1) {

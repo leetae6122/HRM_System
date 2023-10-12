@@ -60,10 +60,7 @@ exports.updateCountry = async (req, res, next) => {
         if (countryExisted && countryExisted.id !== req.body.countryId) {
             return next(createError.BadRequest(MSG_ERROR_EXISTED("Country IsoCode")));
         }
-        const foundCountry = await countryService.findById(req.body.countryId);
-        if (!foundCountry) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Country")));
-        }
+        await countryService.foundCountry(req.body.countryId, next);
 
         await countryService.updateCountry(req.body.countryId, req.body);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
@@ -77,10 +74,8 @@ exports.deleteCountry = async (req, res, next) => {
         if (!req.params.id && Number(req.params.id)) {
             return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("CountryId")));
         }
-        const foundCountry = await countryService.findById(req.params.id);
-        if (!foundCountry) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Country")));
-        }
+        await countryService.foundCountry(req.params.id, next);
+
         await countryService.deleteCountry(req.params.id);
         return res.send({ message: MSG_DELETE_SUCCESSFUL });
     } catch (error) {

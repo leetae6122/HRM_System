@@ -11,6 +11,7 @@ import {
 import leaveService from "./../services/leave.service";
 import createError from 'http-errors';
 import mailService from './../services/mail.service';
+import employeeService from "./../services/employee.service";
 
 exports.findById = async (req, res, next) => {
     try {
@@ -74,6 +75,7 @@ exports.createLeave = async (req, res, next) => {
             }
         }
         if (req.body.status === 'Approved') {
+            await employeeService.foundEmployee(req.body.employeeId, next);
             payload = {
                 ...req.body,
                 handledBy: employeeId

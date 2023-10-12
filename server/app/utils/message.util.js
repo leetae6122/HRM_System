@@ -29,4 +29,9 @@ export const MSG_ERROR_WRONG_FORGOT_PASS_INFORMATION = "Your username/email is i
 export const MSG_EMPLOYEE_CREATED_SALARY = "Employee have created salary";
 // Leave API
 export const MSG_LEAVE_STATUS_NOT_PENDING = "Leave status is not Pending";
+// Attendance API
+export const MSG_ATTENDANCE_STATUS_NOT_PENDING = "Attendance status is not Pending";
+//Project API
+export const MSG_PROJECT_STATUS_NOT_RUNNING = "Project status is not Running";
+
 

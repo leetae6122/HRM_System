@@ -1,4 +1,6 @@
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
+import createError from 'http-errors';
 
 class OfficeService {
     async findById(id) {
@@ -84,6 +86,14 @@ class OfficeService {
         await db.Office.destroy({
             where: { id }
         });
+    }
+
+    async foundOffice(officeId, next) {
+        const foundOffice = await this.findById(officeId);
+        if (!foundOffice) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Office")));
+        }
+        return foundOffice
     }
 }
 

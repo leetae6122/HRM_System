@@ -1,4 +1,6 @@
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
+import createError from 'http-errors';
 
 class CurrencyService {
     async findById(id) {
@@ -79,6 +81,14 @@ class CurrencyService {
         await db.Currency.destroy({
             where: { id }
         });
+    }
+
+    async foundCurrency(currencyId, next) {
+        const foundCurrency = await this.findById(currencyId);
+        if (!foundCurrency) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Currency")));
+        }
+        return foundCurrency;
     }
 }
 

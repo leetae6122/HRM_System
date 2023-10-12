@@ -1,4 +1,6 @@
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
+import createError from 'http-errors';
 
 class CountryService {
     async findById(id) {
@@ -79,6 +81,14 @@ class CountryService {
         await db.Country.destroy({
             where: { id }
         });
+    }
+
+    async foundCountry(countryId, next) {
+        const foundCountry = await this.findById(countryId);
+        if (!foundCountry) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Country")));
+        }
+        return foundCountry;
     }
 }
 

@@ -1,5 +1,6 @@
 import db from "../models/index";
 import createError from 'http-errors';
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 
 class EmployeeService {
     async findById(id) {
@@ -189,6 +190,16 @@ class EmployeeService {
                 createError.BadRequest("Phone number already exists")
             );
         }
+    }
+
+    async foundEmployee(employeeId, next, manager = false) {
+        const foundEmployee = await this.findById(employeeId);
+        if (!foundEmployee) {
+            return next(
+                createError.NotFound(MSG_ERROR_NOT_FOUND(manager ? "Manager Employee" : "Employee"))
+            );
+        }
+        return foundEmployee;
     }
 
     getFileName(avatarUrl) {

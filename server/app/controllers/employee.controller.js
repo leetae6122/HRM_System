@@ -1,6 +1,8 @@
 import employeeService from "./../services/employee.service";
 import userService from "./../services/user.service";
 import salaryService from "./../services/salary.service";
+import departmentService from "./../services/department.service";
+import positionService from "./../services/position.service";
 import createError from 'http-errors';
 import cloudinary from 'cloudinary';
 import {
@@ -8,7 +10,6 @@ import {
     MSG_DELETE_SUCCESSFUL,
     MSG_ERROR_DELETE,
     MSG_ERROR_ID_EMPTY,
-    MSG_ERROR_NOT_FOUND,
     MSG_UPDATE_SUCCESSFUL
 } from "../utils/message.util";
 
@@ -22,12 +23,7 @@ exports.findProfileById = async (req, res, next) => {
             );
         }
 
-        const data = await employeeService.findById(employeeId);
-        if (!data) {
-            return next(
-                createError.NotFound(MSG_ERROR_NOT_FOUND("Employee"))
-            );
-        }
+        const data = await employeeService.foundEmployee(employeeId, next);
         return res.send({ data });
     } catch (error) {
         return next(
@@ -81,8 +77,12 @@ exports.getListEmployee = async (req, res, next) => {
 
 exports.createEmployee = async (req, res, next) => {
     try {
+        await departmentService.foundDepartment(req.body.departmentId, next);
+        await positionService.foundPosition(req.body.positionId, next);
+        await employeeService.foundEmployee(req.body.managerId, next, true);
         await employeeService.checkEmailExisted(req.body.email, next);
         await employeeService.checkPhoneNumberExisted(req.body.phoneNumber, next);
+
         let payload = req.body
         const fileData = req.file;
         if (fileData) {
@@ -102,17 +102,25 @@ exports.createEmployee = async (req, res, next) => {
 
 exports.updateEmployee = async (req, res, next) => {
     try {
-        const employee = await employeeService.findById(req.body.employeeId);
-        if (!employee) {
-            return next(
-                createError.NotFound(MSG_ERROR_NOT_FOUND("Employee"))
-            );
-        }
+        const employee = await employeeService.foundEmployee(req.body.employeeId, next)
+
         if (req.body.email && employee.email !== req.body.email) {
             await employeeService.checkEmailExisted(req.body.email, next);
         }
+
         if (req.body.phoneNumber && employee.phoneNumber !== req.body.phoneNumber) {
             await employeeService.checkPhoneNumberExisted(req.body.phoneNumber, next);
+        }
+        if (employee.departmentId !== req.body.departmentId) {
+            await departmentService.foundDepartment(req.body.departmentId, next);
+        }
+
+        if (employee.positionId !== req.body.positionId) {
+            await positionService.foundPosition(req.body.positionId, next);
+        }
+
+        if (employee.managerId !== req.body.managerId) {
+            await employeeService.foundEmployee(req.body.managerId, next, true);
         }
 
         let payload = req.body
@@ -145,10 +153,7 @@ exports.deleteEmployee = async (req, res, next) => {
         if (!req.params.id && Number(req.params.id)) {
             return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("employeeId")));
         }
-        const foundEmployee = await employeeService.findById(req.params.id);
-        if (!foundEmployee) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Employee")));
-        }
+        await employeeService.foundEmployee(req.params.id, next);
 
         await employeeService.deleteEmployee(req.params.id);
         return res.send({ message: MSG_DELETE_SUCCESSFUL });
@@ -161,12 +166,7 @@ exports.deleteEmployee = async (req, res, next) => {
 
 exports.updateProfile = async (req, res, next) => {
     try {
-        const employee = await employeeService.findById(req.user.employeeId);
-        if (!employee) {
-            return next(
-                createError.NotFound(MSG_ERROR_NOT_FOUND("Employee"))
-            );
-        }
+        await employeeService.foundEmployee(req.user.employeeId, next);
 
         await employeeService.updateEmployee(req.user.employeeId, req.body);
         return res.send({ message: "Successfully update employee profiles" });
@@ -179,12 +179,8 @@ exports.updateProfile = async (req, res, next) => {
 
 exports.updateAvatar = async (req, res, next) => {
     try {
-        const employee = await employeeService.findById(req.user.employeeId);
-        if (!employee) {
-            return next(
-                createError.NotFound(MSG_ERROR_NOT_FOUND("Employee"))
-            );
-        }
+        const employee = await employeeService.foundEmployee(req.user.employeeId, next);
+
         const fileData = req.file;
         if (!fileData) {
             return next(createError.BadRequest("File does not exist"));
