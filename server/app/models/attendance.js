@@ -10,18 +10,27 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // Location.hasMany(models.Department, { foreignKey: 'locationId', as: 'locationData' });
-      // Location.belongsTo(models.Country, { foreignKey: 'countryId', as: 'countryData' });
+      Attendance.belongsTo(models.Project, { foreignKey: 'projectId', as: 'projectData' });
+      Attendance.belongsTo(models.Task, { foreignKey: 'taskId', as: 'taskData' });
+      Attendance.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
+      Attendance.belongsTo(models.Employee, { foreignKey: 'handledBy', as: 'handlerData' });
     }
   }
   Attendance.init({
-    title: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    attendanceDate: DataTypes.DATE,
-    hourSpent: DataTypes.DATE,
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true
+    },
+    description: DataTypes.STRING,
+    attendanceDate: DataTypes.DATEONLY,
+    hourSpent: DataTypes.FLOAT,
+    hourOT: DataTypes.FLOAT,
+    status: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
+    place: DataTypes.ENUM('Office', 'At Home'),
+    handledBy: DataTypes.UUID,
     employeeId: DataTypes.UUID,
-    // taskId:  DataTypes.UUID,
-    // projectId: DataTypes.UUID
+    taskId: DataTypes.INTEGER,
+    projectId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Attendance'

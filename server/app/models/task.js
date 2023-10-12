@@ -10,9 +10,14 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
+            Task.hasMany(models.Attendance, { foreignKey: 'taskId', as: 'taskData' });
         }
     }
     Task.init({
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true
+        },
         title: DataTypes.STRING,
     }, {
         sequelize,

@@ -10,13 +10,20 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
+            Project.hasMany(models.Attendance, { foreignKey: 'projectId', as: 'projectData' });
         }
     }
     Project.init({
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true
+        },
         title: DataTypes.STRING,
-        startDate: DataTypes.DATE,
-        endDate: DataTypes.DATE,
-        status: DataTypes.INTEGER,
+        summary: DataTypes.STRING,
+        details: DataTypes.TEXT,
+        startDate: DataTypes.DATEONLY,
+        endDate: DataTypes.DATEONLY,
+        status: DataTypes.ENUM('Upcoming', 'Running', 'Complete'),
         managerId: DataTypes.UUID
     }, {
         sequelize,
