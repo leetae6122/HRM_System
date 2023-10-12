@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 import leaveApi from 'api/leaveApi';
-import EditLeaveForm from './EditLeaveForm';
-import { getFullDate } from 'utils/handleDate';
+import LeaveForm from './LeaveForm';
+import dayjs from 'dayjs';
 
 ModalEditLeave.propTypes = {
   openModal: PropTypes.bool,
@@ -25,7 +25,7 @@ function ModalEditLeave(props) {
   const { editLeaveId } = useSelector((state) => state.leave);
   const { openModal, toggleShowModal, refreshLeaveList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [infoLeave, setInfoLeave] = useState({});
+  const [editLeave, setEditLeave] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
@@ -33,14 +33,11 @@ function ModalEditLeave(props) {
       try {
         if (editLeaveId) {
           const data = (await leaveApi.getById(editLeaveId)).data;
-          setInfoLeave({
+          setEditLeave({
             leaveId: data.id,
             title: data.title,
             description: data.description,
-            leaveFrom: getFullDate(data.leaveFrom),
-            leaveTo: getFullDate(data.leaveTo),
-            status: data.status,
-            employeeData: data.employeeData,
+            rangeDateLeave: [dayjs(data.leaveFrom), dayjs(data.leaveTo)],
           });
         }
       } catch (error) {
@@ -55,11 +52,13 @@ function ModalEditLeave(props) {
     try {
       setConfirmLoading(true);
       const data = {
-        leaveId: editLeaveId,
-        status: values.status,
-        reasonRejection: values.reasonRejection,
+        leaveId: values.leaveId,
+        title: values.title,
+        description: values.description,
+        leaveFrom: values.rangeDateLeave[0],
+        leaveTo: values.rangeDateLeave[1],
       };
-      const response = await leaveApi.adminUpdate(data);
+      const response = await leaveApi.employeeUpdate(data);
       Swal.fire({
         icon: 'success',
         title: response.message,
@@ -85,20 +84,18 @@ function ModalEditLeave(props) {
   return (
     <>
       <Modal
+        title="Edit Leave"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={'100vh'}
-        style={{
-          top: 40
-        }}
+        width={"100vh"}
       >
-        {!_.isEmpty(infoLeave) && (
-          <EditLeaveForm
+        {!_.isEmpty(editLeave) && (
+          <LeaveForm
             onCancel={handleCancel}
             onSubmit={handleEditLeave}
             loading={confirmLoading}
-            infoLeave={infoLeave}
+            initialValues={editLeave}
           />
         )}
       </Modal>

@@ -11,8 +11,13 @@ import LeaveTableHeader from './components/LeaveTableHeader';
 import ModalAddLeave from './components/ComponentAddEdit/ModalAddLeave';
 import ModalEditLeave from './components/ComponentAddEdit/ModalEditLeave';
 import { gold } from '@ant-design/colors';
+import ModalDetailLeave from './components/ModalDetailLeave';
 
-const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
+const createColumns = (
+  toggleModalEditLeave,
+  toggleModalDetailLeave,
+  handleDeleteLeave,
+) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -22,10 +27,12 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
     width: 80,
   },
   {
-    title: 'Name',
-    key: 'name',
+    title: 'Handler',
+    key: 'handler',
     render: (_, record) =>
-      `${record.employeeData.firstName} ${record.employeeData.lastName}`,
+      record.handledBy
+        ? `${record.handlerData.firstName} ${record.handlerData.lastName}`
+        : '',
   },
   {
     title: 'Title',
@@ -81,7 +88,7 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
             type="primary"
             style={{ background: gold[5] }}
             icon={<EyeOutlined />}
-            onClick={() => toggleModalEditLeave(record.id)}
+            onClick={() => toggleModalDetailLeave(record.id)}
           />
         ) : (
           <Button
@@ -90,13 +97,14 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
             onClick={() => toggleModalEditLeave(record.id)}
           />
         )}
-
-        <Button
-          type="primary"
-          danger
-          icon={<DeleteFilled />}
-          onClick={() => handleDeleteLeave(record.id)}
-        />
+        {record.status !== 'Approved' ? (
+          <Button
+            type="primary"
+            danger
+            icon={<DeleteFilled />}
+            onClick={() => handleDeleteLeave(record.id)}
+          />
+        ) : null}
       </Space>
     ),
   },
@@ -109,13 +117,14 @@ function LeavePage() {
   const [loadingData, setLoadingData] = useState(false);
   const [openModalAddLeave, setOpenModalAddLeave] = useState(false);
   const [openModalEditLeave, setOpenModalEditLeave] = useState(false);
+  const [openModalDetailLeave, setOpenModalDetailLeave] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = (await leaveApi.adminGetList(filterData)).data;
+        const response = (await leaveApi.employeeGetList(filterData)).data;
         const data = response.data.map((item) => ({ key: item.id, ...item }));
         dispatch(
           setData({
@@ -139,7 +148,7 @@ function LeavePage() {
   };
 
   const refreshLeaveList = async () => {
-    const response = (await leaveApi.adminGetList(defaultFilter)).data;
+    const response = (await leaveApi.employeeGetList(defaultFilter)).data;
     const data = response.data.map((item) => ({ key: item.id, ...item }));
     dispatch(
       setData({
@@ -153,6 +162,11 @@ function LeavePage() {
   const toggleModalEditLeave = (id) => {
     dispatch(setEditLeaveId(id));
     setOpenModalEditLeave(!openModalEditLeave);
+  };
+
+  const toggleModalDetailLeave = (id) => {
+    dispatch(setEditLeaveId(id));
+    setOpenModalDetailLeave(!openModalDetailLeave);
   };
 
   const toggleModalAddLeave = () => {
@@ -181,7 +195,11 @@ function LeavePage() {
       });
   };
 
-  const columns = createColumns(toggleModalEditLeave, handleDeleteLeave);
+  const columns = createColumns(
+    toggleModalEditLeave,
+    toggleModalDetailLeave,
+    handleDeleteLeave,
+  );
 
   return (
     <>
@@ -223,6 +241,12 @@ function LeavePage() {
           openModal={openModalEditLeave}
           toggleShowModal={toggleModalEditLeave}
           refreshLeaveList={refreshLeaveList}
+        />
+      )}
+      {openModalDetailLeave && (
+        <ModalDetailLeave
+          openModal={openModalDetailLeave}
+          toggleShowModal={toggleModalDetailLeave}
         />
       )}
     </>

@@ -1,26 +1,23 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button, Space, DatePicker, Select } from 'antd';
+import { Form, Input, Button, Space, DatePicker } from 'antd';
 import _ from 'lodash';
-import employeeApi from 'api/employeeApi';
-import { toast } from 'react-toastify';
 
-AddLeaveForm.propTypes = {
+LeaveForm.propTypes = {
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
   initialValues: PropTypes.object,
 };
 
-AddLeaveForm.defaultProps = {
+LeaveForm.defaultProps = {
   onCancel: null,
   onSubmit: null,
   loading: false,
   initialValues: {
     title: '',
     description: '',
-    rangeDateLeave: [],
-    employeeId: null,
+    rangeDateLeave:[],
   },
 };
 
@@ -28,10 +25,9 @@ const dateFormat = 'DD/MM/YYYY';
 
 const wrapperCol = { offset: 8, span: 16 };
 
-function AddLeaveForm(props) {
+function LeaveForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
   const [submittable, setSubmittable] = useState(false);
-  const [employeeOptions, setEmployeeOptions] = useState([]);
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
 
@@ -48,24 +44,6 @@ function AddLeaveForm(props) {
     );
   }, [values, form, initialValues]);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchData = async () => {
-      try {
-        const data = (await employeeApi.getAll()).data;
-        const options = data.map((employee) => ({
-          value: employee.id,
-          label: `${employee.firstName} ${employee.lastName}`,
-        }));
-        setEmployeeOptions(options);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    fetchData();
-    return () => controller.abort();
-  }, []);
-
   const onFinish = (values) => {
     onSubmit(values);
   };
@@ -74,14 +52,14 @@ function AddLeaveForm(props) {
     onCancel();
   };
 
-  const disabledDate = (current) => {
+  const disabledDate= (current) => {
     return current && current.valueOf() < Date.now();
-  };
-
+  }
+  console.log(initialValues);
   return (
     <Form
-      name="normal_add_leave"
-      className="add-leave-form"
+      name="normal_leave"
+      className="leave-form"
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
@@ -92,6 +70,11 @@ function AddLeaveForm(props) {
       }}
       size="large"
     >
+      {initialValues.leaveId ? (
+        <Form.Item name="leaveId" label="Leave Id">
+          <Input disabled={true} />
+        </Form.Item>
+      ) : null}
       <Form.Item
         name="title"
         label="Title"
@@ -115,7 +98,7 @@ function AddLeaveForm(props) {
         rules={[{ required: true, message: 'Please input description!' }]}
       >
         <Input.TextArea
-          rows={3}
+          rows={4}
           placeholder="Enter description"
           disabled={loading}
         />
@@ -134,38 +117,13 @@ function AddLeaveForm(props) {
           }}
         />
       </Form.Item>
-      <Form.Item
-        name="employeeId"
-        label="Employee"
-        hasFeedback
-        rules={[{ required: true, message: 'Please select employee!' }]}
-      >
-        <Select
-          showSearch
-          style={{
-            width: '100%',
-          }}
-          placeholder="Search to Select"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            (option?.label ?? '').includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? '')
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? '').toLowerCase())
-          }
-          options={employeeOptions}
-          disabled={loading}
-        />
-      </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
           <Button htmlType="button" onClick={handleCancel}>
             Cancel
           </Button>
           <Button type="primary" htmlType="submit" disabled={!submittable}>
-            Add
+            {initialValues.leaveId ? 'Save' : 'Create'}
           </Button>
         </Space>
       </Form.Item>
@@ -173,4 +131,4 @@ function AddLeaveForm(props) {
   );
 }
 
-export default AddLeaveForm;
+export default LeaveForm;

@@ -4,8 +4,8 @@ import {
   IdcardOutlined,
   PieChartOutlined,
   SolutionOutlined,
+  TeamOutlined,
   UserDeleteOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
@@ -23,7 +23,7 @@ const getItem = (label, key, icon, children) => {
   };
 };
 
-function SideBar() {
+function AdminSideBar() {
   const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
@@ -46,7 +46,7 @@ function SideBar() {
       '/admin/user',
       <IdcardOutlined />,
     ),
-    getItem('Employee', 'sub1', <UserOutlined />, [
+    getItem('Employee', 'sub1', <TeamOutlined />, [
       getItem(<Link to={'/admin/employee'}>Employee</Link>, '/admin/employee'),
       getItem(<Link to={'/admin/position'}>Position</Link>, '/admin/position'),
     ]),
@@ -112,4 +112,4 @@ function SideBar() {
   );
 }
 
-export default SideBar;
+export default AdminSideBar;

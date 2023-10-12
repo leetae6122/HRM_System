@@ -1,23 +1,25 @@
-
-import { Layout, theme } from "antd";
-import { Outlet } from "react-router-dom";
-import Breadcrumbs from "./Breadcrumbs";
-import SideBar from "./SideBar";
-import CardUser from "components/CardUser";
+import { Layout, theme } from 'antd';
+import { Outlet, useLocation } from 'react-router-dom';
+import Breadcrumbs from './Breadcrumbs';
+import AdminSideBar from './AdminSideBar';
+import EmployeeSideBar from './EmployeeSideBar';
+import CardUser from 'components/CardUser';
 
 const { Header, Content, Footer } = Layout;
 
 function PageLayout() {
+  const location = useLocation();
+  const pathSnippets = location.pathname.split('/');
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   return (
     <Layout
       style={{
-        minHeight: "100vh",
+        minHeight: '100vh',
       }}
     >
-      <SideBar />
+      {pathSnippets[1] === 'admin' ? <AdminSideBar /> : <EmployeeSideBar />}
       <Layout>
         <Header
           style={{
@@ -28,8 +30,8 @@ function PageLayout() {
           <div
             className="card-user"
             style={{
-              float: "right",
-              margin: "0 20px",
+              float: 'right',
+              margin: '0 20px',
             }}
           >
             <CardUser />
@@ -37,7 +39,7 @@ function PageLayout() {
         </Header>
         <Content
           style={{
-            margin: "0 14px",
+            margin: '0 14px',
           }}
         >
           <Breadcrumbs />
@@ -53,7 +55,7 @@ function PageLayout() {
         </Content>
         <Footer
           style={{
-            textAlign: "center",
+            textAlign: 'center',
           }}
         >
           Human Resource Management System ©2023 Created by Le Duong Tri

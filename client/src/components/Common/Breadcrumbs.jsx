@@ -9,11 +9,11 @@ const capitalizeChar = (str) => {
 
 const Breadcrumbs = () => {
   const location = useLocation();
-  let pathAdmin = null;
+  let specialPath = null;
   const pathSnippets = location.pathname.split("/").filter((i) => i);
-  if (pathSnippets[0] === "admin") {
+  if (pathSnippets[0] === "admin" || pathSnippets[0] === "staff") {
+    specialPath = pathSnippets[0];
     pathSnippets.shift();
-    pathAdmin = "/admin";
   }
   const breadcrumbItems = pathSnippets.map((snippet, index) => {
     const url = `/${pathSnippets.slice(0, index + 1).join("/")}`;
@@ -21,7 +21,7 @@ const Breadcrumbs = () => {
 
     return {
       title: (
-        <NavLink to={pathAdmin ? pathAdmin + url : url}>
+        <NavLink to={specialPath ? specialPath + url : url}>
           {capitalizeChar(snippet)}
         </NavLink>
       ),
@@ -36,7 +36,7 @@ const Breadcrumbs = () => {
             items={[
               {
                 title: (
-                  <NavLink to="/">
+                  <NavLink to="">
                     <HomeOutlined style={{fontSize: 16}}/>
                   </NavLink>
                 ),
