@@ -147,7 +147,7 @@ class UserService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const employeeWhere = body.employeeWhere;
+        const employeeFilter = body.employeeFilter;
 
         const offset = (page - 1) * limit;
 
@@ -164,14 +164,14 @@ class UserService {
             nest: true
         });
 
-        if (data1.count === 0) {
+        if (data1.count === 0 && employeeFilter) {
             const data2 = await db.User.scope('secret').findAndCountAll({
                 where: {},
                 offset,
                 limit,
                 order,
                 attributes,
-                include: [{ model: db.Employee, as: 'profile', where: employeeWhere }],
+                include: [{ model: db.Employee, as: 'profile', ...employeeFilter }],
                 raw: true,
                 nest: true
             });

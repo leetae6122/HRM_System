@@ -16,9 +16,9 @@ module.exports = {
       },
       summary: {
         allowNull: false,
-        type: Sequelize.STRING(60),
+        type: Sequelize.STRING(80),
       },
-      details: {
+      detail: {
         type: Sequelize.TEXT,
       },
       startDate: {

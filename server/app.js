@@ -16,6 +16,9 @@ import countryRouter from "./app/routes/country.route";
 import officeRouter from "./app/routes/office.route";
 import departmentRouter from "./app/routes/department.route";
 import leaveRouter from "./app/routes/leave.route";
+import attendanceRouter from "./app/routes/attendance.route";
+import projectRouter from "./app/routes/project.route";
+import taskRouter from "./app/routes/task.route";
 
 const app = express();
 
@@ -34,13 +37,18 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/user", verifyAccessToken, userRouter);
 app.use("/api/employee", verifyAccessToken, employeeRouter);
+app.use("/api/leave", verifyAccessToken, leaveRouter);
+app.use("/api/attendance", verifyAccessToken, attendanceRouter);
+app.use("/api/project", verifyAccessToken, projectRouter);
+app.use("/api/task", verifyAccessToken, taskRouter);
+
 app.use("/api/position", verifyAccessToken, verifyAdmin, positionRouter);
 app.use("/api/currency", verifyAccessToken, verifyAdmin, currencyRouter);
 app.use("/api/salary", verifyAccessToken, verifyAdmin, salaryRouter);
 app.use("/api/country", verifyAccessToken, verifyAdmin, countryRouter);
 app.use("/api/office", verifyAccessToken, verifyAdmin, officeRouter);
 app.use("/api/department", verifyAccessToken, verifyAdmin, departmentRouter);
-app.use("/api/leave", verifyAccessToken, leaveRouter);
+
 
 // handle 404 response 
 app.use((req, res, next) => {

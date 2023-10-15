@@ -1,18 +1,20 @@
 import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
 import createError from 'http-errors';
+import sequelize from "sequelize";
 
 class ProjectService {
     async findById(id) {
-        const result = await db.Project.findByPk(id, {
-            raw: true,
-            nest: true
-        });
+        const result = await db.Project.findByPk(id);
         return result;
     }
 
     async findAll() {
-        const result = await db.Project.findAll({});
+        const result = await db.Project.findAll({
+            where: {
+                status: 'Running'
+            }
+        });
         return result;
     }
 
@@ -29,7 +31,10 @@ class ProjectService {
             where,
             offset,
             limit,
-            order,
+            order: [
+                sequelize.fn('field', sequelize.col('status'), 'Running', 'Upcoming', 'Complete'),
+                ...order
+            ],
             attributes,
             raw: true,
             nest: true

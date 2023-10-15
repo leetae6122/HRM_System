@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         title: DataTypes.STRING,
         summary: DataTypes.STRING,
-        details: DataTypes.TEXT,
+        detail: DataTypes.TEXT,
         startDate: DataTypes.DATEONLY,
         endDate: DataTypes.DATEONLY,
         status: DataTypes.ENUM('Upcoming', 'Running', 'Complete'),
-        managerId: DataTypes.UUID
+        // managerId: DataTypes.UUID
     }, {
         sequelize,
         modelName: 'Project'

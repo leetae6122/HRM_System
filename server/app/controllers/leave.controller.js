@@ -17,10 +17,10 @@ exports.findById = async (req, res, next) => {
     try {
         const data = await leaveService.findById(req.params.id);
         if (!data) {
-            if (req.user.employeeId === data.employeeId && !req.user.isAdmin) {
-                return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
-            }
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Leave")));
+        }
+        if (req.user.employeeId !== data.employeeId && !req.user.isAdmin) {
+            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
 
         return res.send({ data });
@@ -43,7 +43,6 @@ exports.adminGetListLeave = async (req, res, next) => {
         const data = await leaveService.filterListLeave(req.body);
         return res.send({ data });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 }
@@ -81,10 +80,13 @@ exports.createLeave = async (req, res, next) => {
                 handledBy: employeeId
             }
         }
+
         const data = await leaveService.createLeave(payload);
 
-        const leaveData = await leaveService.findById(data.id);
-        await mailService.sendMailRespondLeaveRequests(leaveData);
+        if (data.status === 'Approved') {
+            const leaveData = await leaveService.findById(data.null);
+            await mailService.sendMailRespondLeaveRequests(leaveData);
+        }
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Leave"), data });
     } catch (error) {
         return next(error);
@@ -121,7 +123,7 @@ exports.employeeUpdateLeave = async (req, res, next) => {
         if (!foundLeave) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Leave")));
         }
-        if(foundLeave.employeeId !== req.user.employeeId){
+        if (foundLeave.employeeId !== req.user.employeeId) {
             return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
         if (foundLeave.status !== 'Pending') {
@@ -143,6 +145,9 @@ exports.deleteLeave = async (req, res, next) => {
         const foundLeave = await leaveService.findById(req.params.id);
         if (!foundLeave) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Leave")));
+        }
+        if (foundLeave.employeeId !== req.user.employeeId) {
+            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
         if (foundLeave.status !== 'Pending' && !req.user.isAdmin) {
             return next(createError.BadRequest(MSG_LEAVE_STATUS_NOT_PENDING));

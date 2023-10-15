@@ -10,11 +10,13 @@ class EmployeeService {
                 { model: db.User.scope('secret'), as: 'userData' },
                 {
                     model: db.Position, as: 'positionData',
-                    attributes: ['name'],
+                    include: {
+                        model: db.Currency, as: 'currencyData',
+                        attributes: ['name', 'code', 'symbol'],
+                    }
                 },
                 {
                     model: db.Salary, as: 'salaryData',
-                    attributes: ['totalSalary'],
                     include: {
                         model: db.Currency, as: 'currencyData',
                         attributes: ['name', 'code', 'symbol'],

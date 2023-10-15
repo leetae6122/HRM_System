@@ -9,7 +9,10 @@ const filterSchema = Joi.object().keys({
 }).required().min(1);
 
 const modelEmployeeFilterSchema = filterSchema.keys({
-    employeeWhere: Joi.object().default({}),
+    employeeFilter: Joi.object({
+        where: Joi.object().default({}).optional(),
+        order: Joi.array().items(Joi.array().items(Joi.string())).default([]).optional(),
+    }).default(null)
 });
 
 

@@ -40,7 +40,7 @@ class LeaveService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const employeeWhere = body.employeeWhere;
+        const employeeFilter = body.employeeFilter;
 
         const offset = (page - 1) * limit;
         
@@ -59,7 +59,7 @@ class LeaveService {
                 {
                     model: db.Employee, as: 'employeeData',
                     attributes: ['firstName', 'lastName'],
-                    where: employeeWhere
+                    ...employeeFilter
                 },
                 {
                     model: db.Employee, as: 'handlerData',

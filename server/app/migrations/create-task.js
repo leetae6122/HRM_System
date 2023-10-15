@@ -12,7 +12,10 @@ module.exports = {
       },
       title: {
         allowNull: false,
-        type: Sequelize.STRING(80),
+        type: Sequelize.STRING(60),
+      },
+      describe: {
+        type: Sequelize.STRING(200),
       },
       createdAt: {
         allowNull: false,

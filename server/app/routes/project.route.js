@@ -6,18 +6,20 @@ import {
     updateProjectSchema
 } from "../validations/project.validation";
 import { filterSchema } from "../validations/filter.validation";
+import { verifyAdmin } from './../middlewares/auth.middleware';
 
 const router = express.Router();
 
 router.route("/")
     .get(projectController.findAll)
-    .post(validation(createProjectSchema), projectController.createProject)
-    .patch(validation(updateProjectSchema), projectController.updateProject)
+    .post(verifyAdmin, validation(createProjectSchema), projectController.createProject)
+    .patch(verifyAdmin, validation(updateProjectSchema), projectController.updateProject)
 
 router.route("/filter")
-    .post(validation(filterSchema), projectController.getListProject)
+    .post(verifyAdmin, validation(filterSchema), projectController.getListProject)
 
 router.route("/:id")
+    .all(verifyAdmin)
     .get(projectController.findById)
     .delete(projectController.deleteProject)
 module.exports = router;

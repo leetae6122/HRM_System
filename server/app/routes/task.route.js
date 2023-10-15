@@ -6,18 +6,20 @@ import {
     updateTaskSchema
 } from "../validations/task.validation";
 import { filterSchema } from "../validations/filter.validation";
+import { verifyAdmin } from './../middlewares/auth.middleware';
 
 const router = express.Router();
 
 router.route("/")
     .get(taskController.findAll)
-    .post(validation(createTaskSchema), taskController.createTask)
-    .patch(validation(updateTaskSchema), taskController.updateTask)
+    .post(verifyAdmin, validation(createTaskSchema), taskController.createTask)
+    .patch(verifyAdmin, validation(updateTaskSchema), taskController.updateTask)
 
 router.route("/filter")
-    .post(validation(filterSchema), taskController.getListTask)
+    .post(verifyAdmin, validation(filterSchema), taskController.getListTask)
 
 router.route("/:id")
+    .all(verifyAdmin)
     .get(taskController.findById)
     .delete(taskController.deleteTask)
 module.exports = router;

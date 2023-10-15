@@ -13,6 +13,14 @@ class AttendanceService {
                     model: db.Employee, as: 'handlerData',
                     attributes: ['firstName', 'lastName', 'email']
                 },
+                {
+                    model: db.Task, as: 'taskData',
+                    attributes: ['title']
+                },
+                {
+                    model: db.Project, as: 'projectData',
+                    attributes: ['title']
+                },
             ],
             raw: true,
             nest: true
@@ -40,10 +48,10 @@ class AttendanceService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const employeeWhere = body.employeeWhere;
+        const employeeFilter = body.employeeFilter;
 
         const offset = (page - 1) * limit;
-        
+
         const { count, rows } = await db.Attendance.findAndCountAll({
             where,
             offset,
@@ -59,7 +67,13 @@ class AttendanceService {
                 {
                     model: db.Employee, as: 'employeeData',
                     attributes: ['firstName', 'lastName'],
-                    where: employeeWhere
+                    ...employeeFilter,
+                    include: [
+                        {
+                            model: db.Employee, as: 'managerData',
+                            attributes: ['firstName', 'lastName'],
+                        }
+                    ]
                 },
                 {
                     model: db.Employee, as: 'handlerData',

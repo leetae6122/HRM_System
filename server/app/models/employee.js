@@ -16,13 +16,13 @@ module.exports = (sequelize, DataTypes) => {
             Employee.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData' });
 
             Employee.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'departmentData' });
-            Employee.hasOne(models.Department, { foreignKey: 'managerId', as: 'manageDepartment'});
+            Employee.hasOne(models.Department, { foreignKey: 'managerId', as: 'manageDepartment' });
 
             Employee.hasMany(models.Leave, { foreignKey: 'employeeId', as: 'employeeData' });
             Employee.hasMany(models.Leave, { foreignKey: 'handledBy', as: 'handlerData' });
 
-            // Employee.hasMany(models.Attendance, { foreignKey: 'employeeId', as: 'employeeData' });
-            // Employee.hasMany(models.Attendance, { foreignKey: 'acceptBy', as: 'accepterData' });
+            Employee.hasMany(models.Attendance, { foreignKey: 'employeeId'});
+            Employee.hasMany(models.Attendance, { foreignKey: 'handledBy'});
         }
     }
     Employee.init({

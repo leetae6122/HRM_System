@@ -41,7 +41,7 @@ class SalaryService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const employeeWhere = body.employeeWhere;
+        const employeeFilter = body.employeeFilter;
 
         const offset = (page - 1) * limit;
 
@@ -62,7 +62,7 @@ class SalaryService {
             nest: true
         });
 
-        if (data1.count === 0) {
+        if (data1.count === 0 && employeeFilter) {
             const data2 = await db.Salary.findAndCountAll({
                 where: {},
                 offset,
@@ -71,7 +71,7 @@ class SalaryService {
                 attributes,
                 include: [
                     { model: db.Currency, as: 'currencyData' },
-                    { model: db.Employee, as: 'employeeData', where: employeeWhere },
+                    { model: db.Employee, as: 'employeeData', ...employeeFilter },
                     { model: db.Employee, as: 'adderData' }
                 ],
                 raw: true,

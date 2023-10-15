@@ -35,15 +35,15 @@ module.exports = {
             },
             firstName: {
                 allowNull: false,
-                type: Sequelize.STRING(80),
+                type: Sequelize.STRING(30),
             },
             lastName: {
                 allowNull: false,
-                type: Sequelize.STRING(80)
+                type: Sequelize.STRING(30)
             },
             email: {
                 allowNull: false,
-                type: Sequelize.STRING(100),
+                type: Sequelize.STRING,
                 unique: true,
             },
             phoneNumber: {

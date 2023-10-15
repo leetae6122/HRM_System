@@ -6,7 +6,7 @@ module.exports = {
             id: 1,
             title: 'Training of interns',
             summary: 'Training',
-            details: null,
+            detail: null,
             startDate: '2023-10-12',
             endDate: null,
             status: 'Running'
@@ -15,7 +15,7 @@ module.exports = {
             id: 2,
             title: 'Custom support service operation...',
             summary: 'Custom support',
-            details: null,
+            detail: null,
             startDate: '2023-10-20',
             endDate: '2023-11-20',
             status: 'Upcoming'
@@ -24,7 +24,7 @@ module.exports = {
             id: 3,
             title: 'Build an auto car website',
             summary: 'Build a website',
-            details: null,
+            detail: null,
             startDate: '2023-10-16',
             endDate: '2023-12-20',
             status: 'Upcoming'

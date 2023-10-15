@@ -1,9 +1,9 @@
 const Joi = require('joi');
 
 const adminCreateUserSchema = Joi.object({
-    username: Joi.string().max(100).required(),
+    username: Joi.string().max(60).required(),
     password: Joi.string()
-        .max(100)
+        .max(60)
         .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'))
         .required(),
     isAdmin: Joi.boolean().default(false),
@@ -12,9 +12,9 @@ const adminCreateUserSchema = Joi.object({
 });
 
 const changPasswordSchema = Joi.object({
-    currentPassword: Joi.string().max(100).required(),
+    currentPassword: Joi.string().max(60).required(),
     newPassword: Joi.string()
-        .max(100)
+        .max(60)
         .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'))
         .required()
         .invalid(Joi.ref('currentPassword'))
@@ -23,9 +23,9 @@ const changPasswordSchema = Joi.object({
 
 const adminUpdateUserSchema = Joi.object({
     userId: Joi.string().guid({ version: ['uuidv4'] }).required(),
-    username: Joi.string().max(100).optional(),
+    username: Joi.string().max(60).optional(),
     password: Joi.string()
-        .max(100)
+        .max(60)
         .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'))
         .optional(),
     isAdmin: Joi.boolean().optional(),

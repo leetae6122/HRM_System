@@ -6,7 +6,8 @@ import {
     MSG_UPDATE_SUCCESSFUL,
     MSG_CREATED_SUCCESSFUL,
     MSG_ATTENDANCE_STATUS_NOT_PENDING,
-    MSG_PROJECT_STATUS_NOT_RUNNING
+    MSG_PROJECT_STATUS_NOT_RUNNING,
+    MSG_ERROR_NOT_HAVE_PERMISSION
 } from "../utils/message.util";
 import attendanceService from "./../services/attendance.service";
 import projectService from "./../services/project.service";
@@ -17,10 +18,10 @@ exports.findById = async (req, res, next) => {
     try {
         const data = await attendanceService.findById(req.params.id);
         if (!data) {
-            if (req.user.employeeId === data.employeeId && !req.user.isAdmin) {
-                return next(createError.Unauthorized("You do not have permission"));
-            }
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Attendance")));
+        }
+        if (req.user.employeeId !== data.employeeId && !req.user.isAdmin) {
+            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
 
         return res.send({ data });
@@ -43,7 +44,6 @@ exports.adminGetListAttendance = async (req, res, next) => {
         const data = await attendanceService.filterListAttendance(req.body);
         return res.send({ data });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 }
@@ -67,7 +67,7 @@ exports.employeeGetListAttendance = async (req, res, next) => {
 exports.createAttendance = async (req, res, next) => {
     try {
         const { employeeId } = req.user;
-        const foundProject = await projectService.foundProject(req.body.projectId, next)
+        const foundProject = await projectService.foundProject(req.body.projectId, next);
         if (foundProject.status !== "Running") {
             return next(createError.BadRequest(MSG_PROJECT_STATUS_NOT_RUNNING));
         }
@@ -115,7 +115,7 @@ exports.employeeUpdateAttendance = async (req, res, next) => {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Attendance")));
         }
         if (foundAttendance.employeeId !== req.user.employeeId) {
-            return next(createError.Unauthorized("You do not have permission"));
+            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
         if (foundAttendance.status !== 'Pending') {
             return next(createError.BadRequest(MSG_ATTENDANCE_STATUS_NOT_PENDING));
@@ -146,6 +146,9 @@ exports.deleteAttendance = async (req, res, next) => {
         const foundAttendance = await attendanceService.findById(req.params.id);
         if (!foundAttendance) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Attendance")));
+        }
+        if (foundAttendance.employeeId !== req.user.employeeId) {
+            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
         if (foundAttendance.status !== 'Pending' && !req.user.isAdmin) {
             return next(createError.BadRequest(MSG_ATTENDANCE_STATUS_NOT_PENDING));

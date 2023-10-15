@@ -3,7 +3,9 @@ import {
     MSG_ERROR_DELETE,
     MSG_ERROR_ID_EMPTY,
     MSG_UPDATE_SUCCESSFUL,
-    MSG_CREATED_SUCCESSFUL
+    MSG_CREATED_SUCCESSFUL,
+    MSG_ERROR_DELETE_PROJECT,
+    MSG_ERROR_UPDATE_PROJECT,
 } from "../utils/message.util";
 import projectService from "./../services/project.service";
 import createError from 'http-errors';
@@ -46,7 +48,10 @@ exports.createProject = async (req, res, next) => {
 
 exports.updateProject = async (req, res, next) => {
     try {
-        await projectService.foundProject(req.body.projectId, next);
+        const foundProject = await projectService.foundProject(req.body.projectId, next);
+        if (foundProject.status !== "Upcoming") {
+            return next(createError.BadRequest(MSG_ERROR_UPDATE_PROJECT));
+        }
 
         await projectService.updateProject(req.body.projectId, req.body);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
@@ -60,7 +65,10 @@ exports.deleteProject = async (req, res, next) => {
         if (!req.params.id && Number(req.params.id)) {
             return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("ProjectId")));
         }
-        await projectService.foundProject(req.params.id, next);
+        const foundProject = await projectService.foundProject(req.params.id, next);
+        if (foundProject.status === "Running") {
+            return next(createError.BadRequest(MSG_ERROR_DELETE_PROJECT));
+        }
 
         await projectService.deleteProject(req.params.id);
         return res.send({ message: MSG_DELETE_SUCCESSFUL });

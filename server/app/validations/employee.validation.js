@@ -1,9 +1,9 @@
 const Joi = require('joi');
 
 const adminCreateEmployeeSchema = Joi.object({
-    firstName: Joi.string().max(80).required(),
-    lastName: Joi.string().max(80).required(),
-    email: Joi.string().email({ minDomainSegments: 2 }).max(100).required(),
+    firstName: Joi.string().max(30).required(),
+    lastName: Joi.string().max(30).required(),
+    email: Joi.string().email({ minDomainSegments: 2 }).max(255).required(),
     phoneNumber: Joi.string()
         .regex(/^[0-9]{10}$/)
         .messages({ 'string.pattern.base': `Phone number must have 10 digits.` })
@@ -29,9 +29,9 @@ const updateEmployeeSchema = Joi.object().keys({
 
 const adminUpdateEmployeeSchema = updateEmployeeSchema.keys({
     employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
-    firstName: Joi.string().max(80).optional(),
-    lastName: Joi.string().max(80).optional(),
-    email: Joi.string().email({ minDomainSegments: 2 }).max(100).optional(),
+    firstName: Joi.string().max(30).optional(),
+    lastName: Joi.string().max(30).optional(),
+    email: Joi.string().email({ minDomainSegments: 2 }).max(255).optional(),
     gender: Joi.boolean().truthy('male').falsy('female').optional(),
     dateHired: Joi.date().max('now').optional(),
     dateOff: Joi.date().allow(null).optional(),

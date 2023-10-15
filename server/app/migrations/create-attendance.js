@@ -50,17 +50,19 @@ module.exports = {
                     key: 'id'
                 },
             },
-            projectId: {
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Project',
-                    key: 'id'
-                },
-            },
             taskId: {
+                allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Task',
+                    key: 'id'
+                },
+            },
+            projectId: {
+                allowNull: false,
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'Project',
                     key: 'id'
                 },
             },
