@@ -8,12 +8,10 @@ import _ from 'lodash';
 
 LeaveTableHeader.propTypes = {
   toggleModalAddLeave: PropTypes.func,
-  setFilter: PropTypes.func,
 };
 
 LeaveTableHeader.defaultProps = {
   toggleModalAddLeave: null,
-  setFilter: null,
 };
 
 function LeaveTableHeader(props) {

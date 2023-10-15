@@ -128,11 +128,7 @@ function OfficeForm(props) {
           rows={2}
         />
       </Form.Item>
-      <Form.Item
-        name="stateProvince"
-        label="State / Province"
-        hasFeedback
-      >
+      <Form.Item name="stateProvince" label="State / Province" hasFeedback>
         <Input
           placeholder="Enter State / Province"
           disabled={loading}
@@ -140,15 +136,12 @@ function OfficeForm(props) {
           maxLength={30}
         />
       </Form.Item>
-      <Form.Item
-        name="postalCode"
-        label="Postal Code"
-        hasFeedback
-      >
+      <Form.Item name="postalCode" label="Postal Code" hasFeedback>
         <InputNumber
           style={{
             width: '100%',
           }}
+          controls={false}
           placeholder="Enter Postal Code"
           min={1}
           maxLength={10}
@@ -197,10 +190,15 @@ function OfficeForm(props) {
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
-          <Button htmlType="button" onClick={handleCancel}>
+          <Button htmlType="button" onClick={handleCancel} loading={loading}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" disabled={!submittable}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            disabled={!submittable}
+          >
             {initialValues.officeId ? 'Save' : 'Add'}
           </Button>
         </Space>

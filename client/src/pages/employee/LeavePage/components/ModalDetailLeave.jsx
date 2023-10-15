@@ -76,7 +76,7 @@ const createItems = (value) => [
 function ModalDetailLeave(props) {
   const { editLeaveId } = useSelector((state) => state.leave);
   const { openModal, toggleShowModal } = props;
-  const [infoLeave, setInfoLeave] = useState({});
+  const [infoLeave, setInfoLeave] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -98,7 +98,7 @@ function ModalDetailLeave(props) {
     toggleShowModal();
   };
 
-  const items = createItems(infoLeave);
+  const items = infoLeave ? createItems(infoLeave) : [];
 
   return (
     <>
@@ -107,14 +107,9 @@ function ModalDetailLeave(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={"100vh"}
+        width={'100vh'}
       >
-        <Descriptions
-          layout="horizontal"
-          bordered
-          column={2}
-          items={items}
-        />
+        <Descriptions layout="horizontal" bordered column={2} items={items} />
       </Modal>
     </>
   );

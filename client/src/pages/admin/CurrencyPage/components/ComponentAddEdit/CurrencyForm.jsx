@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Form, Input, Button, Space } from "antd";
-import _ from "lodash";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Form, Input, Button, Space } from 'antd';
+import _ from 'lodash';
 
 CurrencyForm.propTypes = {
   onCancel: PropTypes.func,
@@ -15,9 +15,9 @@ CurrencyForm.defaultProps = {
   onSubmit: null,
   loading: false,
   initialValues: {
-    name: "",
-    code: "",
-    symbol: "",
+    name: '',
+    code: '',
+    symbol: '',
   },
 };
 
@@ -38,7 +38,7 @@ function CurrencyForm(props) {
           setSubmittable(false);
         }
       },
-      () => setSubmittable(false)
+      () => setSubmittable(false),
     );
   }, [values, form, initialValues]);
 
@@ -74,7 +74,7 @@ function CurrencyForm(props) {
         label="Name"
         hasFeedback
         rules={[
-          { required: true, message: "Please input the name of the currency!" },
+          { required: true, message: 'Please input the name of the currency!' },
         ]}
       >
         <Input
@@ -89,7 +89,7 @@ function CurrencyForm(props) {
         label="Code"
         hasFeedback
         rules={[
-          { required: true, message: "Please input the code of the currency!" },
+          { required: true, message: 'Please input the code of the currency!' },
         ]}
       >
         <Input
@@ -108,12 +108,17 @@ function CurrencyForm(props) {
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
-        <Space style={{ float: "right" }}>
-          <Button htmlType="button" onClick={handleCancel}>
+        <Space style={{ float: 'right' }}>
+          <Button htmlType="button" onClick={handleCancel} loading={loading}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" disabled={!submittable}>
-            {initialValues.currencyId ? "Save" : "Add"}
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            disabled={!submittable}
+          >
+            {initialValues.currencyId ? 'Save' : 'Add'}
           </Button>
         </Space>
       </Form.Item>

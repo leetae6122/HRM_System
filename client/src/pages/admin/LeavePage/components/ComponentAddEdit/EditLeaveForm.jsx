@@ -32,16 +32,16 @@ EditLeaveForm.defaultProps = {
   },
 };
 
-const createItems = (value) => [
+const createItems = (data) => [
   {
     key: '1',
     label: 'Leave Id',
-    children: value.leaveId,
+    children: data.leaveId,
   },
   {
     key: '2',
     label: 'Employee Name',
-    children: `${value.employeeData.firstName} ${value.employeeData.lastName}`,
+    children: `${data.employeeData.firstName} ${data.employeeData.lastName}`,
   },
   {
     key: '3',
@@ -50,37 +50,37 @@ const createItems = (value) => [
       <span
         style={{
           color:
-            value.status === 'Reject'
+            data.status === 'Reject'
               ? 'red'
-              : value.status === 'Approved'
+              : data.status === 'Approved'
               ? 'green'
               : '',
         }}
       >
-        {value.status}
+        {data.status}
       </span>
     ),
   },
   {
     key: '4',
     label: 'Title',
-    children: value.title,
+    children: data.title,
   },
   {
     key: '5',
     label: 'Description',
-    children: value.description,
+    children: data.description,
     span: 2,
   },
   {
     key: '6',
     label: 'Leave From',
-    children: value.leaveFrom,
+    children: data.leaveFrom,
   },
   {
     key: '7',
     label: 'Leave To',
-    children: value.leaveTo,
+    children: data.leaveTo,
   },
 ];
 
@@ -182,10 +182,14 @@ function EditLeaveForm(props) {
             ) : null}
             <Form.Item wrapperCol={wrapperCol}>
               <Space style={{ float: 'right' }}>
-                <Button htmlType="button" onClick={handleCancel}>
+                <Button
+                  htmlType="button"
+                  onClick={handleCancel}
+                  loading={loading}
+                >
                   Cancel
                 </Button>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" loading={loading}>
                   Save
                 </Button>
               </Space>

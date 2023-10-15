@@ -114,7 +114,7 @@ function ChangePasswordForm(props) {
       </Form.Item>
       <Form.Item>
         <Space style={{ float: "right" }}>
-          <Button htmlType="button" onClick={handleCancel}>
+          <Button htmlType="button" onClick={handleCancel} loading={loading}>
             Cancel
           </Button>
           <Button type="primary" htmlType="submit">

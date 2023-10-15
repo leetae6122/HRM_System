@@ -133,6 +133,7 @@ function FilterEmployeeForm(props) {
           style={{
             width: "100%",
           }}
+          controls={false}
           min={0}
           disabled={loading}
         />
@@ -158,6 +159,7 @@ function FilterEmployeeForm(props) {
           style={{
             width: "100%",
           }}
+          controls={false}
           disabled={loading}
         />
       </Form.Item>

@@ -9,6 +9,9 @@ import positionReducer from 'reducers/position';
 import salaryReducer from 'reducers/salary';
 import userReducer from 'reducers/user';
 import leaveReducer from 'reducers/leave';
+import taskReducer from 'reducers/task';
+import projectReducer from 'reducers/project';
+import attendanceReducer from 'reducers/attendance';
 
 const rootReducer = {
     auth: authReducer,
@@ -20,7 +23,10 @@ const rootReducer = {
     country: countryReducer,
     office: officeReducer,
     department: departmentReducer,
-    leave: leaveReducer
+    leave: leaveReducer,
+    task: taskReducer,
+    project: projectReducer,
+    attendance: attendanceReducer,
 }
 
 const store = configureStore({

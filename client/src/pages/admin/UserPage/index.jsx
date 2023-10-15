@@ -10,6 +10,7 @@ import UserTableHeader from './components/UserTableHeader';
 import ModalAddUser from './components/ComponentAddEdit/ModalAddUser';
 import Swal from 'sweetalert2';
 import ModalEditUser from './components/ComponentAddEdit/ModalEditUser';
+import _ from 'lodash';
 
 const createColumns = (toggleModalEditUser, handleDeleteUser) => [
   {
@@ -21,7 +22,7 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
     title: 'Username',
     dataIndex: 'username',
     key: 'username',
-    sorter: (a, b) => a.username.localeCompare(b.username),
+    sorter: true,
   },
   {
     title: 'Name',
@@ -158,6 +159,7 @@ function UserPage() {
   }, [dispatch, filterData]);
 
   const setFilter = (filter) => {
+    console.log(filter);
     dispatch(setFilterData(filter));
   };
 
@@ -204,13 +206,31 @@ function UserPage() {
     setOpenModalEditUser(!openModalEditUser);
   };
 
-  const columns = createColumns(
-    toggleModalEditUser,
-    handleDeleteUser,
-  );
+  const columns = createColumns(toggleModalEditUser, handleDeleteUser);
 
   const onChangeTable = (pagination, filters, sorter) => {
-    console.log(filters, sorter);
+    let where = filterData.where;
+    let order = filterData.order;
+    if (filters.role) {
+      where = {
+        ...where,
+        isAdmin: filters.role[0],
+      };
+    }
+    if (filters.status) {
+      where = {
+        ...where,
+        isActive: filters.status[0],
+      };
+    }
+    console.log(sorter);
+    if (!_.isEmpty(sorter)) {
+      order = [
+        ...order,
+        [sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+      ];
+    }
+    setFilter({ ...filterData, where, order });
   };
 
   return (

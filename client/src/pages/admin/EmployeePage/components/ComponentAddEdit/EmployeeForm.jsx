@@ -290,6 +290,7 @@ function EmployeeForm(props) {
             name="firstName"
             label="First Name"
             rules={[{ required: true, message: 'Please input first name!' }]}
+            maxLength={30}
           >
             <Input placeholder="Enter first name" disabled={loading} />
           </Form.Item>
@@ -299,6 +300,7 @@ function EmployeeForm(props) {
             name="lastName"
             label="Last Name"
             rules={[{ required: true, message: 'Please input last name!' }]}
+            maxLength={30}
           >
             <Input placeholder="Enter last name" disabled={loading} />
           </Form.Item>
@@ -316,6 +318,7 @@ function EmployeeForm(props) {
                 message: 'The email entered is not a valid email!',
               },
             ]}
+            maxLength={60}
           >
             <Input placeholder="Enter email" disabled={loading} />
           </Form.Item>
@@ -445,10 +448,19 @@ function EmployeeForm(props) {
         <Col span={24}>
           <Form.Item wrapperCol={wrapperCol}>
             <Space style={{ float: 'right' }}>
-              <Button htmlType="button" onClick={handleCancel}>
+              <Button
+                htmlType="button"
+                onClick={handleCancel}
+                loading={loading}
+              >
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit" disabled={!submittable}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                disabled={!submittable}
+              >
                 {initialValues.employeeId ? 'Save' : 'Add'}
               </Button>
             </Space>

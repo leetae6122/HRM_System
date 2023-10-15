@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Form, Input, Button, Space, InputNumber, Select } from "antd";
-import currencyApi from "api/currencyApi";
-import { toast } from "react-toastify";
-import _ from "lodash";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Form, Input, Button, Space, InputNumber, Select } from 'antd';
+import currencyApi from 'api/currencyApi';
+import { toast } from 'react-toastify';
+import _ from 'lodash';
 
 PositionForm.propTypes = {
   onCancel: PropTypes.func,
@@ -17,7 +17,7 @@ PositionForm.defaultProps = {
   onSubmit: null,
   loading: false,
   initialValues: {
-    name: "",
+    name: '',
     minSalary: 0,
     MaxSalary: null,
   },
@@ -41,7 +41,7 @@ function PositionForm(props) {
           setSubmittable(false);
         }
       },
-      () => setSubmittable(false)
+      () => setSubmittable(false),
     );
   }, [values, form, initialValues]);
 
@@ -53,7 +53,7 @@ function PositionForm(props) {
         const options = response.data.map((currency) => ({
           value: currency.id,
           label: `${currency.name} - ${currency.code}${
-            currency.symbol ? ` - ${currency.symbol}` : ""
+            currency.symbol ? ` - ${currency.symbol}` : ''
           }`,
         }));
         setCurrencyOptions(options);
@@ -97,7 +97,7 @@ function PositionForm(props) {
         label="Name"
         hasFeedback
         rules={[
-          { required: true, message: "Please input the name of the position!" },
+          { required: true, message: 'Please input the name of the position!' },
         ]}
       >
         <Input
@@ -111,22 +111,22 @@ function PositionForm(props) {
         name="currencyId"
         label="Currency"
         hasFeedback
-        rules={[{ required: true, message: "Please select currency!" }]}
+        rules={[{ required: true, message: 'Please select currency!' }]}
       >
         <Select
           showSearch
           style={{
-            width: "100%",
+            width: '100%',
           }}
           placeholder="Search to Select"
           optionFilterProp="children"
           filterOption={(input, option) =>
-            (option?.label ?? "").includes(input)
+            (option?.label ?? '').includes(input)
           }
           filterSort={(optionA, optionB) =>
-            (optionA?.label ?? "")
+            (optionA?.label ?? '')
               .toLowerCase()
-              .localeCompare((optionB?.label ?? "").toLowerCase())
+              .localeCompare((optionB?.label ?? '').toLowerCase())
           }
           options={currencyOptions}
           disabled={loading}
@@ -137,18 +137,18 @@ function PositionForm(props) {
         label="Min Salary"
         hasFeedback
         rules={[
-          { required: true, message: "Please input minimum salary!" },
+          { required: true, message: 'Please input minimum salary!' },
           () => ({
             validator(_, value) {
               if (
                 !value ||
-                !form.getFieldValue("maxSalary") ||
-                value < form.getFieldValue("maxSalary")
+                !form.getFieldValue('maxSalary') ||
+                value < form.getFieldValue('maxSalary')
               ) {
                 return Promise.resolve();
               }
               return Promise.reject(
-                new Error("Min Salary must be less than Max Salary!")
+                new Error('Min Salary must be less than Max Salary!'),
               );
             },
           }),
@@ -156,24 +156,26 @@ function PositionForm(props) {
       >
         <InputNumber
           style={{
-            width: "100%",
+            width: '100%',
           }}
+          controls={false}
           min={0}
           disabled={loading}
+          formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
         />
       </Form.Item>
       <Form.Item
         name="maxSalary"
         label="Max Salary"
-        hasFeedbac
+        hasFeedback
         rules={[
           () => ({
             validator(_, value) {
-              if (!value || value > form.getFieldValue("minSalary")) {
+              if (!value || value > form.getFieldValue('minSalary')) {
                 return Promise.resolve();
               }
               return Promise.reject(
-                new Error("Max Salary must be greater than Min Salary!")
+                new Error('Max Salary must be greater than Min Salary!'),
               );
             },
           }),
@@ -181,19 +183,26 @@ function PositionForm(props) {
       >
         <InputNumber
           style={{
-            width: "100%",
+            width: '100%',
           }}
+          controls={false}
           min={0}
           disabled={loading}
+          formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
-        <Space style={{ float: "right" }}>
-          <Button htmlType="button" onClick={handleCancel}>
+        <Space style={{ float: 'right' }}>
+          <Button htmlType="button" onClick={handleCancel} loading={loading}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" disabled={!submittable}>
-            {initialValues.positionId ? "Save" : "Add"}
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            disabled={!submittable}
+          >
+            {initialValues.positionId ? 'Save' : 'Add'}
           </Button>
         </Space>
       </Form.Item>

@@ -17,7 +17,7 @@ LeaveForm.defaultProps = {
   initialValues: {
     title: '',
     description: '',
-    rangeDateLeave:[],
+    rangeDateLeave: [],
   },
 };
 
@@ -52,10 +52,10 @@ function LeaveForm(props) {
     onCancel();
   };
 
-  const disabledDate= (current) => {
+  const disabledDate = (current) => {
     return current && current.valueOf() < Date.now();
-  }
-  console.log(initialValues);
+  };
+
   return (
     <Form
       name="normal_leave"
@@ -98,9 +98,9 @@ function LeaveForm(props) {
         rules={[{ required: true, message: 'Please input description!' }]}
       >
         <Input.TextArea
-          rows={4}
           placeholder="Enter description"
           disabled={loading}
+          style={{ height: 200, resize: 'none' }}
         />
       </Form.Item>
       <Form.Item
@@ -119,10 +119,15 @@ function LeaveForm(props) {
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
-          <Button htmlType="button" onClick={handleCancel}>
+          <Button htmlType="button" onClick={handleCancel} loading={loading}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" disabled={!submittable}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            disabled={!submittable}
+          >
             {initialValues.leaveId ? 'Save' : 'Create'}
           </Button>
         </Space>

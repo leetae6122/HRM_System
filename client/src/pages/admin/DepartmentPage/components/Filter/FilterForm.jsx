@@ -139,7 +139,9 @@ function FilterDrawerForm(props) {
           style={{
             width: "100%",
           }}
+          controls={false}
           min={0}
+          formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           disabled={loading}
         />
       </Form.Item>
@@ -164,7 +166,9 @@ function FilterDrawerForm(props) {
           style={{
             width: "100%",
           }}
+          controls={false}
           disabled={loading}
+          formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>

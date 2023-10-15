@@ -193,10 +193,10 @@ function DepartmentForm(props) {
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
-          <Button htmlType="button" onClick={handleCancel}>
+          <Button htmlType="button" onClick={handleCancel} loading={loading}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" disabled={!submittable}>
+          <Button type="primary" htmlType="submit" loading={loading} disabled={!submittable}>
             {initialValues.departmentId ? 'Save' : 'Add'}
           </Button>
         </Space>

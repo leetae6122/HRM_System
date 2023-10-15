@@ -209,10 +209,7 @@ function LeavePage() {
         dataSource={leaveList}
         bordered
         title={() => (
-          <LeaveTableHeader
-            toggleModalAddLeave={toggleModalAddLeave}
-            setFilter={setFilter}
-          />
+          <LeaveTableHeader toggleModalAddLeave={toggleModalAddLeave} />
         )}
         pagination={{
           total,

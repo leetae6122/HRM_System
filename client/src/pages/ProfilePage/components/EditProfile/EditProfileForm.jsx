@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Form, Input, Button, Space, DatePicker, Select, Col, Row } from "antd";
-import _ from "lodash";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Form, Input, Button, Space, DatePicker, Select, Col, Row } from 'antd';
+import _ from 'lodash';
 
 EditProfileForm.propTypes = {
   onCancel: PropTypes.func,
@@ -17,7 +17,7 @@ EditProfileForm.defaultProps = {
   initialValues: {},
 };
 
-const dateFormat = "DD/MM/YYYY";
+const dateFormat = 'DD/MM/YYYY';
 
 const wrapperCol = { offset: 8, span: 16 };
 
@@ -33,15 +33,15 @@ function EditProfileForm(props) {
         const defaultValues = {
           phoneNumber: initialValues.phoneNumber,
           dateBirth: initialValues.dateBirth,
-          address: initialValues.address
-        }
+          address: initialValues.address,
+        };
         if (!_.isEqual(defaultValues, values)) {
           setSubmittable(true);
         } else {
           setSubmittable(false);
         }
       },
-      () => setSubmittable(false)
+      () => setSubmittable(false),
     );
   }, [values, form, initialValues]);
 
@@ -93,14 +93,14 @@ function EditProfileForm(props) {
             labelCol={{ span: 5 }}
             wrapperCol={{ span: 19 }}
             rules={[
-              { required: true, message: "Please input your phone number!" },
+              { required: true, message: 'Please input your phone number!' },
               () => ({
                 validator(_, value) {
                   if (!value || Number(value)) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error("The phone number must have a number!")
+                    new Error('The phone number must have a number!'),
                   );
                 },
               }),
@@ -110,7 +110,7 @@ function EditProfileForm(props) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error("Phone number must have 10 digits!")
+                    new Error('Phone number must have 10 digits!'),
                   );
                 },
               }),
@@ -150,7 +150,7 @@ function EditProfileForm(props) {
             name="dateBirth"
             label="Date of birth"
             rules={[
-              { required: true, message: "Please select your date of birth!" },
+              { required: true, message: 'Please select your date of birth!' },
             ]}
           >
             <DatePicker
@@ -166,9 +166,7 @@ function EditProfileForm(props) {
             label="Address"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
-            rules={[
-              { required: true, message: "Please input your address!" },
-            ]}
+            rules={[{ required: true, message: 'Please input your address!' }]}
           >
             <Input.TextArea
               rows={3}
@@ -179,11 +177,20 @@ function EditProfileForm(props) {
         </Col>
         <Col span={24}>
           <Form.Item wrapperCol={wrapperCol}>
-            <Space style={{ float: "right" }}>
-              <Button htmlType="button" onClick={handleCancel}>
+            <Space style={{ float: 'right' }}>
+              <Button
+                htmlType="button"
+                onClick={handleCancel}
+                loading={loading}
+              >
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit" disabled={!submittable}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                disabled={!submittable}
+              >
                 Save
               </Button>
             </Space>

@@ -37,14 +37,16 @@ function UserTableHeader(props) {
           { username: { $like: `%${value}%` } },
         ],
       },
-      employeeWhere: {
-        $or: _.flatten(
-          _.map(['firstName', 'lastName', 'email'], function (item) {
-            return _.map(value.split(' '), function (q) {
-              return { [item]: { $like: '%' + q + '%' } };
-            });
-          }),
-        ),
+      employeeFilter: {
+        where: {
+          $or: _.flatten(
+            _.map(['firstName', 'lastName', 'email'], function (item) {
+              return _.map(value.split(' '), function (q) {
+                return { [item]: { $like: '%' + q + '%' } };
+              });
+            }),
+          ),
+        },
       },
     });
     setLoadingSearch(false);

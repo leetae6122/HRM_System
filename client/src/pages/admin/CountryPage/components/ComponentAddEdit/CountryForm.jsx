@@ -96,6 +96,7 @@ function CountryForm(props) {
           style={{
             width: '100%',
           }}
+          controls={false}
           placeholder="Enter the country code"
           disabled={loading}
           maxLength={3}
@@ -122,10 +123,15 @@ function CountryForm(props) {
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
-          <Button htmlType="button" onClick={handleCancel}>
+          <Button htmlType="button" onClick={handleCancel} loading={loading}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" disabled={!submittable}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            disabled={!submittable}
+          >
             {initialValues.countryId ? 'Save' : 'Add'}
           </Button>
         </Space>

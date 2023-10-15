@@ -79,7 +79,26 @@ function AdminSideBar() {
         '/admin/department',
       ),
     ]),
-    getItem('Attendance', '10', <CalendarOutlined />),
+    getItem('Attendance', 'sub4', <CalendarOutlined />, [
+      getItem(
+        <Link to={'/admin/attendance'} replace>
+          Attendance
+        </Link>,
+        '/admin/attendance',
+      ),
+      getItem(
+        <Link to={'/admin/project'} replace>
+          Project
+        </Link>,
+        '/admin/project',
+      ),
+      getItem(
+        <Link to={'/admin/task'} replace>
+          Task
+        </Link>,
+        '/admin/task',
+      ),
+    ]),
     getItem(
       <Link to={'/admin/leave'} replace>
         Leave

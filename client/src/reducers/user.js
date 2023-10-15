@@ -5,13 +5,13 @@ const initialState = {
         page: 1,
         size: 10,
         where: {},
-        order: [['isActive', 'DESC'], ['username', 'ASC']]
+        order: [['isActive', 'DESC'], ['username', 'ASC']],
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
-        order: [['isActive', 'DESC'], ['username', 'ASC']]
+        order: [['isActive', 'DESC'], ['username', 'ASC']],
     },
     userList: [],
     total: 0,

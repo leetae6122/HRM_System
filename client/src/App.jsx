@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import NotFound from 'pages/ErrorPage/NotFound';
 import Loading from 'components/Common/Loading';
 import RequireAuth from 'components/ProtectRoute/RequireAuth';
-import DashboardPage from 'pages/admin/DashboardPage';
+import AdminDashboardPage from 'pages/admin/DashboardPage';
 import UserPage from 'pages/admin/UserPage';
 import CurrencyPage from 'pages/admin/CurrencyPage';
 import PositionPage from 'pages/admin/PositionPage';
@@ -18,10 +18,14 @@ import SalaryPage from 'pages/admin/SalaryPage';
 import CountryPage from 'pages/admin/CountryPage';
 import OfficePage from 'pages/admin/OfficePage';
 import DepartmentPage from 'pages/admin/DepartmentPage';
-import LeavePageAdmin from 'pages/admin/LeavePage';
+import AdminLeavePage from 'pages/admin/LeavePage';
 import AdminAuth from 'components/ProtectRoute/AdminAuth';
-import LeavePageEmployee from 'pages/employee/LeavePage';
-
+import EmployeeLeavePage from 'pages/employee/LeavePage';
+import AdminAttendancePage from 'pages/admin/AttendancePage';
+import EmployeeAttendancePage from 'pages/employee/AttendancePage';
+import TaskPage from 'pages/admin/TaskPage';
+import ProjectPage from 'pages/admin/ProjectPage';
+import EmployeeDashboardPage from 'pages/employee/DashboardPage';
 
 const AuthPage = React.lazy(() => import('pages/AuthPage'));
 const PageLayout = React.lazy(() => import('components/Common/PageLayout'));
@@ -66,7 +70,7 @@ function App() {
                 </RequireAuth>
               }
             >
-              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="dashboard" element={<AdminDashboardPage />} />
               <Route path="user" element={<UserPage />} />
               <Route exact path="employee/*" element={<EmployeePage />} />
               <Route path="position" element={<PositionPage />} />
@@ -75,7 +79,10 @@ function App() {
               <Route path="country" element={<CountryPage />} />
               <Route path="office" element={<OfficePage />} />
               <Route path="department" element={<DepartmentPage />} />
-              <Route path="leave" element={<LeavePageAdmin />} />
+              <Route path="leave" element={<AdminLeavePage />} />
+              <Route path="attendance" element={<AdminAttendancePage />} />
+              <Route path="task" element={<TaskPage />} />
+              <Route path="project" element={<ProjectPage />} />
             </Route>
 
             <Route
@@ -86,9 +93,9 @@ function App() {
                 </RequireAuth>
               }
             >
-              <Route path="dashboard" element={<div>dashboard</div>} />
-              <Route path="timekeeper" element={<div>timekeeper</div>} />
-              <Route path="leave" element={<LeavePageEmployee/>} />
+              <Route path="dashboard" element={<EmployeeDashboardPage/>} />
+              <Route path="attendance" element={<EmployeeAttendancePage />} />
+              <Route path="leave" element={<EmployeeLeavePage />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

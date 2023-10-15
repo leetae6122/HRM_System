@@ -37,7 +37,6 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
-    sorter: (a, b) => a.status.localeCompare(b.status),
     render: (status) => (
       <>
         {status === 'Pending' ? (
@@ -49,6 +48,21 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
         )}
       </>
     ),
+    filters: [
+      {
+        text: 'Pending',
+        value: 'Pending',
+      },
+      {
+        text: 'Approved',
+        value: 'Approved',
+      },
+      {
+        text: 'Reject',
+        value: 'Reject',
+      },
+    ],
+    onFilter: (value, record) => !!record.status === value,
   },
   {
     title: 'Leave From',

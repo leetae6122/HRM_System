@@ -32,14 +32,16 @@ function LeaveTableHeader(props) {
       page: 1,
       size: 10,
       where: {},
-      employeeWhere: {
-        $or: _.flatten(
-          _.map(['firstName', 'lastName'], function (item) {
-            return _.map(value.split(' '), function (q) {
-              return { [item]: { $like: '%' + q + '%' } };
-            });
-          }),
-        ),
+      employeeFilter: {
+        where: {
+          $or: _.flatten(
+            _.map(['firstName', 'lastName'], function (item) {
+              return _.map(value.split(' '), function (q) {
+                return { [item]: { $like: '%' + q + '%' } };
+              });
+            }),
+          ),
+        },
       },
     });
     setLoadingSearch(false);
