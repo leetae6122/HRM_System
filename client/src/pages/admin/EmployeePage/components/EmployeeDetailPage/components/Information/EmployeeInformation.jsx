@@ -18,6 +18,7 @@ const createItems = (employee, department) => [
     key: '1',
     label: <span style={labelStyle}>Employee Id</span>,
     children: employee.id,
+    span: 2
   },
   {
     key: '2',
@@ -51,26 +52,28 @@ const createItems = (employee, department) => [
   },
   {
     key: '7',
-    label: <span style={labelStyle}>Office</span>,
-    children: department ? department.officeData.title : '',
-  },
-  {
-    key: '8',
-    label: <span style={labelStyle}>Office Location</span>,
-    children: `${department.officeData.streetAddress}${
-      department.officeData.stateProvince
-        ? `, ${department.officeData.stateProvince}`
-        : ''
-    }, ${department.officeData.city}`,
-  },
-  {
-    key: '9',
     label: <span style={labelStyle}>Salary</span>,
     children: employee.salaryData.totalSalary
       ? `${numberWithDot(employee.salaryData.totalSalary)} ${
           employee.salaryData.currencyData.code
         }`
       : '',
+  },
+  {
+    key: '8',
+    label: <span style={labelStyle}>Office</span>,
+    children: department ? department.officeData.title : '',
+    span: 2
+  },
+  {
+    key: '9',
+    label: <span style={labelStyle}>Office Location</span>,
+    children: `${department.officeData.streetAddress}${
+      department.officeData.stateProvince
+        ? `, ${department.officeData.stateProvince}`
+        : ''
+    }, ${department.officeData.city}`,
+    span: 2
   },
 ];
 
@@ -93,7 +96,7 @@ function EmployeeInformation(props) {
         <Descriptions
           layout="horizontal"
           title={<h3>Employee Information</h3>}
-          column={1}
+          column={2}
           items={items}
         />
       </Card>

@@ -91,7 +91,7 @@ const createColumns = (
     key: 'managerData',
     dataIndex: 'managerData',
     render: (manager) =>
-      manager ? `${manager.firstName} ${manager.lastName}` : '',
+      manager.firstName ? `${manager.firstName} ${manager.lastName}` : '',
   },
   {
     title: 'Action',

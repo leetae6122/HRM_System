@@ -1,9 +1,17 @@
 import axiosClient from "./axiosClient";
 
 const leaveApi = {
+    countLeave: () => {
+        const url = '/leave/count';
+        return axiosClient.get(url);
+    },
     getAll: () => {
         const url = '/leave/admin';
         return axiosClient.get(url);
+    },
+    filterAll: (data) => {
+        const url = '/leave/filter-all';
+        return axiosClient.post(url, data);
     },
     getById: (id) => {
         const url = `/leave/${id}`;

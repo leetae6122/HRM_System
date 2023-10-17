@@ -43,6 +43,7 @@ const createItems = (employee) => [
     key: "7",
     label: <span style={labelStyle}>Address</span>,
     children: employee.address,
+    span: 2
   },
 ];
 
@@ -85,7 +86,7 @@ function PersonalInformation(props) {
         <Descriptions
           layout="horizontal"
           title={<Title />}
-          column={1}
+          column={2}
           items={items}
         />
       </Card>

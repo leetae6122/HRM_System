@@ -226,7 +226,6 @@ function UserPage() {
     console.log(sorter);
     if (!_.isEmpty(sorter)) {
       order = [
-        ...order,
         [sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
       ];
     }

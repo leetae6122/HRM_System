@@ -56,12 +56,12 @@ const createColumns = (
   {
     title: 'Hour Spent',
     dataIndex: 'hourSpent',
-    key: 'hourSpent'
+    key: 'hourSpent',
   },
   {
     title: 'Hour OT',
     dataIndex: 'hourOT',
-    key: 'hourOT'
+    key: 'hourOT',
   },
   {
     title: 'Status',
@@ -227,7 +227,9 @@ function AttendancePage() {
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Attendance List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
+        Attendance List
+      </Divider>
       <Table
         columns={columns}
         dataSource={attendanceList}
@@ -235,6 +237,7 @@ function AttendancePage() {
         title={() => (
           <AttendanceTableHeader
             toggleModalAddAttendance={toggleModalAddAttendance}
+            setFilter={setFilter}
           />
         )}
         pagination={{

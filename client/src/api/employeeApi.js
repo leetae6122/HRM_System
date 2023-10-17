@@ -2,6 +2,10 @@ import axiosClient from "./axiosClient";
 import FormData from 'form-data';
 
 const employeeApi = {
+    countEmployee: () => {
+        const url = '/employee/count';
+        return axiosClient.get(url);
+    },
     getAll: () => {
         const url = '/employee/admin';
         return axiosClient.get(url);

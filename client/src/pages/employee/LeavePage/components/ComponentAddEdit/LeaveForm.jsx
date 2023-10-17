@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Button, Space, DatePicker } from 'antd';
 import _ from 'lodash';
+import dayjs from 'dayjs';
 
 LeaveForm.propTypes = {
   onCancel: PropTypes.func,
@@ -44,16 +45,19 @@ function LeaveForm(props) {
     );
   }, [values, form, initialValues]);
 
+  const disabledDate = (date) => {
+    if (date > dayjs()) {
+      return false;
+    }
+    return true;
+  };
+
   const onFinish = (values) => {
     onSubmit(values);
   };
 
   const handleCancel = () => {
     onCancel();
-  };
-
-  const disabledDate = (current) => {
-    return current && current.valueOf() < Date.now();
   };
 
   return (
@@ -87,7 +91,7 @@ function LeaveForm(props) {
           placeholder="Enter the leave title"
           disabled={loading}
           showCount
-          maxLength={60}
+          maxLength={40}
         />
       </Form.Item>
       <Form.Item

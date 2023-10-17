@@ -1,16 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit'
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc)
+const now = dayjs();
+const startDate = dayjs(now).startOf('month').utc().format();
 
 const initialState = {
     defaultFilter: {
         page: 1,
         size: 10,
-        where: {},
+        where: {
+            leaveFrom: { $gte: startDate },
+            status: ['Pending', 'Approved', 'Reject']
+        },
         order: [['createdAt', 'DESC']]
     },
     filterData: {
         page: 1,
         size: 10,
-        where: {},
+        where: {
+            leaveFrom: { $gte: startDate },
+            status: ['Pending', 'Approved', 'Reject']
+        },
         order: [['createdAt', 'DESC']]
     },
     leaveList: [],
@@ -40,10 +52,10 @@ export const leaveSlice = createSlice({
     },
 })
 
-export const { 
-    setFilterData, 
-    setData, 
-    setDefaultFilterData, 
-    setEditLeaveId 
+export const {
+    setFilterData,
+    setData,
+    setDefaultFilterData,
+    setEditLeaveId
 } = leaveSlice.actions;
 export default leaveSlice.reducer;

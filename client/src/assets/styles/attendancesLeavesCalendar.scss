@@ -1,0 +1,83 @@
+/* sunday */
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(1)>span{
+  display: none;
+}
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(1):after{
+  content: "Sun";
+  display: block;
+  font-weight: normal;
+}
+
+/* monday */
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(2)>span{
+  display: none;
+}
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(2):after{
+  content: "Mon";
+  display: block;
+  font-weight: normal;
+}
+
+/* tuesday */
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(3)>span{
+  display: none;
+}
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(3):after{
+  content: "Tue";
+  display: block;
+  font-weight: normal;
+}
+
+/* wednesday */
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(4)>span{
+  display: none;
+}
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(4):after{
+  content: "Wed";
+  display: block;
+  font-weight: normal;
+}
+
+/* thursday */
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(5)>span{
+  display: none;
+}
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(5):after{
+  content: "Thu";
+  display: block;
+  font-weight: normal;
+}
+
+/* friday */
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(6)>span{
+  display: none;
+}
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(6):after{
+  content: "Fri";
+  display: block;
+  font-weight: normal;
+}
+
+/* saturday */
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(7)>span{
+  display: none;
+}
+.ant-fullcalendar.ant-fullcalendar-full>div>table>thead>
+tr th:nth-child(7):after{
+  content: "Sat";
+  display: block;
+  font-weight: normal;
+}

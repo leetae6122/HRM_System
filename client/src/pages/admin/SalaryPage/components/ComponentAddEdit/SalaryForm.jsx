@@ -221,15 +221,23 @@ function SalaryForm(props) {
               () => ({
                 validator(_, value) {
                   if (
-                    !value ||
-                    (value >= selectedEmployee?.positionData.minSalary &&
-                      value <= selectedEmployee?.positionData.maxSalary)
+                    !value || selectedEmployee?.positionData.maxSalary
+                      ? value >= selectedEmployee?.positionData.minSalary &&
+                        value <= selectedEmployee?.positionData.maxSalary
+                      : value >= selectedEmployee?.positionData.minSalary
                   ) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
                     new Error(
-                      `The base salary must be greater than equal to ${selectedEmployee?.positionData.minSalary} and less than equal to ${selectedEmployee?.positionData.maxSalary}`,
+                      `The base salary must be greater than equal to ${
+                        selectedEmployee?.positionData.minSalary
+                      } ${
+                        selectedEmployee?.positionData.maxSalary
+                          ? ' and less than equal to ' +
+                            selectedEmployee?.positionData.maxSalary
+                          : ''
+                      }`,
                     ),
                   );
                 },
@@ -249,7 +257,7 @@ function SalaryForm(props) {
                   : ''
               }
               addonAfter={
-                selectedEmployee
+                selectedEmployee?.positionData.maxSalary
                   ? `${selectedEmployee?.positionData.maxSalary} ${selectedEmployee?.positionData.currencyData.symbol}`
                   : ''
               }

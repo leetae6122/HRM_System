@@ -1,6 +1,10 @@
 import axiosClient from "./axiosClient";
 
 const userApi = {
+    countUser: () => {
+        const url = '/user/count';
+        return axiosClient.get(url);
+    },
     getUserProfile: () => {
         const url = '/user';
         return axiosClient.get(url);

@@ -16,6 +16,7 @@ import _ from 'lodash';
 import { toast } from 'react-toastify';
 import taskApi from 'api/taskApi';
 import projectApi from 'api/projectApi';
+import dayjs from 'dayjs';
 
 AttendanceForm.propTypes = {
   onCancel: PropTypes.func,
@@ -95,6 +96,14 @@ function AttendanceForm(props) {
     fetchTaskOptions();
     return () => controller.abort();
   }, []);
+
+  const disabledDate = (date) => {
+    const day = dayjs(date).day();
+    if (day !== 0 && day !== 6) {
+      return false;
+    }
+    return true;
+  };
 
   const onFinish = (values) => {
     onSubmit(values);
@@ -211,6 +220,7 @@ function AttendanceForm(props) {
               style={{
                 width: '100%',
               }}
+              disabledDate={disabledDate}
             />
           </Form.Item>
         </Col>

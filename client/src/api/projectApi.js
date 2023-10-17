@@ -1,9 +1,17 @@
 import axiosClient from "./axiosClient";
 
 const projectApi = {
+    countProject: () => {
+        const url = '/project/count';
+        return axiosClient.get(url);
+    },
     getAll: () => {
         const url = '/project';
         return axiosClient.get(url);
+    },
+    filterAll: (data) => {
+        const url = '/project/filter-all';
+        return axiosClient.post(url, data);
     },
     getById: (id) => {
         const url = `/project/${id}`;

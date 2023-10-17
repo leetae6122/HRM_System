@@ -24,4 +24,21 @@ const calcDate = (d1, d2) => {
     return message;
 }
 
-export { getFullDate, calcDate };
+const countDaysInMonth = () => {
+    const now = dayjs();
+    const days = dayjs(now).daysInMonth();
+    const currentMonth = dayjs(now).month()+1;
+    const currentYear = dayjs(now).year();
+    let countDays = 0;
+  
+    for (let i = 1; i <= days; i++) {
+      const day = dayjs(`${currentYear}-${currentMonth}-${i}`).day();
+      if (day !== 0 && day !== 6) {
+        countDays++;
+      }
+    }
+    return countDays;
+  };
+  
+
+export { getFullDate, calcDate, countDaysInMonth };

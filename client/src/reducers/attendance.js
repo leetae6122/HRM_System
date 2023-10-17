@@ -1,16 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit'
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc)
+const now = dayjs();
+const startDate = dayjs(now).startOf('month').utc().format();
+const endDate = dayjs(now).endOf('month').utc().format();
 
 const initialState = {
     defaultFilter: {
         page: 1,
         size: 10,
-        where: {},
+        where: {
+            attendanceDate: { $between: [startDate, endDate] },
+            status: ['Pending', 'Approved', 'Reject']
+        },
         order: [['attendanceDate', 'DESC']]
     },
     filterData: {
         page: 1,
         size: 10,
-        where: {},
+        where: {
+            attendanceDate: { $between: [startDate, endDate] },
+            status: ['Pending', 'Approved', 'Reject']
+        },
         order: [['attendanceDate', 'DESC']]
     },
     attendanceList: [],
@@ -40,10 +53,10 @@ export const attendanceSlice = createSlice({
     },
 })
 
-export const { 
-    setFilterData, 
-    setData, 
-    setDefaultFilterData, 
-    setEditAttendanceId 
+export const {
+    setFilterData,
+    setData,
+    setDefaultFilterData,
+    setEditAttendanceId
 } = attendanceSlice.actions;
 export default attendanceSlice.reducer;

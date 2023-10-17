@@ -104,7 +104,7 @@ function AddLeaveForm(props) {
           placeholder="Enter the leave title"
           disabled={loading}
           showCount
-          maxLength={60}
+          maxLength={40}
         />
       </Form.Item>
       <Form.Item

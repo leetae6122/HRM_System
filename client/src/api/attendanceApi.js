@@ -1,9 +1,17 @@
 import axiosClient from "./axiosClient";
 
 const attendanceApi = {
+    countAttendance: () => {
+        const url = '/attendance/count';
+        return axiosClient.get(url);
+    },
     getAll: () => {
         const url = '/attendance/admin';
         return axiosClient.get(url);
+    },
+    filterAll: (data) => {
+        const url = '/attendance/filter-all';
+        return axiosClient.post(url, data);
     },
     getById: (id) => {
         const url = `/attendance/${id}`;

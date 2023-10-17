@@ -1,5 +1,5 @@
 import { Card, Table, Typography } from 'antd';
-import projectApi from 'api/projectApi';
+import departmentApi from 'api/departmentApi';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -12,25 +12,26 @@ const columns = [
     render: (id) => `#${id}`,
   },
   {
-    title: 'Title',
-    dataIndex: 'title',
-    key: 'title',
+    title: 'Office',
+    dataIndex: 'officeData',
+    key: 'office',
+    render: (office) => office.title,
   },
   {
-    title: 'Start Date',
-    dataIndex: 'startDate',
-    key: 'startDate',
+    title: 'Short Name',
+    dataIndex: 'shortName',
+    key: 'shortName',
   },
   {
-    title: 'End Date',
-    dataIndex: 'endDate',
-    key: 'endDate',
+    title: 'Employees',
+    dataIndex: 'employeeCount',
+    key: 'employees',
   },
 ];
 
-function RunningProjectsTable() {
+function DepartmentEmployeesTable() {
   const { defaultFilter } = useSelector((state) => state.project);
-  const [runningProjects, setRunningProjects] = useState([]);
+  const [departmentEmployees, setDepartmentEmployees] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
@@ -38,11 +39,9 @@ function RunningProjectsTable() {
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = await projectApi.filterAll({
-          where: { status: 'Running' },
-        });
+        const response = await departmentApi.countEmployees();
         const data = response.data.map((item) => ({ key: item.id, ...item }));
-        setRunningProjects(data);
+        setDepartmentEmployees(data);
         setLoadingData(false);
       } catch (error) {
         toast.error(error);
@@ -58,11 +57,11 @@ function RunningProjectsTable() {
       <Table
         title={() => (
           <Typography.Title level={3} style={{ margin: 0 }}>
-            Running Projects
+            {`Department's Employees`}
           </Typography.Title>
         )}
         columns={columns}
-        dataSource={runningProjects}
+        dataSource={departmentEmployees}
         scroll={{ y: 400 }}
         pagination={false}
         loading={loadingData}
@@ -70,4 +69,4 @@ function RunningProjectsTable() {
     </Card>
   );
 }
-export default RunningProjectsTable;
+export default DepartmentEmployeesTable;
