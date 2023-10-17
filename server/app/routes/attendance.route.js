@@ -6,7 +6,7 @@ import {
     employeeUpdateAttendanceSchema,
     createAttendanceSchema
 } from "../validations/attendance.validation";
-import { filterSchema, modelEmployeeFilterSchema } from "../validations/filter.validation";
+import { filterAll, filterSchema, modelEmployeeFilterSchema } from "../validations/filter.validation";
 import { verifyAdmin } from './../middlewares/auth.middleware';
 
 const router = express.Router();
@@ -14,6 +14,12 @@ const router = express.Router();
 router.route("/")
     .post(validation(createAttendanceSchema), attendanceController.createAttendance)
     .patch(validation(employeeUpdateAttendanceSchema), attendanceController.employeeUpdateAttendance)
+
+router.route("/count")
+    .get(verifyAdmin, attendanceController.countAttendance)
+
+router.route("/filter-all")
+    .post(validation(filterAll), attendanceController.filterAll)
 
 router.route("/filter")
     .post(validation(filterSchema), attendanceController.employeeGetListAttendance)

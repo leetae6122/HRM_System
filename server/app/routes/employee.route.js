@@ -16,6 +16,9 @@ router.route("/")
     .get(employeeController.findProfileById)
     .patch(validation(updateEmployeeSchema), employeeController.updateProfile)
 
+router.route("/count")
+    .get(verifyAdmin, employeeController.countEmployee)
+
 router.route("/avatar")
     .put(verifyAdminOrSelf, uploadCloud.single('avatar'), employeeController.updateAvatar)
 

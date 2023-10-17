@@ -1,11 +1,14 @@
 const Joi = require('joi');
 
-const filterSchema = Joi.object().keys({
-    page: Joi.number().integer().required(),
-    size: Joi.number().integer().required(),
+const filterAll = Joi.object().keys({
     where: Joi.object().default({}),
     attributes: Joi.any().optional(),
     order: Joi.array().items(Joi.array().items(Joi.string())).default([]).optional(),
+}).required().min(1);
+
+const filterSchema = filterAll.keys({
+    page: Joi.number().integer().required(),
+    size: Joi.number().integer().required(),
 }).required().min(1);
 
 const modelEmployeeFilterSchema = filterSchema.keys({
@@ -16,4 +19,4 @@ const modelEmployeeFilterSchema = filterSchema.keys({
 });
 
 
-module.exports = { filterSchema, modelEmployeeFilterSchema };
+module.exports = { filterAll, filterSchema, modelEmployeeFilterSchema };

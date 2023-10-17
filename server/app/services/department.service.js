@@ -1,6 +1,7 @@
 import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
 import createError from 'http-errors';
+import sequelize from "sequelize";
 
 class DepartmentService {
     async findById(id) {
@@ -94,6 +95,26 @@ class DepartmentService {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Department")));
         }
         return foundDepartment;
+    }
+
+    async countEmployees() {
+        const departments = await db.Department.findAll({
+            attributes: [
+                'id', 'shortName',
+                [sequelize.fn("COUNT", sequelize.col("employeeData.id")), "employeeCount"]
+            ],
+            include: [{
+                model: db.Employee, as: 'employeeData', attributes: []
+            },
+            {
+                model: db.Office, as: 'officeData', attributes: ['title']
+            }],
+            group: ['Department.id'],
+            order: [[sequelize.col('employeeCount'), 'DESC']],
+            raw: true,
+            nest: true
+        });
+        return departments;
     }
 }
 

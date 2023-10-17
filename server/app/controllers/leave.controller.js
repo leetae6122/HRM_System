@@ -38,6 +38,22 @@ exports.findAll = async (req, res, next) => {
     }
 }
 
+exports.filterAll = async (req, res, next) => {
+    try {
+        const payload = {
+            ...req.body,
+            where: {
+                ...req.body.where,
+                employeeId: req.user.employeeId
+            }
+        }
+        const data = await leaveService.findAll(payload);
+        return res.send({ data });
+    } catch (error) {
+        return next(error);
+    }
+}
+
 exports.adminGetListLeave = async (req, res, next) => {
     try {
         const data = await leaveService.filterListLeave(req.body);
@@ -159,5 +175,14 @@ exports.deleteLeave = async (req, res, next) => {
         return next(
             createError.BadRequest(MSG_ERROR_DELETE("Leave"))
         );
+    }
+}
+
+exports.countLeave = async (req, res, next) => {
+    try {
+        const data = await leaveService.countLeave();
+        return res.send({ data })
+    } catch (error) {
+        return next(error);
     }
 }

@@ -74,7 +74,7 @@ class TaskService {
         });
     }
 
-    async foundTask(taskId, next){
+    async foundTask(taskId, next) {
         const foundTask = await this.findById(taskId);
         if (!foundTask) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Task")));

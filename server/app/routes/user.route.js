@@ -17,6 +17,9 @@ router.route("/")
 router.route("/change-password")
     .patch(validation(changPasswordSchema), userController.changePassword)
 
+router.route("/count")
+    .get(verifyAdmin, userController.countUser)
+
 router.route("/admin")
     .all(verifyAdmin)
     .get(userController.findAll)

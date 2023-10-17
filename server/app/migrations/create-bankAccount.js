@@ -3,33 +3,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Leave', {
+        await queryInterface.createTable('BankAccount', {
             id: {
                 allowNull: false,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
                 autoIncrement: true
             },
-            title: {
+            accountName: {
                 allowNull: false,
-                type: Sequelize.STRING(40),
+                type: Sequelize.STRING(60),
             },
-            description: {
+            bankName: {
                 allowNull: false,
-                type: Sequelize.TEXT,
+                type: Sequelize.STRING(100)
             },
-            status: {
+            accountNum: {
                 allowNull: false,
-                type: Sequelize.ENUM,
-                values: ['Pending', 'Reject', 'Approved']
-            },
-            leaveFrom: {
-                allowNull: false,
-                type: Sequelize.DATEONLY,
-            },
-            leaveTo: {
-                allowNull: false,
-                type: Sequelize.DATEONLY,
+                type: Sequelize.STRING(20),
             },
             employeeId: {
                 allowNull: false,
@@ -37,17 +28,7 @@ module.exports = {
                 references: {
                     model: 'Employee',
                     key: 'id'
-                },
-            },
-            handledBy: {
-                type: Sequelize.UUID,
-                references: {
-                    model: 'Employee',
-                    key: 'id'
-                },
-            },
-            reasonRejection: {
-                type: Sequelize.TEXT,
+                }
             },
             createdAt: {
                 allowNull: false,
@@ -63,6 +44,6 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Leave');
+        await queryInterface.dropTable('BankAccount');
     }
 };

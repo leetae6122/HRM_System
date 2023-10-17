@@ -28,6 +28,16 @@ exports.findAll = async (req, res, next) => {
     }
 }
 
+exports.filterAll = async (req, res, next) => {
+    try {
+        const data = await projectService.findAll(req.body);
+        return res.send({ data });
+    } catch (error) {
+        console.log(error);
+        return next(error);
+    }
+}
+
 exports.getListProject = async (req, res, next) => {
     try {
         const data = await projectService.filterListProject(req.body);
@@ -76,5 +86,14 @@ exports.deleteProject = async (req, res, next) => {
         return next(
             createError.BadRequest(MSG_ERROR_DELETE("Project"))
         );
+    }
+}
+
+exports.countProject = async (req, res, next) => {
+    try {
+        const data = await projectService.countProject();
+        return res.send({ data })
+    } catch (error) {
+        return next(error);
     }
 }

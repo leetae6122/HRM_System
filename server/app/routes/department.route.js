@@ -14,6 +14,9 @@ router.route("/")
     .post(validation(createDepartmentSchema), departmentController.createDepartment)
     .patch(validation(updateDepartmentSchema), departmentController.updateDepartment)
 
+router.route("/count-employees")
+    .get(departmentController.countEmployees)    
+
 router.route("/filter")
     .post(validation(filterSchema), departmentController.getListDepartment)
 

@@ -249,6 +249,23 @@ class UserService {
             }
         );
     }
+
+    async countUser() {
+        const countActiveUsers = await db.User.count({
+            where: {
+                isActive: true
+            }
+        });
+        const countNotActivedUsers = await db.User.count({
+            where: {
+                isActive: false
+            }
+        });
+        return {
+            activeUsers: countActiveUsers,
+            notActivedUsers: countNotActivedUsers
+        }
+    }
 }
 
 module.exports = new UserService;

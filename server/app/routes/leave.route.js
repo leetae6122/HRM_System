@@ -7,7 +7,7 @@ import {
     adminUpdateLeaveSchema,
     employeeUpdateLeaveSchema
 } from "../validations/leave.validation";
-import { filterSchema, modelEmployeeFilterSchema } from "../validations/filter.validation";
+import { filterAll, filterSchema, modelEmployeeFilterSchema } from "../validations/filter.validation";
 import { verifyAdmin } from './../middlewares/auth.middleware';
 
 const router = express.Router();
@@ -15,6 +15,13 @@ const router = express.Router();
 router.route("/")
     .post(validation(employeeCreateLeaveSchema), leaveController.createLeave)
     .patch(validation(employeeUpdateLeaveSchema), leaveController.employeeUpdateLeave)
+
+router.route("/count")
+    .get(verifyAdmin, leaveController.countLeave)
+
+router.route("/filter-all")
+    .post(validation(filterAll), leaveController.filterAll)
+
 
 router.route("/filter")
     .post(validation(filterSchema), leaveController.employeeGetListLeave)

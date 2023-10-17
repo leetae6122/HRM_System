@@ -9,12 +9,22 @@ class ProjectService {
         return result;
     }
 
-    async findAll() {
-        const result = await db.Project.findAll({
-            where: {
-                status: 'Running'
-            }
-        });
+    async findAll(body = null) {
+        if (body) {
+            const where = body.where;
+            const attributes = body.attributes;
+            const order = body.order;
+
+            const result = await db.Project.findAll({
+                where,
+                order,
+                attributes,
+                raw: true,
+                nest: true
+            })
+            return result;
+        }
+        const result = await db.Project.findAll({});
         return result;
     }
 
@@ -85,6 +95,19 @@ class ProjectService {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Project")));
         }
         return foundProject;
+    }
+
+    async countProject() {
+        const countProjects = await db.Project.count({});
+        const countUpcomingProjects = await db.Project.count({
+            where: {
+                status: 'Upcoming'
+            }
+        });
+        return {
+            totalProjects: countProjects,
+            upcomingProjects: countUpcomingProjects
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 import sequelize from "sequelize";
 import db from "./../models/index";
+import dayjs from 'dayjs';
 
 class LeaveService {
     async findById(id) {
@@ -29,7 +30,21 @@ class LeaveService {
         return result;
     }
 
-    async findAll() {
+    async findAll(body = null) {
+        if (body) {
+            const where = body.where;
+            const attributes = body.attributes;
+            const order = body.order;
+
+            const result = await db.Leave.findAll({
+                where,
+                order,
+                attributes,
+                raw: true,
+                nest: true
+            })
+            return result;
+        }
         const result = await db.Leave.findAll({});
         return result;
     }
@@ -43,7 +58,7 @@ class LeaveService {
         const employeeFilter = body.employeeFilter;
 
         const offset = (page - 1) * limit;
-        
+
         const { count, rows } = await db.Leave.findAndCountAll({
             where,
             offset,
@@ -105,6 +120,35 @@ class LeaveService {
         await db.Leave.destroy({
             where: { id }
         });
+    }
+
+    async countLeave() {
+        const now = dayjs();
+        const startDate = dayjs(now).startOf('month').toDate();
+        const endDate = dayjs(now).endOf('month').toDate();
+
+        const countLeaves = await db.Leave.count({
+            where: {
+                $and: [
+                    {
+                        $or: [
+                            { leaveFrom: { $between: [startDate, endDate] } },
+                            { leaveTo: { $between: [startDate, endDate] } },
+                        ]
+                    },
+                    { status: 'Approved' }
+                ]
+            }
+        });
+        const countPendingLeaves = await db.Leave.count({
+            where: {
+                status: 'Pending'
+            }
+        });
+        return {
+            totalLeaves: countLeaves,
+            pendingLeaves: countPendingLeaves
+        }
     }
 }
 

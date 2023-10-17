@@ -1,5 +1,6 @@
 import sequelize from "sequelize";
 import db from "./../models/index";
+import dayjs from "dayjs";
 
 class AttendanceService {
     async findById(id) {
@@ -37,7 +38,21 @@ class AttendanceService {
         return result;
     }
 
-    async findAll() {
+    async findAll(body = null) {
+        if (body) {
+            const where = body.where;
+            const attributes = body.attributes;
+            const order = body.order;
+
+            const result = await db.Attendance.findAll({
+                where,
+                order,
+                attributes,
+                raw: true,
+                nest: true
+            })
+            return result;
+        }
         const result = await db.Attendance.findAll({});
         return result;
     }
@@ -119,6 +134,25 @@ class AttendanceService {
         await db.Attendance.destroy({
             where: { id }
         });
+    }
+
+    async countAttendance() {
+        const now = dayjs();
+        const countAttendances = await db.Attendance.count({
+            where: {
+                attendanceDate: now,
+                status: { $in: ['Approved', 'Pending'] }
+            }
+        });
+        const countPendingAttendances = await db.Attendance.count({
+            where: {
+                status: 'Pending'
+            }
+        });
+        return {
+            totalAttendances: countAttendances,
+            pendingAttendances: countPendingAttendances
+        }
     }
 }
 

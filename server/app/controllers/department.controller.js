@@ -43,7 +43,9 @@ exports.getListDepartment = async (req, res, next) => {
 
 exports.createDepartment = async (req, res, next) => {
     try {
-        await employeeService.foundEmployee(req.body.managerId, next, true);
+        if (req.body.managerId) {
+            await employeeService.foundEmployee(req.body.managerId, next, true);
+        }
         await officeService.foundOffice(req.body.officeId, next);
 
         const data = await departmentService.createDepartment(req.body);
@@ -83,5 +85,14 @@ exports.deleteDepartment = async (req, res, next) => {
         return next(
             createError.BadRequest(MSG_ERROR_DELETE("Department"))
         );
+    }
+}
+
+exports.countEmployees = async (req, res, next) => {
+    try {
+        const data = await departmentService.countEmployees();
+        res.send({ data })
+    } catch (error) {
+        return next(next);
     }
 }

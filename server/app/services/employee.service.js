@@ -204,6 +204,19 @@ class EmployeeService {
         return foundEmployee;
     }
 
+    async countEmployee() {
+        const countEmployees = await db.Employee.count({});
+        const countCurrentEmployees = await db.Employee.count({
+            where: {
+                dateOff: { $is: null }
+            }
+        });
+        return {
+            currentEmployees: countCurrentEmployees,
+            formerEmployees: countEmployees - countCurrentEmployees
+        }
+    }
+
     getFileName(avatarUrl) {
         return avatarUrl.slice(avatarUrl.indexOf('hrm_system'), avatarUrl.lastIndexOf('.'));
     }

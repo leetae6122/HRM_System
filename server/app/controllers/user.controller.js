@@ -133,3 +133,12 @@ exports.changePassword = async (req, res, next) => {
         return next(error);
     }
 }
+
+exports.countUser = async (req, res, next) => {
+    try {
+        const data = await userService.countUser();
+        return res.send({ data })
+    } catch (error) {
+        return next(error);
+    }
+}

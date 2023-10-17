@@ -39,6 +39,22 @@ exports.findAll = async (req, res, next) => {
     }
 }
 
+exports.filterAll = async (req, res, next) => {
+    try {
+        const payload = {
+            ...req.body,
+            where: {
+                ...req.body.where,
+                employeeId: req.user.employeeId
+            }
+        }
+        const data = await attendanceService.findAll(payload);
+        return res.send({ data });
+    } catch (error) {
+        return next(error);
+    }
+}
+
 exports.adminGetListAttendance = async (req, res, next) => {
     try {
         const data = await attendanceService.filterListAttendance(req.body);
@@ -160,5 +176,14 @@ exports.deleteAttendance = async (req, res, next) => {
         return next(
             createError.BadRequest(MSG_ERROR_DELETE("Attendance"))
         );
+    }
+}
+
+exports.countAttendance = async (req, res, next) => {
+    try {
+        const data = await attendanceService.countAttendance();
+        return res.send({ data })
+    } catch (error) {
+        return next(error);
     }
 }

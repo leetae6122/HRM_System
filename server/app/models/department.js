@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Department.belongsTo(models.Office, { foreignKey: 'officeId', as: 'officeData' });
 
-      Department.hasMany(models.Employee, { foreignKey: 'departmentId', as: 'departmentData' });
+      Department.hasMany(models.Employee, { foreignKey: 'departmentId', as: 'employeeData' });
 
       Department.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData'});
     }

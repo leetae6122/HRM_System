@@ -199,3 +199,14 @@ exports.updateAvatar = async (req, res, next) => {
         );
     }
 }
+
+exports.countEmployee = async (req, res, next) => {
+    try {
+        const data = await employeeService.countEmployee();
+        return res.send({ data })
+    } catch (error) {
+        return next(
+            createError.InternalServerError(error)
+        );
+    }
+}
