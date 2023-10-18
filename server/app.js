@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import createError from 'http-errors';
 import { verifyAccessToken, verifyAdmin } from './app/middlewares/auth.middleware';
+import Schedule from './schedule';
 
 import authRouter from "./app/routes/auth.route";
 import userRouter from "./app/routes/user.route";
@@ -63,5 +64,8 @@ app.use((error, req, res, next) => {
         message: error.message || "Internal Server Error",
     });
 });
+
+Schedule.runningProjects();
+Schedule.completeProjects();
 
 module.exports = app;
