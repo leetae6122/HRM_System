@@ -3,37 +3,44 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Attendance', {
+        await queryInterface.createTable('Payroll', {
             id: {
                 allowNull: false,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
                 autoIncrement: true
             },
-            description: {
-                allowNull: false,
-                type: Sequelize.STRING,
-            },
-            attendanceDate: {
+            month: {
                 allowNull: false,
                 type: Sequelize.DATEONLY,
             },
-            hoursSpent: {
+            hoursWorked: {
                 allowNull: false,
                 type: Sequelize.FLOAT(2),
             },
             hoursOvertime: {
                 type: Sequelize.FLOAT(2),
             },
+            totalPaid: {
+                allowNull: false,
+                type: Sequelize.FLOAT(10),
+            },
+            payDate: {
+                allowNull: false,
+                type: Sequelize.DATEONLY,
+            },
             status: {
                 allowNull: false,
                 type: Sequelize.ENUM,
-                values: ['Pending', 'Reject', 'Approved']
+                values: ['Pending', 'Paid']
             },
-            place: {
+            salaryId: {
                 allowNull: false,
-                type: Sequelize.ENUM,
-                values: ['Office', 'At Home']
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'Salary',
+                    key: 'id'
+                },
             },
             employeeId: {
                 allowNull: false,
@@ -47,22 +54,6 @@ module.exports = {
                 type: Sequelize.UUID,
                 references: {
                     model: 'Employee',
-                    key: 'id'
-                },
-            },
-            taskId: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Task',
-                    key: 'id'
-                },
-            },
-            projectId: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Project',
                     key: 'id'
                 },
             },
@@ -80,6 +71,6 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Attendance');
+        await queryInterface.dropTable('Payroll');
     }
 };

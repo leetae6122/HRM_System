@@ -1,7 +1,6 @@
 import {
     MSG_DELETE_SUCCESSFUL,
     MSG_ERROR_DELETE,
-    MSG_ERROR_EXISTED,
     MSG_ERROR_ID_EMPTY,
     MSG_UPDATE_SUCCESSFUL,
     MSG_CREATED_SUCCESSFUL
@@ -22,15 +21,6 @@ exports.findById = async (req, res, next) => {
 exports.findAll = async (req, res, next) => {
     try {
         const data = await bankAccountService.findAll();
-        return res.send({ data });
-    } catch (error) {
-        return next(error);
-    }
-}
-
-exports.getListBankAccount = async (req, res, next) => {
-    try {
-        const data = await bankAccountService.filterListBankAccount(req.body);
         return res.send({ data });
     } catch (error) {
         return next(error);

@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Salary.belongsTo(models.Currency, { foreignKey: 'currencyId', as: 'currencyData' });
       Salary.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
       Salary.belongsTo(models.Employee, { foreignKey: 'addedBy', as: 'adderData' });
+      Salary.hasMany(models.Payroll, { foreignKey: 'payrollId', as: 'payrollData' });
     }
   }
   Salary.init({
