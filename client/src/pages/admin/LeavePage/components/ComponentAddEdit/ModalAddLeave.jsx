@@ -58,7 +58,7 @@ function ModalAddLeave(props) {
   return (
     <>
       <Modal
-        title="Add Leave"
+        title="Create leave"
         open={openModal}
         onCancel={handleCancel}
         footer={null}

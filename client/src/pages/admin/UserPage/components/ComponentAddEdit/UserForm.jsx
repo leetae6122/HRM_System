@@ -38,11 +38,12 @@ function UserForm(props) {
   );
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
-
   useEffect(() => {
+    const defaultValue = initialValues;
+    delete defaultValue.employeeId;
     form.validateFields({ validateOnly: true }).then(
       () => {
-        if (!_.isEqual(initialValues, values)) {
+        if (!_.isEqual(defaultValue, values)) {
           setSubmittable(true);
         } else {
           setSubmittable(false);

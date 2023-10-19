@@ -11,7 +11,7 @@ const Breadcrumbs = () => {
   const location = useLocation();
   let specialPath = null;
   const pathSnippets = location.pathname.split("/").filter((i) => i);
-  if (pathSnippets[0] === "admin" || pathSnippets[0] === "staff") {
+  if (pathSnippets[0] === "admin" || pathSnippets[0] === "employee") {
     specialPath = pathSnippets[0];
     pathSnippets.shift();
   }

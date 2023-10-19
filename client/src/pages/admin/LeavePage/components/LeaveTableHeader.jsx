@@ -82,7 +82,7 @@ function LeaveTableHeader(props) {
             icon={<PlusCircleFilled />}
             onClick={toggleModalAddLeave}
           >
-            Add Leave
+            Create leave
           </Button>
         </Space>
       </Col>
