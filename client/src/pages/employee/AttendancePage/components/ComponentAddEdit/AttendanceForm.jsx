@@ -32,8 +32,8 @@ AttendanceForm.defaultProps = {
   initialValues: {
     description: '',
     attendanceDate: '',
-    hourSpent: 0,
-    hourOT: 0,
+    hoursSpent: 0,
+    hoursOvertime: 0,
     status: '',
     place: '',
     taskId: null,
@@ -241,20 +241,20 @@ function AttendanceForm(props) {
         </Col>
         <Col span={12}>
           <Form.Item
-            name="hourSpent"
-            label="Hour Spent"
+            name="hoursSpent"
+            label="Hours Spent"
             hasFeedback
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             rules={[
-              { required: true, message: 'Please input hour spent!' },
+              { required: true, message: 'Please input Hours Spent!' },
               () => ({
                 validator(_, value) {
                   if (!value || value <= 8) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error('Hour Spent must be less than or equal to 8!'),
+                    new Error('Hours Spent must be less than or equal to 8!'),
                   );
                 },
               }),
@@ -274,8 +274,8 @@ function AttendanceForm(props) {
         </Col>
         <Col span={12}>
           <Form.Item
-            name="hourOT"
-            label="Hour OT"
+            name="hoursOvertime"
+            label="Hours Overtime"
             hasFeedback
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
@@ -286,7 +286,7 @@ function AttendanceForm(props) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error('Hour OT must be less than or equal to 2!'),
+                    new Error('Hours Overtime must be less than or equal to 2!'),
                   );
                 },
               }),

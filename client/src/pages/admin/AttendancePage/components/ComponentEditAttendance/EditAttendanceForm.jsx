@@ -16,8 +16,8 @@ EditAttendanceForm.defaultProps = {
     attendanceId: null,
     description: '',
     attendanceDate: '',
-    hourSpent: 0,
-    hourOT: 0,
+    hoursSpent: 0,
+    hoursOvertime: 0,
     status: '',
     place: '',
     employeeData: null,
@@ -102,13 +102,13 @@ const createItems = (data) => [
   },
   {
     key: '10',
-    label: 'Hour Spent',
-    children: `${data.hourSpent} hr`,
+    label: 'Hours Spent',
+    children: `${data.hoursSpent} hr`,
   },
   {
     key: '11',
-    label: 'Hour OT',
-    children: `${data.hourOT ? data.hourOT : 0} hr`,
+    label: 'Hours Overtime',
+    children: `${data.hoursOvertime ? data.hoursOvertime : 0} hr`,
   },
 ];
 

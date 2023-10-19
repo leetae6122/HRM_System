@@ -54,14 +54,14 @@ const createColumns = (
     onFilter: (value, record) => !!record.place === value,
   },
   {
-    title: 'Hour Spent',
-    dataIndex: 'hourSpent',
-    key: 'hourSpent',
+    title: 'Hours Spent',
+    dataIndex: 'hoursSpent',
+    key: 'hoursSpent',
   },
   {
-    title: 'Hour OT',
-    dataIndex: 'hourOT',
-    key: 'hourOT',
+    title: 'Hours Overtime',
+    dataIndex: 'hoursOvertime',
+    key: 'hoursOvertime',
   },
   {
     title: 'Status',

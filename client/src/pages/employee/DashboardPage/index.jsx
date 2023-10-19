@@ -11,8 +11,19 @@ import dayjs from 'dayjs';
 import leaveApi from 'api/leaveApi';
 
 const totalWorkday = countDaysInMonth();
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+const monthNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 const thisMonth = dayjs().month() + 1;
 const thisYear = dayjs().year();
@@ -94,8 +105,8 @@ function DashboardPage() {
       let hourSpent = 0;
       let hourOT = 0;
       attendanceMonthList.forEach((attendance) => {
-        hourSpent += attendance.hourSpent;
-        hourOT += attendance.hourOT;
+        hourSpent += attendance.hourSpent ?? 0;
+        hourOT += attendance.hourOT ?? 0;
       });
       setTotalHourSpentMonth(hourSpent);
       setTotalHourOT(hourOT);
@@ -103,14 +114,14 @@ function DashboardPage() {
     const setHoursWeek = () => {
       let hourSpent = 0;
       attendanceWeekList.forEach((attendance) => {
-        hourSpent += attendance.hourSpent;
+        hourSpent += attendance.hourSpent ?? 0;
       });
       setTotalHourSpentWeek(hourSpent);
     };
     setHoursMonth();
     setHoursWeek();
   }, [attendanceMonthList, attendanceWeekList]);
-
+  
   return (
     <Row gutter={[8, 16]}>
       <Col span={24} style={{}}>
@@ -119,9 +130,10 @@ function DashboardPage() {
             <CardProgress
               content={`Number of hours worked / ${monthNames[thisMonth]} ${thisYear}`}
               backgroundColor={green[5]}
-              percent={Math.round(
-                (totalHourSpentMonth / (totalWorkday * 8)) * 100,
-              )}
+              percent={
+                Math.round((totalHourSpentMonth / (totalWorkday * 8)) * 100) ??
+                0
+              }
               format={`${totalHourSpentMonth}/${totalWorkday * 8} hrs`}
             />
           </Col>
