@@ -11,13 +11,14 @@ import Swal from 'sweetalert2';
 import countryApi from 'api/countryApi';
 import ModalAddCountry from './components/ComponentAddEdit/ModalAddCountry';
 import ModalEditCountry from './components/ComponentAddEdit/ModalEditCountry';
+import _ from 'lodash';
 
 const createColumns = (toggleModalEditCountry, handleDeleteCountry) => [
   {
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
@@ -25,32 +26,32 @@ const createColumns = (toggleModalEditCountry, handleDeleteCountry) => [
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name),
+    sorter: true,
   },
   {
     title: 'Country Code',
     dataIndex: 'countryCode',
     key: 'countryCode',
-    sorter: (a, b) => a.countryCode - b.countryCode,
+    sorter: true,
   },
   {
     title: 'IsoCode',
     dataIndex: 'isoCode',
     key: 'isoCode',
-    sorter: (a, b) => a.isoCode.localeCompare(b.isoCode),
+    sorter: true,
   },
   {
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Date update',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
-    sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -155,6 +156,20 @@ function CountryPage() {
 
   const columns = createColumns(toggleModalEditCountry, handleDeleteCountry);
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let order = defaultFilter.order;
+
+    if (!_.isEmpty(sorter.column)) {
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
@@ -165,7 +180,10 @@ function CountryPage() {
         dataSource={countryList}
         bordered
         title={() => (
-          <CountryTableHeader toggleModalAddCountry={toggleModalAddCountry} setFilter={setFilter}/>
+          <CountryTableHeader
+            toggleModalAddCountry={toggleModalAddCountry}
+            setFilter={setFilter}
+          />
         )}
         pagination={{
           total,
@@ -179,6 +197,7 @@ function CountryPage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

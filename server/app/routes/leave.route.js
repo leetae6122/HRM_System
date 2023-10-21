@@ -7,7 +7,7 @@ import {
     adminUpdateLeaveSchema,
     employeeUpdateLeaveSchema
 } from "../validations/leave.validation";
-import { filterAll, filterSchema, modelEmployeeFilterSchema } from "../validations/filter.validation";
+import { filterAll, filterSchema, modelFilterSchema } from "../validations/filter.validation";
 import { verifyAdmin } from './../middlewares/auth.middleware';
 
 const router = express.Router();
@@ -33,7 +33,7 @@ router.route("/admin")
     .patch(validation(adminUpdateLeaveSchema), leaveController.adminUpdateLeave)
 
 router.route("/admin/filter")
-    .post(verifyAdmin, validation(modelEmployeeFilterSchema), leaveController.adminGetListLeave)
+    .post(verifyAdmin, validation(modelFilterSchema), leaveController.adminGetListLeave)
 
 router.route("/:id")
     .get(leaveController.findById)

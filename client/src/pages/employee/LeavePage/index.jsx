@@ -12,6 +12,7 @@ import ModalAddLeave from './components/ComponentAddEdit/ModalAddLeave';
 import ModalEditLeave from './components/ComponentAddEdit/ModalEditLeave';
 import { gold } from '@ant-design/colors';
 import ModalDetailLeave from './components/ModalDetailLeave';
+import _ from 'lodash';
 
 const createColumns = (
   toggleModalEditLeave,
@@ -22,13 +23,15 @@ const createColumns = (
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
   {
     title: 'Handler',
-    key: 'handler',
+    dataIndex: ['handlerData', 'firstName'],
+    key: 'handlerData',
+    sorter: true,
     render: (_, record) =>
       record.handledBy
         ? `${record.handlerData.firstName} ${record.handlerData.lastName}`
@@ -38,13 +41,12 @@ const createColumns = (
     title: 'Title',
     dataIndex: 'title',
     key: 'title',
-    sorter: (a, b) => a.title.localeCompare(b.title),
+    sorter: true,
   },
   {
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
-    sorter: (a, b) => a.status.localeCompare(b.status),
     render: (status) => (
       <>
         {status === 'Pending' ? (
@@ -56,26 +58,40 @@ const createColumns = (
         )}
       </>
     ),
+    filters: [
+      {
+        text: 'Pending',
+        value: 'Pending',
+      },
+      {
+        text: 'Approved',
+        value: 'Approved',
+      },
+      {
+        text: 'Reject',
+        value: 'Reject',
+      },
+    ],
   },
   {
     title: 'Leave From',
     dataIndex: 'leaveFrom',
     key: 'leaveFrom',
-    sorter: (a, b) => new Date(a.leaveFrom) - new Date(b.leaveFrom),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Leave To',
     dataIndex: 'leaveTo',
     key: 'leaveTo',
-    sorter: (a, b) => new Date(a.leaveTo) - new Date(b.leaveTo),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -118,6 +134,7 @@ function LeavePage() {
   const [openModalAddLeave, setOpenModalAddLeave] = useState(false);
   const [openModalEditLeave, setOpenModalEditLeave] = useState(false);
   const [openModalDetailLeave, setOpenModalDetailLeave] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -142,6 +159,13 @@ function LeavePage() {
     fetchData();
     return () => controller.abort();
   }, [dispatch, filterData]);
+
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
@@ -201,10 +225,34 @@ function LeavePage() {
     handleDeleteLeave,
   );
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let where = filterData.where;
+    let order = defaultFilter.order;
+
+    where = _.omitBy(
+      {
+        ...where,
+        status: filters.status,
+      },
+      _.isNil,
+    );
+
+    if (!_.isEmpty(sorter.column)) {
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, where, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Leave List</Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={leaveList}
         bordered
@@ -226,6 +274,7 @@ function LeavePage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

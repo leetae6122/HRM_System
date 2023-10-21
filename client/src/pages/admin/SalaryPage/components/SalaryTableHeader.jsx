@@ -37,10 +37,8 @@ function SalaryTableHeader(props) {
       ...filterData,
       page: 1,
       size: 10,
-      where: {
-        $or: [{ id: { $like: `%${value}%` } }],
-      },
-      employeeFilter: {
+      where: {},
+      modelEmployee: {
         where: {
           $or: _.flatten(
             _.map(['firstName', 'lastName', 'email'], function (item) {
@@ -64,7 +62,7 @@ function SalaryTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search employee name or salary id"
+          placeholder="Input search employee name"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}

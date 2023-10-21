@@ -37,7 +37,7 @@ function UserTableHeader(props) {
           { username: { $like: `%${value}%` } },
         ],
       },
-      employeeFilter: {
+      modelEmployee: {
         where: {
           $or: _.flatten(
             _.map(['firstName', 'lastName', 'email'], function (item) {

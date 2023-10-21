@@ -22,7 +22,7 @@ function CountryTableHeader(props) {
   const { toggleModalAddCountry, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData, defaultFilter } = useSelector((state) => state.currency);
+  const { filterData, defaultFilter } = useSelector((state) => state.country);
   const [inputValue, setInputValue] = useState('');
 
   const handleSearch = (value) => {

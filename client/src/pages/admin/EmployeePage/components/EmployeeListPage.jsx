@@ -14,6 +14,7 @@ import { setData, setFilterData } from 'reducers/employee';
 import FilterDrawer from './Filter/FilterDrawer';
 import ModalAddEmployee from './ComponentAddEdit/ModalAddEmployee';
 import defaultAvatar from 'assets/images/avatar-user.jpg';
+import _ from 'lodash';
 
 const createColumns = (
   navigator,
@@ -41,25 +42,25 @@ const createColumns = (
     title: 'First Name',
     dataIndex: 'firstName',
     key: 'firstName',
-    sorter: (a, b) => a.firstName.localeCompare(b.firstName),
+    sorter: true,
   },
   {
     title: 'Last Name',
     key: 'lastName',
     dataIndex: 'lastName',
-    sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+    sorter: true,
   },
   {
     title: 'Email',
     dataIndex: 'email',
     key: 'email',
-    sorter: (a, b) => a.email.localeCompare(b.email),
+    sorter: true,
   },
   {
     title: 'Phone Number',
     dataIndex: 'phoneNumber',
     key: 'phoneNumber',
-    sorter: (a, b) => a.phoneNumber.localeCompare(b.phoneNumber),
+    sorter: true,
   },
   {
     title: 'Gender',
@@ -77,21 +78,23 @@ const createColumns = (
       },
     ],
     filterMultiple: false,
-    onFilter: (value, record) => !!record.gender === value,
   },
   {
     title: 'Date of Birth',
     dataIndex: 'dateBirth',
     key: 'dateBirth',
-    sorter: (a, b) => new Date(a.dateBirth) - new Date(b.dateBirth),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Manager',
     key: 'managerData',
-    dataIndex: 'managerData',
-    render: (manager) =>
-      manager.firstName ? `${manager.firstName} ${manager.lastName}` : '',
+    dataIndex: ['managerData', 'firstName'],
+    sorter: true,
+    render: (_, record) =>
+      record.managerData?.id
+        ? `${record.managerData.firstName} ${record.managerData.lastName}`
+        : '',
   },
   {
     title: 'Action',
@@ -138,6 +141,7 @@ function EmployeeListPage(props) {
   const [loadingData, setLoadingData] = useState(false);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddEmployee, setOpenModalAddEmployee] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -162,6 +166,13 @@ function EmployeeListPage(props) {
     fetchData();
     return () => controller.abort();
   }, [dispatch, filterData]);
+
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
@@ -214,12 +225,37 @@ function EmployeeListPage(props) {
     toggleModalEditEmployee,
     handleDeleteEmployee,
   );
+
+  const onChangeTable = (pagination, filters, sorter) => {
+    let where = filterData.where;
+    let order = defaultFilter.order;
+
+    where = _.omitBy(
+      {
+        ...where,
+        gender: filters.gender,
+      },
+      _.isNil,
+    );
+
+    if (!_.isEmpty(sorter.column)) {
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, where, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
         Employee List
       </Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={employeeList}
         bordered
@@ -242,6 +278,7 @@ function EmployeeListPage(props) {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

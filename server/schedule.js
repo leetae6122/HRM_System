@@ -7,7 +7,7 @@ import logger from './logger';
 dayjs.extend(utc)
 class Schedule {
     runningProjects() {
-        schedule.scheduleJob('0 1 * * *', async () => {
+        schedule.scheduleJob('1 0 * * *', async () => {
             try {
                 const current = dayjs();
                 const projectList = await projectServer.findAll({
@@ -36,7 +36,7 @@ class Schedule {
     }
 
     completeProjects() {
-        schedule.scheduleJob('0 1 * * *', async () => {
+        schedule.scheduleJob('1 0 * * *', async () => {
             try {
                 const current = dayjs();
                 const projectList = await projectServer.findAll({

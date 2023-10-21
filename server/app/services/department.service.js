@@ -29,6 +29,7 @@ class DepartmentService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
+        const officeFilter = body.modelOffice;
 
         const offset = (page - 1) * limit;
 
@@ -40,7 +41,7 @@ class DepartmentService {
             attributes,
             include: [
                 {
-                    model: db.Office, as: 'officeData'
+                    model: db.Office, as: 'officeData', ...officeFilter
                 },
                 {
                     model: db.Employee, as: 'managerData'

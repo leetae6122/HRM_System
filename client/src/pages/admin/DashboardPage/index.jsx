@@ -141,7 +141,7 @@ function DashboardPage() {
           link={'/admin/leave'}
           Icon={<UserDeleteOutlined style={iconStyle} />}
           iconColor={red[5]}
-          title={`${countLeaves.totalLeaves} Leaves / Month`}
+          title={`${countLeaves.totalLeaves} Leaves Approved / Month`}
         />
       </Col>
       <Col className="gutter-row" span={12}>

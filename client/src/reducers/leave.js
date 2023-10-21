@@ -12,18 +12,16 @@ const initialState = {
         size: 10,
         where: {
             leaveFrom: { $gte: startDate },
-            status: ['Pending', 'Approved', 'Reject']
         },
-        order: [['createdAt', 'DESC']]
+        order: []
     },
     filterData: {
         page: 1,
         size: 10,
         where: {
             leaveFrom: { $gte: startDate },
-            status: ['Pending', 'Approved', 'Reject']
         },
-        order: [['createdAt', 'DESC']]
+        order: []
     },
     leaveList: [],
     total: 0,

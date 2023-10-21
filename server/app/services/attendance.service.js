@@ -63,8 +63,8 @@ class AttendanceService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const employeeFilter = body.employeeFilter;
-
+        const employeeFilter = body.modelEmployee;
+        
         const offset = (page - 1) * limit;
 
         const { count, rows } = await db.Attendance.findAndCountAll({

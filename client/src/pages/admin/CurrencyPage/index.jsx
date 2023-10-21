@@ -10,13 +10,14 @@ import ModalAddCurrency from './components/ComponentAddEdit/ModalAddCurrency';
 import ModalEditCurrency from './components/ComponentAddEdit/ModalEditCurrency';
 import CurrencyTableHeader from './components/CurrencyTableHeader';
 import Swal from 'sweetalert2';
+import _ from 'lodash';
 
 const createColumns = (toggleModalEditCurrency, handleDeleteCurrency) => [
   {
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
@@ -24,32 +25,32 @@ const createColumns = (toggleModalEditCurrency, handleDeleteCurrency) => [
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name),
+    sorter: true,
   },
   {
     title: 'Code',
     dataIndex: 'code',
     key: 'code',
-    sorter: (a, b) => a.code.localeCompare(b.code),
+    sorter: true,
   },
   {
     title: 'Symbol',
     dataIndex: 'symbol',
     key: 'symbol',
-    sorter: (a, b) => a.symbol.localeCompare(b.symbol),
+    sorter: true,
   },
   {
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Date update',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
-    sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -154,6 +155,20 @@ function CurrencyPage() {
 
   const columns = createColumns(toggleModalEditCurrency, handleDeleteCurrency);
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let order = defaultFilter.order;
+
+    if (!_.isEmpty(sorter.column)) {
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
@@ -181,6 +196,7 @@ function CurrencyPage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

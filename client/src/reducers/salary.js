@@ -5,13 +5,15 @@ const initialState = {
         page: 1,
         size: 10,
         where: {},
-        order: [['id', 'ASC']]
+        order: [],
+        modelCurrency: { where: {} }
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
-        order: [['id', 'ASC']]
+        order: [],
+        modelCurrency: { where: {} }
     },
     salaryList: [],
     total: 0,

@@ -31,6 +31,7 @@ class OfficeService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
+        const countryFilter = body.modelCountry;
 
         const offset = (page - 1) * limit;
 
@@ -42,7 +43,7 @@ class OfficeService {
             attributes,
             include: [
                 {
-                    model: db.Country, as: 'countryData',
+                    model: db.Country, as: 'countryData', ...countryFilter
                 },
             ],
             raw: true,

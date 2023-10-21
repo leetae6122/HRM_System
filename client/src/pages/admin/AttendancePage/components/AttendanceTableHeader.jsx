@@ -32,7 +32,7 @@ function AttendanceTableHeader(props) {
       page: 1,
       size: 10,
       where: {},
-      employeeFilter: {
+      modelEmployee: {
         where: {
           $or: _.flatten(
             _.map(['firstName', 'lastName'], function (item) {

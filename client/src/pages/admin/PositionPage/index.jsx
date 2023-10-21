@@ -13,6 +13,7 @@ import FilterDrawer from './components/Filter/FilterDrawer';
 import ModalAddPosition from './components/ComponentAddEdit/ModalAddPosition';
 import ModalEditPosition from './components/ComponentAddEdit/ModalEditPosition';
 import PositionTableHeader from './components/PositionTableHeader';
+import _ from 'lodash';
 
 const createColumns = (
   filtersCurrency,
@@ -23,7 +24,7 @@ const createColumns = (
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
@@ -37,35 +38,34 @@ const createColumns = (
     title: 'Min Salary',
     dataIndex: 'minSalary',
     key: 'minSalary',
-    sorter: (a, b) => a.minSalary - b.minSalary,
+    sorter: true,
     render: (value) => numberWithDot(value),
   },
   {
     title: 'Max Salary',
     dataIndex: 'maxSalary',
     key: 'maxSalary',
-    sorter: (a, b) => a.maxSalary - b.maxSalary,
+    sorter: true,
     render: (value) => (value ? numberWithDot(value) : ''),
   },
   {
     title: 'Currency Code',
     dataIndex: ['currencyData', 'code'],
-    key: 'currencyCode',
+    key: 'code',
     filters: filtersCurrency || null,
-    onFilter: (value, record) => record.currencyData.code.indexOf(value) === 0,
   },
   {
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Date update',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
-    sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -98,6 +98,7 @@ function PositionPage() {
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddPosition, setOpenModalAddPosition] = useState(false);
   const [openModalEditPosition, setOpenModalEditPosition] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -141,6 +142,13 @@ function PositionPage() {
     fetchData();
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
@@ -199,12 +207,31 @@ function PositionPage() {
     handleDeletePosition,
   );
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let order = defaultFilter.order;
+    let modelEmployee = filterData.modelEmployee ?? {};
+    modelEmployee = {
+      where: _.omitBy(
+        {
+          ...filters,
+        },
+        _.isNil,
+      ),
+    };
+
+    if (!_.isEmpty(sorter.column)) {
+      order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, modelEmployee, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
         Position List
       </Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={positionList}
         bordered
@@ -227,6 +254,7 @@ function PositionPage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

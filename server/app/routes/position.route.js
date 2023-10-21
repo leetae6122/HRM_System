@@ -5,7 +5,7 @@ import {
     createPositionSchema,
     updatePositionSchema
 } from "../validations/position.validation";
-import { filterSchema } from '../validations/filter.validation';
+import { modelFilterSchema } from '../validations/filter.validation';
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.route("/")
     .patch(validation(updatePositionSchema), positionController.updatePosition)
 
 router.route("/filter")
-    .post(validation(filterSchema), positionController.getListPosition)
+    .post(validation(modelFilterSchema), positionController.getListPosition)
 
 router.route("/:id")
     .get(positionController.findById)

@@ -14,19 +14,22 @@ import { gold } from '@ant-design/colors';
 import attendanceApi from 'api/attendanceApi';
 import AttendanceTableHeader from './components/AttendanceTableHeader';
 import ModalEditAttendance from './components/ComponentEditAttendance/ModalEditAttendance';
+import _ from 'lodash';
 
 const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
   {
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
   {
     title: 'Employee Name',
-    key: 'employeeName',
+    dataIndex: ['employeeData', 'firstName'],
+    key: 'employeeData',
+    sorter: true,
     render: (_, record) =>
       `${record.employeeData.firstName} ${record.employeeData.lastName}`,
   },
@@ -34,7 +37,7 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
     title: 'Attendance Date',
     dataIndex: 'attendanceDate',
     key: 'attendanceDate',
-    sorter: (a, b) => new Date(a.attendanceDate) - new Date(b.attendanceDate),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -51,7 +54,6 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
         value: 'At Home',
       },
     ],
-    onFilter: (value, record) => !!record.place === value,
   },
   {
     title: 'Status',
@@ -128,8 +130,8 @@ function AttendancePage() {
   const { filterData, attendanceList, total, currentPage, defaultFilter } =
     useSelector((state) => state.attendance);
   const [loadingData, setLoadingData] = useState(false);
-  // const [openModalAddAttendance, setOpenModalAddAttendance] = useState(false);
   const [openModalEditAttendance, setOpenModalEditAttendance] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -155,6 +157,13 @@ function AttendancePage() {
     return () => controller.abort();
   }, [dispatch, filterData]);
 
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
+
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
   };
@@ -175,10 +184,6 @@ function AttendancePage() {
     dispatch(setEditAttendanceId(id));
     setOpenModalEditAttendance(!openModalEditAttendance);
   };
-
-  // const toggleModalAddAttendance = () => {
-  //   setOpenModalAddAttendance(!openModalAddAttendance);
-  // };
 
   const handleDeleteAttendance = async (attendanceId) => {
     Swal.fire({
@@ -207,12 +212,37 @@ function AttendancePage() {
     handleDeleteAttendance,
   );
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let where = filterData.where;
+    let order = defaultFilter.order;
+
+    where = _.omitBy(
+      {
+        ...where,
+        place: filters.place,
+        status: filters.status,
+      },
+      _.isNil,
+    );
+
+    if (!_.isEmpty(sorter.column)) {
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, where, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
         Attendance List
       </Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={attendanceList}
         bordered
@@ -229,16 +259,10 @@ function AttendancePage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      {/* {openModalAddAttendance && (
-        <ModalAddLeave
-          openModal={openModalAddAttendance}
-          toggleShowModal={toggleModalAddAttendance}
-          refreshAttendanceList={refreshAttendanceList}
-        />
-      )} */}
       {openModalEditAttendance && (
         <ModalEditAttendance
           openModal={openModalEditAttendance}

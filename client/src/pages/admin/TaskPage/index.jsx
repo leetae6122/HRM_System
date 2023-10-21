@@ -10,13 +10,14 @@ import taskApi from 'api/taskApi';
 import TaskTableHeader from './components/TaskTableHeader';
 import ModalAddTask from './components/ComponentAddEdit/ModalAddTask';
 import ModalEditTask from './components/ComponentAddEdit/ModalEditTask';
+import _ from 'lodash';
 
 const createColumns = (toggleModalEditTask, handleDeleteTask) => [
   {
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
@@ -24,20 +25,20 @@ const createColumns = (toggleModalEditTask, handleDeleteTask) => [
     title: 'Title',
     dataIndex: 'title',
     key: 'title',
-    sorter: (a, b) => a.title.localeCompare(b.title),
+    sorter: true,
   },
   {
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Date update',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
-    sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -142,11 +143,18 @@ function TaskPage() {
 
   const columns = createColumns(toggleModalEditTask, handleDeleteTask);
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let order = defaultFilter.order;
+
+    if (!_.isEmpty(sorter.column)) {
+      order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, order });
+  };
+
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Task List
-      </Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Task List</Divider>
       <Table
         columns={columns}
         dataSource={taskList}
@@ -169,6 +177,7 @@ function TaskPage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

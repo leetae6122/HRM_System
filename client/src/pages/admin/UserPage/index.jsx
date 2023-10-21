@@ -25,8 +25,10 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
     sorter: true,
   },
   {
-    title: 'Name',
-    key: 'name',
+    title: 'Employee',
+    key: 'employee',
+    dataIndex: ['profile', 'firstName'],
+    sorter: true,
     render: (_, record) =>
       `${record.profile.firstName} ${record.profile.lastName}`,
   },
@@ -34,11 +36,11 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
     title: 'Email',
     dataIndex: ['profile', 'email'],
     key: 'email',
-    sorter: (a, b) => a.profile.email.localeCompare(b.email),
+    sorter: true,
   },
   {
     title: 'Status',
-    key: 'status',
+    key: 'isActive',
     dataIndex: 'isActive',
     render: (isActive) => (
       <>
@@ -59,15 +61,13 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
         value: false,
       },
     ],
-
     filterMultiple: false,
-    // onFilter: (value, record) => !!record.isActive === value,
   },
   {
     title: 'Role',
-    key: 'role',
+    key: 'isAdmin',
     dataIndex: 'isAdmin',
-    render: (_, { isAdmin }) => (
+    render: (isAdmin) => (
       <>
         <Tag
           style={{ padding: 8 }}
@@ -89,20 +89,19 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
       },
     ],
     filterMultiple: false,
-    // onFilter: (value, record) => !!record.isAdmin === value,
   },
   {
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Date update',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
-    sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -133,6 +132,7 @@ function UserPage() {
   const [loadingData, setLoadingData] = useState(false);
   const [openModalAddUser, setOpenModalAddUser] = useState(false);
   const [openModalEditUser, setOpenModalEditUser] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -158,8 +158,14 @@ function UserPage() {
     return () => controller.abort();
   }, [dispatch, filterData]);
 
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
+
   const setFilter = (filter) => {
-    console.log(filter);
     dispatch(setFilterData(filter));
   };
 
@@ -205,29 +211,28 @@ function UserPage() {
     dispatch(setEditUserId(id));
     setOpenModalEditUser(!openModalEditUser);
   };
-
   const columns = createColumns(toggleModalEditUser, handleDeleteUser);
 
   const onChangeTable = (pagination, filters, sorter) => {
     let where = filterData.where;
-    let order = filterData.order;
-    if (filters.role) {
-      where = {
+    let order = defaultFilter.order;
+
+    where = _.omitBy(
+      {
         ...where,
-        isAdmin: filters.role[0],
-      };
-    }
-    if (filters.status) {
-      where = {
-        ...where,
-        isActive: filters.status[0],
-      };
-    }
-    console.log(sorter);
-    if (!_.isEmpty(sorter)) {
-      order = [
-        [sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
-      ];
+        isAdmin: filters.isAdmin,
+        isActive: filters.isActive,
+      },
+      _.isNil,
+    );
+
+    if (!_.isEmpty(sorter.column)) {
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
     setFilter({ ...filterData, where, order });
   };
@@ -236,6 +241,7 @@ function UserPage() {
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>User List</Divider>
       <Table
+        key={tableKey}
         onChange={onChangeTable}
         columns={columns}
         dataSource={userList}

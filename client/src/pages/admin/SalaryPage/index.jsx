@@ -12,6 +12,7 @@ import SalaryTableHeader from './components/SalaryTableHeader';
 import salaryApi from 'api/salaryApi';
 import ModalAddSalary from './components/ComponentAddEdit/ModalAddSalary';
 import ModalEditSalary from './components/ComponentAddEdit/ModalEditSalary';
+import _ from 'lodash';
 
 const createColumns = (
   filtersCurrency,
@@ -22,7 +23,7 @@ const createColumns = (
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
@@ -30,41 +31,44 @@ const createColumns = (
     title: 'Basic Salary',
     dataIndex: 'basicSalary',
     key: 'basicSalary',
-    sorter: (a, b) => a.basicSalary - b.basicSalary,
+    sorter: true,
     render: (value) => numberWithDot(value),
   },
   {
     title: 'Allowance',
     dataIndex: 'allowance',
     key: 'allowance',
-    sorter: (a, b) => a.allowance - b.allowance,
+    sorter: true,
     render: (value) => (value ? numberWithDot(value) : ''),
   },
   {
     title: 'Total Salary',
     dataIndex: 'totalSalary',
     key: 'totalSalary',
-    sorter: (a, b) => a.totalSalary - b.totalSalary,
+    sorter: true,
     render: (value) => numberWithDot(value),
   },
   {
     title: 'Currency Code',
     dataIndex: ['currencyData', 'code'],
-    key: 'currencyCode',
+    key: 'code',
     filters: filtersCurrency || null,
-    onFilter: (value, record) => record.currencyData.code.indexOf(value) === 0,
   },
   {
     title: 'Employee',
-    dataIndex: 'employeeData',
+    dataIndex: ['employeeData', 'firstName'],
     key: 'employeeData',
-    render: (employee) => `${employee.firstName} ${employee.lastName}`,
+    sorter: true,
+    render: (_, record) =>
+      `${record.employeeData.firstName} ${record.employeeData.lastName}`,
   },
   {
     title: 'Added By',
-    dataIndex: 'adderData',
+    dataIndex: ['adderData', 'firstName'],
     key: 'adderData',
-    render: (adder) => `${adder.firstName} ${adder.lastName}`,
+    sorter: true,
+    render: (_, record) =>
+      `${record.adderData.firstName} ${record.adderData.lastName}`,
   },
   {
     title: 'Date created',
@@ -110,6 +114,7 @@ function SalaryPage() {
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddSalary, setOpenModalAddSalary] = useState(false);
   const [openModalEditSalary, setOpenModalEditSalary] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -153,6 +158,13 @@ function SalaryPage() {
     fetchData();
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
@@ -211,12 +223,37 @@ function SalaryPage() {
     handleDeleteSalary,
   );
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let order = defaultFilter.order;
+    let modelCurrency = filterData.modelCurrency;
+
+    modelCurrency = {
+      where: _.omitBy(
+        {
+          ...filters,
+        },
+        _.isNil,
+      ),
+    };
+
+    if (!_.isEmpty(sorter.column)) {
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, order, modelCurrency });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
         Salary List
       </Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={salaryList}
         bordered
@@ -239,6 +276,7 @@ function SalaryPage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

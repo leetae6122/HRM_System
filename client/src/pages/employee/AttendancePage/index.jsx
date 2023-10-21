@@ -16,6 +16,7 @@ import AttendanceTableHeader from './components/AttendanceTableHeader';
 import ModalAddAttendance from './components/ComponentAddEdit/ModalAddAttendance';
 import ModalEditAttendance from './components/ComponentAddEdit/ModalEditAttendance';
 import ModalDetailAttendance from './components/DetailAttendance/ModalDetailAttendance';
+import _ from 'lodash';
 
 const createColumns = (
   toggleModalEditAttendance,
@@ -26,7 +27,7 @@ const createColumns = (
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
@@ -34,7 +35,7 @@ const createColumns = (
     title: 'Attendance Date',
     dataIndex: 'attendanceDate',
     key: 'attendanceDate',
-    sorter: (a, b) => new Date(a.attendanceDate) - new Date(b.attendanceDate),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -51,7 +52,6 @@ const createColumns = (
         value: 'At Home',
       },
     ],
-    onFilter: (value, record) => !!record.place === value,
   },
   {
     title: 'Hours Spent',
@@ -92,11 +92,12 @@ const createColumns = (
         value: 'Reject',
       },
     ],
-    onFilter: (value, record) => !!record.status === value,
   },
   {
     title: 'Handler',
-    key: 'handler',
+    dataIndex: ['handlerData', 'firstName'],
+    key: 'handlerData',
+    sorter: true,
     render: (_, record) =>
       record.handledBy
         ? `${record.handlerData.firstName} ${record.handlerData.lastName}`
@@ -142,6 +143,7 @@ function AttendancePage() {
   const [openModalEditAttendance, setOpenModalEditAttendance] = useState(false);
   const [openModalDetailAttendance, setOpenModalDetailAttendance] =
     useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -166,6 +168,13 @@ function AttendancePage() {
     fetchData();
     return () => controller.abort();
   }, [dispatch, filterData]);
+
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
@@ -225,12 +234,32 @@ function AttendancePage() {
     toggleModalDetailAttendance,
   );
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let where = filterData.where;
+    let order = defaultFilter.order;
+
+    where = _.omitBy(
+      {
+        ...where,
+        place: filters.place,
+        status: filters.status,
+      },
+      _.isNil,
+    );
+
+    if (!_.isEmpty(sorter.column)) {
+      order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, where, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
         Attendance List
       </Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={attendanceList}
         bordered
@@ -252,6 +281,7 @@ function AttendancePage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

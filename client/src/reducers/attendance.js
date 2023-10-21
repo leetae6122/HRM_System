@@ -13,18 +13,18 @@ const initialState = {
         size: 10,
         where: {
             attendanceDate: { $between: [startDate, endDate] },
-            status: ['Pending', 'Approved', 'Reject']
         },
-        order: [['attendanceDate', 'DESC']]
+        order: [['attendanceDate', 'DESC']],
+        modelEmployee: { where: {} }
     },
     filterData: {
         page: 1,
         size: 10,
         where: {
             attendanceDate: { $between: [startDate, endDate] },
-            status: ['Pending', 'Approved', 'Reject']
         },
-        order: [['attendanceDate', 'DESC']]
+        order: [['attendanceDate', 'DESC']],
+        modelEmployee: { where: {} }
     },
     attendanceList: [],
     total: 0,

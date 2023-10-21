@@ -5,7 +5,7 @@ import {
     createOfficeSchema,
     updateOfficeSchema
 } from "../validations/office.validation";
-import { filterSchema } from "../validations/filter.validation";
+import { modelFilterSchema } from "../validations/filter.validation";
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.route("/")
     .patch(validation(updateOfficeSchema), officeController.updateOffice)
 
 router.route("/filter")
-    .post(validation(filterSchema), officeController.getListOffice)
+    .post(validation(modelFilterSchema), officeController.getListOffice)
 
 router.route("/:id")
     .get(officeController.findById)

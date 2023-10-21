@@ -5,13 +5,13 @@ const initialState = {
         page: 1,
         size: 10,
         where: {},
-        order: [['id', 'ASC']]
+        order: []
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
-        order: [['id', 'ASC']]
+        order: []
     },
     projectList: [],
     total: 0,

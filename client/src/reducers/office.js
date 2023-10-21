@@ -5,13 +5,15 @@ const initialState = {
         page: 1,
         size: 10,
         where: {},
-        order: [['id', 'ASC']]
+        order: [],
+        modelCountry: { where: {} }
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
-        order: [['id', 'ASC']]
+        order: [],
+        modelCountry: { where: {} }
     },
     officeList: [],
     total: 0,
@@ -40,10 +42,10 @@ export const officeSlice = createSlice({
     },
 })
 
-export const { 
-    setFilterData, 
-    setData, 
-    setDefaultFilterData, 
-    setEditOfficeId 
+export const {
+    setFilterData,
+    setData,
+    setDefaultFilterData,
+    setEditOfficeId
 } = officeSlice.actions;
 export default officeSlice.reducer;

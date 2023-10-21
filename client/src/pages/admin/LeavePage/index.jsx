@@ -11,19 +11,22 @@ import LeaveTableHeader from './components/LeaveTableHeader';
 import ModalAddLeave from './components/ComponentAddEdit/ModalAddLeave';
 import ModalEditLeave from './components/ComponentAddEdit/ModalEditLeave';
 import { gold } from '@ant-design/colors';
+import _ from 'lodash';
 
 const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
   {
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
   {
     title: 'Name',
-    key: 'name',
+    dataIndex: ['employeeData', 'firstName'],
+    key: 'employeeData',
+    sorter: true,
     render: (_, record) =>
       `${record.employeeData.firstName} ${record.employeeData.lastName}`,
   },
@@ -31,7 +34,7 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
     title: 'Title',
     dataIndex: 'title',
     key: 'title',
-    sorter: (a, b) => a.title.localeCompare(b.title),
+    sorter: true,
   },
   {
     title: 'Status',
@@ -62,27 +65,26 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
         value: 'Reject',
       },
     ],
-    onFilter: (value, record) => !!record.status === value,
   },
   {
     title: 'Leave From',
     dataIndex: 'leaveFrom',
     key: 'leaveFrom',
-    sorter: (a, b) => new Date(a.leaveFrom) - new Date(b.leaveFrom),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Leave To',
     dataIndex: 'leaveTo',
     key: 'leaveTo',
-    sorter: (a, b) => new Date(a.leaveTo) - new Date(b.leaveTo),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -123,6 +125,7 @@ function LeavePage() {
   const [loadingData, setLoadingData] = useState(false);
   const [openModalAddLeave, setOpenModalAddLeave] = useState(false);
   const [openModalEditLeave, setOpenModalEditLeave] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -147,6 +150,13 @@ function LeavePage() {
     fetchData();
     return () => controller.abort();
   }, [dispatch, filterData]);
+
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
@@ -197,10 +207,34 @@ function LeavePage() {
 
   const columns = createColumns(toggleModalEditLeave, handleDeleteLeave);
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let where = filterData.where;
+    let order = defaultFilter.order;
+
+    where = _.omitBy(
+      {
+        ...where,
+        status: filters.status,
+      },
+      _.isNil,
+    );
+
+    if (!_.isEmpty(sorter.column)) {
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, where, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Leave List</Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={leaveList}
         bordered
@@ -222,6 +256,7 @@ function LeavePage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

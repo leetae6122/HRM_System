@@ -131,7 +131,7 @@ class EmployeeService {
             include: [
                 {
                     model: db.Employee, as: 'managerData',
-                    attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
+                    attributes: ['id', 'firstName', 'lastName']
                 },
             ],
             raw: true,

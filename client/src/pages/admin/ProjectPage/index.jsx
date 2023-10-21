@@ -16,13 +16,14 @@ import Swal from 'sweetalert2';
 import ProjectTableHeader from './components/ProjectTableHeader';
 import ModalAddProject from './components/ComponentAddEdit/ModalAddProject';
 import ModalEditProject from './components/ComponentAddEdit/ModalEditProject';
+import _ from 'lodash';
 
 const createColumns = (toggleModalEditProject, handleDeleteProject) => [
   {
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
@@ -30,7 +31,7 @@ const createColumns = (toggleModalEditProject, handleDeleteProject) => [
     title: 'Title',
     dataIndex: 'title',
     key: 'title',
-    sorter: (a, b) => a.title.localeCompare(b.title),
+    sorter: true,
   },
   {
     title: 'Status',
@@ -67,20 +68,19 @@ const createColumns = (toggleModalEditProject, handleDeleteProject) => [
         value: 'Complete',
       },
     ],
-    onFilter: (value, record) => !!record.status === value,
   },
   {
     title: 'Start Date',
     dataIndex: 'startDate',
     key: 'startDate',
-    sorter: (a, b) => new Date(a.startDate) - new Date(b.startDate),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'End Date',
     dataIndex: 'endDate',
     key: 'endDate',
-    sorter: (a, b) => new Date(a.endDate) - new Date(b.endDate),
+    sorter: true,
     render: (date) => (date ? getFullDate(date) : ''),
   },
   {
@@ -111,6 +111,7 @@ function ProjectPage() {
   const [loadingData, setLoadingData] = useState(false);
   const [openModalAddProject, setOpenModalAddProject] = useState(false);
   const [openModalEditProject, setOpenModalEditProject] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -135,6 +136,13 @@ function ProjectPage() {
     fetchData();
     return () => controller.abort();
   }, [dispatch, filterData]);
+
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
@@ -185,12 +193,31 @@ function ProjectPage() {
 
   const columns = createColumns(toggleModalEditProject, handleDeleteProject);
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let where = filterData.where;
+    let order = defaultFilter.order;
+
+    where = _.omitBy(
+      {
+        ...where,
+        status: filters.status,
+      },
+      _.isNil,
+    );
+
+    if (!_.isEmpty(sorter.column)) {
+      order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, where, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
         Project List
       </Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={projectList}
         bordered
@@ -212,6 +239,7 @@ function ProjectPage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

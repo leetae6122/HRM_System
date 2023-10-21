@@ -5,7 +5,7 @@ import {
     createSalarySchema,
     updateSalarySchema
 } from "../validations/salary.validation";
-import { modelEmployeeFilterSchema } from '../validations/filter.validation';
+import { modelFilterSchema } from '../validations/filter.validation';
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.route("/")
     .patch(validation(updateSalarySchema), salaryController.updateSalary)
 
 router.route("/filter")
-    .post(validation(modelEmployeeFilterSchema), salaryController.getListSalary)
+    .post(validation(modelFilterSchema), salaryController.getListSalary)
 
 router.route("/:id")
     .get(salaryController.findById)

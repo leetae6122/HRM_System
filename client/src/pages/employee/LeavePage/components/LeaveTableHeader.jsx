@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Button, Checkbox, Col, DatePicker, Divider, Row, Space } from 'antd';
+import { Button, Col, DatePicker, Row, Space } from 'antd';
 import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/leave';
@@ -18,8 +18,6 @@ LeaveTableHeader.defaultProps = {
   setFilter: null,
 };
 
-const plainOptions = ['Approved', 'Reject', 'Pending'];
-
 function LeaveTableHeader(props) {
   const { toggleModalAddLeave, setFilter } = props;
   const dispatch = useDispatch();
@@ -29,38 +27,10 @@ function LeaveTableHeader(props) {
       ? dayjs(filterData.where.$or[0].leaveFrom.$between[0])
       : null,
   );
-  const [checkedList, setCheckedList] = useState(filterData.where.status);
-  
-  const checkAll = plainOptions.length === checkedList.length;
-  const indeterminate =
-    checkedList.length > 0 && checkedList.length < plainOptions.length;
-
-  const onChange = (list) => {
-    setCheckedList(list);
-    setFilter({
-      ...filterData,
-      where: {
-        ...filterData.where,
-        status: list,
-      },
-    });
-  };
-  const onCheckAllChange = (e) => {
-    const checked = e.target.checked ? plainOptions : [];
-    setCheckedList(checked);
-    setFilter({
-      ...filterData,
-      where: {
-        ...filterData.where,
-        status: checked,
-      },
-    });
-  };
 
   const resetFilter = () => {
     dispatch(setDefaultFilterData());
     setValue(null);
-    setCheckedList(defaultFilter.where.status);
   };
 
   const onChangeDate = (value) => {
@@ -82,7 +52,7 @@ function LeaveTableHeader(props) {
 
   return (
     <Row>
-      <Col span={6}>
+      <Col span={10}>
         <DatePicker
           picker="month"
           value={value}
@@ -90,22 +60,7 @@ function LeaveTableHeader(props) {
           allowClear={false}
         />
       </Col>
-      <Col span={10}>
-        <Checkbox
-          indeterminate={indeterminate}
-          onChange={onCheckAllChange}
-          checked={checkAll}
-        >
-          Check all
-        </Checkbox>
-        <Divider type="vertical" />
-        <Checkbox.Group
-          options={plainOptions}
-          value={checkedList}
-          onChange={onChange}
-        />
-      </Col>
-      <Col span={8}>
+      <Col span={14}>
         <Space style={{ float: 'right' }}>
           {!_.isEqual(filterData, defaultFilter) && (
             <Button

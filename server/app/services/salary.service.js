@@ -1,4 +1,5 @@
 import db from "./../models/index";
+import _ from 'lodash';
 
 class SalaryService {
     async findById(id) {
@@ -41,7 +42,8 @@ class SalaryService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const employeeFilter = body.employeeFilter;
+        const employeeFilter = body.modelEmployee;
+        const currencyFilter = body.modelCurrency;
 
         const offset = (page - 1) * limit;
 
@@ -55,14 +57,21 @@ class SalaryService {
             attributes,
             include: [
                 { model: db.Currency, as: 'currencyData' },
-                { model: db.Employee, as: 'employeeData' },
-                { model: db.Employee, as: 'adderData' }
+                {
+                    model: db.Employee, as: 'employeeData',
+                    attributes: ['id', 'firstName', 'lastName'],
+                },
+                {
+                    model: db.Employee, as: 'adderData',
+                    attributes: ['id', 'firstName', 'lastName'],
+                }
             ],
             raw: true,
             nest: true
         });
 
-        if (data1.count === 0 && employeeFilter) {
+        if ((data1.count === 0 || _.isEmpty(where)) &&
+            (!_.isEmpty(currencyFilter)) || !_.isEmpty(employeeFilter)) {
             const data2 = await db.Salary.findAndCountAll({
                 where: {},
                 offset,
@@ -70,9 +79,16 @@ class SalaryService {
                 order,
                 attributes,
                 include: [
-                    { model: db.Currency, as: 'currencyData' },
-                    { model: db.Employee, as: 'employeeData', ...employeeFilter },
-                    { model: db.Employee, as: 'adderData' }
+                    { model: db.Currency, as: 'currencyData', ...currencyFilter },
+                    {
+                        model: db.Employee, as: 'employeeData',
+                        attributes: ['id', 'firstName', 'lastName'],
+                        ...employeeFilter
+                    },
+                    {
+                        model: db.Employee, as: 'adderData',
+                        attributes: ['id', 'firstName', 'lastName'],
+                    }
                 ],
                 raw: true,
                 nest: true

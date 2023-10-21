@@ -15,6 +15,7 @@ import departmentApi from 'api/departmentApi';
 import DepartmentTableHeader from './components/DepartmentTableHeader';
 import ModalAddDepartment from './components/ComponentAddEdit/ModalAddDepartment';
 import ModalEditDepartment from './components/ComponentAddEdit/ModalEditDepartment';
+import _ from 'lodash';
 
 const createColumns = (
   filtersOffice,
@@ -25,7 +26,7 @@ const createColumns = (
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
@@ -33,25 +34,25 @@ const createColumns = (
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name),
+    sorter: true,
   },
   {
     title: 'Short Name',
     dataIndex: 'shortName',
     key: 'shortName',
-    sorter: (a, b) => a.shortName.localeCompare(b.shortName),
+    sorter: true,
   },
   {
     title: 'Office',
     dataIndex: ['officeData', 'title'],
-    key: 'officeTitle',
+    key: 'title',
     filters: filtersOffice || null,
-    onFilter: (value, record) => record.officeData.title.indexOf(value) === 0,
   },
   {
     title: 'Manager',
-    dataIndex: 'managerData',
+    dataIndex: ['managerData', 'firstName'],
     key: 'managerData',
+    sorter: true,
     render: (manager, record) =>
       record.managerId ? `${manager.firstName} ${manager.lastName}` : '',
   },
@@ -59,14 +60,14 @@ const createColumns = (
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
     title: 'Date update',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
-    sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -99,6 +100,7 @@ function DepartmentPage() {
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddDepartment, setOpenModalAddDepartment] = useState(false);
   const [openModalEditDepartment, setOpenModalEditDepartment] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -142,6 +144,13 @@ function DepartmentPage() {
     fetchData();
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
@@ -200,12 +209,37 @@ function DepartmentPage() {
     handleDeleteDepartment,
   );
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let order = defaultFilter.order;
+    let modelOffice = filterData.modelOffice ?? {};
+    modelOffice = {
+      where: _.omitBy(
+        {
+          ...filters,
+        },
+        _.isNil,
+      ),
+    };
+ 
+    if (!_.isEmpty(sorter.column)) {
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+ 
+    setFilter({ ...filterData, modelOffice, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
         Department List
       </Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={departmentList}
         bordered
@@ -228,6 +262,7 @@ function DepartmentPage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

@@ -5,7 +5,7 @@ import {
     createDepartmentSchema,
     updateDepartmentSchema
 } from "../validations/department.validation";
-import { filterSchema } from "../validations/filter.validation";
+import { modelFilterSchema } from "../validations/filter.validation";
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.route("/count-employees")
     .get(departmentController.countEmployees)    
 
 router.route("/filter")
-    .post(validation(filterSchema), departmentController.getListDepartment)
+    .post(validation(modelFilterSchema), departmentController.getListDepartment)
 
 router.route("/:id")
     .get(departmentController.findById)

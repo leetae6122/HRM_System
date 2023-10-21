@@ -5,13 +5,15 @@ const initialState = {
         page: 1,
         size: 10,
         where: {},
-        order: [['id', 'ASC']]
+        order: [],
+        modelCurrency: { where: {} }
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
-        order: [['id', 'ASC']]
+        order: [],
+        modelCurrency: { where: {} }
     },
     positionList: [],
     total: 0,
@@ -40,10 +42,10 @@ export const positionSlice = createSlice({
     },
 })
 
-export const { 
-    setFilterData, 
-    setData, 
-    setDefaultFilterData, 
-    setEditPositionId 
+export const {
+    setFilterData,
+    setData,
+    setDefaultFilterData,
+    setEditPositionId
 } = positionSlice.actions;
 export default positionSlice.reducer;

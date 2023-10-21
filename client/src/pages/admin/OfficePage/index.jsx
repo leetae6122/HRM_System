@@ -11,6 +11,7 @@ import countryApi from 'api/countryApi';
 import officeApi from 'api/officeApi';
 import ModalAddOffice from './components/ComponentAddEdit/ModalAddOffice';
 import ModalEditOffice from './components/ComponentAddEdit/ModalEditOffice';
+import _ from 'lodash';
 
 const createColumns = (
   filtersCountry,
@@ -21,7 +22,7 @@ const createColumns = (
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
-    sorter: (a, b) => a.id - b.id,
+    sorter: true,
     render: (id) => `#${id}`,
     width: 80,
   },
@@ -29,46 +30,45 @@ const createColumns = (
     title: 'Title',
     dataIndex: 'title',
     key: 'title',
-    sorter: (a, b) => a.title.localeCompare(b.title),
+    sorter: true,
   },
   {
     title: 'Street Address',
     dataIndex: 'streetAddress',
     key: 'streetAddress',
-    sorter: (a, b) => a.streetAddress.localeCompare(b.streetAddress),
+    sorter: true,
   },
   {
     title: 'Postal Code',
     dataIndex: 'postalCode',
     key: 'postalCode',
-    sorter: (a, b) => a.postalCode - b.postalCode,
+    sorter: true,
     render: (value) => (value ? value : ''),
   },
   {
     title: 'State / Province',
     dataIndex: 'stateProvince',
     key: 'stateProvince',
-    sorter: (a, b) => a.stateProvince.localeCompare(b.stateProvince),
+    sorter: true,
   },
   {
     title: 'City',
     dataIndex: 'city',
     key: 'city',
-    sorter: (a, b) => a.city.localeCompare(b.city),
+    sorter: true,
   },
   {
     title: 'Country',
     dataIndex: ['countryData', 'name'],
-    key: 'country',
+    key: 'name',
     filters: filtersCountry || null,
     filterSearch: true,
-    onFilter: (value, record) => record.countryData.name.indexOf(value) === 0,
   },
   {
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    sorter: true,
     render: (date) => getFullDate(date),
   },
   {
@@ -101,6 +101,7 @@ function OfficePage() {
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddOffice, setOpenModalAddOffice] = useState(false);
   const [openModalEditOffice, setOpenModalEditOffice] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -145,7 +146,14 @@ function OfficePage() {
     return () => controller.abort();
   }, []);
 
-    const setFilter = (filter) => {
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
+
+  const setFilter = (filter) => {
     dispatch(setFilterData(filter));
   };
 
@@ -202,12 +210,32 @@ function OfficePage() {
     handleDeleteOffice,
   );
 
+  const onChangeTable = (pagination, filters, sorter) => {
+    let order = defaultFilter.order;
+
+    let modelCountry = filterData.modelCountry ?? {};
+    modelCountry = {
+      where: _.omitBy(
+        {
+          ...filters,
+        },
+        _.isNil,
+      ),
+    };
+
+    if (!_.isEmpty(sorter.column)) {
+      order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+    }
+    setFilter({ ...filterData, modelCountry, order });
+  };
+
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
         Position List
       </Divider>
       <Table
+        key={tableKey}
         columns={columns}
         dataSource={officeList}
         bordered
@@ -230,6 +258,7 @@ function OfficePage() {
             });
           },
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />

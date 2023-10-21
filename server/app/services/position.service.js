@@ -35,6 +35,7 @@ class PositionService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
+        const currencyFilter = body.modelCurrency;
 
         const offset = (page - 1) * limit;
 
@@ -44,7 +45,7 @@ class PositionService {
             limit,
             order,
             attributes,
-            include: { model: db.Currency, as: 'currencyData' },
+            include: { model: db.Currency, as: 'currencyData', ...currencyFilter },
             raw: true,
             nest: true
         });

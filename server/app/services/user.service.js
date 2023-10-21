@@ -1,5 +1,6 @@
 import db from "./../models/index";
 import { hashData } from "./../utils/hash.util";
+import _ from 'lodash';
 
 class UserService {
     async getUserProfile(id) {
@@ -147,7 +148,7 @@ class UserService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const employeeFilter = body.employeeFilter;
+        const employeeFilter = body.modelEmployee;
 
         const offset = (page - 1) * limit;
 
@@ -164,7 +165,7 @@ class UserService {
             nest: true
         });
 
-        if (data1.count === 0 && employeeFilter) {
+        if ((data1.count === 0 || _.isEmpty(where)) && !_.isEmpty(employeeFilter)) {
             const data2 = await db.User.scope('secret').findAndCountAll({
                 where: {},
                 offset,

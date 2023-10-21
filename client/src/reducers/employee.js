@@ -7,7 +7,7 @@ const initialState = {
         where: {
             dateOff: { $is: null }
         },
-        order: [['firstName', 'ASC']]
+        order: [['firstName', 'ASC']],
     },
     filterData: {
         page: 1,
@@ -15,7 +15,7 @@ const initialState = {
         where: {
             dateOff: { $is: null }
         },
-        order: [['firstName', 'ASC']]
+        order: [['firstName', 'ASC']],
     },
     employeeList: [],
     total: 0,
