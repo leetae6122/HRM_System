@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Row, Space } from 'antd';
-import {
-  FilterFilled,
-  PlusCircleFilled,
-  ReloadOutlined,
-} from '@ant-design/icons';
+import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/employee';
@@ -14,18 +10,16 @@ import _ from 'lodash';
 
 EmployeeTableHeader.propTypes = {
   toggleModalAddEmployee: PropTypes.func,
-  toggleShowFilterDrawer: PropTypes.func,
   setFilter: PropTypes.func,
 };
 
 EmployeeTableHeader.defaultProps = {
   toggleModalAddEmployee: null,
-  toggleShowFilterDrawer: null,
   setFilter: null,
 };
 
 function EmployeeTableHeader(props) {
-  const { toggleModalAddEmployee, toggleShowFilterDrawer, setFilter } = props;
+  const { toggleModalAddEmployee, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector((state) => state.employee);
@@ -89,13 +83,6 @@ function EmployeeTableHeader(props) {
             onClick={toggleModalAddEmployee}
           >
             Add Employee
-          </Button>
-          <Button
-            type="primary"
-            icon={<FilterFilled />}
-            onClick={toggleShowFilterDrawer}
-          >
-            Filter
           </Button>
         </Space>
       </Col>

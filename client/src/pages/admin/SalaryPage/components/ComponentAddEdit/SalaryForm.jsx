@@ -281,33 +281,13 @@ function SalaryForm(props) {
             name="totalSalary"
             label="Total Salary"
             hasFeedback
-            rules={[
-              () => ({
-                validator(_, value) {
-                  if (
-                    !value ||
-                    value >=
-                      form.getFieldValue('basicSalary') +
-                        form.getFieldValue('allowance')
-                  ) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error(
-                      'The Total Salary must be greater than the sum of the basic salary and allowances!',
-                    ),
-                  );
-                },
-              }),
-            ]}
           >
             <InputNumber
               style={{
                 width: '100%',
+                color: 'black'
               }}
-              controls={false}
-              min={0}
-              disabled={loading}
+              disabled={true}
               formatter={(value) =>
                 selectedEmployee
                   ? `${value} ${selectedEmployee?.positionData.currencyData.symbol}`.replace(

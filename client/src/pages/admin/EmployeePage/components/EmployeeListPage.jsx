@@ -11,7 +11,6 @@ import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled, EyeOutlined } from '@ant-design/icons';
 import { gold } from '@ant-design/colors';
 import { setData, setFilterData } from 'reducers/employee';
-import FilterDrawer from './Filter/FilterDrawer';
 import ModalAddEmployee from './ComponentAddEdit/ModalAddEmployee';
 import defaultAvatar from 'assets/images/avatar-user.jpg';
 import _ from 'lodash';
@@ -139,7 +138,6 @@ function EmployeeListPage(props) {
   const { filterData, employeeList, total, currentPage, defaultFilter } =
     useSelector((state) => state.employee);
   const [loadingData, setLoadingData] = useState(false);
-  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddEmployee, setOpenModalAddEmployee] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
@@ -212,10 +210,6 @@ function EmployeeListPage(props) {
       });
   };
 
-  const toggleShowFilterDrawer = () => {
-    setOpenFilterDrawer(!openFilterDrawer);
-  };
-
   const toggleModalAddEmployee = () => {
     setOpenModalAddEmployee(!openModalAddEmployee);
   };
@@ -262,7 +256,6 @@ function EmployeeListPage(props) {
         title={() => (
           <EmployeeTableHeader
             toggleModalAddEmployee={toggleModalAddEmployee}
-            toggleShowFilterDrawer={toggleShowFilterDrawer}
             setFilter={setFilter}
           />
         )}
@@ -282,14 +275,6 @@ function EmployeeListPage(props) {
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-
-      {openFilterDrawer && (
-        <FilterDrawer
-          toggleShowDrawer={toggleShowFilterDrawer}
-          openDrawer={openFilterDrawer}
-          refreshEmployeeList={refreshEmployeeList}
-        />
-      )}
       {openModalAddEmployee && (
         <ModalAddEmployee
           openModal={openModalAddEmployee}

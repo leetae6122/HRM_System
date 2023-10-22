@@ -262,6 +262,7 @@ function PositionPage() {
         <FilterDrawer
           toggleShowDrawer={toggleShowFilterDrawer}
           openDrawer={openFilterDrawer}
+          setFilter={setFilter}
         />
       )}
       {openModalAddPosition && (
