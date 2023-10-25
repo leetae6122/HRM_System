@@ -10,30 +10,36 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 autoIncrement: true
             },
-            description: {
-                allowNull: false,
-                type: Sequelize.STRING,
-            },
             attendanceDate: {
                 allowNull: false,
                 type: Sequelize.DATEONLY,
             },
-            hoursSpent: {
-                allowNull: false,
+            inTime: {
+                type: Sequelize.TIME,
+            },
+            outTime: {
+                type: Sequelize.TIME,
+            },
+            totalHours: {
                 type: Sequelize.FLOAT(2),
             },
-            hoursOvertime: {
-                type: Sequelize.FLOAT(2),
+            inStatus: {
+                type: Sequelize.ENUM,
+                values: ['Late In', 'On Time']
             },
-            status: {
+            outStatus: {
+                type: Sequelize.ENUM,
+                values: ['Out Early', 'On Time']
+            },
+            managerStatus: {
                 allowNull: false,
                 type: Sequelize.ENUM,
                 values: ['Pending', 'Reject', 'Approved']
             },
-            place: {
+            adminStatus: {
                 allowNull: false,
                 type: Sequelize.ENUM,
-                values: ['Office', 'At Home']
+                values: ['Pending', 'Reject', 'Approved']
             },
             employeeId: {
                 allowNull: false,
@@ -43,26 +49,18 @@ module.exports = {
                     key: 'id'
                 },
             },
-            handledBy: {
+            adminId: {
                 type: Sequelize.UUID,
                 references: {
                     model: 'Employee',
                     key: 'id'
                 },
             },
-            taskId: {
+            shiftId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
-                    model: 'Task',
-                    key: 'id'
-                },
-            },
-            projectId: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Project',
+                    model: 'Shift',
                     key: 'id'
                 },
             },

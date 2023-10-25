@@ -1,5 +1,6 @@
 import createError from 'http-errors';
 import userService from "./../services/user.service";
+import employeeService from "./../services/employee.service";
 import config from '../config/configServer';
 import { 
     MSG_INVALID_TOKEN, 
@@ -50,5 +51,15 @@ exports.verifyAdminOrSelf = async (req, res, next) => {
         return next(
             createError.Unauthorized("You do not have permission to perform this function")
         );
+    }
+}
+
+exports.verifyDepartmentManager = async (req, res, next) => {
+    const employee = await employeeService.getManageDepartment(req.user.employeeId);
+    if(employee.manageDepartment.id){
+        req.manageDepartmentId = employee.manageDepartment.id;
+        next();
+    }else{
+        return next(createError.Unauthorized('You are not a department manager to perform this function'));
     }
 }

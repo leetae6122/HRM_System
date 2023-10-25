@@ -11,9 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Attendance.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
-      Attendance.belongsTo(models.Employee, { foreignKey: 'handledBy', as: 'handlerData' });
-      Attendance.belongsTo(models.Task, { foreignKey: 'taskId', as: 'taskData' });
-      Attendance.belongsTo(models.Project, { foreignKey: 'projectId', as: 'projectData' });
+      Attendance.belongsTo(models.Employee, { foreignKey: 'adminId', as: 'adminData' });
+      Attendance.belongsTo(models.Shift, { foreignKey: 'shiftId', as: 'shiftData' });
     }
   }
   Attendance.init({
@@ -21,16 +20,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true
     },
-    description: DataTypes.STRING,
     attendanceDate: DataTypes.DATEONLY,
-    hoursSpent: DataTypes.FLOAT,
-    hoursOvertime: DataTypes.FLOAT,
-    status: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
-    place: DataTypes.ENUM('Office', 'At Home'),
-    handledBy: DataTypes.UUID,
+    inTime:  DataTypes.TIME,
+    outTime: DataTypes.TIME,
+    totalHours: DataTypes.FLOAT,
+    inStatus: DataTypes.ENUM('Late In', 'On Time'),
+    outStatus: DataTypes.ENUM('Out Early', 'On Time'),
+    managerStatus: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
+    adminStatus: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
+    shiftId: DataTypes.INTEGER,
+    adminId: DataTypes.UUID,
     employeeId: DataTypes.UUID,
-    taskId: DataTypes.INTEGER,
-    projectId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Attendance'

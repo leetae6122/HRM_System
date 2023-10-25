@@ -88,13 +88,6 @@ module.exports = {
                     key: 'id'
                 },
             },
-            managerId: {
-                type: Sequelize.UUID,
-                references: {
-                    model: 'Employee',
-                    key: 'id'
-                },
-            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE,

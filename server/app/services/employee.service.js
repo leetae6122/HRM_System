@@ -39,11 +39,7 @@ class EmployeeService {
                             }
                         },
                     ],
-                },
-                {
-                    model: db.Employee, as: 'managerData',
-                    attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
-                },
+                }
             ],
             raw: true,
             nest: true
@@ -128,12 +124,6 @@ class EmployeeService {
             limit,
             order,
             attributes,
-            include: [
-                {
-                    model: db.Employee, as: 'managerData',
-                    attributes: ['id', 'firstName', 'lastName']
-                },
-            ],
             raw: true,
             nest: true
         });
@@ -174,6 +164,25 @@ class EmployeeService {
         await db.Employee.destroy({
             where: { id }
         });
+    }
+
+    async getManageDepartment(employeeId) {
+        const result = await db.Employee.findOne({
+            where: { id: employeeId },
+            include: [{ model: db.Department, as: 'manageDepartment' }],
+            raw: true,
+            nest: true
+        });
+        return result;
+    }
+
+    async getListEmployeeByDepartment(departmentId) {
+        const data = await db.Employee.findAll({
+            where: {
+                departmentId
+            },
+        });
+        return data;
     }
 
     async checkEmailExisted(email, next) {

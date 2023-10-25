@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import {
     MSG_DELETE_SUCCESSFUL,
     MSG_ERROR_DELETE,
@@ -6,13 +7,13 @@ import {
     MSG_UPDATE_SUCCESSFUL,
     MSG_CREATED_SUCCESSFUL,
     MSG_ATTENDANCE_STATUS_NOT_PENDING,
-    MSG_PROJECT_STATUS_NOT_RUNNING,
     MSG_ERROR_NOT_HAVE_PERMISSION
 } from "../utils/message.util";
 import attendanceService from "./../services/attendance.service";
-import projectService from "./../services/project.service";
-import taskService from "./../services/task.service";
+import employeeService from "./../services/employee.service";
+import shiftService from "./../services/shift.service";
 import createError from 'http-errors';
+import _ from 'lodash';
 
 exports.findById = async (req, res, next) => {
     try {
@@ -29,6 +30,7 @@ exports.findById = async (req, res, next) => {
         return next(error);
     }
 }
+
 
 exports.findAll = async (req, res, next) => {
     try {
@@ -51,6 +53,31 @@ exports.filterAll = async (req, res, next) => {
         const data = await attendanceService.findAll(payload);
         return res.send({ data });
     } catch (error) {
+        return next(error);
+    }
+}
+
+exports.managerGetListAttendance = async (req, res, next) => {
+    try {
+        const listEmployee = await employeeService.getListEmployeeByDepartment(req.manageDepartmentId);
+        const arrEmployeeId = listEmployee.map((employee) => {
+            if (employee.id === req.user.employeeId)
+                return;
+            return employee.id;
+        });
+
+        const payload = {
+            ...req.body,
+            where: {
+                ...req.body.where,
+                employeeId: { $in: _.without(arrEmployeeId, undefined) }
+            }
+        }
+
+        const data = await attendanceService.filterListAttendance(payload);
+        return res.send({ data });
+    } catch (error) {
+        console.log(error);
         return next(error);
     }
 }
@@ -80,22 +107,57 @@ exports.employeeGetListAttendance = async (req, res, next) => {
     }
 }
 
-exports.createAttendance = async (req, res, next) => {
+exports.logInAttendance = async (req, res, next) => {
     try {
         const { employeeId } = req.user;
-        const foundProject = await projectService.foundProject(req.body.projectId, next);
-        if (foundProject.status !== "Running") {
-            return next(createError.BadRequest(MSG_PROJECT_STATUS_NOT_RUNNING));
-        }
-        await taskService.foundTask(req.body.taskId, next);
 
-        const payload = {
+        if (!dayjs().isSame(dayjs(req.body.attendanceDate), 'day')) {
+            return next(createError.BadRequest('Invalid login date'));
+        }
+        let payload = {
             ...req.body,
             employeeId
         }
-        const data = await attendanceService.createAttendance(payload);
+        const foundShift = await shiftService.foundShift(payload.shiftId, next);
+        const foundAttendance = await attendanceService.findByAttendanceDateAndEmployeeId(req.body.attendanceDate, req.user.employeeId);
+        if (foundAttendance && foundAttendance.shiftId === foundShift.id && foundAttendance.inTime) {
+            return next(createError.BadRequest(`Logged!!! Shift: ${foundShift.name} (${foundShift.startTime} - ${foundShift.endTime})`));
+        }
 
+        payload.inStatus = attendanceService.checkInTime(payload.inTime, foundShift);
+
+        const data = await attendanceService.createAttendance(payload);
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Attendance"), data });
+    } catch (error) {
+        return next(error);
+    }
+}
+
+exports.logOutAttendance = async (req, res, next) => {
+    try {
+        const foundAttendance = await attendanceService.foundAttendance(req.body.attendanceId, next);
+        if (foundAttendance.employeeId !== req.user.employeeId) {
+            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
+        }
+        if (foundAttendance.managerStatus !== 'Pending' && foundAttendance.adminStatus !== 'Pending') {
+            return next(createError.BadRequest(MSG_ATTENDANCE_STATUS_NOT_PENDING));
+        }
+        const foundShift = await shiftService.foundShift(foundAttendance.shiftId, next);
+        if (foundAttendance.outTime) {
+            return next(createError.BadRequest(`Logged out!!! Shift: ${foundShift.name} (${foundShift.startTime} - ${foundShift.endTime})`));
+        }
+        let payload = req.body;
+
+
+        payload.outStatus = attendanceService.checkOutTime(payload.outTime, foundShift);
+        payload.totalHours = attendanceService.calTotalHours(
+            foundAttendance.inTime,
+            payload.outTime,
+            foundShift
+        );
+
+        await attendanceService.updateAttendance(req.body.attendanceId, payload);
+        return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(error);
     }
@@ -103,17 +165,15 @@ exports.createAttendance = async (req, res, next) => {
 
 exports.adminUpdateAttendance = async (req, res, next) => {
     try {
-        const foundAttendance = await attendanceService.findById(req.body.attendanceId);
-        if (!foundAttendance) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Attendance")));
-        }
-        if (foundAttendance.status !== 'Pending') {
+        const foundAttendance = await attendanceService.foundAttendance(req.body.attendanceId, next);
+
+        if (foundAttendance.adminStatus !== 'Pending') {
             return next(createError.BadRequest(MSG_ATTENDANCE_STATUS_NOT_PENDING));
         }
 
         const payload = {
             ...req.body,
-            handledBy: req.user.employeeId
+            adminId: req.user.employeeId
         }
 
         await attendanceService.updateAttendance(req.body.attendanceId, payload);
@@ -124,30 +184,16 @@ exports.adminUpdateAttendance = async (req, res, next) => {
     }
 }
 
-exports.employeeUpdateAttendance = async (req, res, next) => {
+exports.managerUpdateAttendance = async (req, res, next) => {
     try {
-        const foundAttendance = await attendanceService.findById(req.body.attendanceId);
-        if (!foundAttendance) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Attendance")));
-        }
-        if (foundAttendance.employeeId !== req.user.employeeId) {
-            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
-        }
-        if (foundAttendance.status !== 'Pending') {
+        const foundAttendance = await attendanceService.foundAttendance(req.body.attendanceId, next);
+
+        if (foundAttendance.managerStatus !== 'Pending') {
             return next(createError.BadRequest(MSG_ATTENDANCE_STATUS_NOT_PENDING));
         }
 
-        if (req.body.projectId !== foundAttendance.projectId) {
-            const foundProject = await projectService.foundProject(req.body.projectId, next)
-            if (foundProject.status !== "Running") {
-                return next(createError.BadRequest(MSG_PROJECT_STATUS_NOT_RUNNING));
-            }
-        }
-        if (req.body.taskId !== foundAttendance.taskId) {
-            await taskService.foundTask(req.body.taskId, next);
-        }
-
         await attendanceService.updateAttendance(req.body.attendanceId, req.body);
+
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(error);
@@ -159,14 +205,13 @@ exports.deleteAttendance = async (req, res, next) => {
         if (!req.params.id && Number(req.params.id)) {
             return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("AttendanceId")));
         }
-        const foundAttendance = await attendanceService.findById(req.params.id);
-        if (!foundAttendance) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Attendance")));
-        }
+        const foundAttendance = await attendanceService.foundAttendance(req.params.id, next);
+
         if (foundAttendance.employeeId !== req.user.employeeId) {
             return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
-        if (foundAttendance.status !== 'Pending' && !req.user.isAdmin) {
+        if ((foundAttendance.managerStatus !== 'Pending' && foundAttendance.adminStatus !== 'Pending')
+            && !req.user.isAdmin) {
             return next(createError.BadRequest(MSG_ATTENDANCE_STATUS_NOT_PENDING));
         }
 

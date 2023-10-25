@@ -2,18 +2,19 @@ import express from "express";
 import attendanceController from "./../controllers/attendance.controller";
 import validation from '../middlewares/validation.middleware';
 import {
+    inTimeAttendanceSchema,
+    outTimeAttendanceSchema,
+    managerUpdateAttendanceSchema,
     adminUpdateAttendanceSchema,
-    employeeUpdateAttendanceSchema,
-    createAttendanceSchema
 } from "../validations/attendance.validation";
 import { filterAll, modelFilterSchema } from "../validations/filter.validation";
-import { verifyAdmin } from './../middlewares/auth.middleware';
+import { verifyAdmin, verifyDepartmentManager } from './../middlewares/auth.middleware';
 
 const router = express.Router();
 
 router.route("/")
-    .post(validation(createAttendanceSchema), attendanceController.createAttendance)
-    .patch(validation(employeeUpdateAttendanceSchema), attendanceController.employeeUpdateAttendance)
+    .post(validation(inTimeAttendanceSchema), attendanceController.logInAttendance)
+    .patch(validation(outTimeAttendanceSchema), attendanceController.logOutAttendance)
 
 router.route("/count")
     .get(verifyAdmin, attendanceController.countAttendance)
@@ -23,6 +24,11 @@ router.route("/filter-all")
 
 router.route("/filter")
     .post(validation(modelFilterSchema), attendanceController.employeeGetListAttendance)
+
+router.route("/manager")
+    .patch(verifyDepartmentManager, validation(managerUpdateAttendanceSchema), attendanceController.managerUpdateAttendance)
+router.route("/manager/filter")
+    .post(verifyDepartmentManager, validation(modelFilterSchema), attendanceController.managerGetListAttendance)
 
 router.route("/admin")
     .all(verifyAdmin)

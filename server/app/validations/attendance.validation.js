@@ -1,34 +1,37 @@
 const Joi = require('joi');
 
-const createAttendanceSchema = Joi.object().keys({
-    description: Joi.string().max(255).required(),
+const inTimeAttendanceSchema = Joi.object().keys({
     attendanceDate: Joi.date().required(),
-    hoursSpent: Joi.number().min(0).max(8).required(),
-    hoursOvertime: Joi.number().min(0).max(2).optional(),
-    status: Joi.string().default('Pending'),
-    place: Joi.string().valid('Office', 'At Home').required(),
-    taskId: Joi.number().integer().required(),
-    projectId: Joi.number().integer().required()
+    inTime: Joi.string()
+        .regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/)
+        .label('inTime fails to match the required pattern hh:mm:ss')
+        .required(),
+    shiftId: Joi.number().integer().required(),
+    managerStatus: Joi.string().default('Pending'),
+    adminStatus: Joi.string().default('Pending'),
 });
 
-const employeeUpdateAttendanceSchema = Joi.object({
+const outTimeAttendanceSchema = Joi.object({
     attendanceId: Joi.number().integer().required(),
-    description: Joi.string().max(255).optional(),
-    attendanceDate: Joi.date().optional(),
-    hoursSpent: Joi.number().max(8).optional(),
-    hoursOvertime: Joi.number().max(2).optional(),
-    place: Joi.string().valid('Office', 'At Home').optional(),
-    taskId: Joi.number().integer().optional(),
-    projectId: Joi.number().integer().optional()
-}).required().min(1);
+    outTime: Joi.string()
+        .regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/)
+        .label('outTime fails to match the required pattern hh:mm:ss')
+        .required(),
+});
+
+const managerUpdateAttendanceSchema = Joi.object({
+    attendanceId: Joi.number().integer().required(),
+    managerStatus: Joi.string().valid('Reject', 'Approved').required(),
+});
 
 const adminUpdateAttendanceSchema = Joi.object({
     attendanceId: Joi.number().integer().required(),
-    status: Joi.string().valid('Reject', 'Approved').required(),
+    adminStatus: Joi.string().valid('Reject', 'Approved').required(),
 });
 
 module.exports = {
-    employeeUpdateAttendanceSchema,
-    createAttendanceSchema,
+    inTimeAttendanceSchema,
+    outTimeAttendanceSchema,
+    managerUpdateAttendanceSchema,
     adminUpdateAttendanceSchema,
 };

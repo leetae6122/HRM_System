@@ -31,9 +31,3 @@ export const MSG_EMPLOYEE_CREATED_SALARY = "Employee have created salary";
 export const MSG_LEAVE_STATUS_NOT_PENDING = "Leave status is not Pending";
 // Attendance API
 export const MSG_ATTENDANCE_STATUS_NOT_PENDING = "Attendance status is not Pending";
-//Project API
-export const MSG_PROJECT_STATUS_NOT_RUNNING = "Project status is not Running";
-export const MSG_ERROR_DELETE_PROJECT = "Cannot be deleted if project status is Running";
-export const MSG_ERROR_UPDATE_PROJECT = "Project status is not Upcoming";
-
-

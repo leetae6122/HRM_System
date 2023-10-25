@@ -12,6 +12,18 @@ class DepartmentService {
         return result;
     }
 
+    async findByEmployeeId(employeeId) {
+        const result = await db.Department.findOne({
+            where:{
+                managerId: employeeId
+            },
+            raw: true,
+            nest: true
+        });
+        return result;
+    }
+
+
     async findAll() {
         const result = await db.Department.findAll({
             include: [

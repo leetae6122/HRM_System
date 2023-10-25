@@ -40,10 +40,6 @@ class UserService {
                             },
                         ],
                     },
-                    {
-                        model: db.Employee, as: 'managerData',
-                        attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
-                    },
                 ]
             },
             raw: true,

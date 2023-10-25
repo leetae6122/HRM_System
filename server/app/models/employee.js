@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
             Employee.hasMany(models.Salary, { foreignKey: 'addedBy', as: 'salaryAddedData' });
 
             Employee.belongsTo(models.Position, { foreignKey: 'positionId', as: 'positionData' });
-            Employee.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData' });
 
             Employee.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'departmentData' });
             Employee.hasOne(models.Department, { foreignKey: 'managerId', as: 'manageDepartment' });
@@ -22,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
             Employee.hasMany(models.Leave, { foreignKey: 'handledBy', as: 'handlerData' });
 
             Employee.hasMany(models.Attendance, { foreignKey: 'employeeId' });
-            Employee.hasMany(models.Attendance, { foreignKey: 'handledBy' });
+            Employee.hasMany(models.Attendance, { foreignKey: 'adminId' });
 
             Employee.hasMany(models.Payroll, { foreignKey: 'employeeId' });
             Employee.hasMany(models.Payroll, { foreignKey: 'handledBy' });
@@ -46,8 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         dateOff: DataTypes.DATE,
         avatarUrl: DataTypes.STRING,
         positionId: DataTypes.INTEGER,
-        departmentId: DataTypes.INTEGER,
-        managerId: DataTypes.UUID
+        departmentId: DataTypes.INTEGER
     }, {
         sequelize,
         modelName: 'Employee'

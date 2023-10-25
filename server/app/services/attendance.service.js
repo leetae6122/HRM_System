@@ -1,6 +1,10 @@
-import sequelize from "sequelize";
 import db from "./../models/index";
 import dayjs from "dayjs";
+import createError from 'http-errors';
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 class AttendanceService {
     async findById(id) {
@@ -11,16 +15,8 @@ class AttendanceService {
                     attributes: ['firstName', 'lastName', 'email']
                 },
                 {
-                    model: db.Employee, as: 'handlerData',
+                    model: db.Employee, as: 'adminData',
                     attributes: ['firstName', 'lastName', 'email']
-                },
-                {
-                    model: db.Task, as: 'taskData',
-                    attributes: ['title']
-                },
-                {
-                    model: db.Project, as: 'projectData',
-                    attributes: ['title']
                 },
             ],
             raw: true,
@@ -29,9 +25,12 @@ class AttendanceService {
         return result;
     }
 
-    async findByAttendanceCode(code) {
+    async findByAttendanceDateAndEmployeeId(attendanceDate, employeeId) {
         const result = await db.Attendance.findOne({
-            where: { code },
+            where: {
+                attendanceDate,
+                employeeId
+            },
             raw: true,
             nest: true
         });
@@ -64,17 +63,14 @@ class AttendanceService {
         const attributes = body.attributes;
         const order = body.order;
         const employeeFilter = body.modelEmployee;
-        
+
         const offset = (page - 1) * limit;
 
         const { count, rows } = await db.Attendance.findAndCountAll({
             where,
             offset,
             limit,
-            order: [
-                sequelize.fn('field', sequelize.col('status'), 'Pending', 'Reject', 'Approved'),
-                ...order
-            ],
+            order,
             attributes,
             raw: true,
             nest: true,
@@ -83,15 +79,9 @@ class AttendanceService {
                     model: db.Employee, as: 'employeeData',
                     attributes: ['firstName', 'lastName'],
                     ...employeeFilter,
-                    include: [
-                        {
-                            model: db.Employee, as: 'managerData',
-                            attributes: ['firstName', 'lastName'],
-                        }
-                    ]
                 },
                 {
-                    model: db.Employee, as: 'handlerData',
+                    model: db.Employee, as: 'adminData',
                     attributes: ['firstName', 'lastName']
                 },
             ],
@@ -136,17 +126,25 @@ class AttendanceService {
         });
     }
 
+    async foundAttendance(attendanceId, next) {
+        const foundAttendance = await this.findById(attendanceId);
+        if (!foundAttendance) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Attendance")));
+        }
+        return foundAttendance;
+    }
+
     async countAttendance() {
         const now = dayjs();
         const countAttendances = await db.Attendance.count({
             where: {
                 attendanceDate: now,
-                status: { $in: ['Approved', 'Pending'] }
+                adminStatus: { $in: ['Approved', 'Pending'] }
             }
         });
         const countPendingAttendances = await db.Attendance.count({
             where: {
-                status: 'Pending'
+                adminStatus: 'Pending'
             }
         });
         return {
@@ -154,6 +152,36 @@ class AttendanceService {
             pendingAttendances: countPendingAttendances
         }
     }
+
+    calTotalHours(inTime, outTime, shift) {
+        const totalWorkingHours = dayjs(shift.endTime, "HH:mm:ss")
+            .diff(dayjs(shift.startTime, "HH:mm:ss"), 'hour');
+
+        let totalHoursWorked = dayjs(outTime, "HH:mm:ss")
+            .diff(dayjs(inTime, "HH:mm:ss"), 'hour', true);
+        totalHoursWorked = Math.round((totalHoursWorked + Number.EPSILON) * 100) / 100;
+
+        return (totalHoursWorked > totalWorkingHours) ? totalWorkingHours : totalHoursWorked;
+    }
+
+    checkInTime(inTime, shift) {
+        if (dayjs(inTime, "HH:mm:ss") > dayjs(shift.startTime, "HH:mm:ss")) {
+            return 'Late In';
+        }
+        if (dayjs(inTime, "HH:mm:ss") <= dayjs(shift.startTime, "HH:mm:ss")) {
+            return 'On Time';
+        }
+    }
+
+    checkOutTime(outTime, shift) {
+        if (dayjs(outTime, "HH:mm:ss") < dayjs(shift.endTime, "HH:mm:ss")) {
+            return 'Out Early';
+        }
+        if (dayjs(outTime, "HH:mm:ss") >= dayjs(shift.endTime, "HH:mm:ss")) {
+            return 'On Time';
+        }
+    }
+
 }
 
 module.exports = new AttendanceService;
