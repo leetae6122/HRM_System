@@ -121,7 +121,7 @@ function DashboardPage() {
     setHoursMonth();
     setHoursWeek();
   }, [attendanceMonthList, attendanceWeekList]);
-  
+
   return (
     <Row gutter={[8, 16]}>
       <Col span={24} style={{}}>

@@ -85,16 +85,16 @@ const createColumns = (
     sorter: true,
     render: (date) => getFullDate(date),
   },
-  {
-    title: 'Manager',
-    key: 'managerData',
-    dataIndex: ['managerData', 'firstName'],
-    sorter: true,
-    render: (_, record) =>
-      record.managerData?.id
-        ? `${record.managerData.firstName} ${record.managerData.lastName}`
-        : '',
-  },
+  // {
+  //   title: 'Manager',
+  //   key: 'managerData',
+  //   dataIndex: ['managerData', 'firstName'],
+  //   sorter: true,
+  //   render: (_, record) =>
+  //     record.managerData?.id
+  //       ? `${record.managerData.firstName} ${record.managerData.lastName}`
+  //       : '',
+  // },
   {
     title: 'Action',
     key: 'action',

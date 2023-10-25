@@ -26,6 +26,7 @@ import EmployeeAttendancePage from 'pages/employee/AttendancePage';
 import TaskPage from 'pages/admin/TaskPage';
 import ProjectPage from 'pages/admin/ProjectPage';
 import EmployeeDashboardPage from 'pages/employee/DashboardPage';
+import TimekeeperPage from 'pages/employee/TimekeeperPage';
 
 const AuthPage = React.lazy(() => import('pages/AuthPage'));
 const PageLayout = React.lazy(() => import('components/Common/PageLayout'));
@@ -96,6 +97,7 @@ function App() {
               <Route path="dashboard" element={<EmployeeDashboardPage/>} />
               <Route path="attendance" element={<EmployeeAttendancePage />} />
               <Route path="leave" element={<EmployeeLeavePage />} />
+              <Route path="timekeeper" element={<TimekeeperPage />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
@@ -134,6 +136,11 @@ function App() {
                 exact
                 path={'/employee'}
                 element={<Navigate to="/employee/dashboard" replace />}
+              />
+              <Route
+                exact
+                path={'/timekeeper'}
+                element={<Navigate to="/employee/timekeeper" replace />}
               />
               <Route
                 exact

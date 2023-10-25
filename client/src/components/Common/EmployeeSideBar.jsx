@@ -36,6 +36,13 @@ function EmployeeSideBar() {
       <PieChartOutlined />,
     ),
     getItem(
+      <Link to={'/employee/timekeeper'} replace>
+        Timekeeper
+      </Link>,
+      '/employee/timekeeper',
+      <CalendarOutlined />,
+    ),
+    getItem(
       <Link to={'/employee/attendance'} replace>
         Attendance
       </Link>,

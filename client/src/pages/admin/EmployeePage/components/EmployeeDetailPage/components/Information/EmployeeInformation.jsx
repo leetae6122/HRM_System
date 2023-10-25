@@ -18,7 +18,7 @@ const createItems = (employee, department) => [
     key: '1',
     label: <span style={labelStyle}>Employee Id</span>,
     children: employee.id,
-    span: 2
+    span: 2,
   },
   {
     key: '2',
@@ -35,15 +35,17 @@ const createItems = (employee, department) => [
   },
   {
     key: '4',
-    label: <span style={labelStyle}>Manger</span>,
-    children: employee.managerId
-      ? `${employee.managerData.firstName} ${employee.managerData.lastName}`
+    label: <span style={labelStyle}>Department Manager</span>,
+    children: employee.departmentData.managerData?.firstName
+      ? `${employee.departmentData.managerData.firstName} ${employee.departmentData.managerData.lastName}`
       : '',
+    span: 2,
   },
   {
     key: '5',
     label: <span style={labelStyle}>Department</span>,
     children: employee.departmentData?.name,
+    span: 2,
   },
   {
     key: '6',
@@ -63,7 +65,7 @@ const createItems = (employee, department) => [
     key: '8',
     label: <span style={labelStyle}>Office</span>,
     children: department ? department.officeData.title : '',
-    span: 2
+    span: 2,
   },
   {
     key: '9',
@@ -73,7 +75,7 @@ const createItems = (employee, department) => [
         ? `, ${department.officeData.stateProvince}`
         : ''
     }, ${department.officeData.city}`,
-    span: 2
+    span: 2,
   },
 ];
 
@@ -89,6 +91,7 @@ EmployeeInformation.defaultProps = {
 
 function EmployeeInformation(props) {
   const { employee, loading } = props;
+  console.log( employee.departmentData);
   const items = createItems(employee, employee.departmentData);
   return (
     <>

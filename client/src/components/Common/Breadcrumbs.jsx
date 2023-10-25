@@ -21,7 +21,7 @@ const Breadcrumbs = () => {
 
     return {
       title: (
-        <NavLink to={specialPath ? specialPath + url : url}>
+        <NavLink to={specialPath ? `/${specialPath + url}` : url}>
           {capitalizeChar(snippet)}
         </NavLink>
       ),

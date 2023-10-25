@@ -1,0 +1,86 @@
+@font-face {
+  font-family: 'Digital-7';
+  src: url(./../fonts/digital-7.ttf) format('truetype');
+}
+
+.clock {
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.calendar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 33px;
+  &.day {
+    font-size: 1.5rem;
+  }
+  &.date {
+    font-size: 2.5rem;
+  }
+  &.shift {
+    margin-top: 20px;
+    font-size: 2.25rem;
+    :last-child {
+      color: #253AB1;
+    }
+  }
+}
+
+.hour {
+  font-size: 6rem;
+  margin: 0;
+  padding: 0;
+  top: 0;
+}
+
+.ampm {
+  align-self: flex-end;
+  font-size: 2.5rem;
+  display: flex;
+  gap: 10px;
+  margin-block: auto;
+}
+
+.digital {
+  display: inline-block;
+  position: relative;
+  font-family: 'Digital-7';
+}
+
+.digital {
+  :first-child {
+    width: 100%;
+    position: absolute;
+    color: #d6d6d680;
+  }
+  :last-child {
+    position: relative;
+    color: #000000;
+  }
+  p {
+    margin: 0;
+  }
+}
+
+@media (max-width: 770px) {
+  .calendar.day,
+  .calendar.date {
+    font-size: 1.25rem;
+  }
+
+  .ampm {
+    font-size: 2rem;
+  }
+
+  .hour {
+    font-size: 4rem;
+  }
+
+  .clock {
+    padding: 5px;
+  }
+}
