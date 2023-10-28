@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 import EditAttendanceForm from './EditAttendanceForm';
-import { getFullDate } from 'utils/handleDate';
 import attendanceApi from 'api/attendanceApi';
 
 ModalEditAttendance.propTypes = {
@@ -33,19 +32,7 @@ function ModalEditAttendance(props) {
       try {
         if (editAttendanceId) {
           const data = (await attendanceApi.getById(editAttendanceId)).data;
-          setInfoAttendance({
-            attendanceId: data.id,
-            description: data.description,
-            attendanceDate: getFullDate(data.attendanceDate),
-            hoursSpent: data.hoursSpent,
-            hoursOvertime: data.hoursOvertime,
-            status: data.status,
-            place: data.place,
-            employeeData: data.employeeData,
-            handlerData: data.handlerData,
-            taskData: data.taskData,
-            projectData: data.projectData,
-          });
+          setInfoAttendance(data);
         }
       } catch (error) {
         toast.error(error);
@@ -60,7 +47,7 @@ function ModalEditAttendance(props) {
       setConfirmLoading(true);
       const data = {
         attendanceId: editAttendanceId,
-        status: values.status,
+        adminStatus: values.adminStatus,
       };
       const response = await attendanceApi.adminUpdate(data);
       Swal.fire({

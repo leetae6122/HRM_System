@@ -208,6 +208,8 @@ function LeavePage() {
   const columns = createColumns(toggleModalEditLeave, handleDeleteLeave);
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let where = filterData.where;
     let order = defaultFilter.order;
 
@@ -227,7 +229,7 @@ function LeavePage() {
       else
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, where, order });
+    setFilter({ ...filterData, page, size, where, order });
   };
 
   return (
@@ -248,13 +250,6 @@ function LeavePage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

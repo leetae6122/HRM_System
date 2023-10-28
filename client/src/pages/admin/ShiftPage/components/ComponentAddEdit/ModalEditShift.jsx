@@ -2,45 +2,46 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import Swal from 'sweetalert2';
-import projectApi from 'api/projectApi';
+import shiftApi from 'api/shiftApi';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
-import ProjectForm from './ProjectForm';
+import ShiftForm from './ShiftForm';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-ModalEditProject.propTypes = {
+dayjs.extend(customParseFormat);
+
+ModalEditShift.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshProjectList: PropTypes.func,
+  refreshShiftList: PropTypes.func,
 };
 
-ModalEditProject.defaultProps = {
+ModalEditShift.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshProjectList: null,
+  refreshShiftList: null,
 };
 
-function ModalEditProject(props) {
-  const { editProjectId } = useSelector((state) => state.project);
-  const { openModal, toggleShowModal, refreshProjectList } = props;
+function ModalEditShift(props) {
+  const { editShiftId } = useSelector((state) => state.shift);
+  const { openModal, toggleShowModal, refreshShiftList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [editProject, setEditProject] = useState({});
+  const [editShift, setEditShift] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
-        if (editProjectId) {
-          const data = (await projectApi.getById(editProjectId)).data;
-          setEditProject({
-            projectId: data.id,
-            title: data.title,
-            summary: data.summary,
-            detail: data.detail ?? '',
-            startDate: dayjs(data.startDate),
-            endDate: data.endDate ? dayjs(data.endDate) : '',
-            status: data.status,
+        if (editShiftId) {
+          const data = (await shiftApi.getById(editShiftId)).data;
+          setEditShift({
+            shiftId: data.id,
+            name: data.name,
+            startTime: dayjs(data.startTime, "HH:mm:ss"),
+            endTime: dayjs(data.endTime, "HH:mm:ss"),
+            overtimeShift: !!data.overtimeShift,
           });
         }
       } catch (error) {
@@ -49,20 +50,19 @@ function ModalEditProject(props) {
     };
     fetchData();
     return () => controller.abort();
-  }, [editProjectId]);
+  }, [editShiftId]);
 
-  const handleEditProject = async (values) => {
+  const handleEditShift = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = _.omitBy(values, _.isNil);
-      const response = await projectApi.update(data);
+      const response = await shiftApi.update(values);
       Swal.fire({
         icon: 'success',
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshProjectList();
+        await refreshShiftList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -81,24 +81,21 @@ function ModalEditProject(props) {
   return (
     <>
       <Modal
-        title="Edit Project"
+        title="Edit Shift"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        style={{
-          top: 40,
-        }}
       >
-        {!_.isEmpty(editProject) && (
-          <ProjectForm
+        {!_.isEmpty(editShift) && (
+          <ShiftForm
             onCancel={handleCancel}
-            onSubmit={handleEditProject}
+            onSubmit={handleEditShift}
             loading={confirmLoading}
-            initialValues={editProject}
+            initialValues={editShift}
           />
         )}
       </Modal>
     </>
   );
 }
-export default ModalEditProject;
+export default ModalEditShift;

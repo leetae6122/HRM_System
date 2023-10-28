@@ -1,36 +1,61 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, DatePicker, Row, Space } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { FilterFilled, ReloadOutlined } from '@ant-design/icons';
+import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/attendance';
 import { gold } from '@ant-design/colors';
 import _ from 'lodash';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import { useState } from 'react';
-
-dayjs.extend(utc);
 
 AttendanceTableHeader.propTypes = {
   setFilter: PropTypes.func,
+  toggleShowFilterDrawer: PropTypes.func,
 };
 
 AttendanceTableHeader.defaultProps = {
   setFilter: null,
+  toggleShowFilterDrawer: null,
 };
 
 function AttendanceTableHeader(props) {
-  const { setFilter } = props;
+  const { setFilter, toggleShowFilterDrawer } = props;
   const dispatch = useDispatch();
+  const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector(
     (state) => state.attendance,
   );
   const [value, setValue] = useState(
     dayjs(filterData.where.attendanceDate.$between[0]),
   );
+  const [inputValue, setInputValue] = useState('');
+
+  const handleSearch = (value) => {
+    setLoadingSearch(true);
+    setFilter({
+      ...filterData,
+      page: 1,
+      size: 10,
+      where: {},
+      modelEmployee: {
+        where: {
+          $or: _.flatten(
+            _.map(['firstName', 'lastName'], function (item) {
+              return _.map(value.split(' '), function (q) {
+                return { [item]: { $like: '%' + q + '%' } };
+              });
+            }),
+          ),
+        },
+      },
+    });
+    setLoadingSearch(false);
+  };
 
   const resetFilter = () => {
     dispatch(setDefaultFilterData());
+    setInputValue('');
     setValue(dayjs());
   };
 
@@ -50,11 +75,13 @@ function AttendanceTableHeader(props) {
   return (
     <Row>
       <Col span={10}>
-        <DatePicker
-          picker="month"
-          value={value}
-          onChange={onChangeDate}
-          allowClear={false}
+        <Search
+          placeholder="Input search employee name"
+          loading={loadingSearch}
+          enterButton
+          onSearch={handleSearch}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
         />
       </Col>
       <Col span={14}>
@@ -69,6 +96,19 @@ function AttendanceTableHeader(props) {
               Reset
             </Button>
           )}
+          <DatePicker
+            picker="month"
+            value={value}
+            onChange={onChangeDate}
+            allowClear={false}
+          />
+          <Button
+            type="primary"
+            icon={<FilterFilled />}
+            onClick={toggleShowFilterDrawer}
+          >
+            Filter
+          </Button>
         </Space>
       </Col>
     </Row>

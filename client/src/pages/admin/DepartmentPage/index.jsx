@@ -53,8 +53,10 @@ const createColumns = (
     dataIndex: ['managerData', 'firstName'],
     key: 'managerData',
     sorter: true,
-    render: (manager, record) =>
-      record.managerId ? `${manager.firstName} ${manager.lastName}` : '',
+    render: (_, record) =>
+      record.managerData.id
+        ? `${record.managerData.firstName} ${record.managerData.lastName}`
+        : '',
   },
   {
     title: 'Date created',
@@ -210,6 +212,8 @@ function DepartmentPage() {
   );
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let order = defaultFilter.order;
     let modelOffice = filterData.modelOffice ?? {};
     modelOffice = {
@@ -220,7 +224,7 @@ function DepartmentPage() {
         _.isNil,
       ),
     };
- 
+
     if (!_.isEmpty(sorter.column)) {
       if (_.isArray(sorter.field))
         order = [
@@ -229,8 +233,8 @@ function DepartmentPage() {
       else
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
- 
-    setFilter({ ...filterData, modelOffice, order });
+
+    setFilter({ ...filterData, page, size, modelOffice, order });
   };
 
   return (
@@ -254,13 +258,6 @@ function DepartmentPage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

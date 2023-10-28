@@ -27,7 +27,7 @@ function AuthPage() {
         cookies.set("refresh_token", response.refreshToken, { path: "/" });
       }
       setLoadingLogin(false);
-      navigate("/");
+      navigate("/timekeeper");
     } catch (error) {
       setLoadingLogin(false);
     }

@@ -91,7 +91,7 @@ EmployeeInformation.defaultProps = {
 
 function EmployeeInformation(props) {
   const { employee, loading } = props;
-  console.log( employee.departmentData);
+  
   const items = createItems(employee, employee.departmentData);
   return (
     <>

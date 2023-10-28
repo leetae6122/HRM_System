@@ -19,11 +19,11 @@ const dateFormat = 'DD/MM/YYYY';
 const wrapperCol = { offset: 8, span: 16 };
 
 const initialValues = {
-  minSalary: {
+  minHourlySalary: {
     from: null,
     to: null,
   },
-  maxSalary: {
+  maxHourlySalary: {
     from: null,
     to: null,
   },
@@ -79,24 +79,24 @@ function FilterPositionForm(props) {
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
-      labelCol={{ span: 6 }}
-      wrapperCol={{ span: 18 }}
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
       style={{
         maxWidth: 600,
       }}
       size="large"
     >
-      <Form.Item label="Min Salary">
+      <Form.Item label="Min Hourly Salary">
         <Form.Item
-          name={['minSalary', 'from']}
+          name={['minHourlySalary', 'from']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
                 if (
                   !value ||
-                  !form.getFieldValue('minSalary').to ||
-                  value < form.getFieldValue('minSalary').to
+                  !form.getFieldValue('minHourlySalary').to ||
+                  value < form.getFieldValue('minHourlySalary').to
                 ) {
                   return Promise.resolve();
                 }
@@ -114,17 +114,17 @@ function FilterPositionForm(props) {
             controls={false}
             min={0}
             disabled={loading}
-            placeholder="Salary From (number)"
+            placeholder="From (number)"
           />
         </Form.Item>
 
         <Form.Item
-          name={['minSalary', 'to']}
+          name={['minHourlySalary', 'to']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
-                if (!value || value > form.getFieldValue('minSalary').from) {
+                if (!value || value > form.getFieldValue('minHourlySalary').from) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
@@ -141,22 +141,22 @@ function FilterPositionForm(props) {
             controls={false}
             min={0}
             disabled={loading}
-            placeholder="Salary To (number)"
+            placeholder="To (number)"
           />
         </Form.Item>
       </Form.Item>
 
-      <Form.Item label="Max Salary">
+      <Form.Item label="Max Hourly Salary">
         <Form.Item
-          name={['maxSalary', 'from']}
+          name={['maxHourlySalary', 'from']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
                 if (
                   !value ||
-                  !form.getFieldValue('maxSalary').to ||
-                  value < form.getFieldValue('maxSalary').to
+                  !form.getFieldValue('maxHourlySalary').to ||
+                  value < form.getFieldValue('maxHourlySalary').to
                 ) {
                   return Promise.resolve();
                 }
@@ -174,17 +174,17 @@ function FilterPositionForm(props) {
             controls={false}
             min={0}
             disabled={loading}
-            placeholder="Salary From (number)"
+            placeholder="From (number)"
           />
         </Form.Item>
 
         <Form.Item
-          name={['maxSalary', 'to']}
+          name={['maxHourlySalary', 'to']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
-                if (!value || value > form.getFieldValue('maxSalary').from) {
+                if (!value || value > form.getFieldValue('maxHourlySalary').from) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
@@ -201,7 +201,7 @@ function FilterPositionForm(props) {
             controls={false}
             min={0}
             disabled={loading}
-            placeholder="Salary To (number)"
+            placeholder="To (number)"
           />
         </Form.Item>
       </Form.Item>

@@ -1,30 +1,34 @@
 import axiosClient from "./axiosClient";
 
-const taskApi = {
+const shiftApi = {
     getAll: () => {
-        const url = '/task';
+        const url = '/shift';
         return axiosClient.get(url);
     },
     getById: (id) => {
-        const url = `/task/${id}`;
+        const url = `/shift/${id}`;
+        return axiosClient.get(url);
+    },
+    getCurrentShift: () => {
+        const url = '/shift/current';
         return axiosClient.get(url);
     },
     getList: (data) => {
-        const url = '/task/filter';
+        const url = '/shift/filter';
         return axiosClient.post(url, data);
     },
     create: (data) => {
-        const url = '/task';
+        const url = '/shift';
         return axiosClient.post(url, data);
     },
     update: (data) => {
-        const url = '/task';
+        const url = '/shift';
         return axiosClient.patch(url, data);
     },
     delete: (id) => {
-        const url = `/task/${id}`;
+        const url = `/shift/${id}`;
         return axiosClient.delete(url);
     },
 }
 
-export default taskApi;
+export default shiftApi;

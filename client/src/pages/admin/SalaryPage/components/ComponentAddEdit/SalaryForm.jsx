@@ -26,9 +26,9 @@ SalaryForm.defaultProps = {
   onSubmit: null,
   loading: false,
   initialValues: {
-    basicSalary: 0,
+    basicHourlySalary: 0,
+    hourlyOvertimeSalary: 0,
     allowance: 0,
-    totalSalary: 0,
     currencyId: null,
     employeeId: null,
   },
@@ -49,11 +49,17 @@ function SalaryForm(props) {
     form.setFieldValue('currencyId', data.positionData.currencyData.id);
     setSelectedEmployee(data);
   };
-
   useEffect(() => {
+    const defaultValues = {
+      basicHourlySalary: initialValues.basicHourlySalary,
+      hourlyOvertimeSalary: initialValues.hourlyOvertimeSalary,
+      allowance: initialValues.allowance,
+      currencyId: initialValues.currencyId,
+      salaryId: initialValues.salaryId
+    };
     form.validateFields({ validateOnly: true }).then(
       () => {
-        if (!_.isEqual(initialValues, values)) {
+        if (!_.isEqual(defaultValues, values)) {
           setSubmittable(true);
         } else {
           setSubmittable(false);
@@ -101,14 +107,6 @@ function SalaryForm(props) {
     onCancel();
   };
 
-  const onChangeBasicSalary = (value) => {
-    form.setFieldValue('totalSalary', value + values.allowance);
-  };
-
-  const onChangeAllowance = (value) => {
-    form.setFieldValue('totalSalary', value + values.basicSalary);
-  };
-
   return (
     <Form
       name="normal_salary"
@@ -116,8 +114,8 @@ function SalaryForm(props) {
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
-      labelCol={{ span: 5 }}
-      wrapperCol={{ span: 19 }}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 18 }}
       style={{
         maxWidth: 600,
       }}
@@ -170,7 +168,7 @@ function SalaryForm(props) {
       {selectedEmployee ? (
         <>
           <Row>
-            <Col span={10}>
+            <Col span={12}>
               <Form.Item
                 name="currencyId"
                 label="Currency Id"
@@ -180,7 +178,7 @@ function SalaryForm(props) {
                 <Input disabled={true} />
               </Form.Item>
             </Col>
-            <Col span={14}>
+            <Col span={12}>
               <Form.Item
                 label="Currency"
                 labelCol={{ span: 8 }}
@@ -198,13 +196,13 @@ function SalaryForm(props) {
             </Col>
           </Row>
           <Form.Item
-            name="basicSalary"
-            label="Basic Salary"
+            name="basicHourlySalary"
+            label="Basic Hourly Salary"
             hasFeedback
             rules={[
               {
                 required: true,
-                message: "Please input the employee's basic salary!",
+                message: "Please input the employee's basic hourly salary!",
               },
               () => ({
                 validator(_, value) {
@@ -213,7 +211,7 @@ function SalaryForm(props) {
                   }
                   return Promise.reject(
                     new Error(
-                      'Please select an employee before entering your base salary!',
+                      'Please select an employee before entering your basic hourly salary!',
                     ),
                   );
                 },
@@ -221,21 +219,22 @@ function SalaryForm(props) {
               () => ({
                 validator(_, value) {
                   if (
-                    !value || selectedEmployee?.positionData.maxSalary
-                      ? value >= selectedEmployee?.positionData.minSalary &&
-                        value <= selectedEmployee?.positionData.maxSalary
-                      : value >= selectedEmployee?.positionData.minSalary
+                    !value || selectedEmployee?.positionData.maxHourlySalary
+                      ? value >=
+                          selectedEmployee?.positionData.minHourlySalary &&
+                        value <= selectedEmployee?.positionData.maxHourlySalary
+                      : value >= selectedEmployee?.positionData.minHourlySalary
                   ) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
                     new Error(
-                      `The base salary must be greater than equal to ${
-                        selectedEmployee?.positionData.minSalary
+                      `The basic hourly salary must be greater than equal to ${
+                        selectedEmployee?.positionData.minHourlySalary
                       } ${
-                        selectedEmployee?.positionData.maxSalary
+                        selectedEmployee?.positionData.maxHourlySalary
                           ? ' and less than equal to ' +
-                            selectedEmployee?.positionData.maxSalary
+                            selectedEmployee?.positionData.maxHourlySalary
                           : ''
                       }`,
                     ),
@@ -253,16 +252,72 @@ function SalaryForm(props) {
               disabled={loading}
               addonBefore={
                 selectedEmployee
-                  ? `${selectedEmployee?.positionData.minSalary} ${selectedEmployee?.positionData.currencyData.symbol}`
+                  ? `${selectedEmployee?.positionData.minHourlySalary} ${selectedEmployee?.positionData.currencyData.symbol}`.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ',',
+                    )
                   : ''
               }
               addonAfter={
-                selectedEmployee?.positionData.maxSalary
-                  ? `${selectedEmployee?.positionData.maxSalary} ${selectedEmployee?.positionData.currencyData.symbol}`
+                selectedEmployee?.positionData.maxHourlySalary
+                  ? `${selectedEmployee?.positionData.maxHourlySalary} ${selectedEmployee?.positionData.currencyData.symbol}`.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ',',
+                    )
                   : ''
               }
-              formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              onChange={onChangeBasicSalary}
+              formatter={(value) =>
+                selectedEmployee
+                  ? `${value} ${selectedEmployee?.positionData.currencyData.symbol}`.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ',',
+                    )
+                  : ''
+              }
+            />
+          </Form.Item>
+          <Form.Item
+            name="hourlyOvertimeSalary"
+            label="Hourly Overtime Salary"
+            hasFeedback
+            labelCol={{ span: 7 }}
+            wrapperCol={{ span: 17 }}
+            rules={[
+              {
+                required: true,
+                message: "Please input the employee's hourly overtime salary!",
+              },
+              () => ({
+                validator(_, value) {
+                  if (
+                    !value ||
+                    value > form.getFieldValue('basicHourlySalary')
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error(
+                      'Hourly Overtime Salary must be greater than Basic Hourly Salary!',
+                    ),
+                  );
+                },
+              }),
+            ]}
+          >
+            <InputNumber
+              style={{
+                width: '100%',
+              }}
+              min={0}
+              disabled={loading}
+              formatter={(value) =>
+                selectedEmployee
+                  ? `${value} ${selectedEmployee?.positionData.currencyData.symbol}`.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ',',
+                    )
+                  : ''
+              }
             />
           </Form.Item>
           <Form.Item name="allowance" label="Allowance" hasFeedback>
@@ -273,21 +328,6 @@ function SalaryForm(props) {
               controls={false}
               min={0}
               disabled={loading}
-              formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              onChange={onChangeAllowance}
-            />
-          </Form.Item>
-          <Form.Item
-            name="totalSalary"
-            label="Total Salary"
-            hasFeedback
-          >
-            <InputNumber
-              style={{
-                width: '100%',
-                color: 'black'
-              }}
-              disabled={true}
               formatter={(value) =>
                 selectedEmployee
                   ? `${value} ${selectedEmployee?.positionData.currencyData.symbol}`.replace(

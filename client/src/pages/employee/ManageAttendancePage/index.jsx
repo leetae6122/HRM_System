@@ -2,20 +2,22 @@ import { useEffect, useState } from 'react';
 import { Button, Divider, Space, Table, Tag } from 'antd';
 import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
-import { EyeOutlined } from '@ant-design/icons';
+import { DeleteFilled, EditFilled, EyeOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setData,
   setEditAttendanceId,
   setFilterData,
 } from 'reducers/attendance';
+import Swal from 'sweetalert2';
 import { gold, green, red } from '@ant-design/colors';
 import attendanceApi from 'api/attendanceApi';
 import AttendanceTableHeader from './components/AttendanceTableHeader';
-import ModalDetailAttendance from './components/ModalDetailAttendance';
+import ModalEditAttendance from './components/ComponentEditAttendance/ModalEditAttendance';
 import _ from 'lodash';
+import FilterDrawer from './components/Filter/FilterDrawer';
 
-const createColumns = (toggleModalDetailAttendance) => [
+const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -25,31 +27,25 @@ const createColumns = (toggleModalDetailAttendance) => [
     width: 80,
   },
   {
-    title: 'Attendance Date',
-    dataIndex: 'attendanceDate',
-    key: 'attendanceDate',
+    title: 'Employee Name',
+    dataIndex: ['employeeData', 'firstName'],
+    key: 'employeeData',
     sorter: true,
-    render: (date) => getFullDate(date),
+    render: (_, record) =>
+      `${record.employeeData.firstName} ${record.employeeData.lastName}`,
   },
   {
     title: 'Shifts',
     dataIndex: ['shiftData', 'name'],
     key: 'shiftData',
-    render: (_, record) =>
-      `${record.shiftData.name} (${record.shiftData.startTime} - ${record.shiftData.endTime})`,
     sorter: true,
   },
   {
-    title: 'Total Hours Worked',
-    dataIndex: 'totalHours',
-    key: 'totalHours',
+    title: 'Attendance Date',
+    dataIndex: 'attendanceDate',
+    key: 'attendanceDate',
     sorter: true,
-    render: (totalHours, record) =>
-      totalHours
-        ? `${totalHours} ${
-            record.shiftData.overtimeShift ? 'overtime hours' : 'hours'
-          }`
-        : '',
+    render: (date) => getFullDate(date),
   },
   {
     title: 'Status (Login)',
@@ -166,24 +162,39 @@ const createColumns = (toggleModalDetailAttendance) => [
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
+        {record.managerStatus !== 'Pending' ? (
+          <Button
+            type="primary"
+            style={{ background: gold[5] }}
+            icon={<EyeOutlined />}
+            onClick={() => toggleModalEditAttendance(record.id)}
+          />
+        ) : (
+          <Button
+            type="primary"
+            icon={<EditFilled />}
+            onClick={() => toggleModalEditAttendance(record.id)}
+          />
+        )}
+
         <Button
           type="primary"
-          style={{ background: gold[5] }}
-          icon={<EyeOutlined />}
-          onClick={() => toggleModalDetailAttendance(record.id)}
+          danger
+          icon={<DeleteFilled />}
+          onClick={() => handleDeleteAttendance(record.id)}
         />
       </Space>
     ),
   },
 ];
 
-function AttendancePage() {
+function ManageAttendancePage() {
   const dispatch = useDispatch();
   const { filterData, attendanceList, total, currentPage, defaultFilter } =
     useSelector((state) => state.attendance);
   const [loadingData, setLoadingData] = useState(false);
-  const [openModalDetailAttendance, setOpenModalDetailAttendance] =
-    useState(false);
+  const [openModalEditAttendance, setOpenModalEditAttendance] = useState(false);
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -191,7 +202,7 @@ function AttendancePage() {
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = (await attendanceApi.employeeGetList(filterData)).data;
+        const response = (await attendanceApi.managerGetList(filterData)).data;
         const data = response.data.map((item) => ({ key: item.id, ...item }));
         dispatch(
           setData({
@@ -221,66 +232,122 @@ function AttendancePage() {
     dispatch(setFilterData(filter));
   };
 
-  const toggleModalDetailAttendance = (id) => {
-    dispatch(setEditAttendanceId(id));
-    setOpenModalDetailAttendance(!openModalDetailAttendance);
+  const refreshAttendanceList = async () => {
+    const response = (await attendanceApi.managerGetList(defaultFilter)).data;
+    const data = response.data.map((item) => ({ key: item.id, ...item }));
+    dispatch(
+      setData({
+        attendanceList: data,
+        total: response.total,
+        currentPage: response.currentPage,
+      }),
+    );
   };
 
-  const columns = createColumns(toggleModalDetailAttendance);
+  const toggleShowFilterDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
+  };
+
+  const toggleModalEditAttendance = (id) => {
+    dispatch(setEditAttendanceId(id));
+    setOpenModalEditAttendance(!openModalEditAttendance);
+  };
+
+  const handleDeleteAttendance = async (attendanceId) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await attendanceApi.delete(attendanceId);
+          Swal.fire('Deleted!', 'Attendance has been deleted.', 'success');
+          await refreshAttendanceList();
+        }
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
+  };
+
+  const columns = createColumns(
+    toggleModalEditAttendance,
+    handleDeleteAttendance,
+  );
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let where = filterData.where;
     let order = defaultFilter.order;
 
     where = _.omitBy(
       {
         ...where,
-        place: filters.place,
-        status: filters.status,
+        inStatus: filters.inStatus,
+        outStatus: filters.outStatus,
+        managerStatus: filters.managerStatus,
+        adminStatus: filters.adminStatus,
       },
       _.isNil,
     );
 
     if (!_.isEmpty(sorter.column)) {
-      order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+      if (_.isArray(sorter.field))
+        order = [
+          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
+        ];
+      else
+        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, where, order });
+    setFilter({ ...filterData, page, size, where, order });
   };
 
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Attendance List
+        Attendance list of department employees
       </Divider>
       <Table
         key={tableKey}
         columns={columns}
         dataSource={attendanceList}
         bordered
-        title={() => <AttendanceTableHeader setFilter={setFilter} />}
+        title={() => (
+          <AttendanceTableHeader
+            setFilter={setFilter}
+            toggleShowFilterDrawer={toggleShowFilterDrawer}
+          />
+        )}
         pagination={{
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      {openModalDetailAttendance && (
-        <ModalDetailAttendance
-          openModal={openModalDetailAttendance}
-          toggleShowModal={toggleModalDetailAttendance}
+      {openModalEditAttendance && (
+        <ModalEditAttendance
+          openModal={openModalEditAttendance}
+          toggleShowModal={toggleModalEditAttendance}
+          refreshAttendanceList={refreshAttendanceList}
+        />
+      )}
+      {openFilterDrawer && (
+        <FilterDrawer
+          toggleShowDrawer={toggleShowFilterDrawer}
+          openDrawer={openFilterDrawer}
+          setFilter={setFilter}
         />
       )}
     </>
   );
 }
-export default AttendancePage;
+export default ManageAttendancePage;

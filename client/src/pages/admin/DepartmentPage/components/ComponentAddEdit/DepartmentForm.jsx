@@ -21,7 +21,7 @@ DepartmentForm.defaultProps = {
     name: '',
     shortName: '',
     officeId: null,
-    managerId: '',
+    managerId: null,
   },
 };
 

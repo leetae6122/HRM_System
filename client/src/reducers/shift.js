@@ -13,14 +13,15 @@ const initialState = {
         where: {},
         order: []
     },
-    taskList: [],
+    shiftList: [],
     total: 0,
     currentPage: 1,
-    editTaskId: null,
+    editShiftId: null,
+    currentShift: null
 }
 
-export const taskSlice = createSlice({
-    name: 'task',
+export const shiftSlice = createSlice({
+    name: 'shift',
     initialState,
     reducers: {
         setFilterData: (state, action) => {
@@ -30,13 +31,16 @@ export const taskSlice = createSlice({
             state.filterData = state.defaultFilter;
         },
         setData: (state, action) => {
-            state.taskList = action.payload.taskList;
+            state.shiftList = action.payload.shiftList;
             state.total = action.payload.total;
             state.currentPage = action.payload.currentPage;
         },
-        setEditTaskId: (state, action) => {
-            state.editTaskId = action.payload;
-        }
+        setEditShiftId: (state, action) => {
+            state.editShiftId = action.payload;
+        },
+        setCurrentShift: (state, action) => {
+            state.currentShift = action.payload;
+        },
     },
 })
 
@@ -44,6 +48,7 @@ export const {
     setFilterData, 
     setData, 
     setDefaultFilterData, 
-    setEditTaskId 
-} = taskSlice.actions;
-export default taskSlice.reducer;
+    setEditShiftId,
+    setCurrentShift,
+} = shiftSlice.actions;
+export default shiftSlice.reducer;

@@ -1,32 +1,19 @@
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Button, Space, Descriptions, Typography } from 'antd';
+import { Descriptions, Modal } from 'antd';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import attendanceApi from 'api/attendanceApi';
 import { getFullDate } from 'utils/handleDate';
 
-EditAttendanceForm.propTypes = {
-  onCancel: PropTypes.func,
-  onSubmit: PropTypes.func,
-  loading: PropTypes.bool,
-  infoAttendance: PropTypes.object,
+ModalDetailAttendance.propTypes = {
+  openModal: PropTypes.bool,
+  toggleShowModal: PropTypes.func,
 };
 
-EditAttendanceForm.defaultProps = {
-  onCancel: null,
-  onSubmit: null,
-  loading: false,
-  infoAttendance: {
-    attendanceId: null,
-    attendanceDate: '',
-    inTime: '',
-    outTime: '',
-    totalHours: 0,
-    inStatus: '',
-    outStatus: '',
-    managerStatus: '',
-    adminStatus: '',
-    employeeData: null,
-    shiftData: null,
-    adminData: null,
-  },
+ModalDetailAttendance.defaultProps = {
+  openModal: false,
+  toggleShowModal: null,
 };
 
 const createItems = (data) => [
@@ -160,83 +147,46 @@ const createItems = (data) => [
   },
 ];
 
-const initialValues = {
-  status: '',
-};
+function ModalDetailAttendance(props) {
+  const { editAttendanceId } = useSelector((state) => state.attendance);
+  const { openModal, toggleShowModal } = props;
+  const [infoAttendance, setInfoAttendance] = useState(null);
 
-const wrapperCol = { offset: 8, span: 16 };
-
-function EditAttendanceForm(props) {
-  const { onCancel, onSubmit, loading, infoAttendance } = props;
-  const [form] = Form.useForm();
-
-  const items = createItems(infoAttendance);
-
-  const onFinish = (values) => {
-    onSubmit(values);
-  };
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchData = async () => {
+      try {
+        if (editAttendanceId) {
+          const data = (await attendanceApi.getById(editAttendanceId)).data;
+          setInfoAttendance(data);
+        }
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchData();
+    return () => controller.abort();
+  }, [editAttendanceId]);
 
   const handleCancel = () => {
-    onCancel();
+    toggleShowModal();
   };
 
+  const items = infoAttendance ? createItems(infoAttendance) : [];
+
   return (
-    <div>
-      <Descriptions
-        layout="horizontal"
-        bordered
-        title={<Typography.Title level={4}>Info Attendance</Typography.Title>}
-        column={2}
-        items={items}
-      />
-      {infoAttendance.adminStatus === 'Pending' ? (
-        <>
-          <Form
-            name="normal_admin_edit_attendance"
-            className="admin-edit-attendance-form"
-            initialValues={initialValues}
-            form={form}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-            style={{
-              marginTop: 20,
-              maxWidth: 600,
-            }}
-            size="large"
-          >
-            <Form.Item wrapperCol={wrapperCol}>
-              <Space style={{ float: 'right' }}>
-                <Button
-                  htmlType="button"
-                  onClick={handleCancel}
-                  loading={loading}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  htmlType="submit"
-                  type="primary"
-                  danger
-                  onClick={() => onFinish({ adminStatus: 'Reject' })}
-                  loading={loading}
-                >
-                  Reject
-                </Button>
-                <Button
-                  htmlType="submit"
-                  type="primary"
-                  onClick={() => onFinish({ adminStatus: 'Approved' })}
-                  loading={loading}
-                >
-                  Approved
-                </Button>
-              </Space>
-            </Form.Item>
-          </Form>
-        </>
-      ) : null}
-    </div>
+    <>
+      <Modal
+        title="Detail Attendance"
+        open={openModal}
+        onCancel={handleCancel}
+        footer={null}
+        width={'110vh'}
+        style={{ top: 40}}
+      >
+        <Descriptions layout="horizontal" bordered column={2} items={items} />
+      </Modal>
+    </>
   );
 }
-
-export default EditAttendanceForm;
+export default ModalDetailAttendance;

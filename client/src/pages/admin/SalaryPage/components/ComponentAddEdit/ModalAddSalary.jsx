@@ -57,6 +57,8 @@ function ModalAddSalary(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
+        width={"100vh"}
+        style={{ top: 60 }}
       >
         <SalaryForm
           onCancel={handleCancel}

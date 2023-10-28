@@ -10,7 +10,7 @@ import {
   setFilterData,
 } from 'reducers/attendance';
 import Swal from 'sweetalert2';
-import { gold } from '@ant-design/colors';
+import { gold, green, red } from '@ant-design/colors';
 import attendanceApi from 'api/attendanceApi';
 import AttendanceTableHeader from './components/AttendanceTableHeader';
 import ModalEditAttendance from './components/ComponentEditAttendance/ModalEditAttendance';
@@ -34,6 +34,12 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
       `${record.employeeData.firstName} ${record.employeeData.lastName}`,
   },
   {
+    title: 'Shifts',
+    dataIndex: ['shiftData', 'name'],
+    key: 'shiftData',
+    sorter: true,
+  },
+  {
     title: 'Attendance Date',
     dataIndex: 'attendanceDate',
     key: 'attendanceDate',
@@ -41,32 +47,67 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
     render: (date) => getFullDate(date),
   },
   {
-    title: 'Place',
-    dataIndex: 'place',
-    key: 'place',
+    title: 'Status (Login)',
+    dataIndex: 'inStatus',
+    key: 'inStatus',
+    render: (inStatus) => (
+      <>
+        {inStatus === 'On Time' ? (
+          <Tag color={green[5]}>{inStatus}</Tag>
+        ) : inStatus === 'Late In' ? (
+          <Tag color={red[5]}>{inStatus}</Tag>
+        ) : null}
+      </>
+    ),
     filters: [
       {
-        text: 'Office',
-        value: 'Office',
+        text: 'On Time',
+        value: 'On Time',
       },
       {
-        text: 'At Home',
-        value: 'At Home',
+        text: 'Late In',
+        value: 'Late In',
       },
     ],
+    filterMultiple: false,
   },
   {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
-    render: (status) => (
+    title: 'Status (Logout)',
+    dataIndex: 'outStatus',
+    key: 'outStatus',
+    render: (outStatus) => (
       <>
-        {status === 'Pending' ? (
-          <Tag color="default">{status}</Tag>
-        ) : status === 'Approved' ? (
-          <Tag color="success">{status}</Tag>
+        {outStatus === 'On Time' ? (
+          <Tag color={green[5]}>{outStatus}</Tag>
+        ) : outStatus === 'Out Early' ? (
+          <Tag color={red[5]}>{outStatus}</Tag>
+        ) : null}
+      </>
+    ),
+    filters: [
+      {
+        text: 'On Time',
+        value: 'On Time',
+      },
+      {
+        text: 'Out Early',
+        value: 'Out Early',
+      },
+    ],
+    filterMultiple: false,
+  },
+  {
+    title: 'Processing Status (Manager)',
+    dataIndex: 'managerStatus',
+    key: 'managerStatus',
+    render: (managerStatus) => (
+      <>
+        {managerStatus === 'Pending' ? (
+          <Tag color="default">{managerStatus}</Tag>
+        ) : managerStatus === 'Approved' ? (
+          <Tag color="success">{managerStatus}</Tag>
         ) : (
-          <Tag color="error">{status}</Tag>
+          <Tag color="error">{managerStatus}</Tag>
         )}
       </>
     ),
@@ -84,22 +125,43 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
         value: 'Reject',
       },
     ],
-    onFilter: (value, record) => !!record.status === value,
   },
   {
-    title: 'Manager',
-    key: 'manager',
-    render: (_, record) =>
-      record.employeeData.managerData.id
-        ? `${record.employeeData.managerData.firstName} ${record.employeeData.managerData.lastName}`
-        : '',
+    title: 'Processing Status (Admin)',
+    dataIndex: 'adminStatus',
+    key: 'adminStatus',
+    render: (adminStatus) => (
+      <>
+        {adminStatus === 'Pending' ? (
+          <Tag color="default">{adminStatus}</Tag>
+        ) : adminStatus === 'Approved' ? (
+          <Tag color="success">{adminStatus}</Tag>
+        ) : (
+          <Tag color="error">{adminStatus}</Tag>
+        )}
+      </>
+    ),
+    filters: [
+      {
+        text: 'Pending',
+        value: 'Pending',
+      },
+      {
+        text: 'Approved',
+        value: 'Approved',
+      },
+      {
+        text: 'Reject',
+        value: 'Reject',
+      },
+    ],
   },
   {
     title: 'Action',
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
-        {record.status !== 'Pending' ? (
+        {record.adminStatus !== 'Pending' ? (
           <Button
             type="primary"
             style={{ background: gold[5] }}
@@ -213,6 +275,8 @@ function AttendancePage() {
   );
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let where = filterData.where;
     let order = defaultFilter.order;
 
@@ -233,7 +297,7 @@ function AttendancePage() {
       else
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, where, order });
+    setFilter({ ...filterData, page, size, where, order });
   };
 
   return (
@@ -251,13 +315,6 @@ function AttendancePage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

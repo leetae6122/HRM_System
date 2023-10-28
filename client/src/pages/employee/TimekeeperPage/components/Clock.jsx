@@ -70,10 +70,7 @@ function Clock(props) {
         </Row>
       </Col>
       <Col span={24} className="calendar date">
-        <Word value={dayjs().format('DD / MM / YYYY')} />
-      </Col>
-      <Col span={24} className="calendar shift">
-        <Word value={'Shifts: 07:00:00 - 11:00:00'} />
+        <Word value={dayjs().format('DD - MM - YYYY')} />
       </Col>
     </Row>
   );

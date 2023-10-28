@@ -65,12 +65,14 @@ const createItems = (value) => [
     label: 'Leave To',
     children: value.leaveTo,
   },
-  {
-    key: '6',
-    label: 'Reasons for rejection',
-    children: value.reasonRejection,
-    span: 2,
-  },
+  value.status === 'Reject'
+    ? {
+        key: '6',
+        label: 'Reasons for rejection',
+        children: value.reasonRejection,
+        span: 2,
+      }
+    : {},
 ];
 
 function ModalDetailLeave(props) {

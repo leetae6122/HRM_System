@@ -18,8 +18,8 @@ PositionForm.defaultProps = {
   loading: false,
   initialValues: {
     name: '',
-    minSalary: 0,
-    MaxSalary: null,
+    minHourlySalary: 0,
+    maxHourlySalary: null,
   },
 };
 
@@ -133,17 +133,19 @@ function PositionForm(props) {
         />
       </Form.Item>
       <Form.Item
-        name="minSalary"
-        label="Min Salary"
+        name="minHourlySalary"
+        label="Min Hourly Salary"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
         hasFeedback
         rules={[
-          { required: true, message: 'Please input minimum salary!' },
+          { required: true, message: 'Please input minimum hourly salary!' },
           () => ({
             validator(_, value) {
               if (
                 !value ||
-                !form.getFieldValue('maxSalary') ||
-                value < form.getFieldValue('maxSalary')
+                !form.getFieldValue('maxHourlySalary') ||
+                value < form.getFieldValue('maxHourlySalary')
               ) {
                 return Promise.resolve();
               }
@@ -162,20 +164,23 @@ function PositionForm(props) {
           min={0}
           disabled={loading}
           formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          addonAfter={'/ hr'}
         />
       </Form.Item>
       <Form.Item
-        name="maxSalary"
-        label="Max Salary"
+        name="maxHourlySalary"
+        label="Max Hourly Salary"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
         hasFeedback
         rules={[
           () => ({
             validator(_, value) {
-              if (!value || value > form.getFieldValue('minSalary')) {
+              if (!value || value > form.getFieldValue('minHourlySalary')) {
                 return Promise.resolve();
               }
               return Promise.reject(
-                new Error('Max Salary must be greater than Min Salary!'),
+                new Error('Max Hourly Salary must be greater than Min Hourly Salary!'),
               );
             },
           }),
@@ -189,6 +194,7 @@ function PositionForm(props) {
           min={0}
           disabled={loading}
           formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          addonAfter={'/ hr'}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>

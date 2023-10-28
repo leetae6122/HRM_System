@@ -9,8 +9,7 @@ import positionReducer from 'reducers/position';
 import salaryReducer from 'reducers/salary';
 import userReducer from 'reducers/user';
 import leaveReducer from 'reducers/leave';
-import taskReducer from 'reducers/task';
-import projectReducer from 'reducers/project';
+import shiftReducer from 'reducers/shift';
 import attendanceReducer from 'reducers/attendance';
 
 const rootReducer = {
@@ -24,8 +23,7 @@ const rootReducer = {
     office: officeReducer,
     department: departmentReducer,
     leave: leaveReducer,
-    task: taskReducer,
-    project: projectReducer,
+    shift: shiftReducer,
     attendance: attendanceReducer,
 }
 

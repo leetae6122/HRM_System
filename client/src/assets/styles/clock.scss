@@ -2,11 +2,19 @@
   font-family: 'Digital-7';
   src: url(./../fonts/digital-7.ttf) format('truetype');
 }
+@font-face {
+  font-family: 'Digital-Dismay';
+  src: url(./../fonts/digital-dismay.otf) format('opentype');
+}
 
 .clock {
+  border-radius: 10px;
+  background: #00132e;
+  display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  padding: 20px 20px 5px 20px;
 }
 
 .calendar {
@@ -16,22 +24,25 @@
   justify-content: center;
   gap: 33px;
   &.day {
+    font-weight: bold;
     font-size: 1.5rem;
   }
   &.date {
     font-size: 2.5rem;
   }
   &.shift {
-    margin-top: 20px;
+    margin-block: 10px;
     font-size: 2.25rem;
+    font-weight: bold;
+    font-family: 'Digital-7';
     :last-child {
-      color: #253AB1;
+      color: #1d3df3;
     }
   }
 }
 
 .hour {
-  font-size: 6rem;
+  font-size: 7rem;
   margin: 0;
   padding: 0;
   top: 0;
@@ -39,27 +50,28 @@
 
 .ampm {
   align-self: flex-end;
-  font-size: 2.5rem;
+  font-size: 2rem;
   display: flex;
   gap: 10px;
   margin-block: auto;
+  margin-bottom: 30px;
 }
 
 .digital {
   display: inline-block;
   position: relative;
-  font-family: 'Digital-7';
+  font-family: 'Digital-Dismay';
 }
 
 .digital {
   :first-child {
     width: 100%;
     position: absolute;
-    color: #d6d6d680;
+    color: #16212e;
   }
   :last-child {
     position: relative;
-    color: #000000;
+    color: #fffefe;
   }
   p {
     margin: 0;
@@ -73,11 +85,11 @@
   }
 
   .ampm {
-    font-size: 2rem;
+    font-size: 1rem;
   }
 
   .hour {
-    font-size: 4rem;
+    font-size: 3.5rem;
   }
 
   .clock {

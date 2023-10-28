@@ -34,9 +34,9 @@ function ModalEditSalary(props) {
           const data = (await salaryApi.getById(editSalaryId)).data;
           setEditSalary({
             salaryId: data.id,
-            basicSalary: data.basicSalary,
+            basicHourlySalary: data.basicHourlySalary,
+            hourlyOvertimeSalary: data.hourlyOvertimeSalary,
             allowance: data.allowance,
-            totalSalary: data.totalSalary,
             currencyId: data.currencyId,
             employeeId: data.employeeId,
           });
@@ -83,6 +83,8 @@ function ModalEditSalary(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
+        width={'100vh'}
+        style={{ top: 60 }}
       >
         {!_.isEmpty(editSalary) && (
           <SalaryForm

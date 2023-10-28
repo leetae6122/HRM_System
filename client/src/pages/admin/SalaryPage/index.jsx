@@ -28,25 +28,25 @@ const createColumns = (
     width: 80,
   },
   {
-    title: 'Basic Salary',
-    dataIndex: 'basicSalary',
-    key: 'basicSalary',
+    title: 'Basic Hourly Salary',
+    dataIndex: 'basicHourlySalary',
+    key: 'basicHourlySalary',
     sorter: true,
-    render: (value) => numberWithDot(value),
+    render: (value, record) => `${numberWithDot(value)}${record.currencyData.symbol}/hr`,
+  },
+  {
+    title: 'Hourly Overtime Salary',
+    dataIndex: 'hourlyOvertimeSalary',
+    key: 'hourlyOvertimeSalary',
+    sorter: true,
+    render: (value, record) => `${numberWithDot(value)}${record.currencyData.symbol}/hr`,
   },
   {
     title: 'Allowance',
     dataIndex: 'allowance',
     key: 'allowance',
     sorter: true,
-    render: (value) => (value ? numberWithDot(value) : ''),
-  },
-  {
-    title: 'Total Salary',
-    dataIndex: 'totalSalary',
-    key: 'totalSalary',
-    sorter: true,
-    render: (value) => numberWithDot(value),
+    render: (value, record) => (value ? `${numberWithDot(value)}${record.currencyData.symbol}` : value),
   },
   {
     title: 'Currency Code',
@@ -224,6 +224,8 @@ function SalaryPage() {
   );
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let order = defaultFilter.order;
     let modelCurrency = filterData.modelCurrency;
 
@@ -244,7 +246,7 @@ function SalaryPage() {
       else
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, order, modelCurrency });
+    setFilter({ ...filterData, page, size, order, modelCurrency });
   };
 
   return (
@@ -268,13 +270,6 @@ function SalaryPage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

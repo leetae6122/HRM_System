@@ -7,6 +7,7 @@ import attendanceApi from 'api/attendanceApi';
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
+  CloseCircleOutlined,
   DownOutlined,
   UpOutlined,
 } from '@ant-design/icons';
@@ -21,35 +22,51 @@ const getListData = (current, value, attendances, leaves) => {
   let listData = [];
   attendances.forEach((attendance) => {
     if (value.isSame(attendance.attendanceDate, 'day')) {
-      if (attendance.status === 'Pending') {
+      if (
+        attendance.adminStatus === 'Pending' &&
+        attendance.managerStatus === 'Pending'
+      ) {
+        listData.push({
+          key: attendance.id,
+          title: 'attendance',
+          type: 'default',
+          content: attendance.shiftData.name,
+        });
+        return;
+      }
+      if (
+        attendance.adminStatus !== 'Pending' ||
+        attendance.managerStatus !== 'Pending'
+      ) {
         listData.push({
           key: attendance.id,
           title: 'attendance',
           type: 'warning',
-          content: (
-            <span>
-              {`#${attendance.id}`} Wait
-              <br />
-              for approval
-            </span>
-          ),
+          content: attendance.shiftData.name,
         });
+        return;
       }
-      if (attendance.status === 'Approved') {
+
+      if (
+        attendance.adminStatus === 'Reject' ||
+        attendance.managerStatus === 'Reject'
+      ) {
+        listData.push({
+          key: attendance.id,
+          title: 'attendance',
+          type: 'error',
+          content: attendance.shiftData.name,
+        });
+        return;
+      }
+      if (attendance.adminStatus === 'Approved') {
         listData.push({
           key: attendance.id,
           title: 'attendance',
           type: 'success',
-          content: (
-            <span>
-              {`#${attendance.id}`}
-              <br />
-              Attendance
-              <br />
-              approved
-            </span>
-          ),
+          content: attendance.shiftData.name,
         });
+        return;
       }
     }
   });
@@ -63,6 +80,16 @@ const getListData = (current, value, attendances, leaves) => {
           type: 'warning',
           content: leave.title,
         });
+        return;
+      }
+      if (leave.status === 'Reject') {
+        listData.push({
+          key: leave.id,
+          title: 'leave',
+          type: 'error',
+          content: leave.title,
+        });
+        return;
       }
       if (leave.status === 'Approved') {
         listData.push({
@@ -71,6 +98,7 @@ const getListData = (current, value, attendances, leaves) => {
           type: 'success',
           content: leave.title,
         });
+        return;
       }
     }
   });
@@ -88,13 +116,11 @@ function AttendancesLeavesCalendar() {
           dayjs().endOf('month').utc().format(),
         ],
       },
-      status: ['Pending', 'Approved'],
     },
   });
   const [leaveList, setLeaveList] = useState([]);
   const [filterLeave, setFilterLeave] = useState({
     where: {
-      status: ['Pending', 'Approved'],
       $or: [
         {
           leaveFrom: {
@@ -155,8 +181,10 @@ function AttendancesLeavesCalendar() {
                 icon={
                   item.type === 'success' ? (
                     <CheckCircleOutlined />
-                  ) : (
+                  ) : item.type === 'warning' ? (
                     <ClockCircleOutlined />
+                  ) : (
+                    <CloseCircleOutlined />
                   )
                 }
                 color={item.type}

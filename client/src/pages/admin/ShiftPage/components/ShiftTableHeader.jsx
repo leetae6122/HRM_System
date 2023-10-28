@@ -4,25 +4,25 @@ import { Button, Col, Row, Space } from 'antd';
 import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDefaultFilterData } from 'reducers/project';
+import { setDefaultFilterData } from 'reducers/shift';
 import { gold, green } from '@ant-design/colors';
 import _ from 'lodash';
 
-ProjectTableHeader.propTypes = {
-  toggleModalAddProject: PropTypes.func,
+ShiftTableHeader.propTypes = {
+  toggleModalAddShift: PropTypes.func,
   setFilter: PropTypes.func,
 };
 
-ProjectTableHeader.defaultProps = {
-  toggleModalAddProject: null,
+ShiftTableHeader.defaultProps = {
+  toggleModalAddShift: null,
   setFilter: null,
 };
 
-function ProjectTableHeader(props) {
-  const { toggleModalAddProject, setFilter } = props;
+function ShiftTableHeader(props) {
+  const { toggleModalAddShift, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData, defaultFilter } = useSelector((state) => state.project);
+  const { filterData, defaultFilter } = useSelector((state) => state.shift);
   const [inputValue, setInputValue] = useState('');
 
   const handleSearch = (value) => {
@@ -32,7 +32,7 @@ function ProjectTableHeader(props) {
       page: 1,
       size: 10,
       where: {
-        title: { $like: `%${value}%` },
+        name: { $like: `%${value}%` },
       },
     });
     setLoadingSearch(false);
@@ -47,7 +47,7 @@ function ProjectTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search title"
+          placeholder="Input search name"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}
@@ -71,9 +71,9 @@ function ProjectTableHeader(props) {
             type="primary"
             style={{ backgroundColor: green.primary }}
             icon={<PlusCircleFilled />}
-            onClick={toggleModalAddProject}
+            onClick={toggleModalAddShift}
           >
-            Add Project
+            Add Shift
           </Button>
         </Space>
       </Col>
@@ -81,4 +81,4 @@ function ProjectTableHeader(props) {
   );
 }
 
-export default ProjectTableHeader;
+export default ShiftTableHeader;

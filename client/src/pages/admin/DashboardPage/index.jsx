@@ -1,5 +1,4 @@
 import {
-  FireOutlined,
   IdcardOutlined,
   TeamOutlined,
   UnlockOutlined,
@@ -9,12 +8,10 @@ import { Col, Row } from 'antd';
 
 import LinkIconCard from './components/LinkIconCard';
 import QualityCard from './components/QualityCard';
-import RunningProjectsTable from './components/RunningProjectsTable';
-import { geekblue, green, purple, red, gold } from '@ant-design/colors';
+import { geekblue, purple, red, gold } from '@ant-design/colors';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import employeeApi from 'api/employeeApi';
-import projectApi from 'api/projectApi';
 import DepartmentEmployeesTable from './components/DepartmentEmployeesTable';
 import leaveApi from 'api/leaveApi';
 import attendanceApi from 'api/attendanceApi';
@@ -24,7 +21,6 @@ const iconStyle = { fontSize: 40, color: 'white' };
 
 function DashboardPage() {
   const [countEmployees, setCountEmployees] = useState({});
-  const [countProjects, setCountProjects] = useState({});
   const [countUser, setCountUser] = useState({});
   const [countLeaves, setCountLeaves] = useState({});
   const [countAttendance, setCountAttendance] = useState({});
@@ -35,14 +31,6 @@ function DashboardPage() {
       try {
         const response = (await employeeApi.countEmployee()).data;
         setCountEmployees(response);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    const fetchCountProjects = async () => {
-      try {
-        const response = (await projectApi.countProject()).data;
-        setCountProjects(response);
       } catch (error) {
         toast.error(error);
       }
@@ -72,7 +60,6 @@ function DashboardPage() {
       }
     };
     fetchCountEmployees();
-    fetchCountProjects();
     fetchCountUsers();
     fetchCountLeaves();
     fetchCountAttendance();
@@ -81,7 +68,7 @@ function DashboardPage() {
 
   return (
     <Row gutter={[16, 8]}>
-      <Col className="gutter-row" span={8} key="employees">
+      <Col className="link-card" span={12} key="employees">
         <LinkIconCard
           link={'/admin/employee'}
           Icon={<TeamOutlined style={iconStyle} />}
@@ -89,15 +76,7 @@ function DashboardPage() {
           title={`${countEmployees.currentEmployees} Employees`}
         />
       </Col>
-      <Col className="gutter-row" span={8} key="projects">
-        <LinkIconCard
-          link={'/admin/project'}
-          Icon={<FireOutlined style={iconStyle} />}
-          iconColor={green[5]}
-          title={`${countProjects.totalProjects} Projects`}
-        />
-      </Col>
-      <Col className="gutter-row" span={8} key="users">
+      <Col className="link-card" span={12} key="users">
         <LinkIconCard
           link={'/admin/user'}
           Icon={<UnlockOutlined style={iconStyle} />}
@@ -106,21 +85,14 @@ function DashboardPage() {
         />
       </Col>
 
-      <Col className="gutter-row" span={8}>
+      <Col className="quality-card" span={12}>
         <QualityCard
           backgroundColor={purple[5]}
           quality={countEmployees.formerEmployees}
           content={'Former Employees'}
         />
       </Col>
-      <Col className="gutter-row" span={8}>
-        <QualityCard
-          backgroundColor={green[5]}
-          quality={countProjects.upcomingProjects}
-          content={'Upcoming Projects'}
-        />
-      </Col>
-      <Col className="gutter-row" span={8}>
+      <Col className="quality-card" span={12}>
         <QualityCard
           backgroundColor={gold[5]}
           quality={countUser.notActivedUsers}
@@ -128,7 +100,7 @@ function DashboardPage() {
         />
       </Col>
 
-      <Col className="gutter-row" span={12} key="attendances">
+      <Col className="link-card" span={12} key="attendances">
         <LinkIconCard
           link={'/admin/attendance'}
           Icon={<IdcardOutlined style={iconStyle} />}
@@ -136,7 +108,7 @@ function DashboardPage() {
           title={`${countAttendance.totalAttendances} Attendances Today`}
         />
       </Col>
-      <Col className="gutter-row" span={12} key="leaves">
+      <Col className="link-card" span={12} key="leaves">
         <LinkIconCard
           link={'/admin/leave'}
           Icon={<UserDeleteOutlined style={iconStyle} />}
@@ -144,24 +116,24 @@ function DashboardPage() {
           title={`${countLeaves.totalLeaves} Leaves Approved / Month`}
         />
       </Col>
-      <Col className="gutter-row" span={12}>
+      <Col className="quality-card" span={12}>
         <QualityCard
           backgroundColor={geekblue[5]}
           quality={countAttendance.pendingAttendances}
           content={'Pending Attendance Application'}
         />
       </Col>
-      <Col className="gutter-row" span={12}>
+      <Col className="quality-card" span={12}>
         <QualityCard
           backgroundColor={red[5]}
           quality={countLeaves.pendingLeaves}
           content={'Pending Leave Application'}
         />
       </Col>
-      <Col className="gutter-row" span={12}>
-        <RunningProjectsTable />
+      <Col span={12}>
+
       </Col>
-      <Col className="gutter-row" span={12}>
+      <Col span={12}>
         <DepartmentEmployeesTable />
       </Col>
     </Row>

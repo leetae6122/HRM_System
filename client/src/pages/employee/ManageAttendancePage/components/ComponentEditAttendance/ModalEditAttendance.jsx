@@ -5,9 +5,8 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
+import EditAttendanceForm from './EditAttendanceForm';
 import attendanceApi from 'api/attendanceApi';
-import AttendanceForm from './AttendanceForm';
-import dayjs from 'dayjs';
 
 ModalEditAttendance.propTypes = {
   openModal: PropTypes.bool,
@@ -25,8 +24,7 @@ function ModalEditAttendance(props) {
   const { editAttendanceId } = useSelector((state) => state.attendance);
   const { openModal, toggleShowModal, refreshAttendanceList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [editAttendance, setEditAttendance] = useState({});
-
+  const [infoAttendance, setInfoAttendance] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
@@ -34,17 +32,7 @@ function ModalEditAttendance(props) {
       try {
         if (editAttendanceId) {
           const data = (await attendanceApi.getById(editAttendanceId)).data;
-          setEditAttendance({
-            attendanceId: data.id,
-            description: data.description,
-            attendanceDate: dayjs(data.attendanceDate),
-            hoursSpent: data.hoursSpent,
-            hoursOvertime: data.hoursOvertime ?? 0,
-            status: data.status,
-            place: data.place,
-            taskId: data.taskId,
-            projectId: data.projectId,
-          });
+          setInfoAttendance(data);
         }
       } catch (error) {
         toast.error(error);
@@ -57,8 +45,11 @@ function ModalEditAttendance(props) {
   const handleEditAttendance = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = _.omitBy(values, _.isNil);
-      const response = await attendanceApi.employeeUpdate(data);
+      const data = {
+        attendanceId: editAttendanceId,
+        managerStatus: values.managerStatus,
+      };
+      const response = await attendanceApi.managerUpdate(data);
       Swal.fire({
         icon: 'success',
         title: response.message,
@@ -84,21 +75,20 @@ function ModalEditAttendance(props) {
   return (
     <>
       <Modal
-        title="Edit Attendance"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
         width={'100vh'}
         style={{
-          top: 20,
+          top: 40
         }}
       >
-        {!_.isEmpty(editAttendance) && (
-          <AttendanceForm
+        {!_.isEmpty(infoAttendance) && (
+          <EditAttendanceForm
             onCancel={handleCancel}
             onSubmit={handleEditAttendance}
             loading={confirmLoading}
-            initialValues={editAttendance}
+            infoAttendance={infoAttendance}
           />
         )}
       </Modal>

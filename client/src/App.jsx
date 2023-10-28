@@ -23,10 +23,11 @@ import AdminAuth from 'components/ProtectRoute/AdminAuth';
 import EmployeeLeavePage from 'pages/employee/LeavePage';
 import AdminAttendancePage from 'pages/admin/AttendancePage';
 import EmployeeAttendancePage from 'pages/employee/AttendancePage';
-import TaskPage from 'pages/admin/TaskPage';
-import ProjectPage from 'pages/admin/ProjectPage';
 import EmployeeDashboardPage from 'pages/employee/DashboardPage';
 import TimekeeperPage from 'pages/employee/TimekeeperPage';
+import ShiftPage from 'pages/admin/ShiftPage';
+import ManageAttendancePage from 'pages/employee/ManageAttendancePage';
+import DepartmentManagerAuth from 'components/ProtectRoute/DepartmentManagerAuth';
 
 const AuthPage = React.lazy(() => import('pages/AuthPage'));
 const PageLayout = React.lazy(() => import('components/Common/PageLayout'));
@@ -82,8 +83,7 @@ function App() {
               <Route path="department" element={<DepartmentPage />} />
               <Route path="leave" element={<AdminLeavePage />} />
               <Route path="attendance" element={<AdminAttendancePage />} />
-              <Route path="task" element={<TaskPage />} />
-              <Route path="project" element={<ProjectPage />} />
+              <Route path="shift" element={<ShiftPage />} />
             </Route>
 
             <Route
@@ -94,10 +94,18 @@ function App() {
                 </RequireAuth>
               }
             >
-              <Route path="dashboard" element={<EmployeeDashboardPage/>} />
+              <Route path="dashboard" element={<EmployeeDashboardPage />} />
               <Route path="attendance" element={<EmployeeAttendancePage />} />
               <Route path="leave" element={<EmployeeLeavePage />} />
               <Route path="timekeeper" element={<TimekeeperPage />} />
+              <Route
+                path="manage-attendance"
+                element={
+                  <DepartmentManagerAuth>
+                    <ManageAttendancePage />
+                  </DepartmentManagerAuth>
+                }
+              />
             </Route>
 
             <Route path="*" element={<NotFound />} />
@@ -112,7 +120,7 @@ function App() {
                     {user?.isAdmin === 1 ? (
                       <Navigate to="/admin/dashboard" replace />
                     ) : (
-                      <Navigate to="/employee/dashboard" replace />
+                      <Navigate to="/employee/timekeeper" replace />
                     )}
                   </RequireAuth>
                 }

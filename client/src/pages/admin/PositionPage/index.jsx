@@ -35,18 +35,18 @@ const createColumns = (
     sorter: (a, b) => a.name.localeCompare(b.name),
   },
   {
-    title: 'Min Salary',
-    dataIndex: 'minSalary',
-    key: 'minSalary',
+    title: 'Min Hourly Salary',
+    dataIndex: 'minHourlySalary',
+    key: 'minHourlySalary',
     sorter: true,
-    render: (value) => numberWithDot(value),
+    render: (value, record) => `${numberWithDot(value)}${record.currencyData.symbol}/hr`,
   },
   {
-    title: 'Max Salary',
-    dataIndex: 'maxSalary',
-    key: 'maxSalary',
+    title: 'Max Hourly Salary',
+    dataIndex: 'maxHourlySalary',
+    key: 'maxHourlySalary',
     sorter: true,
-    render: (value) => (value ? numberWithDot(value) : ''),
+    render: (value, record) => (value ? `${numberWithDot(value)}${record.currencyData.symbol}/hr` : ''),
   },
   {
     title: 'Currency Code',
@@ -208,6 +208,8 @@ function PositionPage() {
   );
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let order = defaultFilter.order;
     let modelEmployee = filterData.modelEmployee ?? {};
     modelEmployee = {
@@ -222,7 +224,7 @@ function PositionPage() {
     if (!_.isEmpty(sorter.column)) {
       order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, modelEmployee, order });
+    setFilter({ ...filterData, page, size, modelEmployee, order });
   };
 
   return (
@@ -246,13 +248,6 @@ function PositionPage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

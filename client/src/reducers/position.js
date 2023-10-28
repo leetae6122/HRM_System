@@ -6,14 +6,16 @@ const initialState = {
         size: 10,
         where: {},
         order: [],
-        modelCurrency: { where: {} }
+        modelCurrency: { where: {} },
+        modelEmployee: { where: {} }
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
         order: [],
-        modelCurrency: { where: {} }
+        modelCurrency: { where: {} },
+        modelEmployee: { where: {} }
     },
     positionList: [],
     total: 0,

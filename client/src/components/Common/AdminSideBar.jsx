@@ -87,16 +87,10 @@ function AdminSideBar() {
         '/admin/attendance',
       ),
       getItem(
-        <Link to={'/admin/project'} replace>
-          Project
+        <Link to={'/admin/shift'} replace>
+          Shift
         </Link>,
-        '/admin/project',
-      ),
-      getItem(
-        <Link to={'/admin/task'} replace>
-          Task
-        </Link>,
-        '/admin/task',
+        '/admin/shift',
       ),
     ]),
     getItem(

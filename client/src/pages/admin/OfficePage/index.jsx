@@ -211,6 +211,8 @@ function OfficePage() {
   );
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let order = defaultFilter.order;
 
     let modelCountry = filterData.modelCountry ?? {};
@@ -226,7 +228,7 @@ function OfficePage() {
     if (!_.isEmpty(sorter.column)) {
       order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, modelCountry, order });
+    setFilter({ ...filterData, page, size, modelCountry, order });
   };
 
   return (
@@ -250,13 +252,6 @@ function OfficePage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

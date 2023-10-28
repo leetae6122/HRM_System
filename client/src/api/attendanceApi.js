@@ -17,20 +17,32 @@ const attendanceApi = {
         const url = `/attendance/${id}`;
         return axiosClient.get(url);
     },
+    getAttendanceByShift: (data) => {
+        const url = '/attendance/by-shift';
+        return axiosClient.post(url, data);
+    },
     employeeGetList: (data) => {
         const url = '/attendance/filter';
+        return axiosClient.post(url, data);
+    },
+    managerGetList: (data) => {
+        const url = '/attendance/manager/filter';
         return axiosClient.post(url, data);
     },
     adminGetList: (data) => {
         const url = '/attendance/admin/filter';
         return axiosClient.post(url, data);
     },
-    employeeCreate: (data) => {
+    logInAttendance: (data) => {
         const url = '/attendance';
         return axiosClient.post(url, data);
     },
-    employeeUpdate: (data) => {
+    logOutAttendance: (data) => {
         const url = '/attendance';
+        return axiosClient.patch(url, data);
+    },
+    managerUpdate: (data) => {
+        const url = '/attendance/manager';
         return axiosClient.patch(url, data);
     },
     adminUpdate: (data) => {

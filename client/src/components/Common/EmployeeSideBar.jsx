@@ -1,5 +1,7 @@
 import {
+  AlertOutlined,
   CalendarOutlined,
+  DesktopOutlined,
   PieChartOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons';
@@ -9,6 +11,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import 'assets/styles/sidebar.scss';
 import logoHrm from 'assets/images/logo-app.jpg';
+import { useSelector } from 'react-redux';
 
 const getItem = (label, key, icon, children) => {
   return {
@@ -20,6 +23,7 @@ const getItem = (label, key, icon, children) => {
 };
 
 function EmployeeSideBar() {
+  const { user } = useSelector((state) => state.auth);
   const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
@@ -40,7 +44,7 @@ function EmployeeSideBar() {
         Timekeeper
       </Link>,
       '/employee/timekeeper',
-      <CalendarOutlined />,
+      <AlertOutlined />,
     ),
     getItem(
       <Link to={'/employee/attendance'} replace>
@@ -56,6 +60,17 @@ function EmployeeSideBar() {
       '/employee/leave',
       <UserDeleteOutlined />,
     ),
+    user.profile.manageDepartment.managerId === user.employeeId
+      ? getItem(
+          <Link to={'/employee/manage-attendance'} replace>
+            Manage
+            <br />
+            Attendance
+          </Link>,
+          '/employee/manage-attendance',
+          <DesktopOutlined />,
+        )
+      : null,
   ];
 
   return (
@@ -69,6 +84,7 @@ function EmployeeSideBar() {
         <img src={logoHrm} alt="logo" />
       </div>
       <Menu
+        className="employee-menu"
         theme="dark"
         selectedKeys={pathname}
         mode="inline"

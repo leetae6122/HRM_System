@@ -1,6 +1,6 @@
 import { Drawer } from 'antd';
 import PropTypes from 'prop-types';
-import FilterPositionForm from './FilterPositionForm';
+import FilterAttendanceForm from './FilterAttendanceForm';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
@@ -28,40 +28,23 @@ function FilterDrawer(props) {
   const handleFilter = async (values) => {
     setConfirmLoading(true);
     let filter;
-    if (!_.isEmpty(_.omitBy(values.minHourlySalary, _.isNil))) {
-      filter = {
-        minHourlySalary: values.minHourlySalary.to
-          ? {
-              $between: [
-                values.minHourlySalary.from,
-                values.minHourlySalary.to,
-              ],
-            }
-          : { $gte: values.minHourlySalary.from },
-      };
-    }
-    if (!_.isEmpty(_.omitBy(values.maxHourlySalary, _.isNil))) {
+
+    if (!_.isEmpty(_.omitBy(values.attendanceDate, _.isNil))) {
       filter = {
         ...filter,
-        maxHourlySalary: values.maxHourlySalary.to
-          ? {
-              $between: [
-                values.maxHourlySalary.from,
-                values.maxHourlySalary.to,
-              ],
-            }
-          : { $gte: values.maxHourlySalary.from },
-      };
-    }
-    if (!_.isEmpty(_.omitBy(values.createdAt, _.isNil))) {
-      filter = {
-        ...filter,
-        createdAt: {
+        attendanceDate: {
           $between: [
-            values.createdAt[0].utc().format(),
-            values.createdAt[1].utc().format(),
+            values.attendanceDate[0].utc().format(),
+            values.attendanceDate[1].utc().format(),
           ],
         },
+      };
+    }
+
+    if (values.shiftId) {
+      filter = {
+        ...filter,
+        shiftId: values.shiftId,
       };
     }
 
@@ -83,7 +66,7 @@ function FilterDrawer(props) {
       open={openDrawer}
       width={'70vh'}
     >
-      <FilterPositionForm onSubmit={handleFilter} loading={confirmLoading} />
+      <FilterAttendanceForm onSubmit={handleFilter} loading={confirmLoading} />
     </Drawer>
   );
 }

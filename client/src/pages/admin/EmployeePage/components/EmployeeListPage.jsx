@@ -221,6 +221,8 @@ function EmployeeListPage(props) {
   );
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let where = filterData.where;
     let order = defaultFilter.order;
 
@@ -240,7 +242,7 @@ function EmployeeListPage(props) {
       else
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, where, order });
+    setFilter({ ...filterData, page, size, where, order });
   };
 
   return (
@@ -263,13 +265,6 @@ function EmployeeListPage(props) {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

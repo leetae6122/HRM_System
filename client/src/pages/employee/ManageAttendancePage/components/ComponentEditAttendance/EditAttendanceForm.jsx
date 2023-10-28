@@ -189,11 +189,11 @@ function EditAttendanceForm(props) {
         column={2}
         items={items}
       />
-      {infoAttendance.adminStatus === 'Pending' ? (
+      {infoAttendance.managerStatus === 'Pending' ? (
         <>
           <Form
-            name="normal_admin_edit_attendance"
-            className="admin-edit-attendance-form"
+            name="normal_manager_edit_attendance"
+            className="manager-edit-attendance-form"
             initialValues={initialValues}
             form={form}
             labelCol={{ span: 4 }}
@@ -217,7 +217,7 @@ function EditAttendanceForm(props) {
                   htmlType="submit"
                   type="primary"
                   danger
-                  onClick={() => onFinish({ adminStatus: 'Reject' })}
+                  onClick={() => onFinish({ managerStatus: 'Reject' })}
                   loading={loading}
                 >
                   Reject
@@ -225,7 +225,7 @@ function EditAttendanceForm(props) {
                 <Button
                   htmlType="submit"
                   type="primary"
-                  onClick={() => onFinish({ adminStatus: 'Approved' })}
+                  onClick={() => onFinish({ managerStatus: 'Approved' })}
                   loading={loading}
                 >
                   Approved

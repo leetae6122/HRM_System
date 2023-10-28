@@ -157,6 +157,8 @@ function CountryPage() {
   const columns = createColumns(toggleModalEditCountry, handleDeleteCountry);
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let order = defaultFilter.order;
 
     if (!_.isEmpty(sorter.column)) {
@@ -167,7 +169,7 @@ function CountryPage() {
       else
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, order });
+    setFilter({ ...filterData, page, size, order });
   };
 
   return (
@@ -189,13 +191,6 @@ function CountryPage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

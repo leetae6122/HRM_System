@@ -8,6 +8,7 @@ CardProgress.propTypes = {
   percent: PropTypes.number,
   format: PropTypes.string,
   status: PropTypes.string,
+  type: PropTypes.string,
 };
 
 CardProgress.defaultProps = {
@@ -16,6 +17,7 @@ CardProgress.defaultProps = {
   percent: 0,
   format: null,
   status: 'active',
+  type: 'dashboard',
 };
 
 const cardStyle = {
@@ -39,13 +41,13 @@ const progressStyle = {
 };
 
 function CardProgress(props) {
-  const { content, backgroundColor, percent, format, status } = props;
+  const { content, backgroundColor, percent, format, status, type } = props;
   return (
     <Card style={{ backgroundColor, ...cardStyle }}>
       <div style={contentStyle}>{content}</div>
       <div style={{ fontSize: 14 }}>
         <Progress
-          type="dashboard"
+          type={type}
           percent={percent}
           format={() => format}
           style={progressStyle}

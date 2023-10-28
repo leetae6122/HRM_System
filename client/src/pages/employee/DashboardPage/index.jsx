@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd';
 import AttendancesLeavesCalendar from './components/AttendancesLeavesCalendar';
-import { countDaysInMonth } from 'utils/handleDate';
+// import { countDaysInMonth } from 'utils/handleDate';
 import 'assets/styles/employeeDashboard.scss';
 import CardProgress from './components/CardProgress';
 import { green, purple, red, yellow } from '@ant-design/colors';
@@ -10,7 +10,7 @@ import attendanceApi from 'api/attendanceApi';
 import dayjs from 'dayjs';
 import leaveApi from 'api/leaveApi';
 
-const totalWorkday = countDaysInMonth();
+// const totalWorkday = countDaysInMonth();
 const monthNames = [
   'January',
   'February',
@@ -47,7 +47,6 @@ function DashboardPage() {
             attendanceDate: {
               $between: [startDate, endDate],
             },
-            status: ['Pending', 'Approved'],
           },
         });
         const data = response.data.map((item) => ({ key: item.id, ...item }));
@@ -66,7 +65,6 @@ function DashboardPage() {
                 dayjs().endOf('week').utc().format(),
               ],
             },
-            status: ['Pending', 'Approved'],
           },
         });
         const data = response.data.map((item) => ({ key: item.id, ...item }));
@@ -105,8 +103,11 @@ function DashboardPage() {
       let hourSpent = 0;
       let hourOT = 0;
       attendanceMonthList.forEach((attendance) => {
-        hourSpent += attendance.hourSpent ?? 0;
-        hourOT += attendance.hourOT ?? 0;
+        if (attendance.shiftData.overtimeShift) {
+          hourOT += attendance.totalHours ?? 0;
+        } else {
+          hourSpent += attendance.totalHours ?? 0;
+        }
       });
       setTotalHourSpentMonth(hourSpent);
       setTotalHourOT(hourOT);
@@ -114,7 +115,9 @@ function DashboardPage() {
     const setHoursWeek = () => {
       let hourSpent = 0;
       attendanceWeekList.forEach((attendance) => {
-        hourSpent += attendance.hourSpent ?? 0;
+        if (!attendance.shiftData.overtimeShift) {
+          hourSpent += attendance.totalHours ?? 0;
+        }
       });
       setTotalHourSpentWeek(hourSpent);
     };
@@ -130,27 +133,27 @@ function DashboardPage() {
             <CardProgress
               content={`Number of hours worked / ${monthNames[thisMonth]} ${thisYear}`}
               backgroundColor={green[5]}
-              percent={
-                Math.round((totalHourSpentMonth / (totalWorkday * 8)) * 100) ??
-                0
-              }
-              format={`${totalHourSpentMonth}/${totalWorkday * 8} hrs`}
+              percent={100}
+              format={`${totalHourSpentMonth} hrs`}
+              type={'circle'}
             />
           </Col>
           <Col span={6}>
             <CardProgress
               content="Number of hours worked / this week"
               backgroundColor={purple[5]}
-              percent={Math.round((totalHourSpentWeek / (5 * 8)) * 100)}
-              format={`${totalHourSpentWeek}/${5 * 8} hrs`}
+              percent={100}
+              format={`${totalHourSpentWeek} hrs`}
+              type={'circle'}
             />
           </Col>
           <Col span={6}>
             <CardProgress
               content={`Overtime hours / ${monthNames[thisMonth]} ${thisYear}`}
               backgroundColor={yellow[5]}
-              percent={Math.round((totalHourOT / (totalWorkday * 2)) * 100)}
-              format={`${totalHourOT}/${totalWorkday * 2} hrs`}
+              percent={100}
+              format={`${totalHourOT} hrs`}
+              type={'circle'}
             />
           </Col>
           <Col span={6}>
@@ -160,6 +163,7 @@ function DashboardPage() {
               percent={100}
               format={`${leaveList.length} leaves`}
               status="exception"
+              type={'circle'}
             />
           </Col>
         </Row>

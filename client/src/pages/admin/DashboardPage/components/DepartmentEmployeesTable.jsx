@@ -30,7 +30,7 @@ const columns = [
 ];
 
 function DepartmentEmployeesTable() {
-  const { defaultFilter } = useSelector((state) => state.project);
+  const { defaultFilter } = useSelector((state) => state.department);
   const [departmentEmployees, setDepartmentEmployees] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
 

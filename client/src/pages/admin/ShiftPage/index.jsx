@@ -1,91 +1,65 @@
 import { useEffect, useState } from 'react';
-import { Badge, Button, Divider, Space, Table, Tag } from 'antd';
-import userApi from 'api/userApi';
+import { Badge, Button, Divider, Space, Table } from 'antd';
 import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { setData, setEditUserId, setFilterData } from 'reducers/user';
-import UserTableHeader from './components/UserTableHeader';
-import ModalAddUser from './components/ComponentAddEdit/ModalAddUser';
+import { setData, setEditShiftId, setFilterData } from 'reducers/shift';
 import Swal from 'sweetalert2';
-import ModalEditUser from './components/ComponentAddEdit/ModalEditUser';
 import _ from 'lodash';
+import shiftApi from 'api/shiftApi';
+import ShiftTableHeader from './components/ShiftTableHeader';
+import ModalAddShift from './components/ComponentAddEdit/ModalAddShift';
+import ModalEditShift from './components/ComponentAddEdit/ModalEditShift';
 
-const createColumns = (toggleModalEditUser, handleDeleteUser) => [
+const createColumns = (toggleModalEditShift, handleDeleteShift) => [
   {
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
+    sorter: true,
+    render: (id) => `#${id}`,
+    width: 80,
   },
   {
-    title: 'Username',
-    dataIndex: 'username',
-    key: 'username',
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
     sorter: true,
   },
   {
-    title: 'Employee',
-    key: 'employee',
-    dataIndex: ['profile', 'firstName'],
-    sorter: true,
-    render: (_, record) =>
-      `${record.profile.firstName} ${record.profile.lastName}`,
-  },
-  {
-    title: 'Email',
-    dataIndex: ['profile', 'email'],
-    key: 'email',
+    title: 'Start Time',
+    dataIndex: 'startTime',
+    key: 'startTime',
     sorter: true,
   },
   {
-    title: 'Status',
-    key: 'isActive',
-    dataIndex: 'isActive',
-    render: (isActive) => (
+    title: 'End Time',
+    dataIndex: 'endTime',
+    key: 'endTime',
+    sorter: true,
+  },
+  {
+    title: 'Shift Type',
+    dataIndex: 'overtimeShift',
+    key: 'overtimeShift',
+    render: (overtimeShift) => (
       <>
-        {isActive ? (
-          <Badge status="success" text="Actived" />
+        {!overtimeShift ? (
+          <Badge status="success" text="Main Shift" />
         ) : (
-          <Badge status="error" text="Not activated" />
+          <Badge status="warning" text="Overtime Shift" />
         )}
       </>
     ),
     filters: [
       {
-        text: 'Actived',
-        value: true,
-      },
-      {
-        text: 'Not activated',
+        text: 'Main Shift',
         value: false,
       },
-    ],
-    filterMultiple: false,
-  },
-  {
-    title: 'Role',
-    key: 'isAdmin',
-    dataIndex: 'isAdmin',
-    render: (isAdmin) => (
-      <>
-        <Tag
-          style={{ padding: 8 }}
-          color={isAdmin ? 'green' : 'default'}
-          key={isAdmin}
-        >
-          {isAdmin ? 'Admin' : 'Staff'}
-        </Tag>
-      </>
-    ),
-    filters: [
       {
-        text: 'Admin',
+        text: 'Overtime Shift',
         value: true,
-      },
-      {
-        text: 'Staff',
-        value: false,
       },
     ],
     filterMultiple: false,
@@ -112,26 +86,26 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
         <Button
           type="primary"
           icon={<EditFilled />}
-          onClick={() => toggleModalEditUser(record.id)}
+          onClick={() => toggleModalEditShift(record.id)}
         />
         <Button
           type="primary"
           danger
           icon={<DeleteFilled />}
-          onClick={() => handleDeleteUser(record.id)}
+          onClick={() => handleDeleteShift(record.id)}
         />
       </Space>
     ),
   },
 ];
 
-function UserPage() {
+function ShiftPage() {
   const dispatch = useDispatch();
-  const { filterData, userList, total, currentPage, defaultFilter } =
-    useSelector((state) => state.user);
+  const { filterData, shiftList, total, currentPage, defaultFilter } =
+    useSelector((state) => state.shift);
   const [loadingData, setLoadingData] = useState(false);
-  const [openModalAddUser, setOpenModalAddUser] = useState(false);
-  const [openModalEditUser, setOpenModalEditUser] = useState(false);
+  const [openModalAddShift, setOpenModalAddShift] = useState(false);
+  const [openModalEditShift, setOpenModalEditShift] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -139,11 +113,11 @@ function UserPage() {
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = (await userApi.getList(filterData)).data;
+        const response = (await shiftApi.getList(filterData)).data;
         const data = response.data.map((item) => ({ key: item.id, ...item }));
         dispatch(
           setData({
-            userList: data,
+            shiftList: data,
             total: response.total,
             currentPage: response.currentPage,
           }),
@@ -169,19 +143,28 @@ function UserPage() {
     dispatch(setFilterData(filter));
   };
 
-  const refreshUserList = async () => {
-    const response = (await userApi.getList(defaultFilter)).data;
+  const refreshShiftList = async () => {
+    const response = (await shiftApi.getList(defaultFilter)).data;
     const data = response.data.map((item) => ({ key: item.id, ...item }));
     dispatch(
       setData({
-        userList: data,
+        shiftList: data,
         total: response.total,
         currentPage: response.currentPage,
       }),
     );
   };
 
-  const handleDeleteUser = async (userId) => {
+  const toggleModalEditShift = (id) => {
+    dispatch(setEditShiftId(id));
+    setOpenModalEditShift(!openModalEditShift);
+  };
+
+  const toggleModalAddShift = () => {
+    setOpenModalAddShift(!openModalAddShift);
+  };
+
+  const handleDeleteShift = async (shiftId) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -193,9 +176,9 @@ function UserPage() {
     })
       .then(async (result) => {
         if (result.isConfirmed) {
-          await userApi.delete(userId);
-          Swal.fire('Deleted!', 'User has been deleted.', 'success');
-          await refreshUserList();
+          await shiftApi.delete(shiftId);
+          Swal.fire('Deleted!', 'Shift has been deleted.', 'success');
+          await refreshShiftList();
         }
       })
       .catch((error) => {
@@ -203,15 +186,7 @@ function UserPage() {
       });
   };
 
-  const toggleModalAddUser = () => {
-    setOpenModalAddUser(!openModalAddUser);
-  };
-
-  const toggleModalEditUser = (id) => {
-    dispatch(setEditUserId(id));
-    setOpenModalEditUser(!openModalEditUser);
-  };
-  const columns = createColumns(toggleModalEditUser, handleDeleteUser);
+  const columns = createColumns(toggleModalEditShift, handleDeleteShift);
 
   const onChangeTable = (pagination, filters, sorter) => {
     const page = pagination.current;
@@ -222,35 +197,28 @@ function UserPage() {
     where = _.omitBy(
       {
         ...where,
-        isAdmin: filters.isAdmin,
-        isActive: filters.isActive,
+        overtimeShift: filters.overtimeShift,
       },
       _.isNil,
     );
 
     if (!_.isEmpty(sorter.column)) {
-      if (_.isArray(sorter.field))
-        order = [
-          [...sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC'],
-        ];
-      else
-        order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
+      order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
     setFilter({ ...filterData, page, size, where, order });
   };
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>User List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Shift List</Divider>
       <Table
         key={tableKey}
-        onChange={onChangeTable}
         columns={columns}
-        dataSource={userList}
+        dataSource={shiftList}
         bordered
         title={() => (
-          <UserTableHeader
-            toggleModalAddUser={toggleModalAddUser}
+          <ShiftTableHeader
+            toggleModalAddShift={toggleModalAddShift}
             setFilter={setFilter}
           />
         )}
@@ -259,24 +227,25 @@ function UserPage() {
           current: currentPage,
           pageSize: filterData.size,
         }}
+        onChange={onChangeTable}
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      {openModalAddUser && (
-        <ModalAddUser
-          openModal={openModalAddUser}
-          toggleShowModal={toggleModalAddUser}
-          refreshUserList={refreshUserList}
+      {openModalAddShift && (
+        <ModalAddShift
+          openModal={openModalAddShift}
+          toggleShowModal={toggleModalAddShift}
+          refreshShiftList={refreshShiftList}
         />
       )}
-      {openModalEditUser && (
-        <ModalEditUser
-          openModal={openModalEditUser}
-          toggleShowModal={toggleModalEditUser}
-          refreshUserList={refreshUserList}
+      {openModalEditShift && (
+        <ModalEditShift
+          openModal={openModalEditShift}
+          toggleShowModal={toggleModalEditShift}
+          refreshShiftList={refreshShiftList}
         />
       )}
     </>
   );
 }
-export default UserPage;
+export default ShiftPage;

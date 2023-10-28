@@ -19,10 +19,10 @@ const createItems = (profile, department, salary, position) => [
     children: getFullDate(profile.dateHired),
   },
   {
-    key: '43',
-    label: <span style={labelStyle}>Manger</span>,
-    children: profile.managerId
-      ? `${profile.managerData.firstName} ${profile.managerData.lastName}`
+    key: '3',
+    label: <span style={labelStyle}>Department Manager</span>,
+    children: department.managerData?.firstName
+      ? `${department.managerData.firstName} ${department.managerData.lastName}`
       : '',
   },
   {
@@ -39,10 +39,8 @@ const createItems = (profile, department, salary, position) => [
     key: '6',
     label: <span style={labelStyle}>Salary</span>,
     children: salary.totalSalary
-    ? `${numberWithDot(salary.totalSalary)} ${
-        salary.currencyData.code
-      }`
-    : '',
+      ? `${numberWithDot(salary.totalSalary)} ${salary.currencyData.code}`
+      : '',
   },
   {
     key: '7',

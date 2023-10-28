@@ -2,39 +2,37 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import Swal from 'sweetalert2';
-import AttendanceForm from './AttendanceForm';
+import shiftApi from 'api/shiftApi';
+import ShiftForm from './ShiftForm';
 import { toast } from 'react-toastify';
-import attendanceApi from 'api/attendanceApi';
-import _ from 'lodash';
 
-ModalAddAttendance.propTypes = {
+ModalAddShift.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshAttendanceList: PropTypes.func,
+  refreshShiftList: PropTypes.func,
 };
 
-ModalAddAttendance.defaultProps = {
+ModalAddShift.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshAttendanceList: null,
+  refreshShiftList: null,
 };
 
-function ModalAddAttendance(props) {
-  const { openModal, toggleShowModal, refreshAttendanceList } = props;
+function ModalAddShift(props) {
+  const { openModal, toggleShowModal, refreshShiftList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const handleAddAttendance = async (values) => {
+  const handleAddShift = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = _.omitBy(values, _.isNil);
-      const response = await attendanceApi.employeeCreate(data);
+      const response = await shiftApi.create(values);
       Swal.fire({
         icon: 'success',
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshAttendanceList();
+        await refreshShiftList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -53,22 +51,18 @@ function ModalAddAttendance(props) {
   return (
     <>
       <Modal
-        title="Add Attendance"
+        title="Add Shift"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={'100vh'}
-        style={{
-          top: 20
-        }}
       >
-        <AttendanceForm
+        <ShiftForm
           onCancel={handleCancel}
-          onSubmit={handleAddAttendance}
+          onSubmit={handleAddShift}
           loading={confirmLoading}
         />
       </Modal>
     </>
   );
 }
-export default ModalAddAttendance;
+export default ModalAddShift;

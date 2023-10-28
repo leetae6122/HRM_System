@@ -15,4 +15,9 @@
     position: sticky !important;
     top: 0;
     left: 0;
+    .employee-menu {
+        li.ant-menu-item {
+            height: auto;
+        }
+    }
 }
