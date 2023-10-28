@@ -21,9 +21,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true
     },
-    basicSalary: DataTypes.FLOAT,
+    basicHourlySalary: DataTypes.FLOAT,
+    hourlyOvertimeSalary: DataTypes.FLOAT,
     allowance: DataTypes.FLOAT,
-    totalSalary: DataTypes.FLOAT,
     currencyId: DataTypes.INTEGER,
     employeeId: DataTypes.UUID,
     addedBy: DataTypes.UUID

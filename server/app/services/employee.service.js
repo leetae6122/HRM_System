@@ -39,7 +39,11 @@ class EmployeeService {
                             }
                         },
                     ],
-                }
+                },
+                {
+                    model: db.Department, as: 'manageDepartment',
+                    attributes: ['id', 'managerId'],
+                },
             ],
             raw: true,
             nest: true

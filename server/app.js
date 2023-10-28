@@ -47,7 +47,7 @@ app.use("/api/salary", verifyAccessToken, verifyAdmin, salaryRouter);
 app.use("/api/country", verifyAccessToken, verifyAdmin, countryRouter);
 app.use("/api/office", verifyAccessToken, verifyAdmin, officeRouter);
 app.use("/api/department", verifyAccessToken, verifyAdmin, departmentRouter);
-app.use("/api/shift", verifyAccessToken, verifyAdmin, shiftRouter);
+app.use("/api/shift", verifyAccessToken, shiftRouter);
 
 
 // handle 404 response 

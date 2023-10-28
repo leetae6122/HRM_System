@@ -123,9 +123,8 @@ class LeaveService {
     }
 
     async countLeave() {
-        const now = dayjs();
-        const startDate = dayjs(now).startOf('month').toDate();
-        const endDate = dayjs(now).endOf('month').toDate();
+        const startDate = dayjs().startOf('month').toDate();
+        const endDate = dayjs().endOf('month').toDate();
 
         const countLeaves = await db.Leave.count({
             where: {

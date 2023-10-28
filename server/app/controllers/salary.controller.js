@@ -47,12 +47,6 @@ exports.createSalary = async (req, res, next) => {
             return next(createError.BadRequest(MSG_EMPLOYEE_CREATED_SALARY));
         }
         let payload = { ...req.body, addedBy: req.user.employeeId }
-        if (!req.body.totalSalary || req.body.totalSalary === 0) {
-            payload = {
-                ...payload,
-                totalSalary: payload.basicSalary + payload.allowance
-            }
-        }
 
         const data = await salaryService.createSalary(payload);
         return res.send({ message: MSG_ADDED_SALARY_SUCCESSFUL, data });
@@ -68,14 +62,6 @@ exports.updateSalary = async (req, res, next) => {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Salary")));
         }
         let payload = { ...req.body, addedBy: req.user.employeeId }
-        if ((req.body.totalSalary === foundSalary.totalSalary) &&
-            (req.body.basicSalary !== foundSalary.basicSalary
-                || req.body.allowance !== foundSalary.allowance)) {
-            payload = {
-                ...payload,
-                totalSalary: payload.basicSalary + payload.allowance
-            }
-        }
 
         await salaryService.updateSalary(req.body.salaryId, payload);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });

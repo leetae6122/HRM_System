@@ -44,7 +44,10 @@ exports.getListDepartment = async (req, res, next) => {
 exports.createDepartment = async (req, res, next) => {
     try {
         if (req.body.managerId) {
-            await employeeService.foundEmployee(req.body.managerId, next, true);
+            const foundEmployee = await employeeService.foundEmployee(req.body.managerId, next, true);
+            if (foundEmployee.manageDepartment.id && foundEmployee.manageDepartment.managerId === foundEmployee.id) {
+                return next(createError.BadRequest("This employee is already a manager of another department"));
+            }
         }
         await officeService.foundOffice(req.body.officeId, next);
 
@@ -59,15 +62,23 @@ exports.updateDepartment = async (req, res, next) => {
     try {
         const foundDepartment = await departmentService.foundDepartment(req.body.departmentId, next);
         if (foundDepartment.managerId !== req.body.managerId && req.body.managerId) {
-            await employeeService.foundEmployee(req.body.managerId, next, true);
+            const foundEmployee = await employeeService.foundEmployee(req.body.managerId, next, true);
+            if (foundEmployee.manageDepartment.id && foundEmployee.manageDepartment.managerId === foundEmployee.id) {
+                return next(createError.BadRequest("This employee is already a manager of another department"));
+            }
         }
         if (foundDepartment.officeId !== req.body.officeId) {
             await officeService.foundOffice(req.body.officeId, next);
         }
+        const payload = {
+            ...req.body,
+            managerId: req.body.managerId === '' ? null : req.body.managerId
+        }
 
-        await departmentService.updateDepartment(req.body.departmentId, req.body);
+        await departmentService.updateDepartment(req.body.departmentId, payload);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }

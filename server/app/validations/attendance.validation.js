@@ -1,22 +1,22 @@
 const Joi = require('joi');
 
-const inTimeAttendanceSchema = Joi.object().keys({
+const attendanceByShiftSchema = Joi.object({
     attendanceDate: Joi.date().required(),
-    inTime: Joi.string()
-        .regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/)
-        .label('inTime fails to match the required pattern hh:mm:ss')
-        .required(),
+    shiftId: Joi.number().integer().required(),
+});
+
+const inTimeAttendanceSchema = Joi.object({
+    attendanceDate: Joi.date().required(),
+    inTime: Joi.date().required(),
     shiftId: Joi.number().integer().required(),
     managerStatus: Joi.string().default('Pending'),
     adminStatus: Joi.string().default('Pending'),
 });
 
 const outTimeAttendanceSchema = Joi.object({
-    attendanceId: Joi.number().integer().required(),
-    outTime: Joi.string()
-        .regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/)
-        .label('outTime fails to match the required pattern hh:mm:ss')
-        .required(),
+    attendanceDate: Joi.date().required(),
+    outTime: Joi.date().required(),
+    shiftId: Joi.number().integer().required(),
 });
 
 const managerUpdateAttendanceSchema = Joi.object({
@@ -30,6 +30,7 @@ const adminUpdateAttendanceSchema = Joi.object({
 });
 
 module.exports = {
+    attendanceByShiftSchema,
     inTimeAttendanceSchema,
     outTimeAttendanceSchema,
     managerUpdateAttendanceSchema,

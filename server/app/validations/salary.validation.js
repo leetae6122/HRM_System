@@ -1,18 +1,18 @@
 const Joi = require('joi');
 
 const createSalarySchema = Joi.object({
-    basicSalary: Joi.number().min(0).required(),
+    basicHourlySalary: Joi.number().min(0).required(),
+    hourlyOvertimeSalary: Joi.number().greater(Joi.ref('basicHourlySalary')).required(),
     allowance: Joi.number().min(0).default(0),
-    totalSalary: Joi.number().min(0).optional(),
     currencyId: Joi.number().integer().required(),
     employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
 });
 
 const updateSalarySchema = Joi.object({
     salaryId: Joi.number().integer().required(),
-    basicSalary: Joi.number().min(0).optional(),
+    basicHourlySalary: Joi.number().min(0).optional(),
+    hourlyOvertimeSalary: Joi.number().greater(Joi.ref('basicHourlySalary')).optional(),
     allowance: Joi.number().min(0).optional(),
-    totalSalary: Joi.number().min(0).optional(),
     currencyId: Joi.number().integer().optional(),
 }).required().min(1);
 

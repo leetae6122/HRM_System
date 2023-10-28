@@ -71,3 +71,12 @@ exports.deleteShift = async (req, res, next) => {
         );
     }
 }
+
+exports.getCurrentShift = async (req, res, next) => {
+    try {
+        const data = await shiftService.getCurrentShift();
+        return res.send({ data });
+    } catch (error) {
+        return next(error);
+    }
+}

@@ -77,7 +77,6 @@ exports.managerGetListAttendance = async (req, res, next) => {
         const data = await attendanceService.filterListAttendance(payload);
         return res.send({ data });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 }
@@ -119,9 +118,13 @@ exports.logInAttendance = async (req, res, next) => {
             employeeId
         }
         const foundShift = await shiftService.foundShift(payload.shiftId, next);
-        const foundAttendance = await attendanceService.findByAttendanceDateAndEmployeeId(req.body.attendanceDate, req.user.employeeId);
-        if (foundAttendance && foundAttendance.shiftId === foundShift.id && foundAttendance.inTime) {
-            return next(createError.BadRequest(`Logged!!! Shift: ${foundShift.name} (${foundShift.startTime} - ${foundShift.endTime})`));
+        const foundAttendance = await attendanceService.findAttendanceByDateShiftIdEmployeeId(
+            req.body.attendanceDate,
+            req.body.shiftId,
+            req.user.employeeId
+        );
+        if (foundAttendance) {
+            return next(createError.BadRequest(`Logged in!!! Shift: ${foundShift.name} (${foundShift.startTime} - ${foundShift.endTime})`));
         }
 
         payload.inStatus = attendanceService.checkInTime(payload.inTime, foundShift);
@@ -135,14 +138,15 @@ exports.logInAttendance = async (req, res, next) => {
 
 exports.logOutAttendance = async (req, res, next) => {
     try {
-        const foundAttendance = await attendanceService.foundAttendance(req.body.attendanceId, next);
-        if (foundAttendance.employeeId !== req.user.employeeId) {
-            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
+        const foundAttendance = await attendanceService.findAttendanceByDateShiftIdEmployeeId(
+            req.body.attendanceDate,
+            req.body.shiftId,
+            req.user.employeeId
+        );
+        if (!foundAttendance) {
+            return next(createError.BadRequest("You're not logged in to your shift"));
         }
-        if (foundAttendance.managerStatus !== 'Pending' && foundAttendance.adminStatus !== 'Pending') {
-            return next(createError.BadRequest(MSG_ATTENDANCE_STATUS_NOT_PENDING));
-        }
-        const foundShift = await shiftService.foundShift(foundAttendance.shiftId, next);
+        const foundShift = await shiftService.foundShift(req.body.shiftId, next);
         if (foundAttendance.outTime) {
             return next(createError.BadRequest(`Logged out!!! Shift: ${foundShift.name} (${foundShift.startTime} - ${foundShift.endTime})`));
         }
@@ -156,7 +160,7 @@ exports.logOutAttendance = async (req, res, next) => {
             foundShift
         );
 
-        await attendanceService.updateAttendance(req.body.attendanceId, payload);
+        await attendanceService.updateAttendance(foundAttendance.id, payload);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(error);
@@ -227,6 +231,19 @@ exports.deleteAttendance = async (req, res, next) => {
 exports.countAttendance = async (req, res, next) => {
     try {
         const data = await attendanceService.countAttendance();
+        return res.send({ data })
+    } catch (error) {
+        return next(error);
+    }
+}
+
+exports.getAttendanceByShift = async (req, res, next) => {
+    try {
+        const data = await attendanceService.findAttendanceByDateShiftIdEmployeeId(
+            req.body.attendanceDate,
+            req.body.shiftId,
+            req.user.employeeId
+        );
         return res.send({ data })
     } catch (error) {
         return next(error);

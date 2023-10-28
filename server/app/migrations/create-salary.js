@@ -10,17 +10,17 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 autoIncrement: true
             },
-            basicSalary: {
+            basicHourlySalary: {
+                allowNull: false,
+                type: Sequelize.FLOAT(10)
+            },
+            hourlyOvertimeSalary: {
                 allowNull: false,
                 type: Sequelize.FLOAT(10)
             },
             allowance: {
                 type: Sequelize.FLOAT(10),
                 defaultValue: 0
-            },
-            totalSalary: {
-                allowNull: false,
-                type: Sequelize.FLOAT(10),
             },
             currencyId: {
                 type: Sequelize.INTEGER,

@@ -16,7 +16,7 @@ class UserService {
                     },
                     {
                         model: db.Salary, as: 'salaryData',
-                        attributes: ['totalSalary'],
+                        attributes: ['basicHourlySalary', 'allowance'],
                         include: {
                             model: db.Currency, as: 'currencyData',
                             attributes: ['name', 'code', 'symbol'],
@@ -39,6 +39,10 @@ class UserService {
                                 }
                             },
                         ],
+                    },
+                    {
+                        model: db.Department, as: 'manageDepartment',
+                        attributes: ['id', 'managerId'],
                     },
                 ]
             },
@@ -91,7 +95,7 @@ class UserService {
                     { model: db.Position, as: 'positionData', attributes: ['name'], },
                     {
                         model: db.Salary, as: 'salaryData',
-                        attributes: ['basicSalary', 'allowance', 'totalSalary'],
+                        attributes: ['basicHourlySalary', 'allowance'],
                         include: {
                             model: db.Currency, as: 'currencyData',
                             attributes: ['name', 'code', 'symbol'],

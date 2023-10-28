@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     name: DataTypes.STRING,
-    minSalary: DataTypes.FLOAT,
-    maxSalary: DataTypes.FLOAT,
+    minHourlySalary: DataTypes.FLOAT,
+    maxHourlySalary: DataTypes.FLOAT,
     currencyId: DataTypes.INTEGER
   }, {
     sequelize,

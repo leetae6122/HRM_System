@@ -1,6 +1,10 @@
+import dayjs from "dayjs";
 import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
 import createError from 'http-errors';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 class ShiftService {
     async findById(id) {
@@ -80,6 +84,22 @@ class ShiftService {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Shift")));
         }
         return foundShift;
+    }
+
+    async getCurrentShift() {
+        const start = dayjs().add(15,'minute').toDate();
+        const end = dayjs().subtract(15,'minute').toDate();
+        const result = await db.Shift.findOne({
+            where: {
+                $and: [
+                    { startTime: { $lte: start } },
+                    { endTime: { $gte: end } },
+                ]
+            },
+            raw: true,
+            nest: true
+        });
+        return result;
     }
 }
 

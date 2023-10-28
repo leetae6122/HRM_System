@@ -12,11 +12,14 @@ class AttendanceService {
             include: [
                 {
                     model: db.Employee, as: 'employeeData',
-                    attributes: ['firstName', 'lastName', 'email']
+                    attributes: ['id', 'firstName', 'lastName']
                 },
                 {
                     model: db.Employee, as: 'adminData',
-                    attributes: ['firstName', 'lastName', 'email']
+                    attributes: ['id', 'firstName', 'lastName']
+                },
+                {
+                    model: db.Shift, as: 'shiftData',
                 },
             ],
             raw: true,
@@ -25,10 +28,11 @@ class AttendanceService {
         return result;
     }
 
-    async findByAttendanceDateAndEmployeeId(attendanceDate, employeeId) {
+    async findAttendanceByDateShiftIdEmployeeId(attendanceDate, shiftId, employeeId) {
         const result = await db.Attendance.findOne({
             where: {
                 attendanceDate,
+                shiftId,
                 employeeId
             },
             raw: true,
@@ -47,6 +51,11 @@ class AttendanceService {
                 where,
                 order,
                 attributes,
+                include: [
+                    {
+                        model: db.Shift, as: 'shiftData',
+                    },
+                ],
                 raw: true,
                 nest: true
             })
@@ -77,12 +86,15 @@ class AttendanceService {
             include: [
                 {
                     model: db.Employee, as: 'employeeData',
-                    attributes: ['firstName', 'lastName'],
+                    attributes: ['id', 'firstName', 'lastName'],
                     ...employeeFilter,
                 },
                 {
                     model: db.Employee, as: 'adminData',
-                    attributes: ['firstName', 'lastName']
+                    attributes: ['id', 'firstName', 'lastName'],
+                },
+                {
+                    model: db.Shift, as: 'shiftData',
                 },
             ],
         });
@@ -154,30 +166,33 @@ class AttendanceService {
     }
 
     calTotalHours(inTime, outTime, shift) {
-        const totalWorkingHours = dayjs(shift.endTime, "HH:mm:ss")
-            .diff(dayjs(shift.startTime, "HH:mm:ss"), 'hour');
+        const startDate = dayjs(inTime, "HH:mm:ss") > dayjs(shift.startTime, "HH:mm:ss")
+            ? dayjs(inTime, "HH:mm:ss")
+            : dayjs(shift.startTime, "HH:mm:ss");
+        const endDate = dayjs(outTime) < dayjs(shift.endTime, "HH:mm:ss")
+            ? dayjs(outTime)
+            : dayjs(shift.endTime, "HH:mm:ss");
 
-        let totalHoursWorked = dayjs(outTime, "HH:mm:ss")
-            .diff(dayjs(inTime, "HH:mm:ss"), 'hour', true);
-        totalHoursWorked = Math.round((totalHoursWorked + Number.EPSILON) * 100) / 100;
+        const totalHoursWorked = endDate.diff(startDate, 'hour', true);
+        const result = (Math.round(totalHoursWorked * 100) / 100).toFixed(2);
+        return result >= 0 ? result : 0;
 
-        return (totalHoursWorked > totalWorkingHours) ? totalWorkingHours : totalHoursWorked;
     }
 
     checkInTime(inTime, shift) {
-        if (dayjs(inTime, "HH:mm:ss") > dayjs(shift.startTime, "HH:mm:ss")) {
+        if (inTime > dayjs(shift.startTime, "HH:mm:ss")) {
             return 'Late In';
         }
-        if (dayjs(inTime, "HH:mm:ss") <= dayjs(shift.startTime, "HH:mm:ss")) {
+        if (inTime <= dayjs(shift.startTime, "HH:mm:ss")) {
             return 'On Time';
         }
     }
 
     checkOutTime(outTime, shift) {
-        if (dayjs(outTime, "HH:mm:ss") < dayjs(shift.endTime, "HH:mm:ss")) {
+        if (outTime < dayjs(shift.endTime, "HH:mm:ss")) {
             return 'Out Early';
         }
-        if (dayjs(outTime, "HH:mm:ss") >= dayjs(shift.endTime, "HH:mm:ss")) {
+        if (outTime >= dayjs(shift.endTime, "HH:mm:ss")) {
             return 'On Time';
         }
     }

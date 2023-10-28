@@ -54,9 +54,9 @@ exports.verifyAdminOrSelf = async (req, res, next) => {
     }
 }
 
-exports.verifyDepartmentManager = async (req, res, next) => {
+exports.verifyAdminOrDepartmentManager = async (req, res, next) => {
     const employee = await employeeService.getManageDepartment(req.user.employeeId);
-    if(employee.manageDepartment.id){
+    if(employee.manageDepartment.id || req.user.isAdmin){
         req.manageDepartmentId = employee.manageDepartment.id;
         next();
     }else{

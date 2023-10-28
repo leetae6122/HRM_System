@@ -6,18 +6,23 @@ import {
     updateShiftSchema
 } from "../validations/shift.validation";
 import { filterSchema } from "../validations/filter.validation";
+import { verifyAdmin, verifyAdminOrDepartmentManager } from './../middlewares/auth.middleware';
 
 const router = express.Router();
 
 router.route("/")
-    .get(shiftController.findAll)
-    .post(validation(createShiftSchema), shiftController.createShift)
-    .patch(validation(updateShiftSchema), shiftController.updateShift)
+    .get(verifyAdminOrDepartmentManager, shiftController.findAll)
+    .post(verifyAdmin, validation(createShiftSchema), shiftController.createShift)
+    .patch(verifyAdmin, validation(updateShiftSchema), shiftController.updateShift)
+
+router.route("/current")
+    .get(shiftController.getCurrentShift)
 
 router.route("/filter")
-    .post(validation(filterSchema), shiftController.getListShift)
+    .post(verifyAdmin, validation(filterSchema), shiftController.getListShift)
 
 router.route("/:id")
+    .all(verifyAdmin)
     .get(shiftController.findById)
     .delete(shiftController.deleteShift)
 module.exports = router;
