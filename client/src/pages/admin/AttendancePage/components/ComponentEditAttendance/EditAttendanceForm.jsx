@@ -13,20 +13,7 @@ EditAttendanceForm.defaultProps = {
   onCancel: null,
   onSubmit: null,
   loading: false,
-  infoAttendance: {
-    attendanceId: null,
-    attendanceDate: '',
-    inTime: '',
-    outTime: '',
-    totalHours: 0,
-    inStatus: '',
-    outStatus: '',
-    managerStatus: '',
-    adminStatus: '',
-    employeeData: null,
-    shiftData: null,
-    adminData: null,
-  },
+  infoAttendance: {},
 };
 
 const createItems = (data) => [

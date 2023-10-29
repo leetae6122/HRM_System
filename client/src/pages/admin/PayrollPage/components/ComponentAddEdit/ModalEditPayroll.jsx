@@ -2,48 +2,37 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import Swal from 'sweetalert2';
-import shiftApi from 'api/shiftApi';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
-import ShiftForm from './ShiftForm';
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import payrollApi from 'api/payrollApi';
+import EditPayrollForm from './EditPayrollForm';
 
-dayjs.extend(customParseFormat);
-
-ModalEditShift.propTypes = {
+ModalEditPayroll.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshShiftList: PropTypes.func,
+  refreshPayrollList: PropTypes.func,
 };
 
-ModalEditShift.defaultProps = {
+ModalEditPayroll.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshShiftList: null,
+  refreshPayrollList: null,
 };
 
-function ModalEditShift(props) {
-  const { editShiftId } = useSelector((state) => state.shift);
-  const { openModal, toggleShowModal, refreshShiftList } = props;
+function ModalEditPayroll(props) {
+  const { editPayrollId } = useSelector((state) => state.payroll);
+  const { openModal, toggleShowModal, refreshPayrollList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [editShift, setEditShift] = useState({});
+  const [infoPayroll, setInfoPayroll] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
-        if (editShiftId) {
-          const data = (await shiftApi.getById(editShiftId)).data;
-          setEditShift({
-            shiftId: data.id,
-            name: data.name,
-            startTime: dayjs(data.startTime, 'HH:mm:ss'),
-            endTime: dayjs(data.endTime, 'HH:mm:ss'),
-            overtimeShift: !!data.overtimeShift,
-            days: data.days,
-          });
+        if (editPayrollId) {
+          const data = (await payrollApi.getById(editPayrollId)).data;
+          setInfoPayroll(data);
         }
       } catch (error) {
         toast.error(error);
@@ -51,19 +40,25 @@ function ModalEditShift(props) {
     };
     fetchData();
     return () => controller.abort();
-  }, [editShiftId]);
+  }, [editPayrollId]);
 
-  const handleEditShift = async (values) => {
+  const handleEditPayroll = async (values) => {
     try {
       setConfirmLoading(true);
-      const response = await shiftApi.update(values);
+      const data = {
+        payrollId: editPayrollId,
+        status: values.status,
+        payDate: values.payDate,
+        deduction: values.deduction,
+      };
+      const response = await payrollApi.update(data);
       Swal.fire({
         icon: 'success',
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshShiftList();
+        await refreshPayrollList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -82,21 +77,21 @@ function ModalEditShift(props) {
   return (
     <>
       <Modal
-        title="Edit Shift"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
+        width={'100vh'}
       >
-        {!_.isEmpty(editShift) && (
-          <ShiftForm
+        {!_.isEmpty(infoPayroll) && (
+          <EditPayrollForm
             onCancel={handleCancel}
-            onSubmit={handleEditShift}
+            onSubmit={handleEditPayroll}
             loading={confirmLoading}
-            initialValues={editShift}
+            infoPayroll={infoPayroll}
           />
         )}
       </Modal>
     </>
   );
 }
-export default ModalEditShift;
+export default ModalEditPayroll;

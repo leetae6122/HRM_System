@@ -1,35 +1,28 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, DatePicker, Row, Space } from 'antd';
-import { FilterFilled, ReloadOutlined } from '@ant-design/icons';
+import { Button, Col, Row, Space } from 'antd';
+import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDefaultFilterData } from 'reducers/attendance';
-import { gold } from '@ant-design/colors';
+import { setDefaultFilterData } from 'reducers/payroll';
+import { gold, green } from '@ant-design/colors';
 import _ from 'lodash';
-import dayjs from 'dayjs';
-import { getMonthName } from 'utils/handleDate';
 
-AttendanceTableHeader.propTypes = {
+PayrollTableHeader.propTypes = {
+  toggleModalAddPayroll: PropTypes.func,
   setFilter: PropTypes.func,
-  toggleShowFilterDrawer: PropTypes.func,
 };
 
-AttendanceTableHeader.defaultProps = {
+PayrollTableHeader.defaultProps = {
+  toggleModalAddPayroll: null,
   setFilter: null,
-  toggleShowFilterDrawer: null,
 };
 
-function AttendanceTableHeader(props) {
-  const { setFilter, toggleShowFilterDrawer } = props;
+function PayrollTableHeader(props) {
+  const { toggleModalAddPayroll, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData, defaultFilter } = useSelector(
-    (state) => state.attendance,
-  );
-  const [value, setValue] = useState(
-    dayjs(filterData.where.attendanceDate.$between[0]),
-  );
+  const { filterData, defaultFilter } = useSelector((state) => state.payroll);
   const [inputValue, setInputValue] = useState('');
 
   const handleSearch = (value) => {
@@ -57,20 +50,6 @@ function AttendanceTableHeader(props) {
   const resetFilter = () => {
     dispatch(setDefaultFilterData());
     setInputValue('');
-    setValue(dayjs());
-  };
-
-  const onChangeDate = (value) => {
-    setValue(value);
-    const startDate = value.startOf('month').utc().format();
-    const endDate = value.endOf('month').utc().format();
-    setFilter({
-      ...filterData,
-      where: {
-        ...filterData.where,
-        attendanceDate: { $between: [startDate, endDate] },
-      },
-    });
   };
 
   return (
@@ -97,19 +76,13 @@ function AttendanceTableHeader(props) {
               Reset
             </Button>
           )}
-          <DatePicker
-            picker="month"
-            value={value}
-            onChange={onChangeDate}
-            allowClear={false}
-            format={(value) =>  getMonthName(value)}
-          />
           <Button
             type="primary"
-            icon={<FilterFilled />}
-            onClick={toggleShowFilterDrawer}
+            style={{ backgroundColor: green.primary }}
+            icon={<PlusCircleFilled />}
+            onClick={toggleModalAddPayroll}
           >
-            Filter
+            Create Payroll
           </Button>
         </Space>
       </Col>
@@ -117,4 +90,4 @@ function AttendanceTableHeader(props) {
   );
 }
 
-export default AttendanceTableHeader;
+export default PayrollTableHeader;

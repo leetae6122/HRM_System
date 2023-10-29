@@ -2,64 +2,58 @@ import PropTypes from 'prop-types';
 import { Button, Col, DatePicker, Row, Space } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDefaultFilterData } from 'reducers/attendance';
+import { setDefaultFilterData } from 'reducers/payroll';
 import { gold } from '@ant-design/colors';
 import _ from 'lodash';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import { useState } from 'react';
-import { getMonthName } from 'utils/handleDate';
 
-dayjs.extend(utc);
-
-AttendanceTableHeader.propTypes = {
+PayrollTableHeader.propTypes = {
   setFilter: PropTypes.func,
 };
 
-AttendanceTableHeader.defaultProps = {
+PayrollTableHeader.defaultProps = {
   setFilter: null,
 };
 
-function AttendanceTableHeader(props) {
+function PayrollTableHeader(props) {
   const { setFilter } = props;
   const dispatch = useDispatch();
-  const { filterData, defaultFilter } = useSelector(
-    (state) => state.attendance,
-  );
-  const [value, setValue] = useState(
-    dayjs(filterData.where.attendanceDate.$between[0]),
-  );
+  const { filterData, defaultFilter } = useSelector((state) => state.payroll);
+  const [value, setValue] = useState([]);
 
   const resetFilter = () => {
     dispatch(setDefaultFilterData());
-    setValue(dayjs());
+    setValue(null);
   };
 
   const onChangeDate = (value) => {
     setValue(value);
-    const startDate = value.startOf('month').utc().format();
-    const endDate = value.endOf('month').utc().format();
+    const startDate = value[0].utc().format();
+    const endDate = value[1].utc().format();
+
     setFilter({
       ...filterData,
       where: {
-        ...filterData.where,
-        attendanceDate: { $between: [startDate, endDate] },
+        $or: [
+          { startDate: { $between: [startDate, endDate] } },
+          { endDate: { $between: [startDate, endDate] } },
+        ],
+        status: filterData.where.status,
       },
     });
   };
 
   return (
     <Row>
-      <Col span={10}>
-        <DatePicker
-          picker="month"
+      <Col span={12}>
+        <DatePicker.RangePicker
           value={value}
           onChange={onChangeDate}
+          format={'DD/MM/YYYY'}
           allowClear={false}
-          format={(value) =>  getMonthName(value)}
         />
       </Col>
-      <Col span={14}>
+      <Col span={12}>
         <Space style={{ float: 'right' }}>
           {!_.isEqual(filterData, defaultFilter) && (
             <Button
@@ -77,4 +71,4 @@ function AttendanceTableHeader(props) {
   );
 }
 
-export default AttendanceTableHeader;
+export default PayrollTableHeader;

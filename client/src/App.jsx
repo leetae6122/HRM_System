@@ -8,6 +8,9 @@ import { useSelector } from 'react-redux';
 import NotFound from 'pages/ErrorPage/NotFound';
 import Loading from 'components/Common/Loading';
 import RequireAuth from 'components/ProtectRoute/RequireAuth';
+import DepartmentManagerAuth from 'components/ProtectRoute/DepartmentManagerAuth';
+import AdminAuth from 'components/ProtectRoute/AdminAuth';
+
 import AdminDashboardPage from 'pages/admin/DashboardPage';
 import UserPage from 'pages/admin/UserPage';
 import CurrencyPage from 'pages/admin/CurrencyPage';
@@ -19,7 +22,6 @@ import CountryPage from 'pages/admin/CountryPage';
 import OfficePage from 'pages/admin/OfficePage';
 import DepartmentPage from 'pages/admin/DepartmentPage';
 import AdminLeavePage from 'pages/admin/LeavePage';
-import AdminAuth from 'components/ProtectRoute/AdminAuth';
 import EmployeeLeavePage from 'pages/employee/LeavePage';
 import AdminAttendancePage from 'pages/admin/AttendancePage';
 import EmployeeAttendancePage from 'pages/employee/AttendancePage';
@@ -27,7 +29,8 @@ import EmployeeDashboardPage from 'pages/employee/DashboardPage';
 import TimekeeperPage from 'pages/employee/TimekeeperPage';
 import ShiftPage from 'pages/admin/ShiftPage';
 import ManageAttendancePage from 'pages/employee/ManageAttendancePage';
-import DepartmentManagerAuth from 'components/ProtectRoute/DepartmentManagerAuth';
+import AdminPayrollPage from 'pages/admin/PayrollPage';
+import EmployeePayrollPage from 'pages/employee/PayrollPage';
 
 const AuthPage = React.lazy(() => import('pages/AuthPage'));
 const PageLayout = React.lazy(() => import('components/Common/PageLayout'));
@@ -84,6 +87,7 @@ function App() {
               <Route path="leave" element={<AdminLeavePage />} />
               <Route path="attendance" element={<AdminAttendancePage />} />
               <Route path="shift" element={<ShiftPage />} />
+              <Route path="payroll" element={<AdminPayrollPage />} />
             </Route>
 
             <Route
@@ -98,6 +102,7 @@ function App() {
               <Route path="attendance" element={<EmployeeAttendancePage />} />
               <Route path="leave" element={<EmployeeLeavePage />} />
               <Route path="timekeeper" element={<TimekeeperPage />} />
+              <Route path="payroll" element={<EmployeePayrollPage />} />
               <Route
                 path="manage-attendance"
                 element={
@@ -149,11 +154,6 @@ function App() {
                 exact
                 path={'/timekeeper'}
                 element={<Navigate to="/employee/timekeeper" replace />}
-              />
-              <Route
-                exact
-                path={'/admin/payroll'}
-                element={<Navigate to="/admin/payroll/salary" replace />}
               />
             </>
           </Routes>

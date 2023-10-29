@@ -1,5 +1,6 @@
 import {
   AlertOutlined,
+  AuditOutlined,
   CalendarOutlined,
   DesktopOutlined,
   PieChartOutlined,
@@ -60,7 +61,14 @@ function EmployeeSideBar() {
       '/employee/leave',
       <UserDeleteOutlined />,
     ),
-    user.profile.manageDepartment.managerId === user.employeeId
+    getItem(
+      <Link to={'/employee/payroll'} replace>
+        Payroll
+      </Link>,
+      '/employee/payroll',
+      <AuditOutlined />,
+    ),
+    user?.profile.manageDepartment.managerId === user?.employeeId
       ? getItem(
           <Link to={'/employee/manage-attendance'} replace>
             Manage

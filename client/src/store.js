@@ -11,6 +11,7 @@ import userReducer from 'reducers/user';
 import leaveReducer from 'reducers/leave';
 import shiftReducer from 'reducers/shift';
 import attendanceReducer from 'reducers/attendance';
+import payrollReducer from 'reducers/payroll';
 
 const rootReducer = {
     auth: authReducer,
@@ -25,6 +26,7 @@ const rootReducer = {
     leave: leaveReducer,
     shift: shiftReducer,
     attendance: attendanceReducer,
+    payroll: payrollReducer,
 }
 
 const store = configureStore({

@@ -7,6 +7,7 @@ import { gold, green } from '@ant-design/colors';
 import _ from 'lodash';
 import { useState } from 'react';
 import dayjs from 'dayjs';
+import { getMonthName } from 'utils/handleDate';
 
 LeaveTableHeader.propTypes = {
   toggleModalAddLeave: PropTypes.func,
@@ -58,6 +59,7 @@ function LeaveTableHeader(props) {
           value={value}
           onChange={onChangeDate}
           allowClear={false}
+          format={(value) =>  getMonthName(value)}
         />
       </Col>
       <Col span={14}>

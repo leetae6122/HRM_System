@@ -72,7 +72,11 @@ function TimekeeperButton(props) {
           loading={loading}
           onClick={logInAttendance}
           disabled={
-            attendanceTimekeeper && attendanceTimekeeper.inTime ? true : false
+            attendanceTimekeeper
+              ? attendanceTimekeeper.inTime
+                ? true
+                : false
+              : true
           }
           style={{
             width: '100%',

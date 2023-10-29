@@ -51,6 +51,7 @@ function AdminSideBar() {
       getItem(<Link to={'/admin/position'}>Position</Link>, '/admin/position'),
     ]),
     getItem('Payroll', 'sub2', <SolutionOutlined />, [
+      getItem(<Link to={'/admin/payroll'}>Payroll</Link>, '/admin/payroll'),
       getItem(<Link to={'/admin/salary'}>Salary</Link>, '/admin/salary'),
       getItem(
         <Link to={'/admin/currency'} replace>

@@ -1,6 +1,5 @@
 import { Col, Row } from 'antd';
 import AttendancesLeavesCalendar from './components/AttendancesLeavesCalendar';
-// import { countDaysInMonth } from 'utils/handleDate';
 import 'assets/styles/employeeDashboard.scss';
 import CardProgress from './components/CardProgress';
 import { green, purple, red, yellow } from '@ant-design/colors';
@@ -9,24 +8,7 @@ import { toast } from 'react-toastify';
 import attendanceApi from 'api/attendanceApi';
 import dayjs from 'dayjs';
 import leaveApi from 'api/leaveApi';
-
-// const totalWorkday = countDaysInMonth();
-const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-const thisMonth = dayjs().month() + 1;
-const thisYear = dayjs().year();
+import { getMonthName } from 'utils/handleDate';
 
 function DashboardPage() {
   const [totalHourSpentMonth, setTotalHourSpentMonth] = useState(0);
@@ -109,8 +91,14 @@ function DashboardPage() {
           hourSpent += attendance.totalHours ?? 0;
         }
       });
-      setTotalHourSpentMonth(hourSpent);
-      setTotalHourOT(hourOT);
+      setTotalHourSpentMonth(
+        hourSpent > 0
+          ? (Math.round(hourSpent * 100) / 100).toFixed(2)
+          : hourSpent,
+      );
+      setTotalHourOT(
+        hourOT > 0 ? (Math.round(hourOT * 100) / 100).toFixed(2) : hourOT,
+      );
     };
     const setHoursWeek = () => {
       let hourSpent = 0;
@@ -119,7 +107,11 @@ function DashboardPage() {
           hourSpent += attendance.totalHours ?? 0;
         }
       });
-      setTotalHourSpentWeek(hourSpent);
+      setTotalHourSpentWeek(
+        hourSpent > 0
+          ? (Math.round(hourSpent * 100) / 100).toFixed(2)
+          : hourSpent,
+      );
     };
     setHoursMonth();
     setHoursWeek();
@@ -131,7 +123,7 @@ function DashboardPage() {
         <Row gutter={[8, 8]}>
           <Col span={6}>
             <CardProgress
-              content={`Number of hours worked / ${monthNames[thisMonth]} ${thisYear}`}
+              content={`Number of hours worked / ${getMonthName(dayjs())}`}
               backgroundColor={green[5]}
               percent={100}
               format={`${totalHourSpentMonth} hrs`}
@@ -149,7 +141,7 @@ function DashboardPage() {
           </Col>
           <Col span={6}>
             <CardProgress
-              content={`Overtime hours / ${monthNames[thisMonth]} ${thisYear}`}
+              content={`Overtime hours / ${getMonthName(dayjs())}`}
               backgroundColor={yellow[5]}
               percent={100}
               format={`${totalHourOT} hrs`}
@@ -158,7 +150,7 @@ function DashboardPage() {
           </Col>
           <Col span={6}>
             <CardProgress
-              content={`Number of leaves / ${monthNames[thisMonth]} ${thisYear}`}
+              content={`Number of leaves / ${getMonthName(dayjs())}`}
               backgroundColor={red[5]}
               percent={100}
               format={`${leaveList.length} leaves`}

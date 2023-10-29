@@ -1,19 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Button, Divider, Space, Table, Tag } from 'antd';
+import payrollApi from 'api/payrollApi';
 import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled, EyeOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { setData, setEditLeaveId, setFilterData } from 'reducers/leave';
-import Swal from 'sweetalert2';
-import leaveApi from 'api/leaveApi';
-import LeaveTableHeader from './components/LeaveTableHeader';
-import ModalAddLeave from './components/ComponentAddEdit/ModalAddLeave';
-import ModalEditLeave from './components/ComponentAddEdit/ModalEditLeave';
-import { gold } from '@ant-design/colors';
-import _ from 'lodash';
+import { setData, setEditPayrollId, setFilterData } from 'reducers/payroll';
 
-const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
+import Swal from 'sweetalert2';
+import _ from 'lodash';
+import { getMonthName } from 'utils/handleDate';
+import { numberWithDot } from 'utils/format';
+import { gold } from '@ant-design/colors';
+import PayrollTableHeader from './components/PayrollTableHeader';
+import ModalAddPayroll from './components/ComponentAddEdit/ModalAddPayroll';
+import ModalEditPayroll from './components/ComponentAddEdit/ModalEditPayroll';
+
+const createColumns = (
+  toggleModalEditPayroll,
+  handleDeletePayroll,
+) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -23,7 +29,7 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
     width: 80,
   },
   {
-    title: 'Name',
+    title: 'Employee',
     dataIndex: ['employeeData', 'firstName'],
     key: 'employeeData',
     sorter: true,
@@ -31,100 +37,113 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
       `${record.employeeData.firstName} ${record.employeeData.lastName}`,
   },
   {
-    title: 'Title',
-    dataIndex: 'title',
-    key: 'title',
+    title: 'Month',
+    dataIndex: 'month',
+    key: 'month',
+    render: (month) => getMonthName(month),
     sorter: true,
   },
   {
+    title: 'Hours Worked',
+    dataIndex: 'hoursWorked',
+    key: 'hoursWorked',
+    sorter: true,
+    render: (value) => `${value} hrs`,
+  },
+  {
+    title: 'Hours Overtime',
+    dataIndex: 'hoursOvertime',
+    key: 'hoursOvertime',
+    sorter: true,
+    render: (value) => `${value} hrs`,
+  },
+  {
+    title: 'Deduction',
+    dataIndex: 'deduction',
+    key: 'deduction',
+    sorter: true,
+    render: (value, record) =>
+      `${numberWithDot(value)} ${record.currencyData.symbol}`,
+  },
+  {
+    title: 'Total Paid',
+    dataIndex: 'totalPaid',
+    key: 'totalPaid',
+    sorter: true,
+    render: (value, record) =>
+      `${numberWithDot(value)} ${record.currencyData.symbol}`,
+  },
+  {
+    title: 'Pay Date',
+    dataIndex: 'payDate',
+    key: 'payDate',
+    sorter: true,
+    render: (date) => (date ? getFullDate(date) : ''),
+  },
+  {
     title: 'Status',
-    dataIndex: 'status',
     key: 'status',
+    dataIndex: 'status',
     render: (status) => (
       <>
         {status === 'Pending' ? (
           <Tag color="default">{status}</Tag>
-        ) : status === 'Approved' ? (
+        ) : status === 'Paid' ? (
           <Tag color="success">{status}</Tag>
-        ) : (
-          <Tag color="error">{status}</Tag>
-        )}
+        ) : null}
       </>
     ),
     filters: [
       {
+        text: 'Paid',
+        value: 'Paid',
+      },
+      {
         text: 'Pending',
         value: 'Pending',
       },
-      {
-        text: 'Approved',
-        value: 'Approved',
-      },
-      {
-        text: 'Reject',
-        value: 'Reject',
-      },
     ],
-  },
-  {
-    title: 'Leave From',
-    dataIndex: 'leaveFrom',
-    key: 'leaveFrom',
-    sorter: true,
-    render: (date) => getFullDate(date),
-  },
-  {
-    title: 'Leave To',
-    dataIndex: 'leaveTo',
-    key: 'leaveTo',
-    sorter: true,
-    render: (date) => getFullDate(date),
-  },
-  {
-    title: 'Date created',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
-    sorter: true,
-    render: (date) => getFullDate(date),
+    filterMultiple: false,
   },
   {
     title: 'Action',
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
-        {record.status !== 'Pending' ? (
+        {record.status === 'Pending' ? (
+          <>
+            <Button
+              type="primary"
+              icon={<EditFilled />}
+              onClick={() => toggleModalEditPayroll(record.id)}
+            />
+            <Button
+              type="primary"
+              danger
+              icon={<DeleteFilled />}
+              onClick={() => handleDeletePayroll(record.id)}
+            />
+          </>
+        ) : (
           <Button
             type="primary"
             style={{ background: gold[5] }}
             icon={<EyeOutlined />}
-            onClick={() => toggleModalEditLeave(record.id)}
-          />
-        ) : (
-          <Button
-            type="primary"
-            icon={<EditFilled />}
-            onClick={() => toggleModalEditLeave(record.id)}
+            onClick={() => toggleModalEditPayroll(record.id)}
           />
         )}
-
-        <Button
-          type="primary"
-          danger
-          icon={<DeleteFilled />}
-          onClick={() => handleDeleteLeave(record.id)}
-        />
       </Space>
     ),
   },
 ];
 
-function LeavePage() {
+function PayrollPage() {
   const dispatch = useDispatch();
-  const { filterData, leaveList, total, currentPage, defaultFilter } =
-    useSelector((state) => state.leave);
+  const { filterData, payrollList, total, currentPage, defaultFilter } =
+    useSelector((state) => state.payroll);
   const [loadingData, setLoadingData] = useState(false);
-  const [openModalAddLeave, setOpenModalAddLeave] = useState(false);
-  const [openModalEditLeave, setOpenModalEditLeave] = useState(false);
+  const [openModalAddPayroll, setOpenModalAddPayroll] = useState(false);
+  const [openModalEditPayroll, setOpenModalEditPayroll] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -132,11 +151,11 @@ function LeavePage() {
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = (await leaveApi.adminGetList(filterData)).data;
+        const response = (await payrollApi.adminGetList(filterData)).data;
         const data = response.data.map((item) => ({ key: item.id, ...item }));
         dispatch(
           setData({
-            leaveList: data,
+            payrollList: data,
             total: response.total,
             currentPage: response.currentPage,
           }),
@@ -162,28 +181,28 @@ function LeavePage() {
     dispatch(setFilterData(filter));
   };
 
-  const refreshLeaveList = async () => {
-    const response = (await leaveApi.adminGetList(defaultFilter)).data;
+  const refreshPayrollList = async () => {
+    const response = (await payrollApi.adminGetList(defaultFilter)).data;
     const data = response.data.map((item) => ({ key: item.id, ...item }));
     dispatch(
       setData({
-        leaveList: data,
+        payrollList: data,
         total: response.total,
         currentPage: response.currentPage,
       }),
     );
   };
 
-  const toggleModalEditLeave = (id) => {
-    dispatch(setEditLeaveId(id));
-    setOpenModalEditLeave(!openModalEditLeave);
+  const toggleModalEditPayroll = (id) => {
+    dispatch(setEditPayrollId(id));
+    setOpenModalEditPayroll(!openModalEditPayroll);
   };
 
-  const toggleModalAddLeave = () => {
-    setOpenModalAddLeave(!openModalAddLeave);
+  const toggleModalAddPayroll = () => {
+    setOpenModalAddPayroll(!openModalAddPayroll);
   };
 
-  const handleDeleteLeave = async (leaveId) => {
+  const handleDeletePayroll = async (payrollId) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -195,9 +214,9 @@ function LeavePage() {
     })
       .then(async (result) => {
         if (result.isConfirmed) {
-          await leaveApi.delete(leaveId);
-          Swal.fire('Deleted!', 'Currency has been deleted.', 'success');
-          await refreshLeaveList();
+          await payrollApi.delete(payrollId);
+          Swal.fire('Deleted!', 'Payroll has been deleted.', 'success');
+          await refreshPayrollList();
         }
       })
       .catch((error) => {
@@ -205,14 +224,14 @@ function LeavePage() {
       });
   };
 
-  const columns = createColumns(toggleModalEditLeave, handleDeleteLeave);
+  const columns = createColumns(toggleModalEditPayroll, handleDeletePayroll);
 
   const onChangeTable = (pagination, filters, sorter) => {
     const page = pagination.current;
     const size = pagination.pageSize;
-    let where = filterData.where;
     let order = defaultFilter.order;
-    
+    let where = filterData.where;
+
     where = _.omitBy(
       {
         ...where,
@@ -234,15 +253,17 @@ function LeavePage() {
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Leave List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
+        Payroll List
+      </Divider>
       <Table
         key={tableKey}
         columns={columns}
-        dataSource={leaveList}
+        dataSource={payrollList}
         bordered
         title={() => (
-          <LeaveTableHeader
-            toggleModalAddLeave={toggleModalAddLeave}
+          <PayrollTableHeader
+            toggleModalAddPayroll={toggleModalAddPayroll}
             setFilter={setFilter}
           />
         )}
@@ -255,21 +276,21 @@ function LeavePage() {
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      {openModalAddLeave && (
-        <ModalAddLeave
-          openModal={openModalAddLeave}
-          toggleShowModal={toggleModalAddLeave}
-          refreshLeaveList={refreshLeaveList}
+      {openModalAddPayroll && (
+        <ModalAddPayroll
+          openModal={openModalAddPayroll}
+          toggleShowModal={toggleModalAddPayroll}
+          refreshPayrollList={refreshPayrollList}
         />
       )}
-      {openModalEditLeave && (
-        <ModalEditLeave
-          openModal={openModalEditLeave}
-          toggleShowModal={toggleModalEditLeave}
-          refreshLeaveList={refreshLeaveList}
+      {openModalEditPayroll && (
+        <ModalEditPayroll
+          openModal={openModalEditPayroll}
+          toggleShowModal={toggleModalEditPayroll}
+          refreshPayrollList={refreshPayrollList}
         />
       )}
     </>
   );
 }
-export default LeavePage;
+export default PayrollPage;

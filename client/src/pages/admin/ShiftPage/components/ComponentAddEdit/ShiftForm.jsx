@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button, Space, DatePicker, Radio } from 'antd';
+import { Form, Input, Button, Space, DatePicker, Radio, Checkbox } from 'antd';
 import _ from 'lodash';
 
 ShiftForm.propTypes = {
@@ -19,8 +19,40 @@ ShiftForm.defaultProps = {
     startTime: null,
     endTime: null,
     overtimeShift: false,
+    days: [],
   },
 };
+
+const optionsDays = [
+  {
+    label: 'Monday',
+    value: 1,
+  },
+  {
+    label: 'Tuesday',
+    value: 2,
+  },
+  {
+    label: 'Wednesday',
+    value: 3,
+  },
+  {
+    label: 'Thursday',
+    value: 4,
+  },
+  {
+    label: 'Friday',
+    value: 5,
+  },
+  {
+    label: <span style={{ color: 'red' }}>Saturday</span>,
+    value: 6,
+  },
+  {
+    label: <span style={{ color: 'red' }}>Sunday</span>,
+    value: 0,
+  },
+];
 
 const wrapperCol = { offset: 8, span: 16 };
 
@@ -105,12 +137,19 @@ function ShiftForm(props) {
           style={{ width: '100%' }}
         />
       </Form.Item>
+      <Form.Item
+        name="days"
+        label="Days"
+        rules={[{ required: true, message: 'Please select days!' }]}
+      >
+        <Checkbox.Group options={optionsDays} />
+      </Form.Item>
       <Form.Item label="Shift Type" name="overtimeShift">
-          <Radio.Group>
-            <Radio value={false}> Main shift </Radio>
-            <Radio value={true}> Overtime shift</Radio>
-          </Radio.Group>
-        </Form.Item>
+        <Radio.Group>
+          <Radio value={false}> Main shift </Radio>
+          <Radio value={true}> Overtime shift</Radio>
+        </Radio.Group>
+      </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
           <Button htmlType="button" onClick={handleCancel} loading={loading}>
