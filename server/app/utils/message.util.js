@@ -31,3 +31,6 @@ export const MSG_EMPLOYEE_CREATED_SALARY = "Employee have created salary";
 export const MSG_LEAVE_STATUS_NOT_PENDING = "Leave status is not Pending";
 // Attendance API
 export const MSG_ATTENDANCE_STATUS_NOT_PENDING = "Attendance status is not Pending";
+// Payroll API
+export const MSG_PAYROLL_STATUS_NOT_PENDING = "Payroll status is not Pending";
+export const MSG_ERROR_PAYROLL_EXISTED = (month) => `Employee payroll has been created for ${month}`

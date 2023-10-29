@@ -87,14 +87,14 @@ class ShiftService {
     }
 
     async getCurrentShift() {
-        const start = dayjs().add(15,'minute').toDate();
-        const end = dayjs().subtract(15,'minute').toDate();
+        const start = dayjs().add(30,'minute').toDate();
+        const end = dayjs().subtract(30,'minute').toDate();
         const result = await db.Shift.findOne({
             where: {
                 $and: [
                     { startTime: { $lte: start } },
                     { endTime: { $gte: end } },
-                ]
+                ],
             },
             raw: true,
             nest: true

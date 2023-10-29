@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Currency.hasMany(models.Position, { foreignKey: 'currencyId' });
       Currency.hasMany(models.Salary, { foreignKey: 'currencyId' });
+      Currency.hasMany(models.Payroll, { foreignKey: 'currencyId' });
     }
   }
   Currency.init({

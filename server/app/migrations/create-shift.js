@@ -14,6 +14,10 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.STRING(60),
             },
+            days: {
+                type: Sequelize.STRING(13),
+                allowNull: false,
+            },
             startTime: {
                 allowNull: false,
                 type: Sequelize.TIME,

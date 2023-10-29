@@ -14,19 +14,31 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.DATEONLY,
             },
+            startDate: {
+                allowNull: false,
+                type: Sequelize.DATEONLY,
+            },
+            endDate: {
+                allowNull: false,
+                type: Sequelize.DATEONLY,
+            },
             hoursWorked: {
                 allowNull: false,
                 type: Sequelize.FLOAT(2),
             },
             hoursOvertime: {
                 type: Sequelize.FLOAT(2),
+                defaultValue: 0
+            },
+            deduction: {
+                type: Sequelize.FLOAT(10),
+                defaultValue: 0
             },
             totalPaid: {
                 allowNull: false,
                 type: Sequelize.FLOAT(10),
             },
             payDate: {
-                allowNull: false,
                 type: Sequelize.DATEONLY,
             },
             status: {
@@ -39,6 +51,14 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Salary',
+                    key: 'id'
+                },
+            },
+            currencyId: {
+                allowNull: false,
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'Currency',
                     key: 'id'
                 },
             },
