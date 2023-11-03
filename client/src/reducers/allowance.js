@@ -5,22 +5,24 @@ const initialState = {
         page: 1,
         size: 10,
         where: {},
-        order: []
+        order: [],
+        modelEmployee: {}
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
-        order: []
+        order: [],
+        modelEmployee: {}
     },
-    currencyList: [],
+    allowanceList: [],
     total: 0,
     currentPage: 1,
-    editCurrencyId: null,
+    editAllowanceId: null,
 }
 
-export const currencySlice = createSlice({
-    name: 'currency',
+export const allowanceSlice = createSlice({
+    name: 'allowance',
     initialState,
     reducers: {
         setFilterData: (state, action) => {
@@ -30,20 +32,20 @@ export const currencySlice = createSlice({
             state.filterData = state.defaultFilter;
         },
         setData: (state, action) => {
-            state.currencyList = action.payload.currencyList;
+            state.allowanceList = action.payload.allowanceList;
             state.total = action.payload.total;
             state.currentPage = action.payload.currentPage;
         },
-        setEditCurrencyId: (state, action) => {
-            state.editCurrencyId = action.payload;
+        setEditAllowanceId: (state, action) => {
+            state.editAllowanceId = action.payload;
         }
     },
 })
 
-export const { 
-    setFilterData, 
-    setData, 
-    setDefaultFilterData, 
-    setEditCurrencyId 
-} = currencySlice.actions;
-export default currencySlice.reducer;
+export const {
+    setFilterData,
+    setData,
+    setDefaultFilterData,
+    setEditAllowanceId
+} = allowanceSlice.actions;
+export default allowanceSlice.reducer;

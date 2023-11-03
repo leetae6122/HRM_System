@@ -33,11 +33,10 @@ function ModalEditUser(props) {
         if (editUserId) {
           const data = (await userApi.getById(editUserId)).data;
           setEditUser({
+            ...data,
             userId: data.id,
-            username: data.username,
             isAdmin: !!data.isAdmin,
             isActive: !!data.isActive,
-            employeeId: data.employeeId,
           });
         }
       } catch (error) {

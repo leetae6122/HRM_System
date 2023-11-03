@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled } from '@ant-design/icons';
 import positionApi from 'api/positionApi';
-import currencyApi from 'api/currencyApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setData, setEditPositionId, setFilterData } from 'reducers/position';
 import { numberWithDot } from 'utils/format';
@@ -15,11 +14,7 @@ import ModalEditPosition from './components/ComponentAddEdit/ModalEditPosition';
 import PositionTableHeader from './components/PositionTableHeader';
 import _ from 'lodash';
 
-const createColumns = (
-  filtersCurrency,
-  toggleModalEditPosition,
-  handleDeletePosition,
-) => [
+const createColumns = (toggleModalEditPosition, handleDeletePosition) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -39,32 +34,19 @@ const createColumns = (
     dataIndex: 'minHourlySalary',
     key: 'minHourlySalary',
     sorter: true,
-    render: (value, record) => `${numberWithDot(value)}${record.currencyData.symbol}/hr`,
+    render: (value) => `${numberWithDot(value)} VNĐ/hr`,
   },
   {
     title: 'Max Hourly Salary',
     dataIndex: 'maxHourlySalary',
     key: 'maxHourlySalary',
     sorter: true,
-    render: (value, record) => (value ? `${numberWithDot(value)}${record.currencyData.symbol}/hr` : ''),
-  },
-  {
-    title: 'Currency Code',
-    dataIndex: ['currencyData', 'code'],
-    key: 'code',
-    filters: filtersCurrency || null,
+    render: (value) => (value ? `${numberWithDot(value)} VNĐ/hr` : ''),
   },
   {
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: true,
-    render: (date) => getFullDate(date),
-  },
-  {
-    title: 'Date update',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
     sorter: true,
     render: (date) => getFullDate(date),
   },
@@ -94,7 +76,6 @@ function PositionPage() {
   const { filterData, positionList, total, currentPage, defaultFilter } =
     useSelector((state) => state.position);
   const [loadingData, setLoadingData] = useState(false);
-  const [filtersCurrency, setFiltersCurrency] = useState([]);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddPosition, setOpenModalAddPosition] = useState(false);
   const [openModalEditPosition, setOpenModalEditPosition] = useState(false);
@@ -123,25 +104,6 @@ function PositionPage() {
     fetchData();
     return () => controller.abort();
   }, [filterData, dispatch]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchData = async () => {
-      try {
-        setLoadingData(true);
-        const response = (await currencyApi.getAll()).data;
-        const data = response.map((currency) => ({
-          text: currency.code,
-          value: currency.code,
-        }));
-        setFiltersCurrency(data);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    fetchData();
-    return () => controller.abort();
-  }, []);
 
   useEffect(() => {
     if (_.isEqual(defaultFilter, filterData)) {
@@ -201,36 +163,23 @@ function PositionPage() {
     setOpenModalAddPosition(!openModalAddPosition);
   };
 
-  const columns = createColumns(
-    filtersCurrency,
-    toggleModalEditPosition,
-    handleDeletePosition,
-  );
+  const columns = createColumns(toggleModalEditPosition, handleDeletePosition);
 
   const onChangeTable = (pagination, filters, sorter) => {
     const page = pagination.current;
     const size = pagination.pageSize;
     let order = defaultFilter.order;
-    let modelEmployee = filterData.modelEmployee ?? {};
-    modelEmployee = {
-      where: _.omitBy(
-        {
-          ...filters,
-        },
-        _.isNil,
-      ),
-    };
 
     if (!_.isEmpty(sorter.column)) {
       order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, page, size, modelEmployee, order });
+    setFilter({ ...filterData, page, size, order });
   };
 
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Position List
+        List of Positions
       </Divider>
       <Table
         key={tableKey}

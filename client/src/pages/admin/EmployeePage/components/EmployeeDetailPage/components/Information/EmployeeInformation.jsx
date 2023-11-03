@@ -1,6 +1,5 @@
 import { Card, Descriptions } from 'antd';
 import { getFullDate } from 'utils/handleDate';
-import { numberWithDot } from 'utils/format';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -13,7 +12,7 @@ const labelStyle = {
   fontWeight: 'bold',
   color: 'grey',
 };
-const createItems = (employee, department) => [
+const createItems = (employee) => [
   {
     key: '1',
     label: <span style={labelStyle}>Employee Id</span>,
@@ -39,43 +38,16 @@ const createItems = (employee, department) => [
     children: employee.departmentData.managerData?.firstName
       ? `${employee.departmentData.managerData.firstName} ${employee.departmentData.managerData.lastName}`
       : '',
-    span: 2,
   },
   {
     key: '5',
     label: <span style={labelStyle}>Department</span>,
     children: employee.departmentData?.name,
-    span: 2,
   },
   {
     key: '6',
     label: <span style={labelStyle}>Position</span>,
     children: employee.positionData.name,
-  },
-  {
-    key: '7',
-    label: <span style={labelStyle}>Salary</span>,
-    children: employee.salaryData.totalSalary
-      ? `${numberWithDot(employee.salaryData.totalSalary)} ${
-          employee.salaryData.currencyData.code
-        }`
-      : '',
-  },
-  {
-    key: '8',
-    label: <span style={labelStyle}>Office</span>,
-    children: department ? department.officeData.title : '',
-    span: 2,
-  },
-  {
-    key: '9',
-    label: <span style={labelStyle}>Office Location</span>,
-    children: `${department.officeData.streetAddress}${
-      department.officeData.stateProvince
-        ? `, ${department.officeData.stateProvince}`
-        : ''
-    }, ${department.officeData.city}`,
-    span: 2,
   },
 ];
 

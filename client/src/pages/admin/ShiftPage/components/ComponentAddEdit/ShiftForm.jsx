@@ -99,7 +99,12 @@ function ShiftForm(props) {
     >
       {initialValues.shiftId ? (
         <Form.Item name="shiftId" label="Shift Id">
-          <Input disabled={true} />
+          <Input
+            disabled={true}
+            style={{
+              color: 'black',
+            }}
+          />
         </Form.Item>
       ) : null}
       <Form.Item
@@ -118,7 +123,8 @@ function ShiftForm(props) {
       <Form.Item
         name="startTime"
         label="Start Time"
-        rules={[{ required: true, message: 'Please select start time!' }]}
+        hasFeedback
+        rules={[{ required: true, message: 'Please select a start time!' }]}
       >
         <DatePicker
           picker={'time'}
@@ -129,7 +135,8 @@ function ShiftForm(props) {
       <Form.Item
         name="endTime"
         label="End Time"
-        rules={[{ required: true, message: 'Please select end time!' }]}
+        hasFeedback
+        rules={[{ required: true, message: 'Please select a end time!' }]}
       >
         <DatePicker
           picker={'time'}
@@ -140,6 +147,7 @@ function ShiftForm(props) {
       <Form.Item
         name="days"
         label="Days"
+        hasFeedback
         rules={[{ required: true, message: 'Please select days!' }]}
       >
         <Checkbox.Group options={optionsDays} />

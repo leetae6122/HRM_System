@@ -92,7 +92,6 @@ function EmployeeSideBar() {
         <img src={logoHrm} alt="logo" />
       </div>
       <Menu
-        className="employee-menu"
         theme="dark"
         selectedKeys={pathname}
         mode="inline"

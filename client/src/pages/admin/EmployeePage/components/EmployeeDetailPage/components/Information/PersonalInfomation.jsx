@@ -41,6 +41,12 @@ const createItems = (employee) => [
   },
   {
     key: "7",
+    label: <span style={labelStyle}>Citizenship ID</span>,
+    children: employee.citizenshipId,
+    span: 2,
+  },
+  {
+    key: "8",
     label: <span style={labelStyle}>Address</span>,
     children: employee.address,
     span: 2

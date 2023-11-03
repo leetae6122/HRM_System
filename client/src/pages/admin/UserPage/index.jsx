@@ -222,8 +222,7 @@ function UserPage() {
     where = _.omitBy(
       {
         ...where,
-        isAdmin: filters.isAdmin,
-        isActive: filters.isActive,
+        ...filters,
       },
       _.isNil,
     );
@@ -241,7 +240,9 @@ function UserPage() {
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>User List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
+        List of Users
+      </Divider>
       <Table
         key={tableKey}
         onChange={onChangeTable}

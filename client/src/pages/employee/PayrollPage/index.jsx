@@ -12,6 +12,7 @@ import { numberWithDot } from 'utils/format';
 import { getMonthName } from 'utils/handleDate';
 import PayrollTableHeader from './components/PayrollTableHeader';
 import ModalDetailPayroll from './components/ModalDetailPayroll';
+import { setDefaultFilterData } from 'reducers/payroll';
 
 const createColumns = (toggleModalDetailPayroll) => [
   {
@@ -56,16 +57,16 @@ const createColumns = (toggleModalDetailPayroll) => [
     dataIndex: 'deduction',
     key: 'deduction',
     sorter: true,
-    render: (value, record) =>
-      `${numberWithDot(value)} ${record.currencyData.symbol}`,
+    render: (value) =>
+      `${numberWithDot(value)} VNĐ`,
   },
   {
     title: 'Total Paid',
     dataIndex: 'totalPaid',
     key: 'totalPaid',
     sorter: true,
-    render: (value, record) =>
-      `${numberWithDot(value)} ${record.currencyData.symbol}`,
+    render: (value) =>
+      `${numberWithDot(value)} VNĐ`,
   },
   {
     title: 'Pay Date',
@@ -120,6 +121,11 @@ function PayrollPage() {
   const [loadingData, setLoadingData] = useState(false);
   const [openModalDetailPayroll, setOpenModalDetailPayroll] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

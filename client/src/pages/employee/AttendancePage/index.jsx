@@ -14,6 +14,7 @@ import attendanceApi from 'api/attendanceApi';
 import AttendanceTableHeader from './components/AttendanceTableHeader';
 import ModalDetailAttendance from './components/ModalDetailAttendance';
 import _ from 'lodash';
+import { setDefaultFilterData } from 'reducers/attendance';
 
 const createColumns = (toggleModalDetailAttendance) => [
   {
@@ -185,6 +186,11 @@ function AttendancePage() {
   const [openModalDetailAttendance, setOpenModalDetailAttendance] =
     useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

@@ -6,14 +6,14 @@ const initialState = {
         size: 10,
         where: {},
         order: [['isActive', 'DESC'], ['username', 'ASC']],
-        modelEmployee: { where: {} }
+        modelEmployee: {}
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
         order: [['isActive', 'DESC'], ['username', 'ASC']],
-        modelEmployee: { where: {} }
+        modelEmployee: {}
     },
     userList: [],
     total: 0,

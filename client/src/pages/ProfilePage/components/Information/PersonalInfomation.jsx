@@ -43,6 +43,12 @@ const createItems = (user) => [
   },
   {
     key: "7",
+    label: <span style={labelStyle}>Citizenship ID</span>,
+    children: user.profile.citizenshipId,
+    span: 2,
+  },
+  {
+    key: "8",
     span: 2,
     label: <span style={labelStyle}>Address</span>,
     children: user.profile.address,

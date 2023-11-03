@@ -5,37 +5,40 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
-import SalaryForm from './SalaryForm';
-import salaryApi from 'api/salaryApi';
+import RewardPunishmentForm from './RewardPunishmentForm';
+import rewardPunishmentApi from 'api/rewardPunishmentApi';
+import dayjs from 'dayjs';
 
-ModalEditSalary.propTypes = {
+ModalEditRewardPunishment.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshSalaryList: PropTypes.func,
+  refreshRewardPunishmentList: PropTypes.func,
 };
 
-ModalEditSalary.defaultProps = {
+ModalEditRewardPunishment.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshSalaryList: null,
+  refreshRewardPunishmentList: null,
 };
 
-function ModalEditSalary(props) {
-  const { editSalaryId } = useSelector((state) => state.salary);
-  const { openModal, toggleShowModal, refreshSalaryList } = props;
+function ModalEditRewardPunishment(props) {
+  const { editRewardPunishmentId } = useSelector((state) => state.rewardPunishment);
+  const { openModal, toggleShowModal, refreshRewardPunishmentList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [editSalary, setEditSalary] = useState({});
+  const [editAllowance, setEditAllowance] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
-        if (editSalaryId) {
-          const data = (await salaryApi.getById(editSalaryId)).data;
-          setEditSalary({
-            salaryId: data.id,
-            basicHourlySalary: data.basicHourlySalary,
-            hourlyOvertimeSalary: data.hourlyOvertimeSalary,
+        if (editRewardPunishmentId) {
+          const data = (await rewardPunishmentApi.getById(editRewardPunishmentId)).data;
+          setEditAllowance({
+            rewardPunishmentId: data.id,
+            type: data.type,
+            reason: data.reason,
+            amount: data.amount,
+            date: dayjs(data.date),
             employeeId: data.employeeId,
           });
         }
@@ -45,20 +48,26 @@ function ModalEditSalary(props) {
     };
     fetchData();
     return () => controller.abort();
-  }, [editSalaryId]);
+  }, [editRewardPunishmentId]);
 
-  const handleEditSalary = async (values) => {
+  const handleEditAllowance = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = _.omitBy(values, _.isNil);
-      const response = await salaryApi.update(data);
+      const data = _.omitBy(
+        {
+          ...values,
+          endDate: values.endDate === '' ? null : values.endDate,
+        },
+        _.isNil,
+      );
+      const response = await rewardPunishmentApi.update(data);
       Swal.fire({
         icon: 'success',
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshSalaryList();
+        await refreshRewardPunishmentList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -77,23 +86,23 @@ function ModalEditSalary(props) {
   return (
     <>
       <Modal
-        title="Edit Salary"
+        title="Edit"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
         width={'100vh'}
         style={{ top: 60 }}
       >
-        {!_.isEmpty(editSalary) && (
-          <SalaryForm
+        {!_.isEmpty(editAllowance) && (
+          <RewardPunishmentForm
             onCancel={handleCancel}
-            onSubmit={handleEditSalary}
+            onSubmit={handleEditAllowance}
             loading={confirmLoading}
-            initialValues={editSalary}
+            initialValues={editAllowance}
           />
         )}
       </Modal>
     </>
   );
 }
-export default ModalEditSalary;
+export default ModalEditRewardPunishment;

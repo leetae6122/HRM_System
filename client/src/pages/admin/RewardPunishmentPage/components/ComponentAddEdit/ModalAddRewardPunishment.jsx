@@ -3,36 +3,38 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import countryApi from 'api/countryApi';
-import CountryForm from './CountryForm';
+import RewardPunishmentForm from './RewardPunishmentForm';
+import rewardPunishmentApi from 'api/rewardPunishmentApi';
+import _ from 'lodash';
 
-ModalAddCountry.propTypes = {
+ModalAddRewardPunishment.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshCountryList: PropTypes.func,
+  refreshRewardPunishmentList: PropTypes.func,
 };
 
-ModalAddCountry.defaultProps = {
+ModalAddRewardPunishment.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshCountryList: null,
+  refreshRewardPunishmentList: null,
 };
 
-function ModalAddCountry(props) {
-  const { openModal, toggleShowModal, refreshCountryList } = props;
+function ModalAddRewardPunishment(props) {
+  const { openModal, toggleShowModal, refreshRewardPunishmentList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const handleAddCountry = async (values) => {
+  const handleAddRewardPunishment = async (values) => {
     try {
       setConfirmLoading(true);
-      const response = await countryApi.create(values);
+      const data = _.omitBy(values, _.isNil);
+      const response = await rewardPunishmentApi.create(data);
       Swal.fire({
         icon: 'success',
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshCountryList();
+        await refreshRewardPunishmentList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -51,19 +53,20 @@ function ModalAddCountry(props) {
   return (
     <>
       <Modal
-        title="Add Country"
+        title="Add Rewards or Punishments"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
         width={'100vh'}
+        style={{ top: 60 }}
       >
-        <CountryForm
+        <RewardPunishmentForm
           onCancel={handleCancel}
-          onSubmit={handleAddCountry}
+          onSubmit={handleAddRewardPunishment}
           loading={confirmLoading}
         />
       </Modal>
     </>
   );
 }
-export default ModalAddCountry;
+export default ModalAddRewardPunishment;

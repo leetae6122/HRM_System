@@ -210,7 +210,7 @@ function LeavePage() {
       .then(async (result) => {
         if (result.isConfirmed) {
           await leaveApi.delete(leaveId);
-          Swal.fire('Deleted!', 'Currency has been deleted.', 'success');
+          Swal.fire('Deleted!', 'Request to leave has been deleted.', 'success');
           await refreshLeaveList();
         }
       })

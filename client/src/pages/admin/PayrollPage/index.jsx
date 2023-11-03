@@ -15,11 +15,9 @@ import { gold } from '@ant-design/colors';
 import PayrollTableHeader from './components/PayrollTableHeader';
 import ModalAddPayroll from './components/ComponentAddEdit/ModalAddPayroll';
 import ModalEditPayroll from './components/ComponentAddEdit/ModalEditPayroll';
+import { setDefaultFilterData } from 'reducers/payroll';
 
-const createColumns = (
-  toggleModalEditPayroll,
-  handleDeletePayroll,
-) => [
+const createColumns = (toggleModalEditPayroll, handleDeletePayroll) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -62,16 +60,14 @@ const createColumns = (
     dataIndex: 'deduction',
     key: 'deduction',
     sorter: true,
-    render: (value, record) =>
-      `${numberWithDot(value)} ${record.currencyData.symbol}`,
+    render: (value) => `${numberWithDot(value)} VNĐ`,
   },
   {
     title: 'Total Paid',
     dataIndex: 'totalPaid',
     key: 'totalPaid',
     sorter: true,
-    render: (value, record) =>
-      `${numberWithDot(value)} ${record.currencyData.symbol}`,
+    render: (value) => `${numberWithDot(value)} VNĐ`,
   },
   {
     title: 'Pay Date',
@@ -145,6 +141,11 @@ function PayrollPage() {
   const [openModalAddPayroll, setOpenModalAddPayroll] = useState(false);
   const [openModalEditPayroll, setOpenModalEditPayroll] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -254,7 +255,7 @@ function PayrollPage() {
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Payroll List
+        List of Payrolls
       </Divider>
       <Table
         key={tableKey}

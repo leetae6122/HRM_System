@@ -15,6 +15,7 @@ import attendanceApi from 'api/attendanceApi';
 import AttendanceTableHeader from './components/AttendanceTableHeader';
 import ModalEditAttendance from './components/ComponentEditAttendance/ModalEditAttendance';
 import _ from 'lodash';
+import { setDefaultFilterData } from 'reducers/attendance';
 
 const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
   {
@@ -196,6 +197,11 @@ function AttendancePage() {
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
@@ -303,7 +309,7 @@ function AttendancePage() {
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Attendance List
+        List of Attendees
       </Divider>
       <Table
         key={tableKey}

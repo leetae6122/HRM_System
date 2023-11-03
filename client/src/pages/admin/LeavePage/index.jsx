@@ -12,6 +12,7 @@ import ModalAddLeave from './components/ComponentAddEdit/ModalAddLeave';
 import ModalEditLeave from './components/ComponentAddEdit/ModalEditLeave';
 import { gold } from '@ant-design/colors';
 import _ from 'lodash';
+import { setDefaultFilterData } from 'reducers/leave';
 
 const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
   {
@@ -128,6 +129,11 @@ function LeavePage() {
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
@@ -196,7 +202,11 @@ function LeavePage() {
       .then(async (result) => {
         if (result.isConfirmed) {
           await leaveApi.delete(leaveId);
-          Swal.fire('Deleted!', 'Currency has been deleted.', 'success');
+          Swal.fire(
+            'Deleted!',
+            'Request to leave has been deleted.',
+            'success',
+          );
           await refreshLeaveList();
         }
       })
@@ -212,7 +222,7 @@ function LeavePage() {
     const size = pagination.pageSize;
     let where = filterData.where;
     let order = defaultFilter.order;
-    
+
     where = _.omitBy(
       {
         ...where,
@@ -234,7 +244,9 @@ function LeavePage() {
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Leave List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
+        List of Leaves
+      </Divider>
       <Table
         key={tableKey}
         columns={columns}

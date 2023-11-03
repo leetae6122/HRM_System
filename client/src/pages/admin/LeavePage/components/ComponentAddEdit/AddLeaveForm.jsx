@@ -138,7 +138,7 @@ function AddLeaveForm(props) {
         name="employeeId"
         label="Employee"
         hasFeedback
-        rules={[{ required: true, message: 'Please select employee!' }]}
+        rules={[{ required: true, message: 'Please select an employee!' }]}
       >
         <Select
           showSearch

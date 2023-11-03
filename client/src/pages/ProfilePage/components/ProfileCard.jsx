@@ -11,7 +11,6 @@ const createData = (user) => [
     title: "Username",
     content: user.username,
   },
-  { title: "Office", content: user.profile.departmentData.officeData?.title },
   {
     title: "Department",
     content: user.profile.departmentData?.name,

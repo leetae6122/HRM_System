@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button, Space, InputNumber, Select } from 'antd';
-import currencyApi from 'api/currencyApi';
-import { toast } from 'react-toastify';
+import { Form, Input, Button, Space, InputNumber } from 'antd';
 import _ from 'lodash';
 
 PositionForm.propTypes = {
@@ -27,7 +25,6 @@ const wrapperCol = { offset: 8, span: 16 };
 
 function PositionForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
-  const [currencyOptions, setCurrencyOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
@@ -44,26 +41,6 @@ function PositionForm(props) {
       () => setSubmittable(false),
     );
   }, [values, form, initialValues]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchData = async () => {
-      try {
-        const response = await currencyApi.getAll();
-        const options = response.data.map((currency) => ({
-          value: currency.id,
-          label: `${currency.name} - ${currency.code}${
-            currency.symbol ? ` - ${currency.symbol}` : ''
-          }`,
-        }));
-        setCurrencyOptions(options);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    fetchData();
-    return () => controller.abort();
-  }, []);
 
   const onFinish = (values) => {
     onSubmit(values);
@@ -89,7 +66,12 @@ function PositionForm(props) {
     >
       {initialValues.positionId ? (
         <Form.Item name="positionId" label="Position Id">
-          <Input disabled={true} />
+          <Input
+            disabled={true}
+            style={{
+              color: 'black',
+            }}
+          />
         </Form.Item>
       ) : null}
       <Form.Item
@@ -105,31 +87,6 @@ function PositionForm(props) {
           disabled={loading}
           showCount
           maxLength={60}
-        />
-      </Form.Item>
-      <Form.Item
-        name="currencyId"
-        label="Currency"
-        hasFeedback
-        rules={[{ required: true, message: 'Please select currency!' }]}
-      >
-        <Select
-          showSearch
-          style={{
-            width: '100%',
-          }}
-          placeholder="Search to Select"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            (option?.label ?? '').includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? '')
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? '').toLowerCase())
-          }
-          options={currencyOptions}
-          disabled={loading}
         />
       </Form.Item>
       <Form.Item
@@ -164,7 +121,7 @@ function PositionForm(props) {
           min={0}
           disabled={loading}
           formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          addonAfter={'/ hr'}
+          addonAfter={'VNĐ/hr'}
         />
       </Form.Item>
       <Form.Item
@@ -180,7 +137,9 @@ function PositionForm(props) {
                 return Promise.resolve();
               }
               return Promise.reject(
-                new Error('Max Hourly Salary must be greater than Min Hourly Salary!'),
+                new Error(
+                  'Max Hourly Salary must be greater than Min Hourly Salary!',
+                ),
               );
             },
           }),
@@ -194,7 +153,7 @@ function PositionForm(props) {
           min={0}
           disabled={loading}
           formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          addonAfter={'/ hr'}
+          addonAfter={'VNĐ/hr'}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>

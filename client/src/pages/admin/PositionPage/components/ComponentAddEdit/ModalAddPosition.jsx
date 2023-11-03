@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import positionApi from 'api/positionApi';
 import PositionForm from './PositionForm';
+import _ from 'lodash';
 
 ModalAddPosition.propTypes = {
   openModal: PropTypes.bool,
@@ -25,7 +26,8 @@ function ModalAddPosition(props) {
   const handleAddPosition = async (values) => {
     try {
       setConfirmLoading(true);
-      const response = await positionApi.create(values);
+      const data = _.omitBy(values, _.isNil);
+      const response = await positionApi.create(data);
       Swal.fire({
         icon: 'success',
         title: response.message,

@@ -6,14 +6,12 @@ const initialState = {
         size: 10,
         where: {},
         order: [],
-        modelOffice: { where: {} }
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
         order: [],
-        modelOffice: { where: {} }
     },
     departmentList: [],
     total: 0,

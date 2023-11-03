@@ -60,37 +60,31 @@ const createItems = (data) => [
   {
     key: '4',
     label: 'Basic Hourly Salary',
-    children: `${numberWithDot(data.salaryData.basicHourlySalary)}${
-      data.currencyData.symbol
-    }/hr`,
+    children: `${numberWithDot(data.salaryData.basicHourlySalary)} VNĐ/hr`,
     span: 2,
   },
   {
     key: '4',
     label: 'Hourly Overtime Salary',
-    children: `${numberWithDot(data.salaryData.hourlyOvertimeSalary)}${
-      data.currencyData.symbol
-    }/hr`,
+    children: `${numberWithDot(data.salaryData.hourlyOvertimeSalary)} VNĐ/hr`,
     span: 2,
   },
   {
     key: '4',
     label: 'Allowance',
-    children: `+ ${numberWithDot(data.salaryData.allowance)}${
-      data.currencyData.symbol
-    }`,
+    children: `+ ${numberWithDot(data.salaryData.allowance)} VNĐ`,
     span: 2,
   },
   {
     key: '4',
     label: 'Deduction',
-    children: `- ${numberWithDot(data.deduction)}${data.currencyData.symbol}`,
+    children: `- ${numberWithDot(data.deduction)} VNĐ`,
     span: 2,
   },
   {
     key: '4',
     label: 'Total Paid',
-    children: `${numberWithDot(data.totalPaid)}${data.currencyData.symbol}`,
+    children: `${numberWithDot(data.totalPaid)} VNĐ`,
     span: 2,
   },
   {

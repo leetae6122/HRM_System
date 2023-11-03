@@ -2,39 +2,45 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import Swal from 'sweetalert2';
-import currencyApi from 'api/currencyApi';
-import CurrencyForm from './CurrencyForm';
 import { toast } from 'react-toastify';
+import AllowanceForm from './AllowanceForm';
+import allowanceApi from 'api/allowanceApi';
 import _ from 'lodash';
 
-ModalAddCurrency.propTypes = {
+ModalAddAllowance.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshCurrencyList: PropTypes.func,
+  refreshAllowanceList: PropTypes.func,
 };
 
-ModalAddCurrency.defaultProps = {
+ModalAddAllowance.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshCurrencyList: null,
+  refreshAllowanceList: null,
 };
 
-function ModalAddCurrency(props) {
-  const { openModal, toggleShowModal, refreshCurrencyList } = props;
+function ModalAddAllowance(props) {
+  const { openModal, toggleShowModal, refreshAllowanceList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const handleAddCurrency = async (values) => {
+  const handleAddAllowance = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = _.pickBy(values, _.identity);
-      const response = await currencyApi.create(data);
+      const data = _.omitBy(
+        {
+          ...values,
+          endDate: values.endDate === '' ? null : values.endDate,
+        },
+        _.isNil,
+      );
+      const response = await allowanceApi.create(data);
       Swal.fire({
         icon: 'success',
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshCurrencyList();
+        await refreshAllowanceList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -53,18 +59,20 @@ function ModalAddCurrency(props) {
   return (
     <>
       <Modal
-        title="Add Currency"
+        title="Add Allowance"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
+        width={'100vh'}
+        style={{ top: 60 }}
       >
-        <CurrencyForm
+        <AllowanceForm
           onCancel={handleCancel}
-          onSubmit={handleAddCurrency}
+          onSubmit={handleAddAllowance}
           loading={confirmLoading}
         />
       </Modal>
     </>
   );
 }
-export default ModalAddCurrency;
+export default ModalAddAllowance;

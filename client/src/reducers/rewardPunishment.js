@@ -5,22 +5,24 @@ const initialState = {
         page: 1,
         size: 10,
         where: {},
-        order: []
+        order: [],
+        modelEmployee: {}
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
-        order: []
+        order: [],
+        modelEmployee: {}
     },
-    countryList: [],
+    rewardPunishmentList: [],
     total: 0,
     currentPage: 1,
-    editCountryId: null,
+    editRewardPunishmentId: null,
 }
 
-export const countrySlice = createSlice({
-    name: 'country',
+export const rewardPunishmentSlice = createSlice({
+    name: 'rewardPunishment',
     initialState,
     reducers: {
         setFilterData: (state, action) => {
@@ -30,20 +32,20 @@ export const countrySlice = createSlice({
             state.filterData = state.defaultFilter;
         },
         setData: (state, action) => {
-            state.countryList = action.payload.countryList;
+            state.rewardPunishmentList = action.payload.rewardPunishmentList;
             state.total = action.payload.total;
             state.currentPage = action.payload.currentPage;
         },
-        setEditCountryId: (state, action) => {
-            state.editCountryId = action.payload;
+        setEditRewardPunishmentId: (state, action) => {
+            state.editRewardPunishmentId = action.payload;
         }
     },
 })
 
-export const { 
-    setFilterData, 
-    setData, 
-    setDefaultFilterData, 
-    setEditCountryId 
-} = countrySlice.actions;
-export default countrySlice.reducer;
+export const {
+    setFilterData,
+    setData,
+    setDefaultFilterData,
+    setEditRewardPunishmentId
+} = rewardPunishmentSlice.actions;
+export default rewardPunishmentSlice.reducer;

@@ -55,68 +55,56 @@ const createItems = (data) => [
     span: 2,
   },
   {
-    key: '5',
+    key: '4',
     label: 'Start Date',
     children: getFullDate(data.startDate),
   },
   {
-    key: '6',
+    key: '5',
     label: 'End Date',
     children: getFullDate(data.endDate),
   },
   {
-    key: '11',
+    key: '6',
     label: 'Hours Worked',
     children: `${data.hoursWorked} hrs`,
   },
   {
-    key: '11',
+    key: '7',
     label: 'Hours Overtime',
     children: `${data.hoursOvertime} hrs`,
   },
   {
-    key: '4',
+    key: '8',
     label: 'Basic Hourly Salary',
-    children: `${numberWithDot(data.salaryData.basicHourlySalary)}${
-      data.currencyData.symbol
-    }/hr`,
+    children: `${numberWithDot(data.salaryData.basicHourlySalary)} VNĐ/hr`,
     span: 2,
   },
   {
-    key: '4',
+    key: '9',
     label: 'Hourly Overtime Salary',
-    children: `${numberWithDot(data.salaryData.hourlyOvertimeSalary)}${
-      data.currencyData.symbol
-    }/hr`,
+    children: `${numberWithDot(data.salaryData.hourlyOvertimeSalary)} VNĐ/hr`,
     span: 2,
   },
   {
-    key: '4',
-    label: 'Allowance',
-    children: `+ ${numberWithDot(data.salaryData.allowance)}${
-      data.currencyData.symbol
-    }`,
-    span: 2,
-  },
-  {
-    key: '4',
+    key: '10',
     label: 'Deduction',
-    children: `- ${numberWithDot(data.deduction)}${data.currencyData.symbol}`,
+    children: `- ${numberWithDot(data.deduction)} VNĐ`,
     span: 2,
   },
   {
-    key: '4',
+    key: '11',
     label: 'Total Paid',
-    children: `${numberWithDot(data.totalPaid)}${data.currencyData.symbol}`,
+    children: `${numberWithDot(data.totalPaid)} VNĐ`,
     span: 2,
   },
   {
-    key: '5',
+    key: '12',
     label: 'Pay Date',
     children: data.payDate ? getFullDate(data.payDate) : '',
   },
   {
-    key: '10',
+    key: '13',
     label: 'Status',
     children: (
       <span
@@ -209,7 +197,7 @@ function EditPayrollForm(props) {
             <Form.Item
               name="payDate"
               label="Pay Date"
-              rules={[{ required: true, message: 'Please select pay date!' }]}
+              rules={[{ required: true, message: 'Please select a pay date!' }]}
             >
               <DatePicker
                 disabled={loading}
@@ -225,12 +213,8 @@ function EditPayrollForm(props) {
                 controls={false}
                 min={0}
                 disabled={loading}
-                formatter={(value) =>
-                  `${value} ${infoPayroll?.currencyData.symbol}`.replace(
-                    /\B(?=(\d{3})+(?!\d))/g,
-                    ',',
-                  )
-                }
+                formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                addonAfter={'VNĐ'}
               />
             </Form.Item>
             <Form.Item label="Status" name="status">

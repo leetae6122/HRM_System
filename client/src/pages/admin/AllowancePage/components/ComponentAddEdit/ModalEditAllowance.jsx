@@ -5,41 +5,41 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
-import OfficeForm from './OfficeForm';
-import officeApi from 'api/officeApi';
+import AllowanceForm from './AllowanceForm';
+import allowanceApi from 'api/allowanceApi';
+import dayjs from 'dayjs';
 
-ModalEditOffice.propTypes = {
+ModalEditAllowance.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshOfficeList: PropTypes.func,
+  refreshAllowanceList: PropTypes.func,
 };
 
-ModalEditOffice.defaultProps = {
+ModalEditAllowance.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshOfficeList: null,
+  refreshAllowanceList: null,
 };
 
-function ModalEditOffice(props) {
-  const { editOfficeId } = useSelector((state) => state.office);
-  const { openModal, toggleShowModal, refreshOfficeList } = props;
+function ModalEditAllowance(props) {
+  const { editAllowanceId } = useSelector((state) => state.allowance);
+  const { openModal, toggleShowModal, refreshAllowanceList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [editOffice, setEditOffice] = useState({});
+  const [editAllowance, setEditAllowance] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
-        if (editOfficeId) {
-          const data = (await officeApi.getById(editOfficeId)).data;
-          setEditOffice({
-            officeId: data.id,
+        if (editAllowanceId) {
+          const data = (await allowanceApi.getById(editAllowanceId)).data;
+          setEditAllowance({
+            allowanceId: data.id,
             title: data.title,
-            streetAddress: data.streetAddress,
-            postalCode: data.postalCode,
-            stateProvince: data.stateProvince,
-            city: data.city,
-            countryId: data.countryId,
+            amount: data.amount,
+            startDate: dayjs(data.startDate),
+            endDate: data.endDate ? dayjs(data.endDate) : '',
+            employeeId: data.employeeId,
           });
         }
       } catch (error) {
@@ -48,20 +48,26 @@ function ModalEditOffice(props) {
     };
     fetchData();
     return () => controller.abort();
-  }, [editOfficeId]);
+  }, [editAllowanceId]);
 
-  const handleEditOffice = async (values) => {
+  const handleEditAllowance = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = _.omitBy(values, _.isNil);
-      const response = await officeApi.update(data);
+      const data = _.omitBy(
+        {
+          ...values,
+          endDate: values.endDate === '' ? null : values.endDate,
+        },
+        _.isNil,
+      );
+      const response = await allowanceApi.update(data);
       Swal.fire({
         icon: 'success',
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshOfficeList();
+        await refreshAllowanceList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -80,22 +86,23 @@ function ModalEditOffice(props) {
   return (
     <>
       <Modal
-        title="Edit Office"
+        title="Edit Allowance"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        style={{ top: 40 }}
+        width={'100vh'}
+        style={{ top: 60 }}
       >
-        {!_.isEmpty(editOffice) && (
-          <OfficeForm
+        {!_.isEmpty(editAllowance) && (
+          <AllowanceForm
             onCancel={handleCancel}
-            onSubmit={handleEditOffice}
+            onSubmit={handleEditAllowance}
             loading={confirmLoading}
-            initialValues={editOffice}
+            initialValues={editAllowance}
           />
         )}
       </Modal>
     </>
   );
 }
-export default ModalEditOffice;
+export default ModalEditAllowance;

@@ -248,7 +248,7 @@ function EmployeeListPage(props) {
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Employee List
+        List of Employees
       </Divider>
       <Table
         key={tableKey}

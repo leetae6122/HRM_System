@@ -36,11 +36,11 @@ function ModalEditEmployee(props) {
           setEditEmployee({
             employeeId: data.id,
             departmentId: data.departmentId,
-            managerId: data.managerId,
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
             phoneNumber: data.phoneNumber,
+            citizenshipId: data.citizenshipId,
             gender: !!data.gender,
             address: data.address,
             dateBirth: dayjs(data.dateBirth),

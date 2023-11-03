@@ -22,7 +22,6 @@ UserForm.defaultProps = {
     password: '',
     isAdmin: false,
     isActive: false,
-    employeeId: null,
   },
 };
 
@@ -39,8 +38,12 @@ function UserForm(props) {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
   useEffect(() => {
-    const defaultValue = initialValues;
-    delete defaultValue.employeeId;
+    const defaultValue = {
+      userId: initialValues.userId,
+      username: initialValues.username,
+      isAdmin: initialValues.isAdmin,
+      isActive: initialValues.isActive,
+    };
     form.validateFields({ validateOnly: true }).then(
       () => {
         if (!_.isEqual(defaultValue, values)) {
@@ -113,7 +116,12 @@ function UserForm(props) {
     >
       {initialValues.userId ? (
         <Form.Item name="userId" label="User Id">
-          <Input disabled={true} />
+          <Input
+            disabled={true}
+            style={{
+              color: 'black',
+            }}
+          />
         </Form.Item>
       ) : null}
       {initialValues.userId ? (
@@ -121,6 +129,9 @@ function UserForm(props) {
           <Input
             disabled={true}
             value={`${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`}
+            style={{
+              color: 'black',
+            }}
           />
         </Form.Item>
       ) : (
@@ -128,7 +139,7 @@ function UserForm(props) {
           name="employeeId"
           label="Employee"
           hasFeedback
-          rules={[{ required: true, message: 'Please select employee!' }]}
+          rules={[{ required: true, message: 'Please select an employee!' }]}
         >
           <Select
             showSearch

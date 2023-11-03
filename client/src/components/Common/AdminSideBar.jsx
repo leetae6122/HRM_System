@@ -1,6 +1,7 @@
 import {
   CalendarOutlined,
-  GlobalOutlined,
+  ClusterOutlined,
+  FundViewOutlined,
   IdcardOutlined,
   PieChartOutlined,
   SolutionOutlined,
@@ -47,40 +48,56 @@ function AdminSideBar() {
       <IdcardOutlined />,
     ),
     getItem('Employee', 'sub1', <TeamOutlined />, [
-      getItem(<Link to={'/admin/employee'}>Employee</Link>, '/admin/employee'),
-      getItem(<Link to={'/admin/position'}>Position</Link>, '/admin/position'),
-    ]),
-    getItem('Payroll', 'sub2', <SolutionOutlined />, [
-      getItem(<Link to={'/admin/payroll'}>Payroll</Link>, '/admin/payroll'),
-      getItem(<Link to={'/admin/salary'}>Salary</Link>, '/admin/salary'),
       getItem(
-        <Link to={'/admin/currency'} replace>
-          Currency
+        <Link to={'/admin/employee'} replace>
+          Employee
         </Link>,
-        '/admin/currency',
+        '/admin/employee',
+      ),
+      getItem(
+        <Link to={'/admin/allowance'} replace>
+          Allowance
+        </Link>,
+        '/admin/allowance',
+      ),
+      getItem(
+        <Link to={'/admin/reward-punishment'} replace>
+            Reward
+            <br />
+            Punishment
+        </Link>,
+        '/admin/reward-punishment',
       ),
     ]),
-    getItem('Organization', 'sub3', <GlobalOutlined />, [
+    getItem('Payroll', 'sub2', <FundViewOutlined />, [
       getItem(
-        <Link to={'/admin/country'} replace>
-          Country
+        <Link to={'/admin/payroll'} replace>
+          Payroll
         </Link>,
-        '/admin/country',
+        '/admin/payroll',
       ),
       getItem(
-        <Link to={'/admin/office'} replace>
-          Office
+        <Link to={'/admin/salary'} replace>
+          Salary
         </Link>,
-        '/admin/office',
-      ),
-      getItem(
-        <Link to={'/admin/department'} replace>
-          Department
-        </Link>,
-        '/admin/department',
+        '/admin/salary',
       ),
     ]),
-    getItem('Attendance', 'sub4', <CalendarOutlined />, [
+    getItem(
+      <Link to={'/admin/department'} replace>
+        Department
+      </Link>,
+      '/admin/department',
+      <ClusterOutlined />
+    ),
+    getItem(
+      <Link to={'/admin/position'} replace>
+        Position
+      </Link>,
+      '/admin/position',
+      <SolutionOutlined />
+    ),
+    getItem('Attendance', 'sub3', <CalendarOutlined />, [
       getItem(
         <Link to={'/admin/attendance'} replace>
           Attendance

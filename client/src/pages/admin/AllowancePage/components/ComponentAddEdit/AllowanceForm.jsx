@@ -1,31 +1,43 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button, Space, InputNumber, Select } from 'antd';
+import {
+  Form,
+  Input,
+  Button,
+  Space,
+  InputNumber,
+  Select,
+  DatePicker,
+} from 'antd';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 import employeeApi from 'api/employeeApi';
 
-SalaryForm.propTypes = {
+AllowanceForm.propTypes = {
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
   initialValues: PropTypes.object,
 };
 
-SalaryForm.defaultProps = {
+AllowanceForm.defaultProps = {
   onCancel: null,
   onSubmit: null,
   loading: false,
   initialValues: {
-    basicHourlySalary: 0,
-    hourlyOvertimeSalary: 0,
+    title: '',
+    amount: 0,
+    startDate: '',
+    endDate: '',
     employeeId: null,
   },
 };
 
+const dateFormat = 'DD/MM/YYYY';
+
 const wrapperCol = { offset: 8, span: 16 };
 
-function SalaryForm(props) {
+function AllowanceForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
   const [employeeOptions, setEmployeeOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
@@ -39,12 +51,12 @@ function SalaryForm(props) {
   };
   useEffect(() => {
     const defaultValues = {
-      basicHourlySalary: initialValues.basicHourlySalary,
-      hourlyOvertimeSalary: initialValues.hourlyOvertimeSalary,
-      allowance: initialValues.allowance,
-      salaryId: initialValues.salaryId,
+      allowanceId: initialValues.allowanceId,
+      title: initialValues.title,
+      amount: initialValues.amount,
+      startDate: initialValues.startDate,
+      endDate: initialValues.endDate,
     };
-
     form.validateFields({ validateOnly: true }).then(
       () => {
         if (!_.isEqual(defaultValues, values)) {
@@ -78,14 +90,14 @@ function SalaryForm(props) {
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
-      if (initialValues.salaryId) {
+      if (initialValues.allowanceId) {
         const data = (await employeeApi.getById(initialValues.employeeId)).data;
         setSelectedEmployee(data);
       }
     };
     fetchData();
     return () => controller.abort();
-  }, [initialValues.salaryId, initialValues.employeeId]);
+  }, [initialValues.allowanceId, initialValues.employeeId]);
 
   const onFinish = (values) => {
     onSubmit(values);
@@ -97,8 +109,8 @@ function SalaryForm(props) {
 
   return (
     <Form
-      name="normal_salary"
-      className="salary-form"
+      name="normal_allowance"
+      className="allowance-form"
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
@@ -109,8 +121,8 @@ function SalaryForm(props) {
       }}
       size="large"
     >
-      {initialValues.salaryId ? (
-        <Form.Item name="salaryId" label="Salary Id">
+      {initialValues.allowanceId ? (
+        <Form.Item name="allowanceId" label="Allowance Id">
           <Input
             disabled={true}
             style={{
@@ -119,7 +131,7 @@ function SalaryForm(props) {
           />
         </Form.Item>
       ) : null}
-      {initialValues.salaryId ? (
+      {initialValues.allowanceId ? (
         <Form.Item label="Employee">
           <Input
             disabled={true}
@@ -164,107 +176,32 @@ function SalaryForm(props) {
       {selectedEmployee ? (
         <>
           <Form.Item
-            name="basicHourlySalary"
-            label="Basic Hourly Salary"
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 18 }}
+            name="title"
+            label="Title"
             hasFeedback
             rules={[
               {
                 required: true,
-                message: "Please input the employee's basic hourly salary!",
+                message: 'Please enter the title of the allowance!',
               },
-              () => ({
-                validator(_, value) {
-                  if (!value || (value && form.getFieldValue('employeeId'))) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error(
-                      'Please select an employee before entering your basic hourly salary!',
-                    ),
-                  );
-                },
-              }),
-              () => ({
-                validator(_, value) {
-                  if (
-                    !value || selectedEmployee?.positionData.maxHourlySalary
-                      ? value >=
-                          selectedEmployee?.positionData.minHourlySalary &&
-                        value <= selectedEmployee?.positionData.maxHourlySalary
-                      : value >= selectedEmployee?.positionData.minHourlySalary
-                  ) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error(
-                      `The basic hourly salary must be greater than equal to ${
-                        selectedEmployee?.positionData.minHourlySalary
-                      } ${
-                        selectedEmployee?.positionData.maxHourlySalary
-                          ? ' and less than equal to ' +
-                            selectedEmployee?.positionData.maxHourlySalary
-                          : ''
-                      }`,
-                    ),
-                  );
-                },
-              }),
             ]}
           >
-            <InputNumber
-              style={{
-                width: '100%',
-              }}
-              controls={false}
-              min={0}
+            <Input
+              placeholder="Enter the title of the allowance"
               disabled={loading}
-              addonBefore={
-                selectedEmployee
-                  ? `${selectedEmployee?.positionData.minHourlySalary} VNĐ/hr`.replace(
-                      /\B(?=(\d{3})+(?!\d))/g,
-                      ',',
-                    )
-                  : ''
-              }
-              addonAfter={
-                selectedEmployee?.positionData.maxHourlySalary
-                  ? `${selectedEmployee?.positionData.maxHourlySalary} VNĐ/hr`.replace(
-                      /\B(?=(\d{3})+(?!\d))/g,
-                      ',',
-                    )
-                  : ''
-              }
-              formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              showCount
+              maxLength={60}
             />
           </Form.Item>
           <Form.Item
-            name="hourlyOvertimeSalary"
-            label="Hourly Overtime Salary"
+            name="amount"
+            label="Amount"
             hasFeedback
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}
             rules={[
               {
                 required: true,
-                message: "Please input the employee's hourly overtime salary!",
+                message: 'Please enter the amount!',
               },
-              () => ({
-                validator(_, value) {
-                  if (
-                    !value ||
-                    value > form.getFieldValue('basicHourlySalary')
-                  ) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error(
-                      'Hourly Overtime Salary must be greater than Basic Hourly Salary!',
-                    ),
-                  );
-                },
-              }),
             ]}
           >
             <InputNumber
@@ -275,7 +212,26 @@ function SalaryForm(props) {
               controls={false}
               disabled={loading}
               formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              addonAfter={'VNĐ/hr'}
+              addonAfter={'VNĐ'}
+            />
+          </Form.Item>
+          <Form.Item
+            name="startDate"
+            label="Start Date"
+            hasFeedback
+            rules={[{ required: true, message: 'Please select a start date!' }]}
+          >
+            <DatePicker
+              disabled={loading}
+              style={{ width: '100%' }}
+              format={dateFormat}
+            />
+          </Form.Item>
+          <Form.Item name="endDate" label="End Date" hasFeedback>
+            <DatePicker
+              disabled={loading}
+              style={{ width: '100%' }}
+              format={dateFormat}
             />
           </Form.Item>
         </>
@@ -291,7 +247,7 @@ function SalaryForm(props) {
             loading={loading}
             disabled={!submittable}
           >
-            {initialValues.salaryId ? 'Save' : 'Add'}
+            {initialValues.allowanceId ? 'Save' : 'Add'}
           </Button>
         </Space>
       </Form.Item>
@@ -299,4 +255,4 @@ function SalaryForm(props) {
   );
 }
 
-export default SalaryForm;
+export default AllowanceForm;

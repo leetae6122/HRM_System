@@ -12,12 +12,6 @@ const columns = [
     render: (id) => `#${id}`,
   },
   {
-    title: 'Office',
-    dataIndex: 'officeData',
-    key: 'office',
-    render: (office) => office.title,
-  },
-  {
     title: 'Short Name',
     dataIndex: 'shortName',
     key: 'shortName',

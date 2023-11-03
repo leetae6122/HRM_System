@@ -4,25 +4,25 @@ import { Button, Col, Row, Space } from 'antd';
 import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDefaultFilterData } from 'reducers/country';
+import { setDefaultFilterData } from 'reducers/rewardPunishment';
 import { gold, green } from '@ant-design/colors';
 import _ from 'lodash';
 
-CountryTableHeader.propTypes = {
-  toggleModalAddCountry: PropTypes.func,
+RewardPunishmentTableHeader.propTypes = {
+  toggleModalAddRewardPunishment: PropTypes.func,
   setFilter: PropTypes.func,
 };
 
-CountryTableHeader.defaultProps = {
-  toggleModalAddCountry: null,
+RewardPunishmentTableHeader.defaultProps = {
+  toggleModalAddRewardPunishment: null,
   setFilter: null,
 };
 
-function CountryTableHeader(props) {
-  const { toggleModalAddCountry, setFilter } = props;
+function RewardPunishmentTableHeader(props) {
+  const { toggleModalAddRewardPunishment, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData, defaultFilter } = useSelector((state) => state.country);
+  const { filterData, defaultFilter } = useSelector((state) => state.rewardPunishment);
   const [inputValue, setInputValue] = useState('');
 
   const handleSearch = (value) => {
@@ -31,18 +31,16 @@ function CountryTableHeader(props) {
       ...filterData,
       page: 1,
       size: 10,
-      where: {
-        $or: [
-          {
-            name: { $like: `%${value}%` },
-          },
-          {
-            countryCode: value,
-          },
-          {
-            isoCode: { $like: `%${value}%` },
-          },
-        ],
+      modelEmployee: {
+        where: {
+          $or: _.flatten(
+            _.map(['firstName', 'lastName'], function (item) {
+              return _.map(value.split(' '), function (q) {
+                return { [item]: { $like: '%' + q + '%' } };
+              });
+            }),
+          ),
+        },
       },
     });
     setLoadingSearch(false);
@@ -57,7 +55,7 @@ function CountryTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search name or code"
+          placeholder="Input search employee name"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}
@@ -81,9 +79,9 @@ function CountryTableHeader(props) {
             type="primary"
             style={{ backgroundColor: green.primary }}
             icon={<PlusCircleFilled />}
-            onClick={toggleModalAddCountry}
+            onClick={toggleModalAddRewardPunishment}
           >
-            Add Country
+            Add Rewards or Punishments
           </Button>
         </Space>
       </Col>
@@ -91,4 +89,4 @@ function CountryTableHeader(props) {
   );
 }
 
-export default CountryTableHeader;
+export default RewardPunishmentTableHeader;

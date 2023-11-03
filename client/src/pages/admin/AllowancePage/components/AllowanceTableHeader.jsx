@@ -4,25 +4,25 @@ import { Button, Col, Row, Space } from 'antd';
 import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDefaultFilterData } from 'reducers/currency';
+import { setDefaultFilterData } from 'reducers/allowance';
 import { gold, green } from '@ant-design/colors';
 import _ from 'lodash';
 
-CurrencyTableHeader.propTypes = {
-  toggleModalAddCurrency: PropTypes.func,
+AllowanceTableHeader.propTypes = {
+  toggleModalAddAllowance: PropTypes.func,
   setFilter: PropTypes.func,
 };
 
-CurrencyTableHeader.defaultProps = {
-  toggleModalAddCurrency: null,
+AllowanceTableHeader.defaultProps = {
+  toggleModalAddAllowance: null,
   setFilter: null,
 };
 
-function CurrencyTableHeader(props) {
-  const { toggleModalAddCurrency, setFilter } = props;
+function AllowanceTableHeader(props) {
+  const { toggleModalAddAllowance, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData, defaultFilter } = useSelector((state) => state.currency);
+  const { filterData, defaultFilter } = useSelector((state) => state.allowance);
   const [inputValue, setInputValue] = useState('');
 
   const handleSearch = (value) => {
@@ -32,14 +32,18 @@ function CurrencyTableHeader(props) {
       page: 1,
       size: 10,
       where: {
-        $or: [
-          {
-            name: { $like: `%${value}%` },
-          },
-          {
-            code: { $like: `%${value}%` },
-          },
-        ],
+        title: { $like: `%${value}%` },
+      },
+      modelEmployee: {
+        where: {
+          $or: _.flatten(
+            _.map(['firstName', 'lastName'], function (item) {
+              return _.map(value.split(' '), function (q) {
+                return { [item]: { $like: '%' + q + '%' } };
+              });
+            }),
+          ),
+        },
       },
     });
     setLoadingSearch(false);
@@ -54,7 +58,7 @@ function CurrencyTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search name or code"
+          placeholder="Input search employee name or title"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}
@@ -78,9 +82,9 @@ function CurrencyTableHeader(props) {
             type="primary"
             style={{ backgroundColor: green.primary }}
             icon={<PlusCircleFilled />}
-            onClick={toggleModalAddCurrency}
+            onClick={toggleModalAddAllowance}
           >
-            Add Currency
+            Add Allowance
           </Button>
         </Space>
       </Col>
@@ -88,4 +92,4 @@ function CurrencyTableHeader(props) {
   );
 }
 
-export default CurrencyTableHeader;
+export default AllowanceTableHeader;

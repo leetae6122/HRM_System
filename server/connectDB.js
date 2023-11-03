@@ -9,6 +9,10 @@ const sequelize = new Sequelize(
         dialect: process.env.SEQUELIZE_DIALECT,
         port: process.env.SEQUELIZE_PORT,
         logging: false,
+        define: {
+            charset: 'utf8',
+            collate: 'utf8_general_ci',
+        },
     },
 );
 

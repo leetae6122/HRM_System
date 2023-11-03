@@ -76,7 +76,12 @@ function LeaveForm(props) {
     >
       {initialValues.leaveId ? (
         <Form.Item name="leaveId" label="Leave Id">
-          <Input disabled={true} />
+          <Input
+            disabled={true}
+            style={{
+              color: 'black',
+            }}
+          />
         </Form.Item>
       ) : null}
       <Form.Item

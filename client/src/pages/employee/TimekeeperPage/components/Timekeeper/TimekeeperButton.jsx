@@ -7,6 +7,8 @@ import attendanceApi from 'api/attendanceApi';
 import { setAttendanceTimekeeper } from 'reducers/attendance';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 dayjs.extend(customParseFormat);
 
@@ -55,12 +57,28 @@ function TimekeeperButton(props) {
   };
 
   const logOutAttendance = () => {
-    const payload = {
-      shiftId: currentShift.id,
-      attendanceDate: dayjs(),
-      outTime: dayjs(),
-    };
-    onLogout(payload);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Logout!',
+    })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          const payload = {
+            shiftId: currentShift.id,
+            attendanceDate: dayjs(),
+            outTime: dayjs(),
+          };
+          onLogout(payload);
+        }
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
   };
 
   return (
@@ -76,7 +94,7 @@ function TimekeeperButton(props) {
               ? attendanceTimekeeper.inTime
                 ? true
                 : false
-              : true
+              : false
           }
           style={{
             width: '100%',
@@ -99,7 +117,8 @@ function TimekeeperButton(props) {
             attendanceTimekeeper &&
             attendanceTimekeeper.inTime &&
             !attendanceTimekeeper.outTime &&
-            dayjs() > dayjs(attendanceTimekeeper.inTime, 'HH:mm:ss')
+            dayjs() > dayjs(attendanceTimekeeper.inTime, 'HH:mm:ss').add(30, 'minute') &&
+            dayjs() > dayjs(currentShift.startTime, 'HH:mm:ss').add(30, 'hour')
               ? false
               : true
           }

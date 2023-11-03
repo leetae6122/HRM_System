@@ -38,7 +38,6 @@ function ModalEditDepartment(props) {
             departmentId: data.id,
             name: data.name,
             shortName: data.shortName,
-            officeId: data.officeId,
             managerId: data.managerId,
           });
         }

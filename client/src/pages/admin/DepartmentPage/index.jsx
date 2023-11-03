@@ -10,18 +10,13 @@ import {
   setFilterData,
 } from 'reducers/department';
 import Swal from 'sweetalert2';
-import officeApi from 'api/officeApi';
 import departmentApi from 'api/departmentApi';
 import DepartmentTableHeader from './components/DepartmentTableHeader';
 import ModalAddDepartment from './components/ComponentAddEdit/ModalAddDepartment';
 import ModalEditDepartment from './components/ComponentAddEdit/ModalEditDepartment';
 import _ from 'lodash';
 
-const createColumns = (
-  filtersOffice,
-  toggleModalEditDepartment,
-  handleDeleteDepartment,
-) => [
+const createColumns = (toggleModalEditDepartment, handleDeleteDepartment) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -43,12 +38,6 @@ const createColumns = (
     sorter: true,
   },
   {
-    title: 'Office',
-    dataIndex: ['officeData', 'title'],
-    key: 'title',
-    filters: filtersOffice || null,
-  },
-  {
     title: 'Manager',
     dataIndex: ['managerData', 'firstName'],
     key: 'managerData',
@@ -62,13 +51,6 @@ const createColumns = (
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: true,
-    render: (date) => getFullDate(date),
-  },
-  {
-    title: 'Date update',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
     sorter: true,
     render: (date) => getFullDate(date),
   },
@@ -98,7 +80,6 @@ function DepartmentPage() {
   const { filterData, departmentList, total, currentPage, defaultFilter } =
     useSelector((state) => state.department);
   const [loadingData, setLoadingData] = useState(false);
-  const [filtersOffice, setFiltersOffice] = useState([]);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddDepartment, setOpenModalAddDepartment] = useState(false);
   const [openModalEditDepartment, setOpenModalEditDepartment] = useState(false);
@@ -127,25 +108,6 @@ function DepartmentPage() {
     fetchData();
     return () => controller.abort();
   }, [filterData, dispatch]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchData = async () => {
-      try {
-        setLoadingData(true);
-        const response = (await officeApi.getAll()).data;
-        const data = response.map((office) => ({
-          text: office.title,
-          value: office.title,
-        }));
-        setFiltersOffice(data);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    fetchData();
-    return () => controller.abort();
-  }, []);
 
   useEffect(() => {
     if (_.isEqual(defaultFilter, filterData)) {
@@ -206,7 +168,6 @@ function DepartmentPage() {
   };
 
   const columns = createColumns(
-    filtersOffice,
     toggleModalEditDepartment,
     handleDeleteDepartment,
   );
@@ -215,15 +176,6 @@ function DepartmentPage() {
     const page = pagination.current;
     const size = pagination.pageSize;
     let order = defaultFilter.order;
-    let modelOffice = filterData.modelOffice ?? {};
-    modelOffice = {
-      where: _.omitBy(
-        {
-          ...filters,
-        },
-        _.isNil,
-      ),
-    };
 
     if (!_.isEmpty(sorter.column)) {
       if (_.isArray(sorter.field))
@@ -234,13 +186,13 @@ function DepartmentPage() {
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
 
-    setFilter({ ...filterData, page, size, modelOffice, order });
+    setFilter({ ...filterData, page, size, order });
   };
 
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Department List
+        List of Departments
       </Divider>
       <Table
         key={tableKey}

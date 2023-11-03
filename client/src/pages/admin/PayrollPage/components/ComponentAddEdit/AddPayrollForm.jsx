@@ -120,7 +120,7 @@ function AddPayrollForm(props) {
         name="employeeId"
         label="Employee"
         hasFeedback
-        rules={[{ required: true, message: 'Please select employee!' }]}
+        rules={[{ required: true, message: 'Please select an employee!' }]}
       >
         <Select
           showSearch
@@ -147,13 +147,15 @@ function AddPayrollForm(props) {
           <Form.Item
             name="month"
             label="Month Payroll"
-            rules={[{ required: true, message: 'Please select month payroll!' }]}
+            rules={[
+              { required: true, message: 'Please select month payroll!' },
+            ]}
           >
             <DatePicker
               picker={'month'}
               disabled={loading}
               style={{ width: '100%' }}
-              format={(value) =>  getMonthName(value)}
+              format={(value) => getMonthName(value)}
             />
           </Form.Item>
           <Form.Item
@@ -161,7 +163,7 @@ function AddPayrollForm(props) {
             label="Payroll date range"
             hasFeedback
             rules={[
-              { required: true, message: 'Please select Payroll date range!' },
+              { required: true, message: 'Please select a payroll date range!' },
             ]}
           >
             <DatePicker.RangePicker
@@ -181,14 +183,8 @@ function AddPayrollForm(props) {
               controls={false}
               min={0}
               disabled={loading}
-              formatter={(value) =>
-                selectedEmployee
-                  ? `${value} ${selectedEmployee?.salaryData.currencyData.symbol}`.replace(
-                      /\B(?=(\d{3})+(?!\d))/g,
-                      ',',
-                    )
-                  : `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-              }
+              formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              addonAfter={'VNĐ'}
             />
           </Form.Item>
         </>

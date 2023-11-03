@@ -210,7 +210,9 @@ function ShiftPage() {
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Shift List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
+        List of Shifts
+      </Divider>
       <Table
         key={tableKey}
         columns={columns}

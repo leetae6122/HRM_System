@@ -1,7 +1,6 @@
 import { Card, Descriptions } from 'antd';
 import { useSelector } from 'react-redux';
 import { getFullDate } from 'utils/handleDate';
-import { numberWithDot } from 'utils/format';
 
 const labelStyle = {
   fontWeight: 'bold',
@@ -34,29 +33,6 @@ const createItems = (profile, department, salary, position) => [
     key: '5',
     label: <span style={labelStyle}>Position</span>,
     children: position.name,
-  },
-  {
-    key: '6',
-    label: <span style={labelStyle}>Salary</span>,
-    children: salary.totalSalary
-      ? `${numberWithDot(salary.totalSalary)} ${salary.currencyData.code}`
-      : '',
-  },
-  {
-    key: '7',
-    span: 2,
-    label: <span style={labelStyle}>Office</span>,
-    children: department ? department.officeData.title : '',
-  },
-  {
-    key: '8',
-    label: <span style={labelStyle}>Office Location</span>,
-    span: 2,
-    children: `${department.officeData.streetAddress}${
-      department.officeData.stateProvince
-        ? `, ${department.officeData.stateProvince}`
-        : ''
-    }, ${department.officeData.city}`,
   },
 ];
 

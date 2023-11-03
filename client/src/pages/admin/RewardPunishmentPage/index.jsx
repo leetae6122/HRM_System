@@ -1,19 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Button, Divider, Space, Table, Tag } from 'antd';
+import rewardPunishmentApi from 'api/rewardPunishmentApi';
 import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { setData, setEditSalaryId, setFilterData } from 'reducers/salary';
-import { numberWithDot } from 'utils/format';
-import Swal from 'sweetalert2';
-import SalaryTableHeader from './components/SalaryTableHeader';
-import salaryApi from 'api/salaryApi';
-import ModalAddSalary from './components/ComponentAddEdit/ModalAddSalary';
-import ModalEditSalary from './components/ComponentAddEdit/ModalEditSalary';
-import _ from 'lodash';
+import {
+  setData,
+  setEditRewardPunishmentId,
+  setFilterData,
+} from 'reducers/rewardPunishment';
 
-const createColumns = (toggleModalEditSalary, handleDeleteSalary) => [
+import Swal from 'sweetalert2';
+import _ from 'lodash';
+import { numberWithDot } from 'utils/format';
+import RewardPunishmentTableHeader from './components/RewardPunishmentTableHeader';
+import ModalAddRewardPunishment from './components/ComponentAddEdit/ModalAddRewardPunishment';
+import ModalEditRewardPunishment from './components/ComponentAddEdit/ModalEditRewardPunishment';
+
+const createColumns = (
+  toggleModalEditRewardPunishment,
+  handleDeleteRewardPunishment,
+) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -23,42 +31,28 @@ const createColumns = (toggleModalEditSalary, handleDeleteSalary) => [
     width: 80,
   },
   {
-    title: 'Basic Hourly Salary',
-    dataIndex: 'basicHourlySalary',
-    key: 'basicHourlySalary',
-    sorter: true,
-    render: (value) => `${numberWithDot(value)} VNĐ/hr`,
-  },
-  {
-    title: 'Hourly Overtime Salary',
-    dataIndex: 'hourlyOvertimeSalary',
-    key: 'hourlyOvertimeSalary',
-    sorter: true,
-    render: (value) => `${numberWithDot(value)} VNĐ/hr`,
-  },
-  {
-    title: 'Status',
-    key: 'isApplying',
-    dataIndex: 'isApplying',
-    render: (isApplying) => (
+    title: 'Type',
+    key: 'type',
+    dataIndex: 'type',
+    render: (type) => (
       <>
         <Tag
           style={{ padding: 8 }}
-          color={isApplying ? 'green' : 'default'}
-          key={isApplying}
+          color={type === 'Reward' ? 'green' : 'red'}
+          key={type}
         >
-          {isApplying ? 'Applying' : 'Do not apply'}
+          {type}
         </Tag>
       </>
     ),
     filters: [
       {
-        text: 'Applying',
-        value: true,
+        text: 'Reward',
+        value: 'Reward',
       },
       {
-        text: 'Do not apply',
-        value: false,
+        text: 'Punishment',
+        value: 'Punishment',
       },
     ],
     filterMultiple: false,
@@ -72,19 +66,26 @@ const createColumns = (toggleModalEditSalary, handleDeleteSalary) => [
       `${record.employeeData.firstName} ${record.employeeData.lastName}`,
   },
   {
+    title: 'Amount',
+    dataIndex: 'amount',
+    key: 'amount',
+    sorter: true,
+    render: (value) => `${numberWithDot(value)} VNĐ`,
+  },
+  {
+    title: 'Date',
+    dataIndex: 'date',
+    key: 'date',
+    sorter: true,
+    render: (date) => getFullDate(date),
+  },
+  {
     title: 'Added By',
     dataIndex: ['adderData', 'firstName'],
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
       `${record.adderData.firstName} ${record.adderData.lastName}`,
-  },
-  {
-    title: 'Date created',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-    render: (date) => getFullDate(date),
   },
   {
     title: 'Action',
@@ -94,27 +95,33 @@ const createColumns = (toggleModalEditSalary, handleDeleteSalary) => [
         <Button
           type="primary"
           icon={<EditFilled />}
-          onClick={() => toggleModalEditSalary(record.id)}
+          onClick={() => toggleModalEditRewardPunishment(record.id)}
         />
         <Button
           type="primary"
           danger
           icon={<DeleteFilled />}
-          onClick={() => handleDeleteSalary(record.id)}
+          onClick={() => handleDeleteRewardPunishment(record.id)}
         />
       </Space>
     ),
   },
 ];
 
-function SalaryPage() {
+function RewardPunishmentPage() {
   const dispatch = useDispatch();
-  const { filterData, salaryList, total, currentPage, defaultFilter } =
-    useSelector((state) => state.salary);
+  const {
+    filterData,
+    rewardPunishmentList,
+    total,
+    currentPage,
+    defaultFilter,
+  } = useSelector((state) => state.rewardPunishment);
   const [loadingData, setLoadingData] = useState(false);
-  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
-  const [openModalAddSalary, setOpenModalAddSalary] = useState(false);
-  const [openModalEditSalary, setOpenModalEditSalary] = useState(false);
+  const [openModalAddRewardPunishment, setOpenModalAddRewardPunishment] =
+    useState(false);
+  const [openModalEditRewardPunishment, setOpenModalEditRewardPunishment] =
+    useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -122,11 +129,13 @@ function SalaryPage() {
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = (await salaryApi.getList(filterData)).data;
+        const response = (
+          await rewardPunishmentApi.adminGetList(filterData)
+        ).data;
         const data = response.data.map((item) => ({ key: item.id, ...item }));
         dispatch(
           setData({
-            salaryList: data,
+            rewardPunishmentList: data,
             total: response.total,
             currentPage: response.currentPage,
           }),
@@ -139,7 +148,7 @@ function SalaryPage() {
     };
     fetchData();
     return () => controller.abort();
-  }, [filterData, dispatch]);
+  }, [dispatch, filterData]);
 
   useEffect(() => {
     if (_.isEqual(defaultFilter, filterData)) {
@@ -152,19 +161,29 @@ function SalaryPage() {
     dispatch(setFilterData(filter));
   };
 
-  const refreshSalaryList = async () => {
-    const response = (await salaryApi.getList(defaultFilter)).data;
+  const refreshRewardPunishmentList = async () => {
+    const response = (await rewardPunishmentApi.adminGetList(defaultFilter))
+      .data;
     const data = response.data.map((item) => ({ key: item.id, ...item }));
     dispatch(
       setData({
-        salaryList: data,
+        rewardPunishmentList: data,
         total: response.total,
         currentPage: response.currentPage,
       }),
     );
   };
 
-  const handleDeleteSalary = async (salaryId) => {
+  const toggleModalEditRewardPunishment = (id) => {
+    dispatch(setEditRewardPunishmentId(id));
+    setOpenModalEditRewardPunishment(!openModalEditRewardPunishment);
+  };
+
+  const toggleModalAddRewardPunishment = () => {
+    setOpenModalAddRewardPunishment(!openModalAddRewardPunishment);
+  };
+
+  const handleDeleteRewardPunishment = async (rewardId) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -176,9 +195,9 @@ function SalaryPage() {
     })
       .then(async (result) => {
         if (result.isConfirmed) {
-          await salaryApi.delete(salaryId);
-          Swal.fire('Deleted!', 'Salary has been deleted.', 'success');
-          await refreshSalaryList();
+          await rewardPunishmentApi.delete(rewardId);
+          Swal.fire('Deleted!', 'Reward has been deleted.', 'success');
+          await refreshRewardPunishmentList();
         }
       })
       .catch((error) => {
@@ -186,37 +205,15 @@ function SalaryPage() {
       });
   };
 
-  const toggleShowFilterDrawer = () => {
-    setOpenFilterDrawer(!openFilterDrawer);
-  };
-
-  const toggleModalEditSalary = (id) => {
-    dispatch(setEditSalaryId(id));
-    setOpenModalEditSalary(!openModalEditSalary);
-  };
-
-  const toggleModalAddSalary = () => {
-    setOpenModalAddSalary(!openModalAddSalary);
-  };
-
   const columns = createColumns(
-    toggleModalEditSalary,
-    handleDeleteSalary,
+    toggleModalEditRewardPunishment,
+    handleDeleteRewardPunishment,
   );
 
   const onChangeTable = (pagination, filters, sorter) => {
     const page = pagination.current;
     const size = pagination.pageSize;
-    let where = filterData.where;
     let order = defaultFilter.order;
-
-    where = _.omitBy(
-      {
-        ...where,
-        isApplying: filters.isApplying,
-      },
-      _.isNil,
-    );
 
     if (!_.isEmpty(sorter.column)) {
       if (_.isArray(sorter.field))
@@ -226,23 +223,22 @@ function SalaryPage() {
       else
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, page, size, where, order });
+    setFilter({ ...filterData, page, size, order });
   };
 
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        List of Salaries
+        List of Rewards and Punishments
       </Divider>
       <Table
         key={tableKey}
         columns={columns}
-        dataSource={salaryList}
+        dataSource={rewardPunishmentList}
         bordered
         title={() => (
-          <SalaryTableHeader
-            toggleModalAddSalary={toggleModalAddSalary}
-            toggleShowFilterDrawer={toggleShowFilterDrawer}
+          <RewardPunishmentTableHeader
+            toggleModalAddRewardPunishment={toggleModalAddRewardPunishment}
             setFilter={setFilter}
           />
         )}
@@ -255,27 +251,21 @@ function SalaryPage() {
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      {/* {openFilterDrawer && (
-        <FilterDrawer
-          toggleShowDrawer={toggleShowFilterDrawer}
-          openDrawer={openFilterDrawer}
-        />
-      )} */}
-      {openModalAddSalary && (
-        <ModalAddSalary
-          openModal={openModalAddSalary}
-          toggleShowModal={toggleModalAddSalary}
-          refreshSalaryList={refreshSalaryList}
+      {openModalAddRewardPunishment && (
+        <ModalAddRewardPunishment
+          openModal={openModalAddRewardPunishment}
+          toggleShowModal={toggleModalAddRewardPunishment}
+          refreshRewardPunishmentList={refreshRewardPunishmentList}
         />
       )}
-      {openModalEditSalary && (
-        <ModalEditSalary
-          openModal={openModalEditSalary}
-          toggleShowModal={toggleModalEditSalary}
-          refreshSalaryList={refreshSalaryList}
+      {openModalEditRewardPunishment && (
+        <ModalEditRewardPunishment
+          openModal={openModalEditRewardPunishment}
+          toggleShowModal={toggleModalEditRewardPunishment}
+          refreshRewardPunishmentList={refreshRewardPunishmentList}
         />
       )}
     </>
   );
 }
-export default SalaryPage;
+export default RewardPunishmentPage;

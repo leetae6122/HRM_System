@@ -15,7 +15,7 @@ const initialState = {
             attendanceDate: { $between: [startDate, endDate] },
         },
         order: [['attendanceDate', 'DESC']],
-        modelEmployee: { where: {} }
+        modelEmployee: {}
     },
     filterData: {
         page: 1,
@@ -24,7 +24,7 @@ const initialState = {
             attendanceDate: { $between: [startDate, endDate] },
         },
         order: [['attendanceDate', 'DESC']],
-        modelEmployee: { where: {} }
+        modelEmployee: {}
     },
     attendanceList: [],
     total: 0,

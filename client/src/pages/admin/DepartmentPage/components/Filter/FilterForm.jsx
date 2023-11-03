@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Form, Input, Button, Space, InputNumber, Select } from "antd";
-import currencyApi from "api/currencyApi";
-import { toast } from "react-toastify";
+import { Form, Input, Button, Space, InputNumber } from "antd";
 import _ from "lodash";
 
 FilterDrawerForm.propTypes = {
@@ -23,7 +21,6 @@ const wrapperCol = { offset: 8, span: 16 };
 
 function FilterDrawerForm(props) {
   const { onCancel, onSubmit, loading, editPosition } = props;
-  const [currencyOptions, setCurrencyOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
@@ -40,26 +37,6 @@ function FilterDrawerForm(props) {
       () => setSubmittable(false)
     );
   }, [values, form, editPosition]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchData = async () => {
-      try {
-        const response = await currencyApi.getAll();
-        const options = response.data.map((currency) => ({
-          value: currency.id,
-          label: `${currency.name} - ${currency.code}${
-            currency.symbol ? ` - ${currency.symbol}` : ""
-          }`,
-        }));
-        setCurrencyOptions(options);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    fetchData();
-    return () => controller.abort();
-  }, []);
 
   const onFinish = (values) => {
     onSubmit(values);
@@ -94,26 +71,6 @@ function FilterDrawerForm(props) {
           maxLength={60}
         />
       </Form.Item>
-      <Form.Item name="currencyId" label="Currency" hasFeedback>
-        <Select
-          showSearch
-          style={{
-            width: "100%",
-          }}
-          placeholder="Search to Select"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            (option?.label ?? "").includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? "")
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? "").toLowerCase())
-          }
-          options={currencyOptions}
-          disabled={loading}
-        />
-      </Form.Item>
       <Form.Item
         name="minSalary"
         label="Min Salary"
@@ -142,6 +99,7 @@ function FilterDrawerForm(props) {
           controls={false}
           min={0}
           formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          addonAfter={'VNĐ'}
           disabled={loading}
         />
       </Form.Item>
@@ -169,6 +127,7 @@ function FilterDrawerForm(props) {
           controls={false}
           disabled={loading}
           formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          addonAfter={'VNĐ'}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>

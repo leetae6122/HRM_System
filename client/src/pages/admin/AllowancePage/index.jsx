@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Button, Divider, Space, Table } from 'antd';
-import currencyApi from 'api/currencyApi';
+import allowanceApi from 'api/allowanceApi';
 import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { setData, setEditCurrencyId, setFilterData } from 'reducers/currency';
-import ModalAddCurrency from './components/ComponentAddEdit/ModalAddCurrency';
-import ModalEditCurrency from './components/ComponentAddEdit/ModalEditCurrency';
-import CurrencyTableHeader from './components/CurrencyTableHeader';
+import { setData, setEditAllowanceId, setFilterData } from 'reducers/allowance';
+
 import Swal from 'sweetalert2';
 import _ from 'lodash';
+import { numberWithDot } from 'utils/format';
+import AllowanceTableHeader from './components/AllowanceTableHeader';
+import ModalAddAllowance from './components/ComponentAddEdit/ModalAddAllowance';
+import ModalEditAllowance from './components/ComponentAddEdit/ModalEditAllowance';
 
-const createColumns = (toggleModalEditCurrency, handleDeleteCurrency) => [
+const createColumns = (toggleModalEditAllowance, handleDeleteAllowance) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -22,36 +24,47 @@ const createColumns = (toggleModalEditCurrency, handleDeleteCurrency) => [
     width: 80,
   },
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: 'Employee',
+    dataIndex: ['employeeData', 'firstName'],
+    key: 'employeeData',
+    sorter: true,
+    render: (_, record) =>
+      `${record.employeeData.firstName} ${record.employeeData.lastName}`,
+  },
+  {
+    title: 'Title',
+    dataIndex: 'title',
+    key: 'title',
     sorter: true,
   },
   {
-    title: 'Code',
-    dataIndex: 'code',
-    key: 'code',
+    title: 'Amount',
+    dataIndex: 'amount',
+    key: 'amount',
     sorter: true,
+    render: (value) => `${numberWithDot(value)} VNĐ`,
   },
   {
-    title: 'Symbol',
-    dataIndex: 'symbol',
-    key: 'symbol',
-    sorter: true,
-  },
-  {
-    title: 'Date created',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
+    title: 'Start Date',
+    dataIndex: 'startDate',
+    key: 'startDate',
     sorter: true,
     render: (date) => getFullDate(date),
   },
   {
-    title: 'Date update',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
+    title: 'End Date',
+    dataIndex: 'endDate',
+    key: 'endDate',
     sorter: true,
-    render: (date) => getFullDate(date),
+    render: (date) => (date ? getFullDate(date) : ''),
+  },
+  {
+    title: 'Added By',
+    dataIndex: ['adderData', 'firstName'],
+    key: 'adderData',
+    sorter: true,
+    render: (_, record) =>
+      `${record.adderData.firstName} ${record.adderData.lastName}`,
   },
   {
     title: 'Action',
@@ -61,37 +74,38 @@ const createColumns = (toggleModalEditCurrency, handleDeleteCurrency) => [
         <Button
           type="primary"
           icon={<EditFilled />}
-          onClick={() => toggleModalEditCurrency(record.id)}
+          onClick={() => toggleModalEditAllowance(record.id)}
         />
         <Button
           type="primary"
           danger
           icon={<DeleteFilled />}
-          onClick={() => handleDeleteCurrency(record.id)}
+          onClick={() => handleDeleteAllowance(record.id)}
         />
       </Space>
     ),
   },
 ];
 
-function CurrencyPage() {
+function AllowancePage() {
   const dispatch = useDispatch();
-  const { filterData, currencyList, total, currentPage, defaultFilter } =
-    useSelector((state) => state.currency);
+  const { filterData, allowanceList, total, currentPage, defaultFilter } =
+    useSelector((state) => state.allowance);
   const [loadingData, setLoadingData] = useState(false);
-  const [openModalAddCurrency, setOpenModalAddCurrency] = useState(false);
-  const [openModalEditCurrency, setOpenModalEditCurrency] = useState(false);
+  const [openModalAddAllowance, setOpenModalAddAllowance] = useState(false);
+  const [openModalEditAllowance, setOpenModalEditAllowance] = useState(false);
+  const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = (await currencyApi.getList(filterData)).data;
+        const response = (await allowanceApi.adminGetList(filterData)).data;
         const data = response.data.map((item) => ({ key: item.id, ...item }));
         dispatch(
           setData({
-            currencyList: data,
+            allowanceList: data,
             total: response.total,
             currentPage: response.currentPage,
           }),
@@ -106,32 +120,39 @@ function CurrencyPage() {
     return () => controller.abort();
   }, [dispatch, filterData]);
 
+  useEffect(() => {
+    if (_.isEqual(defaultFilter, filterData)) {
+      setTableKey(tableKey + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
+
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
   };
 
-  const refreshCurrencyList = async () => {
-    const response = (await currencyApi.getList(defaultFilter)).data;
+  const refreshAllowanceList = async () => {
+    const response = (await allowanceApi.adminGetList(defaultFilter)).data;
     const data = response.data.map((item) => ({ key: item.id, ...item }));
     dispatch(
       setData({
-        currencyList: data,
+        allowanceList: data,
         total: response.total,
         currentPage: response.currentPage,
       }),
     );
   };
 
-  const toggleModalEditCurrency = (id) => {
-    dispatch(setEditCurrencyId(id));
-    setOpenModalEditCurrency(!openModalEditCurrency);
+  const toggleModalEditAllowance = (id) => {
+    dispatch(setEditAllowanceId(id));
+    setOpenModalEditAllowance(!openModalEditAllowance);
   };
 
-  const toggleModalAddCurrency = () => {
-    setOpenModalAddCurrency(!openModalAddCurrency);
+  const toggleModalAddAllowance = () => {
+    setOpenModalAddAllowance(!openModalAddAllowance);
   };
 
-  const handleDeleteCurrency = async (currencyId) => {
+  const handleDeleteAllowance = async (allowanceId) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -143,9 +164,9 @@ function CurrencyPage() {
     })
       .then(async (result) => {
         if (result.isConfirmed) {
-          await currencyApi.delete(currencyId);
-          Swal.fire('Deleted!', 'Currency has been deleted.', 'success');
-          await refreshCurrencyList();
+          await allowanceApi.delete(allowanceId);
+          Swal.fire('Deleted!', 'Allowance has been deleted.', 'success');
+          await refreshAllowanceList();
         }
       })
       .catch((error) => {
@@ -153,7 +174,10 @@ function CurrencyPage() {
       });
   };
 
-  const columns = createColumns(toggleModalEditCurrency, handleDeleteCurrency);
+  const columns = createColumns(
+    toggleModalEditAllowance,
+    handleDeleteAllowance,
+  );
 
   const onChangeTable = (pagination, filters, sorter) => {
     const page = pagination.current;
@@ -174,15 +198,16 @@ function CurrencyPage() {
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Currency List
+        List of Allowances
       </Divider>
       <Table
+        key={tableKey}
         columns={columns}
-        dataSource={currencyList}
+        dataSource={allowanceList}
         bordered
         title={() => (
-          <CurrencyTableHeader
-            toggleModalAddCurrency={toggleModalAddCurrency}
+          <AllowanceTableHeader
+            toggleModalAddAllowance={toggleModalAddAllowance}
             setFilter={setFilter}
           />
         )}
@@ -195,21 +220,21 @@ function CurrencyPage() {
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      {openModalAddCurrency && (
-        <ModalAddCurrency
-          openModal={openModalAddCurrency}
-          toggleShowModal={toggleModalAddCurrency}
-          refreshCurrencyList={refreshCurrencyList}
+      {openModalAddAllowance && (
+        <ModalAddAllowance
+          openModal={openModalAddAllowance}
+          toggleShowModal={toggleModalAddAllowance}
+          refreshAllowanceList={refreshAllowanceList}
         />
       )}
-      {openModalEditCurrency && (
-        <ModalEditCurrency
-          openModal={openModalEditCurrency}
-          toggleShowModal={toggleModalEditCurrency}
-          refreshCurrencyList={refreshCurrencyList}
+      {openModalEditAllowance && (
+        <ModalEditAllowance
+          openModal={openModalEditAllowance}
+          toggleShowModal={toggleModalEditAllowance}
+          refreshAllowanceList={refreshAllowanceList}
         />
       )}
     </>
   );
 }
-export default CurrencyPage;
+export default AllowancePage;
