@@ -1,7 +1,6 @@
 import {
     MSG_ADDED_SALARY_SUCCESSFUL,
     MSG_DELETE_SUCCESSFUL,
-    MSG_EMPLOYEE_CREATED_SALARY,
     MSG_ERROR_DELETE,
     MSG_ERROR_ID_EMPTY,
     MSG_ERROR_NOT_FOUND,
@@ -44,7 +43,7 @@ exports.createSalary = async (req, res, next) => {
     try {
         const salaryExisted = await salaryService.findByEmployeeId(req.body.employeeId);
         if (salaryExisted) {
-            return next(createError.BadRequest(MSG_EMPLOYEE_CREATED_SALARY));
+            await salaryService.updateSalary(salaryExisted.id, { isApplying: false });
         }
         let payload = { ...req.body, addedBy: req.user.employeeId }
 

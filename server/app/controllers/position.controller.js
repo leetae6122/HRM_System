@@ -7,7 +7,6 @@ import {
     MSG_UPDATE_SUCCESSFUL
 } from "../utils/message.util";
 import positionService from "./../services/position.service";
-import currencyService from "./../services/currency.service";
 import createError from 'http-errors';
 
 exports.findById = async (req, res, next) => {
@@ -31,6 +30,7 @@ exports.findAll = async (req, res, next) => {
 exports.getListPosition = async (req, res, next) => {
     try {
         const data = await positionService.filterListPosition(req.body);
+
         return res.send({ data });
     } catch (error) {
         return next(error);
@@ -43,7 +43,6 @@ exports.createPosition = async (req, res, next) => {
         if (positionExisted) {
             return next(createError.BadRequest(MSG_ERROR_EXISTED("Position name")));
         }
-        await currencyService.foundCurrency(req.body.currencyId, next);
 
         const data = await positionService.createPosition(req.body);
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Position"), data });
@@ -60,7 +59,6 @@ exports.updatePosition = async (req, res, next) => {
         }
 
         await positionService.foundPosition(req.body.positionId, next);
-        await currencyService.foundCurrency(req.body.currencyId, next);
 
         await positionService.updatePosition(req.body.positionId, req.body);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });

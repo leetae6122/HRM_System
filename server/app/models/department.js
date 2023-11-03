@@ -5,10 +5,7 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Department extends Model {
     static associate(models) {
-      Department.belongsTo(models.Office, { foreignKey: 'officeId', as: 'officeData' });
-
       Department.hasMany(models.Employee, { foreignKey: 'departmentId', as: 'employeeData' });
-
       Department.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData'});
     }
   }
@@ -20,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     shortName: DataTypes.STRING,
     managerId: DataTypes.UUID,
-    officeId: DataTypes.INTEGER
+    createdAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Department'

@@ -1,10 +1,11 @@
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
+import createError from 'http-errors';
 import _ from 'lodash';
 
-class SalaryService {
+class AllowanceService {
     async findById(id) {
-        const result = await db.Salary.findOne({
-            where: { id },
+        const result = await db.Allowance.findByPk(id, {
             include: [
                 { model: db.Employee, as: 'employeeData' },
                 { model: db.Employee, as: 'adderData' }
@@ -15,26 +16,12 @@ class SalaryService {
         return result;
     }
 
-    async findByEmployeeId(employeeId) {
-        const result = await db.Salary.findOne({
-            where: { employeeId },
-            raw: true,
-            nest: true
-        });
-        return result;
-    }
-
     async findAll() {
-        const result = await db.Salary.findAll({
-            include: [
-                { model: db.Employee, as: 'employeeData' },
-                { model: db.Employee, as: 'adderData' }
-            ]
-        });
+        const result = await db.Allowance.findAll({});
         return result;
     }
 
-    async filterListSalary(body) {
+    async filterListAllowance(body) {
         const page = body.page || 1;
         const limit = body.size || 10;
         const where = body.where;
@@ -46,43 +33,31 @@ class SalaryService {
 
         let count = 0;
         let rows = [];
-        const data1 = await db.Salary.findAndCountAll({
+
+        const data1 = await db.Allowance.findAndCountAll({
             where,
             offset,
             limit,
             order,
             attributes,
             include: [
-                {
-                    model: db.Employee, as: 'employeeData',
-                    attributes: ['id', 'firstName', 'lastName'],
-                },
-                {
-                    model: db.Employee, as: 'adderData',
-                    attributes: ['id', 'firstName', 'lastName'],
-                }
+                { model: db.Employee, as: 'employeeData' },
+                { model: db.Employee, as: 'adderData' }
             ],
             raw: true,
             nest: true
         });
 
         if ((data1.count === 0 || _.isEmpty(where)) && !_.isEmpty(employeeFilter)) {
-            const data2 = await db.Salary.findAndCountAll({
+            const data2 = await db.Allowance.findAndCountAll({
                 where: {},
                 offset,
                 limit,
                 order,
                 attributes,
                 include: [
-                    {
-                        model: db.Employee, as: 'employeeData',
-                        attributes: ['id', 'firstName', 'lastName'],
-                        ...employeeFilter
-                    },
-                    {
-                        model: db.Employee, as: 'adderData',
-                        attributes: ['id', 'firstName', 'lastName'],
-                    }
+                    { model: db.Employee, as: 'employeeData', ...employeeFilter },
+                    { model: db.Employee, as: 'adderData' }
                 ],
                 raw: true,
                 nest: true
@@ -106,8 +81,8 @@ class SalaryService {
         };
     }
 
-    async createSalary(payload) {
-        const result = await db.Salary.create(
+    async createAllowance(payload) {
+        const result = await db.Allowance.create(
             payload,
             {
                 raw: true,
@@ -117,8 +92,8 @@ class SalaryService {
         return result;
     }
 
-    async updateSalary(id, payload) {
-        await db.Salary.update(
+    async updateAllowance(id, payload) {
+        await db.Allowance.update(
             payload
             ,
             {
@@ -127,16 +102,19 @@ class SalaryService {
         );
     }
 
-    async deleteSalary(id) {
-        await db.Salary.destroy({
-            where: { id },
+    async deleteAllowance(id) {
+        await db.Allowance.destroy({
+            where: { id }
         });
     }
-    async deleteSalaryByEmployeeId(employeeId) {
-        await db.Salary.destroy({
-            where: { employeeId },
-        });
+
+    async foundAllowance(allowanceId, next) {
+        const foundAllowance = await this.findById(allowanceId);
+        if (!foundAllowance) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Allowance")));
+        }
+        return foundAllowance;
     }
 }
 
-module.exports = new SalaryService;
+module.exports = new AllowanceService;

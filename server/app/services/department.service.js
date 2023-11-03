@@ -14,7 +14,7 @@ class DepartmentService {
 
     async findByEmployeeId(employeeId) {
         const result = await db.Department.findOne({
-            where:{
+            where: {
                 managerId: employeeId
             },
             raw: true,
@@ -25,13 +25,7 @@ class DepartmentService {
 
 
     async findAll() {
-        const result = await db.Department.findAll({
-            include: [
-                {
-                    model: db.Office, as: 'officeData'
-                },
-            ],
-        });
+        const result = await db.Department.findAll({});
         return result;
     }
 
@@ -41,7 +35,6 @@ class DepartmentService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const officeFilter = body.modelOffice;
 
         const offset = (page - 1) * limit;
 
@@ -52,9 +45,6 @@ class DepartmentService {
             order,
             attributes,
             include: [
-                {
-                    model: db.Office, as: 'officeData', ...officeFilter
-                },
                 {
                     model: db.Employee, as: 'managerData'
                 }
@@ -116,12 +106,11 @@ class DepartmentService {
                 'id', 'shortName',
                 [sequelize.fn("COUNT", sequelize.col("employeeData.id")), "employeeCount"]
             ],
-            include: [{
-                model: db.Employee, as: 'employeeData', attributes: []
-            },
-            {
-                model: db.Office, as: 'officeData', attributes: ['title']
-            }],
+            include: [
+                {
+                    model: db.Employee, as: 'employeeData', attributes: []
+                },
+            ],
             group: ['Department.id'],
             order: [[sequelize.col('employeeCount'), 'DESC']],
             raw: true,

@@ -2,18 +2,13 @@ import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
 import createError from 'http-errors';
 
-class CountryService {
+class RewardPunishmentService {
     async findById(id) {
-        const result = await db.Country.findByPk(id, {
-            raw: true,
-            nest: true
-        });
-        return result;
-    }
-
-    async findByIsoCode(isoCode) {
-        const result = await db.Country.findOne({
-            where: { isoCode },
+        const result = await db.RewardPunishment.findByPk(id, {
+            include: [
+                { model: db.Employee, as: 'employeeData' },
+                { model: db.Employee, as: 'adderData' }
+            ],
             raw: true,
             nest: true
         });
@@ -21,28 +16,34 @@ class CountryService {
     }
 
     async findAll() {
-        const result = await db.Country.findAll({});
+        const result = await db.RewardPunishment.findAll({});
         return result;
     }
 
-    async filterListCountry(body) {
+    async filterListRewardPunishment(body) {
         const page = body.page || 1;
         const limit = body.size || 10;
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
+        const employeeFilter = body.modelEmployee;
 
         const offset = (page - 1) * limit;
 
-        const { count, rows } = await db.Country.findAndCountAll({
+        const { count, rows } = await db.RewardPunishment.findAndCountAll({
             where,
             offset,
             limit,
             order,
             attributes,
+            include: [
+                { model: db.Employee, as: 'employeeData', ...employeeFilter },
+                { model: db.Employee, as: 'adderData' }
+            ],
             raw: true,
             nest: true
         });
+
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;
         const prevPage = page - 1 < 1 ? null : page - 1;
@@ -56,8 +57,8 @@ class CountryService {
         };
     }
 
-    async createCountry(payload) {
-        const result = await db.Country.create(
+    async createRewardPunishment(payload) {
+        const result = await db.RewardPunishment.create(
             payload,
             {
                 raw: true,
@@ -67,8 +68,8 @@ class CountryService {
         return result;
     }
 
-    async updateCountry(id, payload) {
-        await db.Country.update(
+    async updateRewardPunishment(id, payload) {
+        await db.RewardPunishment.update(
             payload
             ,
             {
@@ -77,19 +78,19 @@ class CountryService {
         );
     }
 
-    async deleteCountry(id) {
-        await db.Country.destroy({
+    async deleteRewardPunishment(id) {
+        await db.RewardPunishment.destroy({
             where: { id }
         });
     }
 
-    async foundCountry(countryId, next) {
-        const foundCountry = await this.findById(countryId);
-        if (!foundCountry) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Country")));
+    async foundRewardPunishment(RewardPunishmentId, next) {
+        const foundRewardPunishment = await this.findById(RewardPunishmentId);
+        if (!foundRewardPunishment) {
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("RewardPunishment")));
         }
-        return foundCountry;
+        return foundRewardPunishment;
     }
 }
 
-module.exports = new CountryService;
+module.exports = new RewardPunishmentService;

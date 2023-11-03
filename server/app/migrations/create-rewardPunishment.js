@@ -3,39 +3,45 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Office', {
+        await queryInterface.createTable('RewardPunishment', {
             id: {
                 allowNull: false,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
                 autoIncrement: true
             },
-            title: {
+            type: {
                 allowNull: false,
-                type: Sequelize.STRING(40),
-                unique: true,
+                type: Sequelize.ENUM,
+                values: ['Reward', 'Punishment']
             },
-            streetAddress: {
+            reason: {
                 allowNull: false,
-                type: Sequelize.STRING(100),
+                type: Sequelize.STRING(200)
             },
-            postalCode: {
-                type: Sequelize.INTEGER(10),
-            },
-            stateProvince: {
-                type: Sequelize.STRING(30),
-            },
-            city: {
+            amount: {
                 allowNull: false,
-                type: Sequelize.STRING(30),
+                type: Sequelize.FLOAT(10)
             },
-            countryId: {
+            date: {
                 allowNull: false,
-                type: Sequelize.INTEGER,
+                type: Sequelize.DATEONLY,
+            },
+            employeeId: {
+                allowNull: false,
+                type: Sequelize.UUID,
                 references: {
-                    model: 'Country',
+                    model: 'Employee',
                     key: 'id'
                 }
+            },
+            addedBy: {
+                allowNull: false,
+                type: Sequelize.UUID,
+                references: {
+                    model: 'Employee',
+                    key: 'id',
+                },
             },
             createdAt: {
                 allowNull: false,
@@ -51,6 +57,6 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Office');
+        await queryInterface.dropTable('RewardPunishment');
     }
 };

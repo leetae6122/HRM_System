@@ -3,24 +3,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('BankAccount', {
+        await queryInterface.createTable('Allowance', {
             id: {
                 allowNull: false,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
                 autoIncrement: true
             },
-            accountName: {
+            title: {
                 allowNull: false,
-                type: Sequelize.STRING(60),
+                type: Sequelize.STRING(60)
             },
-            bankName: {
+            amount: {
                 allowNull: false,
-                type: Sequelize.STRING(100)
+                type: Sequelize.FLOAT(10)
             },
-            accountNum: {
+            startDate: {
                 allowNull: false,
-                type: Sequelize.STRING(20),
+                type: Sequelize.DATEONLY,
+            },
+            endDate: {
+                type: Sequelize.DATEONLY,
             },
             employeeId: {
                 allowNull: false,
@@ -29,6 +32,14 @@ module.exports = {
                     model: 'Employee',
                     key: 'id'
                 }
+            },
+            addedBy: {
+                allowNull: false,
+                type: Sequelize.UUID,
+                references: {
+                    model: 'Employee',
+                    key: 'id',
+                },
             },
             createdAt: {
                 allowNull: false,
@@ -44,6 +55,6 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('BankAccount');
+        await queryInterface.dropTable('Allowance');
     }
 };

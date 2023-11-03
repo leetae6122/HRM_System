@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Payroll.belongsTo(models.Salary, { foreignKey: 'salaryId', as: 'salaryData' });
-      Payroll.belongsTo(models.Currency, { foreignKey: 'currencyId', as: 'currencyData' });
       Payroll.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
       Payroll.belongsTo(models.Employee, { foreignKey: 'handledBy', as: 'handlerData' });
     }
@@ -31,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     payDate: DataTypes.DATEONLY,
     status: DataTypes.ENUM('Pending', 'Paid'),
     salaryId: DataTypes.INTEGER,
-    currencyId: DataTypes.INTEGER,
     employeeId: DataTypes.UUID,
     handledBy: DataTypes.UUID
   }, {

@@ -54,14 +54,6 @@ module.exports = {
                     key: 'id'
                 },
             },
-            currencyId: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Currency',
-                    key: 'id'
-                },
-            },
             employeeId: {
                 allowNull: false,
                 type: Sequelize.UUID,

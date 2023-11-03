@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             Employee.hasOne(models.User, { foreignKey: 'employeeId', as: 'userData' });
 
-            Employee.hasOne(models.Salary, { foreignKey: 'employeeId', as: 'salaryData' });
-            Employee.hasMany(models.Salary, { foreignKey: 'addedBy', as: 'salaryAddedData' });
+            Employee.hasMany(models.Salary, { foreignKey: 'employeeId', as: 'salaryData' });
+            Employee.hasMany(models.Salary, { foreignKey: 'addedBy' });
 
             Employee.belongsTo(models.Position, { foreignKey: 'positionId', as: 'positionData' });
 
@@ -26,7 +26,11 @@ module.exports = (sequelize, DataTypes) => {
             Employee.hasMany(models.Payroll, { foreignKey: 'employeeId' });
             Employee.hasMany(models.Payroll, { foreignKey: 'handledBy' });
 
-            Employee.hasOne(models.BankAccount, { foreignKey: 'employeeId', as: 'backAccountData' });
+            Employee.hasMany(models.Allowance, { foreignKey: 'employeeId' });
+            Employee.hasMany(models.Allowance, { foreignKey: 'addedBy' });
+
+            Employee.hasMany(models.RewardPunishment, { foreignKey: 'employeeId' });
+            Employee.hasMany(models.RewardPunishment, { foreignKey: 'addedBy' });
         }
     }
     Employee.init({
@@ -41,6 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         gender: DataTypes.BOOLEAN,
         address: DataTypes.TEXT,
         dateBirth: DataTypes.DATE,
+        citizenshipId: DataTypes.STRING,
         dateHired: DataTypes.DATE,
         dateOff: DataTypes.DATE,
         avatarUrl: DataTypes.STRING,

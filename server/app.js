@@ -11,15 +11,14 @@ import authRouter from "./app/routes/auth.route";
 import userRouter from "./app/routes/user.route";
 import employeeRouter from "./app/routes/employee.route";
 import positionRouter from "./app/routes/position.route";
-import currencyRouter from "./app/routes/currency.route";
 import salaryRouter from "./app/routes/salary.route";
-import countryRouter from "./app/routes/country.route";
-import officeRouter from "./app/routes/office.route";
 import departmentRouter from "./app/routes/department.route";
 import leaveRouter from "./app/routes/leave.route";
 import attendanceRouter from "./app/routes/attendance.route";
 import shiftRouter from "./app/routes/shift.route";
 import payrollRouter from "./app/routes/payroll.route";
+import allowanceRouter from "./app/routes/allowance.route";
+import rewardPunishmentRouter from "./app/routes/rewardPunishment.route";
 
 const app = express();
 
@@ -43,12 +42,11 @@ app.use("/api/leave", verifyAccessToken, leaveRouter);
 app.use("/api/attendance", verifyAccessToken, attendanceRouter);
 app.use("/api/shift", verifyAccessToken, shiftRouter);
 app.use("/api/payroll", verifyAccessToken, payrollRouter);
+app.use("/api/allowance", verifyAccessToken, allowanceRouter);
+app.use("/api/reward-punishment", verifyAccessToken, rewardPunishmentRouter);
 
 app.use("/api/position", verifyAccessToken, verifyAdmin, positionRouter);
-app.use("/api/currency", verifyAccessToken, verifyAdmin, currencyRouter);
 app.use("/api/salary", verifyAccessToken, verifyAdmin, salaryRouter);
-app.use("/api/country", verifyAccessToken, verifyAdmin, countryRouter);
-app.use("/api/office", verifyAccessToken, verifyAdmin, officeRouter);
 app.use("/api/department", verifyAccessToken, verifyAdmin, departmentRouter);
 
 // handle 404 response 

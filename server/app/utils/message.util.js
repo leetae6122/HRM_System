@@ -25,8 +25,6 @@ export const MSG_ERROR_ID_EMPTY = (obj) => `${obj} cannot be empty`;
 export const MSG_ERROR_WRONG_LOGIN_INFORMATION = "Your username/password is incorrect";
 export const MSG_EMAIL_ALREADY_EXISTS = "Email is already registered";
 export const MSG_ERROR_WRONG_FORGOT_PASS_INFORMATION = "Your username/email is incorrect";
-//SALARY API
-export const MSG_EMPLOYEE_CREATED_SALARY = "Employee have created salary";
 // Leave API
 export const MSG_LEAVE_STATUS_NOT_PENDING = "Leave status is not Pending";
 // Attendance API

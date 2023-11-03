@@ -6,7 +6,6 @@ class PositionService {
     async findById(id) {
         const result = await db.Position.findOne({
             where: { id },
-            include: { model: db.Currency, as: 'currencyData' },
             raw: true,
             nest: true
         });
@@ -23,9 +22,7 @@ class PositionService {
     }
 
     async findAll() {
-        const result = await db.Position.findAll({
-            include: { model: db.Currency, as: 'currencyData' }
-        });
+        const result = await db.Position.findAll();
         return result;
     }
 
@@ -35,7 +32,6 @@ class PositionService {
         const where = body.where;
         const attributes = body.attributes;
         const order = body.order;
-        const currencyFilter = body.modelCurrency;
 
         const offset = (page - 1) * limit;
 
@@ -45,7 +41,6 @@ class PositionService {
             limit,
             order,
             attributes,
-            include: { model: db.Currency, as: 'currencyData', ...currencyFilter },
             raw: true,
             nest: true
         });

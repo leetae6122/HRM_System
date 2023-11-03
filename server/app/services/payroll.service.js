@@ -10,7 +10,6 @@ class PayrollService {
             include: [
                 { model: db.Employee, as: 'employeeData' },
                 { model: db.Salary, as: 'salaryData' },
-                { model: db.Currency, as: 'currencyData' },
                 { model: db.Employee, as: 'handlerData' }
             ],
             raw: true,
@@ -55,7 +54,6 @@ class PayrollService {
             include: [
                 { model: db.Employee, as: 'employeeData', ...employeeFilter },
                 { model: db.Salary, as: 'salaryData' },
-                { model: db.Currency, as: 'currencyData' },
                 { model: db.Employee, as: 'handlerData' }
             ],
             raw: true,
@@ -98,7 +96,6 @@ class PayrollService {
 
         const employeeSalary = await salaryService.findByEmployeeId(payload.employeeId);
         payload.salaryId = employeeSalary.id;
-        payload.currencyId = employeeSalary.currencyId;
         payload.hoursWorked = (Math.round(hoursWorked * 100) / 100).toFixed(2);
         payload.hoursOvertime = (Math.round(hoursOvertime * 100) / 100).toFixed(2);
         payload.totalPaid = (hoursWorked * employeeSalary.basicHourlySalary)

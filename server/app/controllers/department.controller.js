@@ -8,7 +8,6 @@ import {
 } from "../utils/message.util";
 import departmentService from "./../services/department.service";
 import employeeService from "./../services/employee.service";
-import officeService from "./../services/office.service";
 import createError from 'http-errors';
 
 exports.findById = async (req, res, next) => {
@@ -49,7 +48,6 @@ exports.createDepartment = async (req, res, next) => {
                 return next(createError.BadRequest("This employee is already a manager of another department"));
             }
         }
-        await officeService.foundOffice(req.body.officeId, next);
 
         const data = await departmentService.createDepartment(req.body);
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Department"), data });
@@ -67,9 +65,7 @@ exports.updateDepartment = async (req, res, next) => {
                 return next(createError.BadRequest("This employee is already a manager of another department"));
             }
         }
-        if (foundDepartment.officeId !== req.body.officeId) {
-            await officeService.foundOffice(req.body.officeId, next);
-        }
+
         const payload = {
             ...req.body,
             managerId: req.body.managerId === '' ? null : req.body.managerId
@@ -78,7 +74,6 @@ exports.updateDepartment = async (req, res, next) => {
         await departmentService.updateDepartment(req.body.departmentId, payload);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 }

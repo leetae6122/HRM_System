@@ -10,17 +10,6 @@ class EmployeeService {
                 { model: db.User.scope('secret'), as: 'userData' },
                 {
                     model: db.Position, as: 'positionData',
-                    include: {
-                        model: db.Currency, as: 'currencyData',
-                        attributes: ['name', 'code', 'symbol'],
-                    }
-                },
-                {
-                    model: db.Salary, as: 'salaryData',
-                    include: {
-                        model: db.Currency, as: 'currencyData',
-                        attributes: ['name', 'code', 'symbol'],
-                    }
                 },
                 {
                     model: db.Department, as: 'departmentData',
@@ -29,14 +18,6 @@ class EmployeeService {
                         {
                             model: db.Employee, as: 'managerData',
                             attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
-                        },
-                        {
-                            model: db.Office, as: 'officeData',
-                            attributes: ['title', 'streetAddress', 'stateProvince', 'city'],
-                            include: {
-                                model: db.Country, as: 'countryData',
-                                attributes: ['name'],
-                            }
                         },
                     ],
                 },
@@ -77,16 +58,6 @@ class EmployeeService {
                 {
                     model: db.Department, as: 'departmentData',
                     attributes: ['name', 'shortName'],
-                    include: [
-                        {
-                            model: db.Office, as: 'officeData',
-                            attributes: ['title', 'streetAddress', 'stateProvince', 'city'],
-                            include: {
-                                model: db.Country, as: 'countryData',
-                                attributes: ['name'],
-                            }
-                        },
-                    ],
                 },
             ]
         });
@@ -100,16 +71,6 @@ class EmployeeService {
             ]
         });
         const result = data.filter((employee) => employee.userData === null);
-        return result;
-    }
-
-    async getEmployeeNotHaveSalary() {
-        const data = await db.Employee.findAll({
-            include: [
-                { model: db.Salary, as: 'salaryData' },
-            ]
-        });
-        const result = data.filter((employee) => employee.salaryData === null);
         return result;
     }
 

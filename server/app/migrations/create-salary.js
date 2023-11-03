@@ -18,16 +18,9 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.FLOAT(10)
             },
-            allowance: {
-                type: Sequelize.FLOAT(10),
-                defaultValue: 0
-            },
-            currencyId: {
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Currency',
-                    key: 'id'
-                }
+            isApplying: {
+                defaultValue: true,
+                type: Sequelize.BOOLEAN
             },
             employeeId: {
                 allowNull: false,

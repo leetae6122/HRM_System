@@ -4,13 +4,7 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Salary extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      Salary.belongsTo(models.Currency, { foreignKey: 'currencyId', as: 'currencyData' });
       Salary.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
       Salary.belongsTo(models.Employee, { foreignKey: 'addedBy', as: 'adderData' });
       Salary.hasMany(models.Payroll, { foreignKey: 'salaryId', as: 'salaryData' });
@@ -23,8 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     basicHourlySalary: DataTypes.FLOAT,
     hourlyOvertimeSalary: DataTypes.FLOAT,
-    allowance: DataTypes.FLOAT,
-    currencyId: DataTypes.INTEGER,
+    isApplying: DataTypes.BOOLEAN,
     employeeId: DataTypes.UUID,
     addedBy: DataTypes.UUID
   }, {

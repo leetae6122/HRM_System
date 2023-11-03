@@ -17,14 +17,6 @@ module.exports = {
             shortName: {
                 type: Sequelize.STRING(8),
             },
-            officeId: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Office',
-                    key: 'id'
-                }
-            }
         });
 
         await queryInterface.createTable('Employee', {
@@ -43,7 +35,7 @@ module.exports = {
             },
             email: {
                 allowNull: false,
-                type: Sequelize.STRING,
+                type: Sequelize.STRING(60),
                 unique: true,
             },
             phoneNumber: {
@@ -61,6 +53,11 @@ module.exports = {
             dateBirth: {
                 allowNull: false,
                 type: Sequelize.DATEONLY,
+            },
+            citizenshipId: {
+                allowNull: false,
+                type: Sequelize.STRING(20),
+                unique: true,
             },
             dateHired: {
                 allowNull: false,

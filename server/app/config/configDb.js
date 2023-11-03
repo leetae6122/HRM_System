@@ -11,7 +11,9 @@ module.exports = {
         logging: false,
         timezone: "+07:00",
         define: {
-            freezeTableName: true
+            freezeTableName: true,
+            charset: "utf8",
+            collate: "utf8_general_ci"
         }
     },
     test: {

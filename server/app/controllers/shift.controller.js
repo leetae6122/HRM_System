@@ -42,7 +42,6 @@ exports.createShift = async (req, res, next) => {
         const data = await shiftService.createShift(req.body);
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Shift"), data });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 }

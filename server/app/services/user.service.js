@@ -3,24 +3,18 @@ import { hashData } from "./../utils/hash.util";
 import _ from 'lodash';
 
 class UserService {
-    async getUserProfile(id) {
+    async findById(id) {
         const result = await db.User.scope('secret').findByPk(id, {
             include: {
                 model: db.Employee,
                 as: 'profile',
                 include: [
-                    { model: db.User.scope('secret'), as: 'userData' },
                     {
                         model: db.Position, as: 'positionData',
                         attributes: ['name'],
                     },
                     {
                         model: db.Salary, as: 'salaryData',
-                        attributes: ['basicHourlySalary', 'allowance'],
-                        include: {
-                            model: db.Currency, as: 'currencyData',
-                            attributes: ['name', 'code', 'symbol'],
-                        }
                     },
                     {
                         model: db.Department, as: 'departmentData',
@@ -30,14 +24,6 @@ class UserService {
                                 model: db.Employee, as: 'managerData',
                                 attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
                             },
-                            {
-                                model: db.Office, as: 'officeData',
-                                attributes: ['title', 'streetAddress', 'stateProvince', 'city'],
-                                include: {
-                                    model: db.Country, as: 'countryData',
-                                    attributes: ['name'],
-                                }
-                            },
                         ],
                     },
                     {
@@ -46,14 +32,6 @@ class UserService {
                     },
                 ]
             },
-            raw: true,
-            nest: true
-        });
-        return result;
-    }
-
-    async findById(id) {
-        const result = await db.User.findByPk(id, {
             raw: true,
             nest: true
         });
@@ -95,11 +73,6 @@ class UserService {
                     { model: db.Position, as: 'positionData', attributes: ['name'], },
                     {
                         model: db.Salary, as: 'salaryData',
-                        attributes: ['basicHourlySalary', 'allowance'],
-                        include: {
-                            model: db.Currency, as: 'currencyData',
-                            attributes: ['name', 'code', 'symbol'],
-                        }
                     },
                     {
                         model: db.Department, as: 'departmentData',
@@ -109,9 +82,6 @@ class UserService {
                                 model: db.Employee, as: 'managerData',
                                 attributes: ['firstName', 'lastName', 'email']
                             },
-                            {
-                                model: db.Office, as: 'officeData',
-                            }
                         ],
                     },
                 ]
