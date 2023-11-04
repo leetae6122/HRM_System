@@ -44,16 +44,15 @@ class AttendanceService {
     async findAll(body = null) {
         if (body) {
             const where = body.where;
-            const attributes = body.attributes;
             const order = body.order;
+            const shiftFilter = body.shiftFilter || {};
 
             const result = await db.Attendance.findAll({
                 where,
                 order,
-                attributes,
                 include: [
                     {
-                        model: db.Shift, as: 'shiftData',
+                        model: db.Shift, as: 'shiftData', ...shiftFilter
                     },
                 ],
                 raw: true,
@@ -136,6 +135,18 @@ class AttendanceService {
         await db.Attendance.destroy({
             where: { id }
         });
+    }
+
+    async logoutAttendance(body, foundAttendance, foundShift) {
+        let payload = body;
+
+        payload.outStatus = this.checkOutTime(payload.outTime, foundShift);
+        payload.totalHours = this.calTotalHours(
+            foundAttendance.inTime,
+            payload.outTime,
+            foundShift
+        );
+        await this.updateAttendance(foundAttendance.id, payload)
     }
 
     async foundAttendance(attendanceId, next) {

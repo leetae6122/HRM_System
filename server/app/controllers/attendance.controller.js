@@ -108,20 +108,18 @@ exports.employeeGetListAttendance = async (req, res, next) => {
 
 exports.logInAttendance = async (req, res, next) => {
     try {
-        const { employeeId } = req.user;
-
         if (!dayjs().isSame(dayjs(req.body.attendanceDate), 'day')) {
             return next(createError.BadRequest('Invalid login date'));
         }
         let payload = {
             ...req.body,
-            employeeId
+            employeeId: req.user.employeeId
         }
         const foundShift = await shiftService.foundShift(payload.shiftId, next);
         const foundAttendance = await attendanceService.findAttendanceByDateShiftIdEmployeeId(
-            req.body.attendanceDate,
-            req.body.shiftId,
-            req.user.employeeId
+            payload.attendanceDate,
+            payload.shiftId,
+            payload.employeeId
         );
         if (foundAttendance) {
             return next(createError.BadRequest(`Logged in!!! Shift: ${foundShift.name} (${foundShift.startTime} - ${foundShift.endTime})`));
@@ -150,17 +148,8 @@ exports.logOutAttendance = async (req, res, next) => {
         if (foundAttendance.outTime) {
             return next(createError.BadRequest(`Logged out!!! Shift: ${foundShift.name} (${foundShift.startTime} - ${foundShift.endTime})`));
         }
-        let payload = req.body;
 
-
-        payload.outStatus = attendanceService.checkOutTime(payload.outTime, foundShift);
-        payload.totalHours = attendanceService.calTotalHours(
-            foundAttendance.inTime,
-            payload.outTime,
-            foundShift
-        );
-
-        await attendanceService.updateAttendance(foundAttendance.id, payload);
+        await attendanceService.logoutAttendance(req.body, foundAttendance, foundShift);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
         return next(error);
