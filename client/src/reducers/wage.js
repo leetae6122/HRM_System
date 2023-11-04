@@ -13,14 +13,14 @@ const initialState = {
         where: {},
         order: [['isApplying', 'DESC']],
     },
-    salaryList: [],
+    wageList: [],
     total: 0,
     currentPage: 1,
-    editSalaryId: null,
+    editWageId: null,
 }
 
-export const salarySlice = createSlice({
-    name: 'salary',
+export const wageSlice = createSlice({
+    name: 'wage',
     initialState,
     reducers: {
         setFilterData: (state, action) => {
@@ -30,12 +30,12 @@ export const salarySlice = createSlice({
             state.filterData = state.defaultFilter;
         },
         setData: (state, action) => {
-            state.salaryList = action.payload.salaryList;
+            state.wageList = action.payload.wageList;
             state.total = action.payload.total;
             state.currentPage = action.payload.currentPage;
         },
-        setEditSalaryId: (state, action) => {
-            state.editSalaryId = action.payload;
+        setEditWageId: (state, action) => {
+            state.editWageId = action.payload;
         }
     },
 })
@@ -44,6 +44,6 @@ export const {
     setFilterData,
     setData,
     setDefaultFilterData,
-    setEditSalaryId
-} = salarySlice.actions;
-export default salarySlice.reducer;
+    setEditWageId
+} = wageSlice.actions;
+export default wageSlice.reducer;

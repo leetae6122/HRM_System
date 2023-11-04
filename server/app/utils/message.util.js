@@ -8,7 +8,7 @@ export const MSG_UPDATE_SUCCESSFUL = "Successful update";
 export const MSG_DELETE_SUCCESSFUL = "Successful deletion";
 export const MSG_CREATED_SUCCESSFUL = (table) => `"Successfully added ${table}"`;
 
-export const MSG_ADDED_SALARY_SUCCESSFUL = "Added salary for successful a employee";
+export const MSG_ADDED_WAGE_SUCCESSFUL = "Added wage for successful a employee";
 //////    Error message    //////
 export const MSG_TOKEN_DOES_NOT_MATCH = "Token does not match";
 export const MSG_INVALID_TOKEN = "Invalid token";

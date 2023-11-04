@@ -15,11 +15,11 @@ module.exports = {
                 type: Sequelize.STRING(60),
                 unique: true,
             },
-            minHourlySalary: {
+            minHourlyWage: {
                 allowNull: false,
                 type: Sequelize.FLOAT(10)
             },
-            maxHourlySalary: {
+            maxHourlyWage: {
                 type: Sequelize.FLOAT(10)
             },
             createdAt: {

@@ -5,27 +5,27 @@ import { toast } from 'react-toastify';
 import _ from 'lodash';
 import employeeApi from 'api/employeeApi';
 
-SalaryForm.propTypes = {
+WageForm.propTypes = {
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
   initialValues: PropTypes.object,
 };
 
-SalaryForm.defaultProps = {
+WageForm.defaultProps = {
   onCancel: null,
   onSubmit: null,
   loading: false,
   initialValues: {
-    basicHourlySalary: 0,
-    hourlyOvertimeSalary: 0,
+    basicHourlyWage: 0,
+    hourlyOvertimePay: 0,
     employeeId: null,
   },
 };
 
 const wrapperCol = { offset: 8, span: 16 };
 
-function SalaryForm(props) {
+function WageForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
   const [employeeOptions, setEmployeeOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
@@ -39,10 +39,10 @@ function SalaryForm(props) {
   };
   useEffect(() => {
     const defaultValues = {
-      basicHourlySalary: initialValues.basicHourlySalary,
-      hourlyOvertimeSalary: initialValues.hourlyOvertimeSalary,
+      basicHourlyWage: initialValues.basicHourlyWage,
+      hourlyOvertimePay: initialValues.hourlyOvertimePay,
       allowance: initialValues.allowance,
-      salaryId: initialValues.salaryId,
+      wageId: initialValues.wageId,
     };
 
     form.validateFields({ validateOnly: true }).then(
@@ -78,14 +78,14 @@ function SalaryForm(props) {
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
-      if (initialValues.salaryId) {
+      if (initialValues.wageId) {
         const data = (await employeeApi.getById(initialValues.employeeId)).data;
         setSelectedEmployee(data);
       }
     };
     fetchData();
     return () => controller.abort();
-  }, [initialValues.salaryId, initialValues.employeeId]);
+  }, [initialValues.wageId, initialValues.employeeId]);
 
   const onFinish = (values) => {
     onSubmit(values);
@@ -97,8 +97,8 @@ function SalaryForm(props) {
 
   return (
     <Form
-      name="normal_salary"
-      className="salary-form"
+      name="normal_wage"
+      className="wage-form"
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
@@ -109,8 +109,8 @@ function SalaryForm(props) {
       }}
       size="large"
     >
-      {initialValues.salaryId ? (
-        <Form.Item name="salaryId" label="Salary Id">
+      {initialValues.wageId ? (
+        <Form.Item name="wageId" label="Wage Id">
           <Input
             disabled={true}
             style={{
@@ -119,7 +119,7 @@ function SalaryForm(props) {
           />
         </Form.Item>
       ) : null}
-      {initialValues.salaryId ? (
+      {initialValues.wageId ? (
         <Form.Item label="Employee">
           <Input
             disabled={true}
@@ -164,15 +164,15 @@ function SalaryForm(props) {
       {selectedEmployee ? (
         <>
           <Form.Item
-            name="basicHourlySalary"
-            label="Basic Hourly Salary"
+            name="basicHourlyWage"
+            label="Basic Hourly Wage"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}
             hasFeedback
             rules={[
               {
                 required: true,
-                message: "Please input the employee's basic hourly salary!",
+                message: "Please input the employee's basic hourly wage!",
               },
               () => ({
                 validator(_, value) {
@@ -181,7 +181,7 @@ function SalaryForm(props) {
                   }
                   return Promise.reject(
                     new Error(
-                      'Please select an employee before entering your basic hourly salary!',
+                      'Please select an employee before entering your basic hourly wage!',
                     ),
                   );
                 },
@@ -189,22 +189,22 @@ function SalaryForm(props) {
               () => ({
                 validator(_, value) {
                   if (
-                    !value || selectedEmployee?.positionData.maxHourlySalary
+                    !value || selectedEmployee?.positionData.maxHourlyWage
                       ? value >=
-                          selectedEmployee?.positionData.minHourlySalary &&
-                        value <= selectedEmployee?.positionData.maxHourlySalary
-                      : value >= selectedEmployee?.positionData.minHourlySalary
+                          selectedEmployee?.positionData.minHourlyWage &&
+                        value <= selectedEmployee?.positionData.maxHourlyWage
+                      : value >= selectedEmployee?.positionData.minHourlyWage
                   ) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
                     new Error(
-                      `The basic hourly salary must be greater than equal to ${
-                        selectedEmployee?.positionData.minHourlySalary
+                      `The basic hourly wage must be greater than equal to ${
+                        selectedEmployee?.positionData.minHourlyWage
                       } ${
-                        selectedEmployee?.positionData.maxHourlySalary
+                        selectedEmployee?.positionData.maxHourlyWage
                           ? ' and less than equal to ' +
-                            selectedEmployee?.positionData.maxHourlySalary
+                            selectedEmployee?.positionData.maxHourlyWage
                           : ''
                       }`,
                     ),
@@ -222,15 +222,15 @@ function SalaryForm(props) {
               disabled={loading}
               addonBefore={
                 selectedEmployee
-                  ? `${selectedEmployee?.positionData.minHourlySalary} VNĐ/hr`.replace(
+                  ? `${selectedEmployee?.positionData.minHourlyWage} VNĐ/hr`.replace(
                       /\B(?=(\d{3})+(?!\d))/g,
                       ',',
                     )
                   : ''
               }
               addonAfter={
-                selectedEmployee?.positionData.maxHourlySalary
-                  ? `${selectedEmployee?.positionData.maxHourlySalary} VNĐ/hr`.replace(
+                selectedEmployee?.positionData.maxHourlyWage
+                  ? `${selectedEmployee?.positionData.maxHourlyWage} VNĐ/hr`.replace(
                       /\B(?=(\d{3})+(?!\d))/g,
                       ',',
                     )
@@ -240,27 +240,27 @@ function SalaryForm(props) {
             />
           </Form.Item>
           <Form.Item
-            name="hourlyOvertimeSalary"
-            label="Hourly Overtime Salary"
+            name="hourlyOvertimePay"
+            label="Hourly Overtime Pay"
             hasFeedback
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 17 }}
             rules={[
               {
                 required: true,
-                message: "Please input the employee's hourly overtime salary!",
+                message: "Please input the employee's hourly overtime pay!",
               },
               () => ({
                 validator(_, value) {
                   if (
                     !value ||
-                    value > form.getFieldValue('basicHourlySalary')
+                    value > form.getFieldValue('basicHourlyWage')
                   ) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
                     new Error(
-                      'Hourly Overtime Salary must be greater than Basic Hourly Salary!',
+                      'Hourly Overtime Pay must be greater than Basic Hourly Wage!',
                     ),
                   );
                 },
@@ -291,7 +291,7 @@ function SalaryForm(props) {
             loading={loading}
             disabled={!submittable}
           >
-            {initialValues.salaryId ? 'Save' : 'Add'}
+            {initialValues.wageId ? 'Save' : 'Add'}
           </Button>
         </Space>
       </Form.Item>
@@ -299,4 +299,4 @@ function SalaryForm(props) {
   );
 }
 
-export default SalaryForm;
+export default WageForm;

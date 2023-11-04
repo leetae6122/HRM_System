@@ -5,37 +5,37 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
-import SalaryForm from './SalaryForm';
-import salaryApi from 'api/salaryApi';
+import WageForm from './WageForm';
+import wageApi from 'api/wageApi';
 
-ModalEditSalary.propTypes = {
+ModalEditWage.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshSalaryList: PropTypes.func,
+  refreshWageList: PropTypes.func,
 };
 
-ModalEditSalary.defaultProps = {
+ModalEditWage.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshSalaryList: null,
+  refreshWageList: null,
 };
 
-function ModalEditSalary(props) {
-  const { editSalaryId } = useSelector((state) => state.salary);
-  const { openModal, toggleShowModal, refreshSalaryList } = props;
+function ModalEditWage(props) {
+  const { editWageId } = useSelector((state) => state.wage);
+  const { openModal, toggleShowModal, refreshWageList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [editSalary, setEditSalary] = useState({});
+  const [editWage, setEditWage] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
     const fetchData = async () => {
       try {
-        if (editSalaryId) {
-          const data = (await salaryApi.getById(editSalaryId)).data;
-          setEditSalary({
-            salaryId: data.id,
-            basicHourlySalary: data.basicHourlySalary,
-            hourlyOvertimeSalary: data.hourlyOvertimeSalary,
+        if (editWageId) {
+          const data = (await wageApi.getById(editWageId)).data;
+          setEditWage({
+            wageId: data.id,
+            basicHourlyWage: data.basicHourlyWage,
+            hourlyOvertimePay: data.hourlyOvertimePay,
             employeeId: data.employeeId,
           });
         }
@@ -45,20 +45,20 @@ function ModalEditSalary(props) {
     };
     fetchData();
     return () => controller.abort();
-  }, [editSalaryId]);
+  }, [editWageId]);
 
-  const handleEditSalary = async (values) => {
+  const handleEditWage = async (values) => {
     try {
       setConfirmLoading(true);
       const data = _.omitBy(values, _.isNil);
-      const response = await salaryApi.update(data);
+      const response = await wageApi.update(data);
       Swal.fire({
         icon: 'success',
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshSalaryList();
+        await refreshWageList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -77,23 +77,23 @@ function ModalEditSalary(props) {
   return (
     <>
       <Modal
-        title="Edit Salary"
+        title="Edit Wage"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
         width={'100vh'}
         style={{ top: 60 }}
       >
-        {!_.isEmpty(editSalary) && (
-          <SalaryForm
+        {!_.isEmpty(editWage) && (
+          <WageForm
             onCancel={handleCancel}
-            onSubmit={handleEditSalary}
+            onSubmit={handleEditWage}
             loading={confirmLoading}
-            initialValues={editSalary}
+            initialValues={editWage}
           />
         )}
       </Modal>
     </>
   );
 }
-export default ModalEditSalary;
+export default ModalEditWage;

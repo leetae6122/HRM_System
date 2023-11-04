@@ -8,27 +8,27 @@ import {
 } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDefaultFilterData } from 'reducers/salary';
+import { setDefaultFilterData } from 'reducers/wage';
 import { gold, green } from '@ant-design/colors';
 import _ from 'lodash';
 
-SalaryTableHeader.propTypes = {
-  toggleModalAddSalary: PropTypes.func,
+WageTableHeader.propTypes = {
+  toggleModalAddWage: PropTypes.func,
   toggleShowFilterDrawer: PropTypes.func,
   setFilter: PropTypes.func,
 };
 
-SalaryTableHeader.defaultProps = {
-  toggleModalAddSalary: null,
+WageTableHeader.defaultProps = {
+  toggleModalAddWage: null,
   toggleShowFilterDrawer: null,
   setFilter: null,
 };
 
-function SalaryTableHeader(props) {
-  const { toggleModalAddSalary, toggleShowFilterDrawer, setFilter } = props;
+function WageTableHeader(props) {
+  const { toggleModalAddWage, toggleShowFilterDrawer, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { filterData, defaultFilter } = useSelector((state) => state.salary);
+  const { filterData, defaultFilter } = useSelector((state) => state.wage);
   const [inputValue, setInputValue] = useState('');
 
   const handleSearch = (value) => {
@@ -86,9 +86,9 @@ function SalaryTableHeader(props) {
             type="primary"
             style={{ backgroundColor: green.primary }}
             icon={<PlusCircleFilled />}
-            onClick={toggleModalAddSalary}
+            onClick={toggleModalAddWage}
           >
-            Add Salary
+            Add Wage
           </Button>
           <Button
             type="primary"
@@ -103,4 +103,4 @@ function SalaryTableHeader(props) {
   );
 }
 
-export default SalaryTableHeader;
+export default WageTableHeader;

@@ -46,11 +46,11 @@ module.exports = {
                 type: Sequelize.ENUM,
                 values: ['Pending', 'Paid']
             },
-            salaryId: {
+            wageId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
-                    model: 'Salary',
+                    model: 'Wage',
                     key: 'id'
                 },
             },

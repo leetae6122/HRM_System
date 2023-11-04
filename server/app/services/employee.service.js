@@ -9,6 +9,10 @@ class EmployeeService {
             include: [
                 { model: db.User.scope('secret'), as: 'userData' },
                 {
+                    model: db.Wage, as: 'wageData',
+                    where: { isApplying: true }
+                },
+                {
                     model: db.Position, as: 'positionData',
                 },
                 {

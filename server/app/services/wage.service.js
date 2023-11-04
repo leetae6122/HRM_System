@@ -1,9 +1,9 @@
-import db from "./../models/index";
+import db from "../models/index";
 import _ from 'lodash';
 
-class SalaryService {
+class WageService {
     async findById(id) {
-        const result = await db.Salary.findOne({
+        const result = await db.Wage.findOne({
             where: { id },
             include: [
                 { model: db.Employee, as: 'employeeData' },
@@ -16,7 +16,7 @@ class SalaryService {
     }
 
     async findByEmployeeId(employeeId) {
-        const result = await db.Salary.findOne({
+        const result = await db.Wage.findOne({
             where: { employeeId },
             raw: true,
             nest: true
@@ -25,7 +25,7 @@ class SalaryService {
     }
 
     async findAll() {
-        const result = await db.Salary.findAll({
+        const result = await db.Wage.findAll({
             include: [
                 { model: db.Employee, as: 'employeeData' },
                 { model: db.Employee, as: 'adderData' }
@@ -34,7 +34,7 @@ class SalaryService {
         return result;
     }
 
-    async filterListSalary(body) {
+    async filterListWage(body) {
         const page = body.page || 1;
         const limit = body.size || 10;
         const where = body.where;
@@ -46,7 +46,7 @@ class SalaryService {
 
         let count = 0;
         let rows = [];
-        const data1 = await db.Salary.findAndCountAll({
+        const data1 = await db.Wage.findAndCountAll({
             where,
             offset,
             limit,
@@ -67,7 +67,7 @@ class SalaryService {
         });
 
         if ((data1.count === 0 || _.isEmpty(where)) && !_.isEmpty(employeeFilter)) {
-            const data2 = await db.Salary.findAndCountAll({
+            const data2 = await db.Wage.findAndCountAll({
                 where: {},
                 offset,
                 limit,
@@ -106,8 +106,8 @@ class SalaryService {
         };
     }
 
-    async createSalary(payload) {
-        const result = await db.Salary.create(
+    async createWage(payload) {
+        const result = await db.Wage.create(
             payload,
             {
                 raw: true,
@@ -117,8 +117,8 @@ class SalaryService {
         return result;
     }
 
-    async updateSalary(id, payload) {
-        await db.Salary.update(
+    async updateWage(id, payload) {
+        await db.Wage.update(
             payload
             ,
             {
@@ -127,16 +127,16 @@ class SalaryService {
         );
     }
 
-    async deleteSalary(id) {
-        await db.Salary.destroy({
+    async deleteWage(id) {
+        await db.Wage.destroy({
             where: { id },
         });
     }
-    async deleteSalaryByEmployeeId(employeeId) {
-        await db.Salary.destroy({
+    async deleteWageByEmployeeId(employeeId) {
+        await db.Wage.destroy({
             where: { employeeId },
         });
     }
 }
 
-module.exports = new SalaryService;
+module.exports = new WageService;

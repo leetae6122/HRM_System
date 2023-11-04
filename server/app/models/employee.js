@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             Employee.hasOne(models.User, { foreignKey: 'employeeId', as: 'userData' });
 
-            Employee.hasMany(models.Salary, { foreignKey: 'employeeId', as: 'salaryData' });
-            Employee.hasMany(models.Salary, { foreignKey: 'addedBy' });
+            Employee.hasMany(models.Wage, { foreignKey: 'employeeId', as: 'wageData' });
+            Employee.hasMany(models.Wage, { foreignKey: 'addedBy' });
 
             Employee.belongsTo(models.Position, { foreignKey: 'positionId', as: 'positionData' });
 

@@ -4,16 +4,16 @@ import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { setData, setEditSalaryId, setFilterData } from 'reducers/salary';
+import { setData, setEditWageId, setFilterData } from 'reducers/wage';
 import { numberWithDot } from 'utils/format';
 import Swal from 'sweetalert2';
-import SalaryTableHeader from './components/SalaryTableHeader';
-import salaryApi from 'api/salaryApi';
-import ModalAddSalary from './components/ComponentAddEdit/ModalAddSalary';
-import ModalEditSalary from './components/ComponentAddEdit/ModalEditSalary';
+import WageTableHeader from './components/WageTableHeader';
+import wageApi from 'api/wageApi';
+import ModalAddWage from './components/ComponentAddEdit/ModalAddWage';
+import ModalEditWage from './components/ComponentAddEdit/ModalEditWage';
 import _ from 'lodash';
 
-const createColumns = (toggleModalEditSalary, handleDeleteSalary) => [
+const createColumns = (toggleModalEditWage, handleDeleteWage) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -23,16 +23,16 @@ const createColumns = (toggleModalEditSalary, handleDeleteSalary) => [
     width: 80,
   },
   {
-    title: 'Basic Hourly Salary',
-    dataIndex: 'basicHourlySalary',
-    key: 'basicHourlySalary',
+    title: 'Basic Hourly Wage',
+    dataIndex: 'basicHourlyWage',
+    key: 'basicHourlyWage',
     sorter: true,
     render: (value) => `${numberWithDot(value)} VNĐ/hr`,
   },
   {
-    title: 'Hourly Overtime Salary',
-    dataIndex: 'hourlyOvertimeSalary',
-    key: 'hourlyOvertimeSalary',
+    title: 'Hourly Overtime Pay',
+    dataIndex: 'hourlyOvertimePay',
+    key: 'hourlyOvertimePay',
     sorter: true,
     render: (value) => `${numberWithDot(value)} VNĐ/hr`,
   },
@@ -94,27 +94,27 @@ const createColumns = (toggleModalEditSalary, handleDeleteSalary) => [
         <Button
           type="primary"
           icon={<EditFilled />}
-          onClick={() => toggleModalEditSalary(record.id)}
+          onClick={() => toggleModalEditWage(record.id)}
         />
         <Button
           type="primary"
           danger
           icon={<DeleteFilled />}
-          onClick={() => handleDeleteSalary(record.id)}
+          onClick={() => handleDeleteWage(record.id)}
         />
       </Space>
     ),
   },
 ];
 
-function SalaryPage() {
+function WagePage() {
   const dispatch = useDispatch();
-  const { filterData, salaryList, total, currentPage, defaultFilter } =
-    useSelector((state) => state.salary);
+  const { filterData, wageList, total, currentPage, defaultFilter } =
+    useSelector((state) => state.wage);
   const [loadingData, setLoadingData] = useState(false);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
-  const [openModalAddSalary, setOpenModalAddSalary] = useState(false);
-  const [openModalEditSalary, setOpenModalEditSalary] = useState(false);
+  const [openModalAddWage, setOpenModalAddWage] = useState(false);
+  const [openModalEditWage, setOpenModalEditWage] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -122,11 +122,11 @@ function SalaryPage() {
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = (await salaryApi.getList(filterData)).data;
+        const response = (await wageApi.getList(filterData)).data;
         const data = response.data.map((item) => ({ key: item.id, ...item }));
         dispatch(
           setData({
-            salaryList: data,
+            wageList: data,
             total: response.total,
             currentPage: response.currentPage,
           }),
@@ -152,19 +152,19 @@ function SalaryPage() {
     dispatch(setFilterData(filter));
   };
 
-  const refreshSalaryList = async () => {
-    const response = (await salaryApi.getList(defaultFilter)).data;
+  const refreshWageList = async () => {
+    const response = (await wageApi.getList(defaultFilter)).data;
     const data = response.data.map((item) => ({ key: item.id, ...item }));
     dispatch(
       setData({
-        salaryList: data,
+        wageList: data,
         total: response.total,
         currentPage: response.currentPage,
       }),
     );
   };
 
-  const handleDeleteSalary = async (salaryId) => {
+  const handleDeleteWage = async (wageId) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -176,9 +176,9 @@ function SalaryPage() {
     })
       .then(async (result) => {
         if (result.isConfirmed) {
-          await salaryApi.delete(salaryId);
-          Swal.fire('Deleted!', 'Salary has been deleted.', 'success');
-          await refreshSalaryList();
+          await wageApi.delete(wageId);
+          Swal.fire('Deleted!', 'Wage has been deleted.', 'success');
+          await refreshWageList();
         }
       })
       .catch((error) => {
@@ -190,18 +190,18 @@ function SalaryPage() {
     setOpenFilterDrawer(!openFilterDrawer);
   };
 
-  const toggleModalEditSalary = (id) => {
-    dispatch(setEditSalaryId(id));
-    setOpenModalEditSalary(!openModalEditSalary);
+  const toggleModalEditWage = (id) => {
+    dispatch(setEditWageId(id));
+    setOpenModalEditWage(!openModalEditWage);
   };
 
-  const toggleModalAddSalary = () => {
-    setOpenModalAddSalary(!openModalAddSalary);
+  const toggleModalAddWage = () => {
+    setOpenModalAddWage(!openModalAddWage);
   };
 
   const columns = createColumns(
-    toggleModalEditSalary,
-    handleDeleteSalary,
+    toggleModalEditWage,
+    handleDeleteWage,
   );
 
   const onChangeTable = (pagination, filters, sorter) => {
@@ -232,16 +232,16 @@ function SalaryPage() {
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        List of Salaries
+        List of Wages
       </Divider>
       <Table
         key={tableKey}
         columns={columns}
-        dataSource={salaryList}
+        dataSource={wageList}
         bordered
         title={() => (
-          <SalaryTableHeader
-            toggleModalAddSalary={toggleModalAddSalary}
+          <WageTableHeader
+            toggleModalAddWage={toggleModalAddWage}
             toggleShowFilterDrawer={toggleShowFilterDrawer}
             setFilter={setFilter}
           />
@@ -261,21 +261,21 @@ function SalaryPage() {
           openDrawer={openFilterDrawer}
         />
       )} */}
-      {openModalAddSalary && (
-        <ModalAddSalary
-          openModal={openModalAddSalary}
-          toggleShowModal={toggleModalAddSalary}
-          refreshSalaryList={refreshSalaryList}
+      {openModalAddWage && (
+        <ModalAddWage
+          openModal={openModalAddWage}
+          toggleShowModal={toggleModalAddWage}
+          refreshWageList={refreshWageList}
         />
       )}
-      {openModalEditSalary && (
-        <ModalEditSalary
-          openModal={openModalEditSalary}
-          toggleShowModal={toggleModalEditSalary}
-          refreshSalaryList={refreshSalaryList}
+      {openModalEditWage && (
+        <ModalEditWage
+          openModal={openModalEditWage}
+          toggleShowModal={toggleModalEditWage}
+          refreshWageList={refreshWageList}
         />
       )}
     </>
   );
 }
-export default SalaryPage;
+export default WagePage;

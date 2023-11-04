@@ -9,7 +9,7 @@ const createRewardPunishmentSchema = Joi.object({
 });
 
 const updateRewardPunishmentSchema = Joi.object({
-    allowanceId: Joi.number().integer().required(),
+    rewardPunishmentId: Joi.number().integer().required(),
     type: Joi.string().valid('Reward', 'Punishment').optional(),
     reason: Joi.string().max(200).optional(),
     amount: Joi.number().optional(),

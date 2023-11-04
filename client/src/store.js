@@ -3,7 +3,7 @@ import authReducer from 'reducers/auth';
 import departmentReducer from 'reducers/department';
 import employeeReducer from 'reducers/employee';
 import positionReducer from 'reducers/position';
-import salaryReducer from 'reducers/salary';
+import wageReducer from 'reducers/wage';
 import userReducer from 'reducers/user';
 import leaveReducer from 'reducers/leave';
 import shiftReducer from 'reducers/shift';
@@ -17,7 +17,7 @@ const rootReducer = {
     user: userReducer,
     employee: employeeReducer,
     position: positionReducer,
-    salary: salaryReducer,
+    wage: wageReducer,
     department: departmentReducer,
     leave: leaveReducer,
     shift: shiftReducer,

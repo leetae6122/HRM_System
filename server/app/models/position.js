@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     name: DataTypes.STRING,
-    minHourlySalary: DataTypes.FLOAT,
-    maxHourlySalary: DataTypes.FLOAT,
+    minHourlyWage: DataTypes.FLOAT,
+    maxHourlyWage: DataTypes.FLOAT,
   }, {
     sequelize,
     modelName: 'Position'

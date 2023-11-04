@@ -1,6 +1,6 @@
 import employeeService from "./../services/employee.service";
 import userService from "./../services/user.service";
-import salaryService from "./../services/salary.service";
+import wageService from "./../services/wage.service";
 import departmentService from "./../services/department.service";
 import positionService from "./../services/position.service";
 import createError from 'http-errors';
@@ -126,7 +126,7 @@ exports.updateEmployee = async (req, res, next) => {
         await employeeService.updateEmployee(req.body.employeeId, payload);
         if (payload.dateOff) {
             await userService.deactivateUserByEmployeeId(req.body.employeeId);
-            await salaryService.deleteSalaryByEmployeeId(req.body.employeeId);
+            await wageService.deleteWageByEmployeeId(req.body.employeeId);
         }
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {

@@ -3,38 +3,38 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import SalaryForm from './SalaryForm';
-import salaryApi from 'api/salaryApi';
+import WageForm from './WageForm';
+import wageApi from 'api/wageApi';
 import _ from 'lodash';
 
-ModalAddSalary.propTypes = {
+ModalAddWage.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshSalaryList: PropTypes.func,
+  refreshWageList: PropTypes.func,
 };
 
-ModalAddSalary.defaultProps = {
+ModalAddWage.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshSalaryList: null,
+  refreshWageList: null,
 };
 
-function ModalAddSalary(props) {
-  const { openModal, toggleShowModal, refreshSalaryList } = props;
+function ModalAddWage(props) {
+  const { openModal, toggleShowModal, refreshWageList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const handleAddSalary = async (values) => {
+  const handleAddWage = async (values) => {
     try {
       setConfirmLoading(true);
       const data = _.omitBy(values, _.isNil);
-      const response = await salaryApi.create(data);
+      const response = await wageApi.create(data);
       Swal.fire({
         icon: 'success',
         title: response.message,
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshSalaryList();
+        await refreshWageList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -53,20 +53,20 @@ function ModalAddSalary(props) {
   return (
     <>
       <Modal
-        title="Add Salary"
+        title="Add Wage"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
         width={"100vh"}
         style={{ top: 60 }}
       >
-        <SalaryForm
+        <WageForm
           onCancel={handleCancel}
-          onSubmit={handleAddSalary}
+          onSubmit={handleAddWage}
           loading={confirmLoading}
         />
       </Modal>
     </>
   );
 }
-export default ModalAddSalary;
+export default ModalAddWage;

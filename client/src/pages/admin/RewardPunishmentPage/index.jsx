@@ -70,10 +70,14 @@ const createColumns = (
     dataIndex: 'amount',
     key: 'amount',
     sorter: true,
-    render: (value) => `${numberWithDot(value)} VNĐ`,
+    render: (value, record) => (
+      <span style={{ color: record.type === 'Reward' ? 'green' : 'red' }}>
+        {numberWithDot(value)} VNĐ
+      </span>
+    ),
   },
   {
-    title: 'Date',
+    title: 'Effective Date',
     dataIndex: 'date',
     key: 'date',
     sorter: true,
@@ -86,6 +90,13 @@ const createColumns = (
     sorter: true,
     render: (_, record) =>
       `${record.adderData.firstName} ${record.adderData.lastName}`,
+  },
+  {
+    title: 'Created Date',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
+    sorter: true,
+    render: (date) => getFullDate(date),
   },
   {
     title: 'Action',
@@ -129,9 +140,8 @@ function RewardPunishmentPage() {
     const fetchData = async () => {
       try {
         setLoadingData(true);
-        const response = (
-          await rewardPunishmentApi.adminGetList(filterData)
-        ).data;
+        const response = (await rewardPunishmentApi.adminGetList(filterData))
+          .data;
         const data = response.data.map((item) => ({ key: item.id, ...item }));
         dispatch(
           setData({

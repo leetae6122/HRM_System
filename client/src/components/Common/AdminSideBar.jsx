@@ -77,10 +77,10 @@ function AdminSideBar() {
         '/admin/payroll',
       ),
       getItem(
-        <Link to={'/admin/salary'} replace>
-          Salary
+        <Link to={'/admin/wage'} replace>
+          Wage
         </Link>,
-        '/admin/salary',
+        '/admin/wage',
       ),
     ]),
     getItem(

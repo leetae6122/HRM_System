@@ -5,14 +5,14 @@ const initialState = {
         page: 1,
         size: 10,
         where: {},
-        order: [],
+        order: [['date', 'DESC']],
         modelEmployee: {}
     },
     filterData: {
         page: 1,
         size: 10,
         where: {},
-        order: [],
+        order: [['date', 'DESC']],
         modelEmployee: {}
     },
     rewardPunishmentList: [],

@@ -14,7 +14,8 @@ class UserService {
                         attributes: ['name'],
                     },
                     {
-                        model: db.Salary, as: 'salaryData',
+                        model: db.Wage, as: 'wageData',
+                        where: { isApplying: true }
                     },
                     {
                         model: db.Department, as: 'departmentData',
@@ -72,7 +73,8 @@ class UserService {
                 include: [
                     { model: db.Position, as: 'positionData', attributes: ['name'], },
                     {
-                        model: db.Salary, as: 'salaryData',
+                        model: db.Wage, as: 'wageData',
+                        where: { isApplying: true }
                     },
                     {
                         model: db.Department, as: 'departmentData',

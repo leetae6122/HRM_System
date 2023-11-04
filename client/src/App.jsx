@@ -23,7 +23,7 @@ import AdminDashboardPage from 'pages/admin/DashboardPage';
 import UserPage from 'pages/admin/UserPage';
 import PositionPage from 'pages/admin/PositionPage';
 import EmployeePage from 'pages/admin/EmployeePage';
-import SalaryPage from 'pages/admin/SalaryPage';
+import WagePage from 'pages/admin/WagePage';
 import DepartmentPage from 'pages/admin/DepartmentPage';
 import AdminLeavePage from 'pages/admin/LeavePage';
 import AdminAttendancePage from 'pages/admin/AttendancePage';
@@ -79,7 +79,7 @@ function App() {
               <Route path="user" element={<UserPage />} />
               <Route exact path="employee/*" element={<EmployeePage />} />
               <Route path="position" element={<PositionPage />} />
-              <Route path="salary" element={<SalaryPage />} />
+              <Route path="wage" element={<WagePage />} />
               <Route path="department" element={<DepartmentPage />} />
               <Route path="leave" element={<AdminLeavePage />} />
               <Route path="attendance" element={<AdminAttendancePage />} />

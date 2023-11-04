@@ -1,12 +1,13 @@
 import { Card, Descriptions } from 'antd';
 import { useSelector } from 'react-redux';
+import { numberWithDot } from 'utils/format';
 import { getFullDate } from 'utils/handleDate';
 
 const labelStyle = {
   fontWeight: 'bold',
   color: 'grey',
 };
-const createItems = (profile, department, salary, position) => [
+const createItems = (profile, department, wage, position) => [
   {
     key: '1',
     label: <span style={labelStyle}>Employee Id</span>,
@@ -33,15 +34,29 @@ const createItems = (profile, department, salary, position) => [
     key: '5',
     label: <span style={labelStyle}>Position</span>,
     children: position.name,
+    span: 2,
+  },
+  {
+    key: '6',
+    label: <span style={labelStyle}>Basic Hourly Wage</span>,
+    children: `${numberWithDot(wage.basicHourlyWage)} VNĐ/hr`,
+    span: 2,
+  },
+  {
+    key: '7',
+    label: <span style={labelStyle}>Hourly Overtime Pay</span>,
+    children: `${numberWithDot(wage.hourlyOvertimePay)} VNĐ/hr`,
+    span: 2,
   },
 ];
 
 function EmployeeInformation() {
   const { user } = useSelector((state) => state.auth);
+
   const items = createItems(
     user.profile,
     user.profile.departmentData,
-    user.profile.salaryData,
+    user.profile.wageData,
     user.profile.positionData,
   );
   return (

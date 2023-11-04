@@ -3,18 +3,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Salary', {
+        await queryInterface.createTable('Wage', {
             id: {
                 allowNull: false,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
                 autoIncrement: true
             },
-            basicHourlySalary: {
+            basicHourlyWage: {
                 allowNull: false,
                 type: Sequelize.FLOAT(10)
             },
-            hourlyOvertimeSalary: {
+            hourlyOvertimePay: {
                 allowNull: false,
                 type: Sequelize.FLOAT(10)
             },
@@ -52,6 +52,6 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Salary');
+        await queryInterface.dropTable('Wage');
     }
 };

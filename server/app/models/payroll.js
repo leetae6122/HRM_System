@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Payroll.belongsTo(models.Salary, { foreignKey: 'salaryId', as: 'salaryData' });
+      Payroll.belongsTo(models.Wage, { foreignKey: 'wageId', as: 'wageData' });
       Payroll.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
       Payroll.belongsTo(models.Employee, { foreignKey: 'handledBy', as: 'handlerData' });
     }
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     totalPaid: DataTypes.FLOAT,
     payDate: DataTypes.DATEONLY,
     status: DataTypes.ENUM('Pending', 'Paid'),
-    salaryId: DataTypes.INTEGER,
+    wageId: DataTypes.INTEGER,
     employeeId: DataTypes.UUID,
     handledBy: DataTypes.UUID
   }, {

@@ -2,14 +2,14 @@ import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
 import createError from 'http-errors';
 import attendanceService from "./attendance.service";
-import salaryService from "./salary.service";
+import wageService from "./wage.service";
 
 class PayrollService {
     async findById(id) {
         const result = await db.Payroll.findByPk(id, {
             include: [
                 { model: db.Employee, as: 'employeeData' },
-                { model: db.Salary, as: 'salaryData' },
+                { model: db.Wage, as: 'wageData' },
                 { model: db.Employee, as: 'handlerData' }
             ],
             raw: true,
@@ -53,7 +53,7 @@ class PayrollService {
             attributes,
             include: [
                 { model: db.Employee, as: 'employeeData', ...employeeFilter },
-                { model: db.Salary, as: 'salaryData' },
+                { model: db.Wage, as: 'wageData' },
                 { model: db.Employee, as: 'handlerData' }
             ],
             raw: true,
@@ -94,13 +94,13 @@ class PayrollService {
             }
         });
 
-        const employeeSalary = await salaryService.findByEmployeeId(payload.employeeId);
-        payload.salaryId = employeeSalary.id;
+        const employeeWage = await wageService.findByEmployeeId(payload.employeeId);
+        payload.WageId = employeeWage.id;
         payload.hoursWorked = (Math.round(hoursWorked * 100) / 100).toFixed(2);
         payload.hoursOvertime = (Math.round(hoursOvertime * 100) / 100).toFixed(2);
-        payload.totalPaid = (hoursWorked * employeeSalary.basicHourlySalary)
-            + (hoursOvertime * employeeSalary.hourlyOvertimeSalary)
-            + employeeSalary.allowance
+        payload.totalPaid = (hoursWorked * employeeWage.basicHourlyWage)
+            + (hoursOvertime * employeeWage.hourlyOvertimePay)
+            + employeeWage.allowance
             - payload.deduction;
 
         const result = await db.Payroll.create(
