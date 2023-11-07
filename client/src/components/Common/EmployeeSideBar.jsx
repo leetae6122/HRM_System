@@ -3,7 +3,9 @@ import {
   AuditOutlined,
   CalendarOutlined,
   DesktopOutlined,
+  DollarOutlined,
   PieChartOutlined,
+  RedEnvelopeOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
@@ -67,6 +69,22 @@ function EmployeeSideBar() {
       </Link>,
       '/employee/payroll',
       <AuditOutlined />,
+    ),
+    getItem(
+      <Link to={'/employee/allowance'} replace>
+        Allowance
+      </Link>,
+      '/employee/allowance',
+      <DollarOutlined />,
+    ),
+    getItem(
+      <Link to={'/employee/reward-punishment'} replace>
+        Reward
+        <br />
+        Punishment
+      </Link>,
+      '/employee/reward-punishment',
+      <RedEnvelopeOutlined />,
     ),
     user?.profile.manageDepartment.managerId === user?.employeeId
       ? getItem(

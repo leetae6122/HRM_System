@@ -33,14 +33,14 @@ module.exports = {
             },
             employeeId: {
                 allowNull: false,
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id'
                 },
             },
             handledBy: {
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id'

@@ -23,7 +23,7 @@ module.exports = {
             id: {
                 allowNull: false,
                 primaryKey: true,
-                type: Sequelize.UUID
+                type: Sequelize.STRING
             },
             firstName: {
                 allowNull: false,
@@ -98,7 +98,7 @@ module.exports = {
         });
 
         await queryInterface.addColumn('Department', 'managerId', {
-            type: Sequelize.UUID,
+            type: Sequelize.STRING,
             references: {
                 model: 'Employee',
                 key: 'id'

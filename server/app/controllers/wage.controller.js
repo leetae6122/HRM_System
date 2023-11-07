@@ -43,7 +43,7 @@ exports.createWage = async (req, res, next) => {
     try {
         const wageExisted = await wageService.findByEmployeeId(req.body.employeeId);
         if (wageExisted) {
-            await wageService.updateWage(wageExisted.id, { isApplying: false });
+            await wageService.updateWage(wageExisted.id, { toDate: req.body.fromDate });
         }
         let payload = { ...req.body, addedBy: req.user.employeeId }
 

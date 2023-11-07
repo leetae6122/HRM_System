@@ -26,7 +26,7 @@ const createColumns = (toggleModalDetailPayroll) => [
   {
     title: 'Handler Name',
     dataIndex: ['handlerData', 'firstName'],
-    key: 'handlerData', 
+    key: 'handlerData',
     sorter: true,
     render: (_, record) =>
       `${record.handlerData.firstName} ${record.handlerData.lastName}`,
@@ -57,16 +57,14 @@ const createColumns = (toggleModalDetailPayroll) => [
     dataIndex: 'deduction',
     key: 'deduction',
     sorter: true,
-    render: (value) =>
-      `${numberWithDot(value)} VNĐ`,
+    render: (value) => `${numberWithDot(value)} VNĐ`,
   },
   {
     title: 'Total Paid',
     dataIndex: 'totalPaid',
     key: 'totalPaid',
     sorter: true,
-    render: (value) =>
-      `${numberWithDot(value)} VNĐ`,
+    render: (value) => `${numberWithDot(value)} VNĐ`,
   },
   {
     title: 'Pay Date',
@@ -170,6 +168,8 @@ function PayrollPage() {
   const columns = createColumns(toggleModalDetailPayroll);
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let where = filterData.where;
     let order = defaultFilter.order;
 
@@ -189,12 +189,14 @@ function PayrollPage() {
       else
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, where, order });
+    setFilter({ ...filterData, page, size, where, order });
   };
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Payroll List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
+        List of Payrolls
+      </Divider>
       <Table
         key={tableKey}
         columns={columns}
@@ -205,13 +207,6 @@ function PayrollPage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

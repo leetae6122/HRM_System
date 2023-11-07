@@ -5,6 +5,7 @@ const createShiftSchema = Joi.object({
     days: Joi.array().items(Joi.number().integer()).required(),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
+    wageRate: Joi.number().min(0).required(),
     overtimeShift: Joi.boolean().optional()
 });
 
@@ -14,6 +15,7 @@ const updateShiftSchema = Joi.object({
     days: Joi.array().items(Joi.number().integer()).optional(),
     startTime: Joi.date().optional(),
     endTime: Joi.date().optional(),
+    wageRate: Joi.number().min(0).optional(),
     overtimeShift: Joi.boolean().optional()
 }).required().min(1);
 

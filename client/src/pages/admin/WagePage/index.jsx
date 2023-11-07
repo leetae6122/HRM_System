@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Divider, Space, Table, Tag } from 'antd';
+import { Button, Divider, Space, Table } from 'antd';
 import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled } from '@ant-design/icons';
@@ -12,6 +12,7 @@ import wageApi from 'api/wageApi';
 import ModalAddWage from './components/ComponentAddEdit/ModalAddWage';
 import ModalEditWage from './components/ComponentAddEdit/ModalEditWage';
 import _ from 'lodash';
+import FilterDrawer from './components/Filter/FilterDrawer';
 
 const createColumns = (toggleModalEditWage, handleDeleteWage) => [
   {
@@ -30,40 +31,6 @@ const createColumns = (toggleModalEditWage, handleDeleteWage) => [
     render: (value) => `${numberWithDot(value)} VNĐ/hr`,
   },
   {
-    title: 'Hourly Overtime Pay',
-    dataIndex: 'hourlyOvertimePay',
-    key: 'hourlyOvertimePay',
-    sorter: true,
-    render: (value) => `${numberWithDot(value)} VNĐ/hr`,
-  },
-  {
-    title: 'Status',
-    key: 'isApplying',
-    dataIndex: 'isApplying',
-    render: (isApplying) => (
-      <>
-        <Tag
-          style={{ padding: 8 }}
-          color={isApplying ? 'green' : 'default'}
-          key={isApplying}
-        >
-          {isApplying ? 'Applying' : 'Do not apply'}
-        </Tag>
-      </>
-    ),
-    filters: [
-      {
-        text: 'Applying',
-        value: true,
-      },
-      {
-        text: 'Do not apply',
-        value: false,
-      },
-    ],
-    filterMultiple: false,
-  },
-  {
     title: 'Employee',
     dataIndex: ['employeeData', 'firstName'],
     key: 'employeeData',
@@ -72,19 +39,26 @@ const createColumns = (toggleModalEditWage, handleDeleteWage) => [
       `${record.employeeData.firstName} ${record.employeeData.lastName}`,
   },
   {
+    title: 'From Date',
+    dataIndex: 'fromDate',
+    key: 'fromDate',
+    sorter: true,
+    render: (date) => getFullDate(date),
+  },
+  {
+    title: 'To Date',
+    dataIndex: 'toDate',
+    key: 'toDate',
+    sorter: true,
+    render: (date) => (date ? getFullDate(date) : ''),
+  },
+  {
     title: 'Added By',
     dataIndex: ['adderData', 'firstName'],
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
       `${record.adderData.firstName} ${record.adderData.lastName}`,
-  },
-  {
-    title: 'Date created',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
-    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-    render: (date) => getFullDate(date),
   },
   {
     title: 'Action',
@@ -199,10 +173,7 @@ function WagePage() {
     setOpenModalAddWage(!openModalAddWage);
   };
 
-  const columns = createColumns(
-    toggleModalEditWage,
-    handleDeleteWage,
-  );
+  const columns = createColumns(toggleModalEditWage, handleDeleteWage);
 
   const onChangeTable = (pagination, filters, sorter) => {
     const page = pagination.current;
@@ -255,12 +226,13 @@ function WagePage() {
         scroll={{ y: 500 }}
         loading={loadingData}
       />
-      {/* {openFilterDrawer && (
+      {openFilterDrawer && (
         <FilterDrawer
           toggleShowDrawer={toggleShowFilterDrawer}
           openDrawer={openFilterDrawer}
+          setFilter={setFilter}
         />
-      )} */}
+      )}
       {openModalAddWage && (
         <ModalAddWage
           openModal={openModalAddWage}

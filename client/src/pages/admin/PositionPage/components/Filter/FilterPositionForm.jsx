@@ -7,28 +7,27 @@ import dayjs from 'dayjs';
 FilterPositionForm.propTypes = {
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
+  initialValues: PropTypes.object,
 };
 
 FilterPositionForm.defaultProps = {
   onSubmit: null,
   loading: false,
+  initialValues: {
+    minHourlyWage: {
+      from: null,
+      to: null,
+    },
+    maxHourlyWage: {
+      from: null,
+      to: null,
+    },
+    createdAt: [],
+  },
 };
-
 const dateFormat = 'DD/MM/YYYY';
 
 const wrapperCol = { offset: 8, span: 16 };
-
-const initialValues = {
-  minHourlySalary: {
-    from: null,
-    to: null,
-  },
-  maxHourlySalary: {
-    from: null,
-    to: null,
-  },
-  createdAt: [],
-};
 
 const rangePresets = [
   {
@@ -50,7 +49,7 @@ const rangePresets = [
 ];
 
 function FilterPositionForm(props) {
-  const { onSubmit, loading } = props;
+  const { onSubmit, loading, initialValues } = props;
   const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
@@ -66,7 +65,7 @@ function FilterPositionForm(props) {
       },
       () => setSubmittable(false),
     );
-  }, [values, form]);
+  }, [values, form, initialValues]);
 
   const onFinish = (values) => {
     onSubmit(values);
@@ -86,17 +85,17 @@ function FilterPositionForm(props) {
       }}
       size="large"
     >
-      <Form.Item label="Min Hourly Salary">
+      <Form.Item label="Min Hourly Wage">
         <Form.Item
-          name={['minHourlySalary', 'from']}
+          name={['minHourlyWage', 'from']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
                 if (
                   !value ||
-                  !form.getFieldValue('minHourlySalary').to ||
-                  value < form.getFieldValue('minHourlySalary').to
+                  !form.getFieldValue('minHourlyWage').to ||
+                  value < form.getFieldValue('minHourlyWage').to
                 ) {
                   return Promise.resolve();
                 }
@@ -115,16 +114,20 @@ function FilterPositionForm(props) {
             min={0}
             disabled={loading}
             placeholder="From (number)"
+            formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           />
         </Form.Item>
 
         <Form.Item
-          name={['minHourlySalary', 'to']}
+          name={['minHourlyWage', 'to']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
-                if (!value || value > form.getFieldValue('minHourlySalary').from) {
+                if (
+                  !value ||
+                  value > form.getFieldValue('minHourlyWage').from
+                ) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
@@ -142,21 +145,22 @@ function FilterPositionForm(props) {
             min={0}
             disabled={loading}
             placeholder="To (number)"
+            formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           />
         </Form.Item>
       </Form.Item>
 
-      <Form.Item label="Max Hourly Salary">
+      <Form.Item label="Max Hourly Wage">
         <Form.Item
-          name={['maxHourlySalary', 'from']}
+          name={['maxHourlyWage', 'from']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
                 if (
                   !value ||
-                  !form.getFieldValue('maxHourlySalary').to ||
-                  value < form.getFieldValue('maxHourlySalary').to
+                  !form.getFieldValue('maxHourlyWage').to ||
+                  value < form.getFieldValue('maxHourlyWage').to
                 ) {
                   return Promise.resolve();
                 }
@@ -175,16 +179,20 @@ function FilterPositionForm(props) {
             min={0}
             disabled={loading}
             placeholder="From (number)"
+            formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           />
         </Form.Item>
 
         <Form.Item
-          name={['maxHourlySalary', 'to']}
+          name={['maxHourlyWage', 'to']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
-                if (!value || value > form.getFieldValue('maxHourlySalary').from) {
+                if (
+                  !value ||
+                  value > form.getFieldValue('maxHourlyWage').from
+                ) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
@@ -202,11 +210,17 @@ function FilterPositionForm(props) {
             min={0}
             disabled={loading}
             placeholder="To (number)"
+            formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           />
         </Form.Item>
       </Form.Item>
 
-      <Form.Item name="createdAt" label="Date created">
+      <Form.Item
+        name="createdAt"
+        label="Date created"
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+      >
         <DatePicker.RangePicker
           disabled={loading}
           format={dateFormat}

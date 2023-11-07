@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Row, Space } from 'antd';
-import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
+import {
+  FilterFilled,
+  PlusCircleFilled,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/leave';
@@ -11,15 +15,17 @@ import _ from 'lodash';
 LeaveTableHeader.propTypes = {
   toggleModalAddLeave: PropTypes.func,
   setFilter: PropTypes.func,
+  toggleShowFilterDrawer: PropTypes.func,
 };
 
 LeaveTableHeader.defaultProps = {
   toggleModalAddLeave: null,
   setFilter: null,
+  toggleShowFilterDrawer: null,
 };
 
 function LeaveTableHeader(props) {
-  const { toggleModalAddLeave, setFilter } = props;
+  const { toggleModalAddLeave, setFilter, toggleShowFilterDrawer } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector((state) => state.leave);
@@ -83,6 +89,13 @@ function LeaveTableHeader(props) {
             onClick={toggleModalAddLeave}
           >
             Create leave
+          </Button>
+          <Button
+            type="primary"
+            icon={<FilterFilled />}
+            onClick={toggleShowFilterDrawer}
+          >
+            Filter
           </Button>
         </Space>
       </Col>

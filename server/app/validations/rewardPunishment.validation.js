@@ -5,7 +5,7 @@ const createRewardPunishmentSchema = Joi.object({
     reason: Joi.string().max(200).required(),
     amount: Joi.number().min(0).required(),
     date: Joi.date().required(),
-    employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
+    employeeId: Joi.string().max(10).required(),
 });
 
 const updateRewardPunishmentSchema = Joi.object({

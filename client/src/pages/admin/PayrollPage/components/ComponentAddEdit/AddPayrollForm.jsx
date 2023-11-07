@@ -102,6 +102,12 @@ function AddPayrollForm(props) {
     onCancel();
   };
 
+  const onChangeMonth = (value) => {
+    const firstMonth = value.startOf('month');
+    const endMonth = value.endOf('month');
+    form.setFieldValue('payrollDateRange', [firstMonth, endMonth])
+  }
+
   return (
     <Form
       name="normal_add_payroll"
@@ -156,6 +162,7 @@ function AddPayrollForm(props) {
               disabled={loading}
               style={{ width: '100%' }}
               format={(value) => getMonthName(value)}
+              onChange={onChangeMonth}
             />
           </Form.Item>
           <Form.Item

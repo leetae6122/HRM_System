@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import _ from 'lodash';
 import WageForm from './WageForm';
 import wageApi from 'api/wageApi';
+import dayjs from 'dayjs';
 
 ModalEditWage.propTypes = {
   openModal: PropTypes.bool,
@@ -35,7 +36,8 @@ function ModalEditWage(props) {
           setEditWage({
             wageId: data.id,
             basicHourlyWage: data.basicHourlyWage,
-            hourlyOvertimePay: data.hourlyOvertimePay,
+            fromDate: dayjs(data.fromDate),
+            toDate: data.toDate ? dayjs(data.toDate) : '',
             employeeId: data.employeeId,
           });
         }

@@ -1,6 +1,5 @@
 import { Card, Descriptions } from 'antd';
 import { useSelector } from 'react-redux';
-import { numberWithDot } from 'utils/format';
 import { getFullDate } from 'utils/handleDate';
 
 const labelStyle = {
@@ -34,18 +33,6 @@ const createItems = (profile, department, wage, position) => [
     key: '5',
     label: <span style={labelStyle}>Position</span>,
     children: position.name,
-    span: 2,
-  },
-  {
-    key: '6',
-    label: <span style={labelStyle}>Basic Hourly Wage</span>,
-    children: `${numberWithDot(wage.basicHourlyWage)} VNĐ/hr`,
-    span: 2,
-  },
-  {
-    key: '7',
-    label: <span style={labelStyle}>Hourly Overtime Pay</span>,
-    children: `${numberWithDot(wage.hourlyOvertimePay)} VNĐ/hr`,
     span: 2,
   },
 ];

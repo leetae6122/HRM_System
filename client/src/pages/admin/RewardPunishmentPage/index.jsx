@@ -206,7 +206,7 @@ function RewardPunishmentPage() {
       .then(async (result) => {
         if (result.isConfirmed) {
           await rewardPunishmentApi.delete(rewardId);
-          Swal.fire('Deleted!', 'Reward has been deleted.', 'success');
+          Swal.fire('Deleted!', 'Reward or Punishment has been deleted.', 'success');
           await refreshRewardPunishmentList();
         }
       })

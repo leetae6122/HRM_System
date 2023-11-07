@@ -16,8 +16,8 @@ PositionForm.defaultProps = {
   loading: false,
   initialValues: {
     name: '',
-    minHourlySalary: 0,
-    maxHourlySalary: null,
+    minHourlyWage: 0,
+    maxHourlyWage: null,
   },
 };
 
@@ -90,8 +90,8 @@ function PositionForm(props) {
         />
       </Form.Item>
       <Form.Item
-        name="minHourlySalary"
-        label="Min Hourly Salary"
+        name="minHourlyWage"
+        label="Min Hourly Wage"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         hasFeedback
@@ -101,8 +101,8 @@ function PositionForm(props) {
             validator(_, value) {
               if (
                 !value ||
-                !form.getFieldValue('maxHourlySalary') ||
-                value < form.getFieldValue('maxHourlySalary')
+                !form.getFieldValue('maxHourlyWage') ||
+                value < form.getFieldValue('maxHourlyWage')
               ) {
                 return Promise.resolve();
               }
@@ -125,20 +125,20 @@ function PositionForm(props) {
         />
       </Form.Item>
       <Form.Item
-        name="maxHourlySalary"
-        label="Max Hourly Salary"
+        name="maxHourlyWage"
+        label="Max Hourly Wage"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         hasFeedback
         rules={[
           () => ({
             validator(_, value) {
-              if (!value || value > form.getFieldValue('minHourlySalary')) {
+              if (!value || value > form.getFieldValue('minHourlyWage')) {
                 return Promise.resolve();
               }
               return Promise.reject(
                 new Error(
-                  'Max Hourly Salary must be greater than Min Hourly Salary!',
+                  'Max Hourly Wage must be greater than Min Hourly Wage!',
                 ),
               );
             },

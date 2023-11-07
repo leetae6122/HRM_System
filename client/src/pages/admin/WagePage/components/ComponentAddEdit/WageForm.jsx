@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button, Space, InputNumber, Select } from 'antd';
+import {
+  Form,
+  Input,
+  Button,
+  Space,
+  InputNumber,
+  Select,
+  DatePicker,
+} from 'antd';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 import employeeApi from 'api/employeeApi';
@@ -18,12 +26,14 @@ WageForm.defaultProps = {
   loading: false,
   initialValues: {
     basicHourlyWage: 0,
-    hourlyOvertimePay: 0,
+    fromDate: '',
+    toDate: '',
     employeeId: null,
   },
 };
 
 const wrapperCol = { offset: 8, span: 16 };
+const dateFormat = 'DD/MM/YYYY';
 
 function WageForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
@@ -40,8 +50,8 @@ function WageForm(props) {
   useEffect(() => {
     const defaultValues = {
       basicHourlyWage: initialValues.basicHourlyWage,
-      hourlyOvertimePay: initialValues.hourlyOvertimePay,
-      allowance: initialValues.allowance,
+      fromDate: initialValues.fromDate,
+      toDate: initialValues.toDate,
       wageId: initialValues.wageId,
     };
 
@@ -190,8 +200,7 @@ function WageForm(props) {
                 validator(_, value) {
                   if (
                     !value || selectedEmployee?.positionData.maxHourlyWage
-                      ? value >=
-                          selectedEmployee?.positionData.minHourlyWage &&
+                      ? value >= selectedEmployee?.positionData.minHourlyWage &&
                         value <= selectedEmployee?.positionData.maxHourlyWage
                       : value >= selectedEmployee?.positionData.minHourlyWage
                   ) {
@@ -240,44 +249,30 @@ function WageForm(props) {
             />
           </Form.Item>
           <Form.Item
-            name="hourlyOvertimePay"
-            label="Hourly Overtime Pay"
+            name="fromDate"
+            label="From Date"
             hasFeedback
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}
-            rules={[
-              {
-                required: true,
-                message: "Please input the employee's hourly overtime pay!",
-              },
-              () => ({
-                validator(_, value) {
-                  if (
-                    !value ||
-                    value > form.getFieldValue('basicHourlyWage')
-                  ) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error(
-                      'Hourly Overtime Pay must be greater than Basic Hourly Wage!',
-                    ),
-                  );
-                },
-              }),
-            ]}
+            rules={[{ required: true, message: 'Please select from date!' }]}
           >
-            <InputNumber
+            <DatePicker
+              disabled={loading}
+              format={dateFormat}
               style={{
                 width: '100%',
               }}
-              min={0}
-              controls={false}
-              disabled={loading}
-              formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              addonAfter={'VNĐ/hr'}
             />
           </Form.Item>
+          {initialValues.wageId ? (
+            <Form.Item name="toDate" label="To Date" hasFeedback>
+              <DatePicker
+                disabled={loading}
+                format={dateFormat}
+                style={{
+                  width: '100%',
+                }}
+              />
+            </Form.Item>
+          ) : null}
         </>
       ) : null}
       <Form.Item wrapperCol={wrapperCol}>

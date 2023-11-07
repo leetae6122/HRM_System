@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { now } from 'lodash';
 import { calcDate } from 'utils/handleDate';
-import { numberWithDot } from 'utils/format';
 
 dayjs.extend(relativeTime);
 
@@ -49,18 +48,6 @@ const createItems = (employee) => [
     key: '6',
     label: <span style={labelStyle}>Position</span>,
     children: employee.positionData.name,
-    span: 2,
-  },
-  {
-    key: '7',
-    label: <span style={labelStyle}>Basic Hourly Wage</span>,
-    children: `${numberWithDot(employee.wageData.basicHourlyWage)} VNĐ/hr`,
-    span: 2,
-  },
-  {
-    key: '8',
-    label: <span style={labelStyle}>Hourly Overtime Pay</span>,
-    children: `${numberWithDot(employee.wageData.hourlyOvertimePay)} VNĐ/hr`,
     span: 2,
   },
 ];

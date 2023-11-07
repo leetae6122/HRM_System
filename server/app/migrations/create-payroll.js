@@ -24,19 +24,31 @@ module.exports = {
             },
             hoursWorked: {
                 allowNull: false,
-                type: Sequelize.FLOAT(2),
+                type: Sequelize.FLOAT,
             },
             hoursOvertime: {
-                type: Sequelize.FLOAT(2),
+                type: Sequelize.FLOAT,
                 defaultValue: 0
             },
+            totalBasicWage: {
+                allowNull: false,
+                type: Sequelize.FLOAT,
+            },
+            totalOvertimeWage: {
+                allowNull: false,
+                type: Sequelize.FLOAT,
+            },
+            totalAllowance: {
+                allowNull: false,
+                type: Sequelize.FLOAT,
+            },
             deduction: {
-                type: Sequelize.FLOAT(10),
+                type: Sequelize.FLOAT,
                 defaultValue: 0
             },
             totalPaid: {
                 allowNull: false,
-                type: Sequelize.FLOAT(10),
+                type: Sequelize.FLOAT,
             },
             payDate: {
                 type: Sequelize.DATEONLY,
@@ -46,24 +58,16 @@ module.exports = {
                 type: Sequelize.ENUM,
                 values: ['Pending', 'Paid']
             },
-            wageId: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'Wage',
-                    key: 'id'
-                },
-            },
             employeeId: {
                 allowNull: false,
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id'
                 },
             },
             handledBy: {
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id'

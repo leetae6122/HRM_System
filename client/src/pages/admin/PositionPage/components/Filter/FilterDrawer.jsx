@@ -28,29 +28,29 @@ function FilterDrawer(props) {
   const handleFilter = async (values) => {
     setConfirmLoading(true);
     let filter;
-    if (!_.isEmpty(_.omitBy(values.minHourlySalary, _.isNil))) {
+    if (!_.isEmpty(_.omitBy(values.minHourlyWage, _.isNil))) {
       filter = {
-        minHourlySalary: values.minHourlySalary.to
+        minHourlyWage: values.minHourlyWage.to
           ? {
               $between: [
-                values.minHourlySalary.from,
-                values.minHourlySalary.to,
+                values.minHourlyWage.from,
+                values.minHourlyWage.to,
               ],
             }
-          : { $gte: values.minHourlySalary.from },
+          : { $gte: values.minHourlyWage.from },
       };
     }
-    if (!_.isEmpty(_.omitBy(values.maxHourlySalary, _.isNil))) {
+    if (!_.isEmpty(_.omitBy(values.maxHourlyWage, _.isNil))) {
       filter = {
         ...filter,
-        maxHourlySalary: values.maxHourlySalary.to
+        maxHourlyWage: values.maxHourlyWage.to
           ? {
               $between: [
-                values.maxHourlySalary.from,
-                values.maxHourlySalary.to,
+                values.maxHourlyWage.from,
+                values.maxHourlyWage.to,
               ],
             }
-          : { $gte: values.maxHourlySalary.from },
+          : { $gte: values.maxHourlyWage.from },
       };
     }
     if (!_.isEmpty(_.omitBy(values.createdAt, _.isNil))) {

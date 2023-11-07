@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     managerStatus: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
     adminStatus: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
     shiftId: DataTypes.INTEGER,
-    adminId: DataTypes.UUID,
-    employeeId: DataTypes.UUID,
+    adminId: DataTypes.STRING,
+    employeeId: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Attendance'

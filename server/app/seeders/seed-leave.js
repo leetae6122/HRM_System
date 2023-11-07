@@ -9,7 +9,7 @@ module.exports = {
             status: 'Pending',
             leaveFrom: '2023-10-16',
             leaveTo: '2023-10-16',
-            employeeId: 'b8dc485c-bf86-46c2-b8fc-78ad135278cc',
+            employeeId: 'NV20230002',
         },
         {
             id: 2,
@@ -18,8 +18,8 @@ module.exports = {
             status: 'Approved',
             leaveFrom: '2023-10-25',
             leaveTo: '2023-10-27',
-            employeeId: 'b8dc485c-bf86-46c2-b8fc-78ad135278cc',
-            handledBy: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
+            employeeId: 'NV20230002',
+            handledBy: 'NV20230001',
         },
         {
             id: 3,
@@ -28,8 +28,8 @@ module.exports = {
             status: 'Approved',
             leaveFrom: '2023-10-04',
             leaveTo: '2023-10-06',
-            employeeId: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
-            handledBy: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
+            employeeId: 'NV20230001',
+            handledBy: 'NV20230001',
         },
         {
             id: 4,
@@ -38,8 +38,8 @@ module.exports = {
             status: 'Approved',
             leaveFrom: '2023-10-17',
             leaveTo: '2023-10-17',
-            employeeId: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
-            handledBy: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
+            employeeId: 'NV20230001',
+            handledBy: 'NV20230001',
         },
         ], {
 

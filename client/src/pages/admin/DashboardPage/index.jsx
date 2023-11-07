@@ -131,7 +131,7 @@ function DashboardPage() {
         />
       </Col>
       <Col span={12}>
-
+ 
       </Col>
       <Col span={12}>
         <DepartmentEmployeesTable />

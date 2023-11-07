@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     amount: DataTypes.FLOAT,
     startDate: DataTypes.DATEONLY,
     endDate: DataTypes.DATEONLY,
-    employeeId: DataTypes.UUID,
-    addedBy: DataTypes.UUID
+    employeeId: DataTypes.STRING,
+    addedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Allowance'

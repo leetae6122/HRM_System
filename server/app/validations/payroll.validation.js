@@ -5,7 +5,7 @@ const createPayrollSchema = Joi.object({
     startDate: Joi.date().required(),
     endDate: Joi.date().required(),
     deduction: Joi.number().min(0).default(0).optional(),
-    employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
+    employeeId: Joi.string().max(10).required(),
 });
 
 const updatePayrollSchema = Joi.object({

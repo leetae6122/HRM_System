@@ -80,7 +80,6 @@ function DepartmentPage() {
   const { filterData, departmentList, total, currentPage, defaultFilter } =
     useSelector((state) => state.department);
   const [loadingData, setLoadingData] = useState(false);
-  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddDepartment, setOpenModalAddDepartment] = useState(false);
   const [openModalEditDepartment, setOpenModalEditDepartment] = useState(false);
   const [tableKey, setTableKey] = useState(0);
@@ -154,10 +153,6 @@ function DepartmentPage() {
       });
   };
 
-  const toggleShowFilterDrawer = () => {
-    setOpenFilterDrawer(!openFilterDrawer);
-  };
-
   const toggleModalEditDepartment = (id) => {
     dispatch(setEditDepartmentId(id));
     setOpenModalEditDepartment(!openModalEditDepartment);
@@ -202,7 +197,6 @@ function DepartmentPage() {
         title={() => (
           <DepartmentTableHeader
             toggleModalAddDepartment={toggleModalAddDepartment}
-            toggleShowFilterDrawer={toggleShowFilterDrawer}
             setFilter={setFilter}
           />
         )}

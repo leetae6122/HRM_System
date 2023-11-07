@@ -13,6 +13,7 @@ import ModalEditLeave from './components/ComponentAddEdit/ModalEditLeave';
 import { gold } from '@ant-design/colors';
 import _ from 'lodash';
 import { setDefaultFilterData } from 'reducers/leave';
+import FilterDrawer from './components/Filter/FilterDrawer';
 
 const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
   {
@@ -126,6 +127,7 @@ function LeavePage() {
   const [loadingData, setLoadingData] = useState(false);
   const [openModalAddLeave, setOpenModalAddLeave] = useState(false);
   const [openModalEditLeave, setOpenModalEditLeave] = useState(false);
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -178,6 +180,10 @@ function LeavePage() {
         currentPage: response.currentPage,
       }),
     );
+  };
+
+  const toggleShowFilterDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
   };
 
   const toggleModalEditLeave = (id) => {
@@ -256,6 +262,7 @@ function LeavePage() {
           <LeaveTableHeader
             toggleModalAddLeave={toggleModalAddLeave}
             setFilter={setFilter}
+            toggleShowFilterDrawer={toggleShowFilterDrawer}
           />
         )}
         pagination={{
@@ -279,6 +286,13 @@ function LeavePage() {
           openModal={openModalEditLeave}
           toggleShowModal={toggleModalEditLeave}
           refreshLeaveList={refreshLeaveList}
+        />
+      )}
+      {openFilterDrawer && (
+        <FilterDrawer
+          toggleShowDrawer={toggleShowFilterDrawer}
+          openDrawer={openFilterDrawer}
+          setFilter={setFilter}
         />
       )}
     </>

@@ -21,7 +21,7 @@ module.exports = {
                 type: Sequelize.TIME,
             },
             totalHours: {
-                type: Sequelize.FLOAT(2),
+                type: Sequelize.FLOAT,
             },
             inStatus: {
                 type: Sequelize.ENUM,
@@ -43,14 +43,14 @@ module.exports = {
             },
             employeeId: {
                 allowNull: false,
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id'
                 },
             },
             adminId: {
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id'

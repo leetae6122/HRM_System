@@ -3,6 +3,8 @@ import db from "./../models/index";
 import createError from 'http-errors';
 import attendanceService from "./attendance.service";
 import wageService from "./wage.service";
+import allowanceService from "./allowance.service";
+import dayjs from "dayjs";
 
 class PayrollService {
     async findById(id) {
@@ -77,14 +79,17 @@ class PayrollService {
         const payload = body;
         let hoursWorked = 0;
         let hoursOvertime = 0;
+        let totalBasicWage = 0;
+        let totalOvertimeWage = 0;
+        let totalAllowance = 0;
 
-        const listAttendances = await attendanceService.findAll({
+        const attendanceList = await attendanceService.findAll({
             where: {
                 attendanceDate: { $between: [payload.startDate, payload.endDate] },
                 employeeId: payload.employeeId
             }
         });
-        listAttendances.forEach((attendance) => {
+        attendanceList.forEach((attendance) => {
             if (attendance.shiftData.overtimeShift) {
                 hoursOvertime += attendance.totalHours;
                 return;
@@ -94,14 +99,40 @@ class PayrollService {
             }
         });
 
-        const employeeWage = await wageService.findByEmployeeId(payload.employeeId);
-        payload.WageId = employeeWage.id;
+        const wageList = await wageService.findAllByEmployeeIdWithDate(
+            payload.employeeId,
+            payload.startDate,
+            payload.endDate
+        );
+        wageList.forEach((wage) => {
+            const attendanceListFilter = attendanceList.filter((attendance) => {
+                if (wage.toDate) {
+                    return dayjs(wage.fromDate) >= dayjs(attendance.attendanceDate)
+                        && dayjs(attendance.attendanceDate) <= dayjs(wage.toDate);
+                }
+                if (!wage.toDate) {
+                    return dayjs(wage.fromDate) >= dayjs(attendance.attendanceDate);
+                }
+            });
+            attendanceListFilter.forEach((attendance) =>
+                totalBasicWage += wage.basicHourlyWage * attendance.totalHours * attendance.shiftData.wageShift
+            );
+        })
+
+        const allowanceList = await allowanceService.findAllByEmployeeIdWithDate(
+            payload.employeeId,
+            payload.startDate,
+            payload.endDate
+        );
+        if (allowanceList.length > 0) {
+            allowanceList.forEach((allowance) => {
+                totalAllowance += allowance.amount;
+            })
+        }
+
         payload.hoursWorked = (Math.round(hoursWorked * 100) / 100).toFixed(2);
         payload.hoursOvertime = (Math.round(hoursOvertime * 100) / 100).toFixed(2);
-        payload.totalPaid = (hoursWorked * employeeWage.basicHourlyWage)
-            + (hoursOvertime * employeeWage.hourlyOvertimePay)
-            + employeeWage.allowance
-            - payload.deduction;
+        payload.totalPaid = totalBasicWage + totalOvertimeWage + totalAllowance - payload.deduction;
 
         const result = await db.Payroll.create(
             payload,

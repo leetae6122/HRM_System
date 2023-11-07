@@ -2,8 +2,6 @@
 const {
     Model
 } = require('sequelize');
-const uuid = require('uuid');
-
 module.exports = (sequelize, DataTypes) => {
     class Employee extends Model {
         static associate(models) {
@@ -35,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     Employee.init({
         id: {
-            type: DataTypes.UUID,
+            type: DataTypes.STRING,
             primaryKey: true
         },
         firstName: DataTypes.STRING,
@@ -55,10 +53,6 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Employee'
     });
-
-    Employee.beforeCreate((employee) => {
-        employee.id = uuid.v4();
-    })
 
     return Employee;
 };

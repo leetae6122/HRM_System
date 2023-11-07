@@ -2,8 +2,6 @@
 const {
     Model
 } = require('sequelize');
-const uuid = require('uuid');
-
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
         /**
@@ -17,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     User.init({
         id: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             primaryKey: true
         },
         username: DataTypes.STRING,
@@ -26,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         resetPasswordHash: DataTypes.STRING,
         isAdmin: DataTypes.BOOLEAN,
         isActive: DataTypes.BOOLEAN,
-        employeeId: DataTypes.INTEGER,
+        employeeId: DataTypes.STRING,
     }, {
         sequelize,
         modelName: 'User',
@@ -42,11 +40,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         }
     });
-
-    User.beforeCreate((user) => {
-        user.id = uuid.v4();
-    })
-
+    
     User.afterCreate((user) => {
         delete user.dataValues.password;
     })

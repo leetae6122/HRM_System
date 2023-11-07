@@ -57,7 +57,7 @@ exports.adminGetListAllowance = async (req, res, next) => {
 
 exports.createAllowance = async (req, res, next) => {
     try {
-        await employeeService.foundEmployee(req.body.employeeId);
+        await employeeService.foundEmployee(req.body.employeeId, next);
         const payload = {
             ...req.body,
             addedBy: req.user.employeeId,

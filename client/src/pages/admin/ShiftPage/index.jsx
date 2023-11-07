@@ -40,6 +40,13 @@ const createColumns = (toggleModalEditShift, handleDeleteShift) => [
     sorter: true,
   },
   {
+    title: 'Wage Rate',
+    dataIndex: 'wageRate',
+    key: 'wageRate',
+    sorter: true,
+    render: (value) => `${value * 100}%`,
+  },
+  {
     title: 'Shift Type',
     dataIndex: 'overtimeShift',
     key: 'overtimeShift',
@@ -68,13 +75,6 @@ const createColumns = (toggleModalEditShift, handleDeleteShift) => [
     title: 'Date created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: true,
-    render: (date) => getFullDate(date),
-  },
-  {
-    title: 'Date update',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
     sorter: true,
     render: (date) => getFullDate(date),
   },

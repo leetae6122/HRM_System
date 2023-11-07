@@ -16,10 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     basicHourlyWage: DataTypes.FLOAT,
-    hourlyOvertimePay: DataTypes.FLOAT,
-    isApplying: DataTypes.BOOLEAN,
-    employeeId: DataTypes.UUID,
-    addedBy: DataTypes.UUID
+    fromDate: DataTypes.DATEONLY,
+    toDate: DataTypes.DATEONLY,
+    employeeId: DataTypes.STRING,
+    addedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Wage'

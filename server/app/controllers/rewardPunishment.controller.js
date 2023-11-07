@@ -57,13 +57,13 @@ exports.adminGetListRewardPunishment = async (req, res, next) => {
 
 exports.createRewardPunishment = async (req, res, next) => {
     try {
-        await employeeService.foundEmployee(req.body.employeeId);
+        await employeeService.foundEmployee(req.body.employeeId, next);
         const payload = {
             ...req.body,
             addedBy: req.user.employeeId,
         }
         const data = await rewardPunishmentService.createRewardPunishment(payload);
-        return res.send({ message: MSG_CREATED_SUCCESSFUL("RewardPunishment"), data });
+        return res.send({ message: MSG_CREATED_SUCCESSFUL("Reward or Punishment"), data });
     } catch (error) {
         return next(error);
     }
@@ -95,7 +95,7 @@ exports.deleteRewardPunishment = async (req, res, next) => {
         return res.send({ message: MSG_DELETE_SUCCESSFUL });
     } catch (error) {
         return next(
-            createError.BadRequest(MSG_ERROR_DELETE("RewardPunishment"))
+            createError.BadRequest(MSG_ERROR_DELETE("Reward or Punishment"))
         );
     }
 }

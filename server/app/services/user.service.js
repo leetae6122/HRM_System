@@ -15,7 +15,7 @@ class UserService {
                     },
                     {
                         model: db.Wage, as: 'wageData',
-                        where: { isApplying: true }
+                        where: { toDate: null }
                     },
                     {
                         model: db.Department, as: 'departmentData',
@@ -74,7 +74,7 @@ class UserService {
                     { model: db.Position, as: 'positionData', attributes: ['name'], },
                     {
                         model: db.Wage, as: 'wageData',
-                        where: { isApplying: true }
+                        where: { toDate: null }
                     },
                     {
                         model: db.Department, as: 'departmentData',

@@ -8,6 +8,7 @@ module.exports = {
             days: '1;2;3;4;5',
             startTime: '08:00:00',
             endTime: '12:00:00',
+            wageRate: 1,
             overtimeShift: false
         },
         {
@@ -16,6 +17,7 @@ module.exports = {
             days: '1;2;3;4;5',
             startTime: '13:00:00',
             endTime: '17:00:00',
+            wageRate: 1,
             overtimeShift: false
         },
         {
@@ -24,6 +26,7 @@ module.exports = {
             days: '1;2;3;4;5',
             startTime: '18:00:00',
             endTime: '20:00:00',
+            wageRate: 1.5,
             overtimeShift: true
         },
         {
@@ -32,16 +35,18 @@ module.exports = {
             days: '1;2;3;4;5',
             startTime: '21:00:00',
             endTime: '23:00:00',
+            wageRate: 2,
             overtimeShift: true
         },
         {
             id: 5,
-            name: 'Weekend Overtime',
+            name: 'Weekend - Morning',
             days: '0;6',
-            startTime: '18:00:00',
-            endTime: '20:00:00',
+            startTime: '08:00:00',
+            endTime: '12:00:00',
+            wageRate: 2,
             overtimeShift: true
-        }
+        },
         ], {
 
         });

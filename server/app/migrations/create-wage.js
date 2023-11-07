@@ -12,19 +12,19 @@ module.exports = {
             },
             basicHourlyWage: {
                 allowNull: false,
-                type: Sequelize.FLOAT(10)
+                type: Sequelize.FLOAT
             },
-            hourlyOvertimePay: {
+            fromDate: {
                 allowNull: false,
-                type: Sequelize.FLOAT(10)
+                type: Sequelize.DATEONLY,
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
             },
-            isApplying: {
-                defaultValue: true,
-                type: Sequelize.BOOLEAN
+            toDate: {
+                type: Sequelize.DATEONLY,
             },
             employeeId: {
                 allowNull: false,
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id'
@@ -32,7 +32,7 @@ module.exports = {
             },
             addedBy: {
                 allowNull: false,
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id',

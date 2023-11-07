@@ -3,8 +3,7 @@ import _ from 'lodash';
 
 class WageService {
     async findById(id) {
-        const result = await db.Wage.findOne({
-            where: { id },
+        const result = await db.Wage.findByPk(id, {
             include: [
                 { model: db.Employee, as: 'employeeData' },
                 { model: db.Employee, as: 'adderData' }
@@ -17,7 +16,20 @@ class WageService {
 
     async findByEmployeeId(employeeId) {
         const result = await db.Wage.findOne({
-            where: { employeeId },
+            where: { employeeId, toDate: null },
+            raw: true,
+            nest: true
+        });
+        return result;
+    }
+
+    async findAllByEmployeeIdWithDate(employeeId, startDate, endDate) {
+        const result = await db.Wage.findAll({
+            where: { 
+                employeeId,
+                fromDate: { $gte: startDate },
+                toDate: { $lte: endDate }
+            },
             raw: true,
             nest: true
         });

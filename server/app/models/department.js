@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     shortName: DataTypes.STRING,
-    managerId: DataTypes.UUID,
+    managerId: DataTypes.STRING,
     createdAt: DataTypes.DATE
   }, {
     sequelize,

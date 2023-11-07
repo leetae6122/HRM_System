@@ -18,6 +18,8 @@ import EmployeeAttendancePage from 'pages/employee/AttendancePage';
 import TimekeeperPage from 'pages/employee/TimekeeperPage';
 import ManageAttendancePage from 'pages/employee/ManageAttendancePage';
 import EmployeePayrollPage from 'pages/employee/PayrollPage';
+import EmployeeAllowancePage from 'pages/employee/AllowancePage';
+import EmployeeRewardPunishmentPage from 'pages/employee/RewardPunishmentPage';
 
 import AdminDashboardPage from 'pages/admin/DashboardPage';
 import UserPage from 'pages/admin/UserPage';
@@ -102,6 +104,8 @@ function App() {
               <Route path="leave" element={<EmployeeLeavePage />} />
               <Route path="timekeeper" element={<TimekeeperPage />} />
               <Route path="payroll" element={<EmployeePayrollPage />} />
+              <Route path="allowance" element={<EmployeeAllowancePage />} />
+              <Route path="reward-punishment" element={<EmployeeRewardPunishmentPage />} />
               <Route
                 path="manage-attendance"
                 element={

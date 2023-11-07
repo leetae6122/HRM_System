@@ -20,7 +20,7 @@ const employeeCreateLeaveSchema = createLeaveSchema.keys({
 });
 
 const adminCreateLeaveSchema = createLeaveSchema.keys({
-    employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
+    employeeId: Joi.string().max(10).required(),
     status: Joi.string().default('Approved'),
 });
 

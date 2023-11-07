@@ -5,24 +5,24 @@ module.exports = {
         await queryInterface.bulkInsert('Wage', [{
             id: 1,
             basicHourlyWage: 150000,
-            hourlyOvertimePay: 225000,
-            employeeId: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
-            addedBy: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
+            fromDate: '2023-11-01',
+            employeeId: 'NV20230001',
+            addedBy: 'NV20230001',
         },
         {
             id: 2,
             basicHourlyWage: 10000,
-            hourlyOvertimePay: 15000,
-            employeeId: 'b8dc485c-bf86-46c2-b8fc-78ad135278cc',
-            addedBy: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
+            fromDate: '2023-11-01',
+            employeeId: 'NV20230002',
+            addedBy: 'NV20230001',
         },
-        // {
-        //     id: 3,
-        //     basicHourlyWage: 10000,
-        //     hourlyOvertimePay: 15000,
-        //     employeeId: '478bfe9a-1f75-40e7-830c-5803991d10a9',
-        //     addedBy: '374bcdc0-dceb-4940-952a-d6a2d1cf53f9',
-        // }
+        {
+            id: 3,
+            basicHourlyWage: 10000,
+            fromDate: '2023-11-01',
+            employeeId: 'NV20230003',
+            addedBy: 'NV20230001',
+        }
         ], {
 
         });

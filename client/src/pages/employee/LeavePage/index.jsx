@@ -210,7 +210,11 @@ function LeavePage() {
       .then(async (result) => {
         if (result.isConfirmed) {
           await leaveApi.delete(leaveId);
-          Swal.fire('Deleted!', 'Request to leave has been deleted.', 'success');
+          Swal.fire(
+            'Deleted!',
+            'Request to leave has been deleted.',
+            'success',
+          );
           await refreshLeaveList();
         }
       })
@@ -226,6 +230,8 @@ function LeavePage() {
   );
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let where = filterData.where;
     let order = defaultFilter.order;
 
@@ -245,12 +251,14 @@ function LeavePage() {
       else
         order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, where, order });
+    setFilter({ ...filterData, page, size, where, order });
   };
 
   return (
     <>
-      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>Leave List</Divider>
+      <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
+        List of Leaves
+      </Divider>
       <Table
         key={tableKey}
         columns={columns}
@@ -266,13 +274,6 @@ function LeavePage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

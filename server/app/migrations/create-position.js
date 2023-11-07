@@ -17,10 +17,10 @@ module.exports = {
             },
             minHourlyWage: {
                 allowNull: false,
-                type: Sequelize.FLOAT(10)
+                type: Sequelize.FLOAT
             },
             maxHourlyWage: {
-                type: Sequelize.FLOAT(10)
+                type: Sequelize.FLOAT
             },
             createdAt: {
                 allowNull: false,

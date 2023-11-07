@@ -24,8 +24,8 @@ module.exports = (sequelize, DataTypes) => {
         status: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
         leaveFrom: DataTypes.DATEONLY,
         leaveTo: DataTypes.DATEONLY,
-        employeeId: DataTypes.UUID,
-        handledBy: DataTypes.UUID,
+        employeeId: DataTypes.STRING,
+        handledBy: DataTypes.STRING,
         reasonRejection: DataTypes.TEXT,
     }, {
         sequelize,

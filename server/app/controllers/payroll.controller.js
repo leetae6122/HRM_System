@@ -71,7 +71,7 @@ exports.createPayroll = async (req, res, next) => {
         if (payrollExisted) {
             return next(createError.BadRequest(MSG_ERROR_PAYROLL_EXISTED(getMonthName(req.body.month))));
         }
-        await employeeService.foundEmployee(req.body.employeeId);
+        await employeeService.foundEmployee(req.body.employeeId, next);
 
         const data = await payrollService.createPayroll(req.body);
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Payroll"), data });

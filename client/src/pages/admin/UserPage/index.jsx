@@ -17,6 +17,9 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
+    sorter: true,
+    render: (id) => `#${id}`,
+    width: 80,
   },
   {
     title: 'Username',

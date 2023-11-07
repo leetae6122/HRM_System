@@ -87,7 +87,7 @@ class RewardPunishmentService {
     async foundRewardPunishment(RewardPunishmentId, next) {
         const foundRewardPunishment = await this.findById(RewardPunishmentId);
         if (!foundRewardPunishment) {
-            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("RewardPunishment")));
+            return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Reward or Punishment")));
         }
         return foundRewardPunishment;
     }

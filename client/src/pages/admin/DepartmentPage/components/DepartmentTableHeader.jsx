@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Row, Space } from 'antd';
-import {
-  FilterFilled,
-  PlusCircleFilled,
-  ReloadOutlined,
-} from '@ant-design/icons';
+import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/department';
@@ -14,18 +10,16 @@ import _ from 'lodash';
 
 DepartmentTableHeader.propTypes = {
   toggleModalAddDepartment: PropTypes.func,
-  toggleShowFilterDrawer: PropTypes.func,
   setFilter: PropTypes.func,
 };
 
 DepartmentTableHeader.defaultProps = {
   toggleModalAddDepartment: null,
-  toggleShowFilterDrawer: null,
   setFilter: null,
 };
 
 function DepartmentTableHeader(props) {
-  const { toggleModalAddDepartment, toggleShowFilterDrawer, setFilter } = props;
+  const { toggleModalAddDepartment, setFilter } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector(
@@ -89,13 +83,6 @@ function DepartmentTableHeader(props) {
             onClick={toggleModalAddDepartment}
           >
             Add Department
-          </Button>
-          <Button
-            type="primary"
-            icon={<FilterFilled />}
-            onClick={toggleShowFilterDrawer}
-          >
-            Filter
           </Button>
         </Space>
       </Col>

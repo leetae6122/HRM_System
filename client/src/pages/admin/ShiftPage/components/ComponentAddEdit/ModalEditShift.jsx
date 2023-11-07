@@ -42,6 +42,7 @@ function ModalEditShift(props) {
             startTime: dayjs(data.startTime, 'HH:mm:ss'),
             endTime: dayjs(data.endTime, 'HH:mm:ss'),
             overtimeShift: !!data.overtimeShift,
+            wageRate: data.wageRate * 100,
             days: data.days,
           });
         }
@@ -56,7 +57,10 @@ function ModalEditShift(props) {
   const handleEditShift = async (values) => {
     try {
       setConfirmLoading(true);
-      const response = await shiftApi.update(values);
+      const response = await shiftApi.update({
+        ...values,
+        wageRate: values.wageRate / 100,
+      });
       Swal.fire({
         icon: 'success',
         title: response.message,

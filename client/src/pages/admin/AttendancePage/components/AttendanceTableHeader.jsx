@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Row, Space } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { FilterFilled, ReloadOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/attendance';
@@ -10,14 +10,16 @@ import _ from 'lodash';
 
 AttendanceTableHeader.propTypes = {
   setFilter: PropTypes.func,
+  toggleShowFilterDrawer: PropTypes.func,
 };
 
 AttendanceTableHeader.defaultProps = {
   setFilter: null,
+  toggleShowFilterDrawer: null,
 };
 
 function AttendanceTableHeader(props) {
-  const { setFilter } = props;
+  const { setFilter, toggleShowFilterDrawer } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector(
@@ -76,6 +78,13 @@ function AttendanceTableHeader(props) {
               Reset
             </Button>
           )}
+          <Button
+            type="primary"
+            icon={<FilterFilled />}
+            onClick={toggleShowFilterDrawer}
+          >
+            Filter
+          </Button>
         </Space>
       </Col>
     </Row>

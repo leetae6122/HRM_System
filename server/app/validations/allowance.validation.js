@@ -5,7 +5,7 @@ const createAllowanceSchema = Joi.object({
     amount: Joi.number().min(0).required(),
     startDate: Joi.date().required(),
     endDate: Joi.date().optional(),
-    employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
+    employeeId: Joi.string().max(10).required(),
 });
 
 const updateAllowanceSchema = Joi.object({

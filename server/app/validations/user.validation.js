@@ -8,7 +8,7 @@ const adminCreateUserSchema = Joi.object({
         .required(),
     isAdmin: Joi.boolean().default(false),
     isActive: Joi.boolean().default(false),
-    employeeId: Joi.string().guid({ version: ['uuidv4'] }).required(),
+    employeeId: Joi.string().max(10).required(),
 });
 
 const changPasswordSchema = Joi.object({
@@ -22,7 +22,7 @@ const changPasswordSchema = Joi.object({
 });
 
 const adminUpdateUserSchema = Joi.object({
-    userId: Joi.string().guid({ version: ['uuidv4'] }).required(),
+    userId: Joi.string().max(10).required(),
     username: Joi.string().max(60).optional(),
     password: Joi.string()
         .max(60)

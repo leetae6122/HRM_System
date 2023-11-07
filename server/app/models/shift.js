@@ -5,11 +5,6 @@ const {
 const _ = require('lodash');
 module.exports = (sequelize, DataTypes) => {
     class Shift extends Model {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
         static associate(models) {
             Shift.hasMany(models.Attendance, { foreignKey: 'shiftId', as: 'shiftData' });
         }
@@ -24,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         days: DataTypes.STRING,
         startTime: DataTypes.TIME,
         endTime: DataTypes.TIME,
+        wageRate: DataTypes.FLOAT,
         overtimeShift: DataTypes.BOOLEAN,
     }, {
         sequelize,

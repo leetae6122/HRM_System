@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button, Space, DatePicker, Radio, Checkbox } from 'antd';
+import { Form, Input, Button, Space, DatePicker, Radio, Checkbox, InputNumber } from 'antd';
 import _ from 'lodash';
 
 ShiftForm.propTypes = {
@@ -19,6 +19,7 @@ ShiftForm.defaultProps = {
     startTime: null,
     endTime: null,
     overtimeShift: false,
+    wageRate: 0,
     days: [],
   },
 };
@@ -142,6 +143,29 @@ function ShiftForm(props) {
           picker={'time'}
           disabled={loading}
           style={{ width: '100%' }}
+        />
+      </Form.Item>
+      <Form.Item
+        name="wageRate"
+        label="Wage Rate"
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+        hasFeedback
+        rules={[
+          {
+            required: true,
+            message: "Please input wage rate!",
+          },
+        ]}
+      >
+        <InputNumber
+          style={{
+            width: '100%',
+          }}
+          controls={false}
+          min={0}
+          disabled={loading}
+          formatter={(value) => `${value} %`}
         />
       </Form.Item>
       <Form.Item

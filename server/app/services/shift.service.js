@@ -94,7 +94,7 @@ class ShiftService {
             where: {
                 startTime: { $lte: start },
                 endTime: { $gte: end },
-                days: day
+                days: { $like: `%${day}%` }
             },
             raw: true,
             nest: true

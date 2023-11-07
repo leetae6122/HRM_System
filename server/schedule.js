@@ -22,7 +22,7 @@ class Schedule {
                     }
                 })
 
-                if (attendanceList.length > 0) {
+                if (attendanceList && attendanceList.length > 0) {
                     attendanceList.forEach(async (attendance) => {
                         const body = {
                             attendanceDate: dayjs().toDate(),

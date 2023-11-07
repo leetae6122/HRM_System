@@ -16,6 +16,7 @@ import AttendanceTableHeader from './components/AttendanceTableHeader';
 import ModalEditAttendance from './components/ComponentEditAttendance/ModalEditAttendance';
 import _ from 'lodash';
 import { setDefaultFilterData } from 'reducers/attendance';
+import FilterDrawer from './components/Filter/FilterDrawer';
 
 const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
   {
@@ -194,6 +195,7 @@ function AttendancePage() {
     useSelector((state) => state.attendance);
   const [loadingData, setLoadingData] = useState(false);
   const [openModalEditAttendance, setOpenModalEditAttendance] = useState(false);
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -246,6 +248,10 @@ function AttendancePage() {
         currentPage: response.currentPage,
       }),
     );
+  };
+
+  const toggleShowFilterDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
   };
 
   const toggleModalEditAttendance = (id) => {
@@ -309,14 +315,19 @@ function AttendancePage() {
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        List of Attendees
+        List of Attendance
       </Divider>
       <Table
         key={tableKey}
         columns={columns}
         dataSource={attendanceList}
         bordered
-        title={() => <AttendanceTableHeader setFilter={setFilter} />}
+        title={() => (
+          <AttendanceTableHeader
+            setFilter={setFilter}
+            toggleShowFilterDrawer={toggleShowFilterDrawer}
+          />
+        )}
         pagination={{
           total,
           current: currentPage,
@@ -331,6 +342,13 @@ function AttendancePage() {
           openModal={openModalEditAttendance}
           toggleShowModal={toggleModalEditAttendance}
           refreshAttendanceList={refreshAttendanceList}
+        />
+      )}
+      {openFilterDrawer && (
+        <FilterDrawer
+          toggleShowDrawer={toggleShowFilterDrawer}
+          openDrawer={openFilterDrawer}
+          setFilter={setFilter}
         />
       )}
     </>

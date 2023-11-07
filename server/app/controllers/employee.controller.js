@@ -9,6 +9,7 @@ import {
     MSG_CREATED_SUCCESSFUL,
     MSG_DELETE_SUCCESSFUL,
     MSG_ERROR_DELETE,
+    MSG_ERROR_EXISTED,
     MSG_ERROR_ID_EMPTY,
     MSG_UPDATE_SUCCESSFUL
 } from "../utils/message.util";
@@ -22,7 +23,6 @@ exports.findProfileById = async (req, res, next) => {
                 createError.BadRequest(MSG_ERROR_ID_EMPTY("EmployeeId"))
             );
         }
-
         const data = await employeeService.foundEmployee(employeeId, next);
         return res.send({ data });
     } catch (error) {
@@ -65,13 +65,17 @@ exports.getListEmployee = async (req, res, next) => {
 
 exports.createEmployee = async (req, res, next) => {
     try {
+        const employee = await employeeService.findById(req.body.employeeId);
+        if (employee) {
+            return next(createError.BadRequest(MSG_ERROR_EXISTED("Employee Id")));
+        }
+
         await departmentService.foundDepartment(req.body.departmentId, next);
         await positionService.foundPosition(req.body.positionId, next);
-        await employeeService.foundEmployee(req.body.managerId, next, true);
         await employeeService.checkEmailExisted(req.body.email, next);
         await employeeService.checkPhoneNumberExisted(req.body.phoneNumber, next);
 
-        let payload = req.body
+        let payload = { ...req.body, id: req.body.employeeId };
         const fileData = req.file;
         if (fileData) {
             payload = {
@@ -79,9 +83,13 @@ exports.createEmployee = async (req, res, next) => {
                 avatarUrl: fileData.path,
             }
         }
+
         const data = await employeeService.createEmployee(payload);
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Employee"), data });
     } catch (error) {
+        if (req.file) {
+            cloudinary.uploader.destroy(req.file.filename);
+        }
         return next(
             createError.InternalServerError("An error occurred while retrieving the employees")
         );
@@ -107,11 +115,7 @@ exports.updateEmployee = async (req, res, next) => {
             await positionService.foundPosition(req.body.positionId, next);
         }
 
-        if (employee.managerId !== req.body.managerId) {
-            await employeeService.foundEmployee(req.body.managerId, next, true);
-        }
-
-        let payload = req.body
+        let payload = req.body;
         const fileData = req.file;
         if (fileData) {
             payload = {
@@ -130,6 +134,9 @@ exports.updateEmployee = async (req, res, next) => {
         }
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
+        if (req.file) {
+            cloudinary.uploader.destroy(req.file.filename);
+        }
         return next(
             createError.InternalServerError("An error occurred while retrieving the employees")
         );

@@ -235,6 +235,8 @@ function AttendancePage() {
   const columns = createColumns(toggleModalDetailAttendance);
 
   const onChangeTable = (pagination, filters, sorter) => {
+    const page = pagination.current;
+    const size = pagination.pageSize;
     let where = filterData.where;
     let order = defaultFilter.order;
 
@@ -250,13 +252,13 @@ function AttendancePage() {
     if (!_.isEmpty(sorter.column)) {
       order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, where, order });
+    setFilter({ ...filterData, page, size, where, order });
   };
 
   return (
     <>
       <Divider style={{ fontSize: 24, fontWeight: 'bold' }}>
-        Attendance List
+        List of Attendance
       </Divider>
       <Table
         key={tableKey}
@@ -268,13 +270,6 @@ function AttendancePage() {
           total,
           current: currentPage,
           pageSize: filterData.size,
-          onChange: (page, pageSize) => {
-            setFilter({
-              ...filterData,
-              page: page,
-              size: pageSize,
-            });
-          },
         }}
         onChange={onChangeTable}
         scroll={{ y: 500 }}

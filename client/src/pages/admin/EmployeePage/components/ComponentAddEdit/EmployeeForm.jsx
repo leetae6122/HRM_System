@@ -29,8 +29,7 @@ EmployeeForm.defaultProps = {
   onSubmit: null,
   loading: false,
   initialValues: {
-    departmentId: null,
-    managerId: null,
+    employeeId: null,
     firstName: '',
     lastName: '',
     email: '',
@@ -42,6 +41,7 @@ EmployeeForm.defaultProps = {
     positionId: null,
     dateOff: null,
     avatar: null,
+    departmentId: null,
   },
 };
 
@@ -160,23 +160,26 @@ function EmployeeForm(props) {
       size="large"
     >
       <Row>
-        {initialValues.employeeId ? (
-          <Col span={24}>
-            <Form.Item
-              name="employeeId"
-              label="Employee Id"
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
-            >
-              <Input
-                disabled={true}
-                style={{
-                  color: 'black',
-                }}
-              />
-            </Form.Item>
-          </Col>
-        ) : null}
+        <Col span={24}>
+          <Form.Item
+            name="employeeId"
+            label="Employee Id"
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
+            rules={[{ required: true, message: 'Please input employee Id!' }]}
+            hasFeedback
+          >
+            <Input
+              disabled={initialValues.employeeId ? true : loading}
+              style={{
+                color: 'black',
+              }}
+              placeholder="Enter employee Id"
+              showCount
+              maxLength={10}
+            />
+          </Form.Item>
+        </Col>
         <Col span={initialValues.employeeId ? 12 : 24}>
           <Form.Item
             name="avatar"
@@ -217,43 +220,19 @@ function EmployeeForm(props) {
             </Form.Item>
           </Col>
         ) : null}
-        <Col span={24}>
-          <Form.Item
-            name="departmentId"
-            label="Department"
-            hasFeedback
-            rules={[{ required: true, message: 'Please select a department!' }]}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-          >
-            <Select
-              showSearch
-              style={{
-                width: '100%',
-              }}
-              placeholder="Search to Select"
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                (option?.label ?? '').includes(input)
-              }
-              filterSort={(optionA, optionB) =>
-                (optionA?.label ?? '')
-                  .toLowerCase()
-                  .localeCompare((optionB?.label ?? '').toLowerCase())
-              }
-              options={departmentOptions}
-              disabled={loading}
-            />
-          </Form.Item>
-        </Col>
         <Col span={12}>
           <Form.Item
             name="firstName"
             label="First Name"
             rules={[{ required: true, message: 'Please input first name!' }]}
-            maxLength={30}
+            hasFeedback
           >
-            <Input placeholder="Enter first name" disabled={loading} />
+            <Input
+              placeholder="Enter first name"
+              disabled={loading}
+              showCount
+              maxLength={30}
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -261,9 +240,14 @@ function EmployeeForm(props) {
             name="lastName"
             label="Last Name"
             rules={[{ required: true, message: 'Please input last name!' }]}
-            maxLength={30}
+            hasFeedback
           >
-            <Input placeholder="Enter last name" disabled={loading} />
+            <Input
+              placeholder="Enter last name"
+              disabled={loading}
+              showCount
+              maxLength={30}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>
@@ -279,9 +263,14 @@ function EmployeeForm(props) {
                 message: 'The email entered is not a valid email!',
               },
             ]}
-            maxLength={60}
+            hasFeedback
           >
-            <Input placeholder="Enter email" disabled={loading} />
+            <Input
+              placeholder="Enter email"
+              disabled={loading}
+              showCount
+              maxLength={60}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>
@@ -313,6 +302,7 @@ function EmployeeForm(props) {
                 },
               }),
             ]}
+            hasFeedback
           >
             <Input
               placeholder="Enter phone number"
@@ -334,7 +324,7 @@ function EmployeeForm(props) {
                 message: 'Please input citizenship ID!',
               },
             ]}
-            maxLength={20}
+            hasFeedback
           >
             <Input
               placeholder="Enter citizenship ID"
@@ -349,6 +339,7 @@ function EmployeeForm(props) {
             name="gender"
             label="Gender"
             rules={[{ required: true, message: 'Please select gender!' }]}
+            hasFeedback
           >
             <Select disabled={loading} placeholder="Select gender">
               <Select.Option value={true}>Male</Select.Option>
@@ -363,6 +354,7 @@ function EmployeeForm(props) {
             rules={[
               { required: true, message: 'Please select date of birth!' },
             ]}
+            hasFeedback
           >
             <DatePicker
               disabled={loading}
@@ -371,27 +363,62 @@ function EmployeeForm(props) {
             />
           </Form.Item>
         </Col>
-        <Col span={11}>
+        <Col span={24}>
           <Form.Item
             name="dateHired"
             label="Date of hire"
-            labelCol={{ span: 9 }}
-            wrapperCol={{ span: 15 }}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
             rules={[{ required: true, message: 'Please select date of hire!' }]}
+            hasFeedback
           >
             <DatePicker
               disabled={loading}
               placeholder="Enter date of hire"
               format={dateFormat}
+              style={{
+                width: '100%',
+              }}
             />
           </Form.Item>
         </Col>
-        <Col span={13}>
+        <Col span={24}>
+          <Form.Item
+            name="departmentId"
+            label="Department"
+            hasFeedback
+            rules={[{ required: true, message: 'Please select a department!' }]}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
+          >
+            <Select
+              showSearch
+              style={{
+                width: '100%',
+              }}
+              placeholder="Search to Select"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.label ?? '').includes(input)
+              }
+              filterSort={(optionA, optionB) =>
+                (optionA?.label ?? '')
+                  .toLowerCase()
+                  .localeCompare((optionB?.label ?? '').toLowerCase())
+              }
+              options={departmentOptions}
+              disabled={loading}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
           <Form.Item
             name="positionId"
             label="Position"
             hasFeedback
             rules={[{ required: true, message: 'Please select a position!' }]}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
           >
             <Select
               showSearch

@@ -16,6 +16,20 @@ class AllowanceService {
         return result;
     }
 
+    async findAllByEmployeeIdWithDate(employeeId, start, end) {
+        const result = await db.Allowance.findAll({
+            where: {
+                employeeId,
+                startDate: { $gte: start },
+                endDate: { $lte: end }
+            },
+            raw: true,
+            nest: true
+        });
+        return result;
+    }
+
+
     async findAll() {
         const result = await db.Allowance.findAll({});
         return result;

@@ -25,13 +25,15 @@ module.exports = (sequelize, DataTypes) => {
     endDate: DataTypes.DATEONLY,
     hoursWorked: DataTypes.FLOAT,
     hoursOvertime: DataTypes.FLOAT,
+    totalBasicWage: DataTypes.FLOAT,
+    totalOvertimeWage: DataTypes.FLOAT,
+    totalAllowance: DataTypes.FLOAT,
     deduction: DataTypes.FLOAT,
     totalPaid: DataTypes.FLOAT,
     payDate: DataTypes.DATEONLY,
     status: DataTypes.ENUM('Pending', 'Paid'),
-    wageId: DataTypes.INTEGER,
-    employeeId: DataTypes.UUID,
-    handledBy: DataTypes.UUID
+    employeeId: DataTypes.STRING,
+    handledBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Payroll'

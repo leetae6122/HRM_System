@@ -4,14 +4,9 @@ import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 
 class EmployeeService {
     async findById(id) {
-        const result = await db.Employee.findOne({
-            where: { id },
+        const result = await db.Employee.findByPk(id, {
             include: [
                 { model: db.User.scope('secret'), as: 'userData' },
-                {
-                    model: db.Wage, as: 'wageData',
-                    where: { isApplying: true }
-                },
                 {
                     model: db.Position, as: 'positionData',
                 },

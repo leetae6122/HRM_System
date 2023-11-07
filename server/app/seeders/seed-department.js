@@ -31,7 +31,6 @@ module.exports = {
             id: 6,
             name: 'Accounting',
             shortName: 'ACT',
-            // managerId: '',
         },
         ], {
 

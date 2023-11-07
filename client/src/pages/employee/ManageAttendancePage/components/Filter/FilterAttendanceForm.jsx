@@ -21,11 +21,11 @@ const dateFormat = 'DD/MM/YYYY';
 const wrapperCol = { offset: 8, span: 16 };
 
 const initialValues = {
-  minHourlySalary: {
+  minHourlyWage: {
     from: null,
     to: null,
   },
-  maxHourlySalary: {
+  maxHourlyWage: {
     from: null,
     to: null,
   },

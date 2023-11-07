@@ -21,7 +21,7 @@ module.exports = {
             },
             amount: {
                 allowNull: false,
-                type: Sequelize.FLOAT(10)
+                type: Sequelize.FLOAT
             },
             date: {
                 allowNull: false,
@@ -29,7 +29,7 @@ module.exports = {
             },
             employeeId: {
                 allowNull: false,
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id'
@@ -37,7 +37,7 @@ module.exports = {
             },
             addedBy: {
                 allowNull: false,
-                type: Sequelize.UUID,
+                type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
                     key: 'id',
