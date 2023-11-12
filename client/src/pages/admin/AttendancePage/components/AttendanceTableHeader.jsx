@@ -1,25 +1,39 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Row, Space } from 'antd';
-import { FilterFilled, ReloadOutlined } from '@ant-design/icons';
+import {
+  FileExcelFilled,
+  FilterFilled,
+  HourglassFilled,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/attendance';
-import { gold } from '@ant-design/colors';
+import { gold, green, purple } from '@ant-design/colors';
 import _ from 'lodash';
 
 AttendanceTableHeader.propTypes = {
   setFilter: PropTypes.func,
   toggleShowFilterDrawer: PropTypes.func,
+  toggleModalExportFile: PropTypes.func,
+  toggleModalTimekeeper: PropTypes.func,
 };
 
 AttendanceTableHeader.defaultProps = {
   setFilter: null,
   toggleShowFilterDrawer: null,
+  toggleModalExportFile: null,
+  toggleModalTimekeeper: null,
 };
 
 function AttendanceTableHeader(props) {
-  const { setFilter, toggleShowFilterDrawer } = props;
+  const {
+    setFilter,
+    toggleShowFilterDrawer,
+    toggleModalExportFile,
+    toggleModalTimekeeper,
+  } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector(
@@ -56,7 +70,7 @@ function AttendanceTableHeader(props) {
 
   return (
     <Row>
-      <Col span={10}>
+      <Col span={9}>
         <Search
           placeholder="Input search employee name"
           loading={loadingSearch}
@@ -66,7 +80,7 @@ function AttendanceTableHeader(props) {
           onChange={(e) => setInputValue(e.target.value)}
         />
       </Col>
-      <Col span={14}>
+      <Col span={15}>
         <Space style={{ float: 'right' }}>
           {!_.isEqual(filterData, defaultFilter) && (
             <Button
@@ -84,6 +98,22 @@ function AttendanceTableHeader(props) {
             onClick={toggleShowFilterDrawer}
           >
             Filter
+          </Button>
+          <Button
+            type="primary"
+            style={{ backgroundColor: green.primary }}
+            icon={<FileExcelFilled />}
+            onClick={toggleModalExportFile}
+          >
+            Export file
+          </Button>
+          <Button
+            type="primary"
+            style={{ backgroundColor: purple.primary }}
+            icon={<HourglassFilled />}
+            onClick={toggleModalTimekeeper}
+          >
+            Timekeeper
           </Button>
         </Space>
       </Col>

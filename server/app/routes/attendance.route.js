@@ -2,7 +2,6 @@ import express from "express";
 import attendanceController from "./../controllers/attendance.controller";
 import validation from '../middlewares/validation.middleware';
 import {
-    attendanceByShiftSchema,
     loginAttendanceSchema,
     logoutAttendanceSchema,
     managerUpdateAttendanceSchema,
@@ -14,12 +13,11 @@ import { verifyAdmin, verifyAdminOrDepartmentManager } from './../middlewares/au
 const router = express.Router();
 
 router.route("/")
-
     .post(validation(loginAttendanceSchema), attendanceController.logInAttendance)
     .patch(validation(logoutAttendanceSchema), attendanceController.logOutAttendance)
 
-router.route("/by-shift")
-    .post(validation(attendanceByShiftSchema), attendanceController.getAttendanceByShift)
+router.route("/current")
+    .get(attendanceController.currentAttendance)
 
 router.route("/count")
     .get(verifyAdmin, attendanceController.countAttendance)

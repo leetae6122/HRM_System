@@ -28,13 +28,19 @@ class AttendanceService {
         return result;
     }
 
-    async findAttendanceByDateShiftIdEmployeeId(attendanceDate, shiftId, employeeId) {
+    async findAttendanceByDateEmployeeId(attendanceDate, employeeId) {
         const result = await db.Attendance.findOne({
             where: {
                 attendanceDate,
-                shiftId,
-                employeeId
+                employeeId,
+                inTime: { $not: null },
+                outTime: { $is: null },
             },
+            include: [
+                {
+                    model: db.Shift, as: 'shiftData',
+                },
+            ],
             raw: true,
             nest: true
         });
@@ -65,6 +71,25 @@ class AttendanceService {
             return result;
         }
         const result = await db.Attendance.findAll({});
+        return result;
+    }
+
+    async currentAttendance(employeeId) {
+        const result = await db.Attendance.findOne({
+            where: {
+                attendanceDate: dayjs(),
+                inTime: { $not: null },
+                outTime: { $is: null },
+                employeeId
+            },
+            include: [
+                {
+                    model: db.Shift, as: 'shiftData',
+                },
+            ],
+            raw: true,
+            nest: true
+        });
         return result;
     }
 
@@ -141,14 +166,14 @@ class AttendanceService {
         });
     }
 
-    async logoutAttendance(body, foundAttendance, foundShift) {
+    async logoutAttendance(body, foundAttendance) {
         let payload = body;
 
-        payload.outStatus = this.checkOutTime(payload.outTime, foundShift);
+        payload.outStatus = this.checkOutTime(payload.outTime, foundAttendance.shiftData);
         payload.totalHours = this.calTotalHours(
             foundAttendance.inTime,
             payload.outTime,
-            foundShift
+            foundAttendance.shiftData
         );
         await this.updateAttendance(foundAttendance.id, payload)
     }

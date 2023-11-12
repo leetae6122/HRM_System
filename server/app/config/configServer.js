@@ -17,6 +17,10 @@ const config = {
         reset_password: {
             secret: process.env.SECRET_RESET_PASS_JWT,
             expire: process.env.EXPIRE_RESET_PASS_JWT
+        },
+        qr_code: {
+            secret: process.env.SECRET_QR_CODE_JWT,
+            expire: process.env.EXPIRE_QR_CODE_JWT
         }
     },
     mailer: {

@@ -9,12 +9,12 @@
 
 .clock {
   border-radius: 10px;
-  background: #00132e;
+  // background: #00132e;
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  padding: 20px 20px 5px 20px;
+  padding: 40px;
 }
 
 .calendar {
@@ -79,20 +79,50 @@
 }
 
 @media (max-width: 770px) {
-  .calendar.day,
-  .calendar.date {
-    font-size: 1.25rem;
+  .calendar {
+    gap: 20px;
+    &.day {
+      font-size: 1rem;
+    }
+
+    &.date {
+      font-size: 1.25rem;
+    }
   }
 
   .ampm {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
 
   .hour {
-    font-size: 3.5rem;
+    font-size: 4rem;
   }
 
   .clock {
-    padding: 5px;
+    padding: 30px 50px 30px 50px;
+  }
+}
+
+@media (max-width: 400px) {
+  .calendar {
+    gap: 20px;
+    &.day {
+      font-size: .8rem;
+    }
+
+    &.date {
+      font-size: 1rem;
+    }
+  }
+  .ampm {
+    font-size: .8rem;
+  }
+
+  .hour {
+    font-size: 3rem;
+  }
+
+  .clock {
+    padding: 15px;
   }
 }

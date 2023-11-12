@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import logger from './logger';
 import attendanceService from './app/services/attendance.service';
+import qrCodeService from './app/services/qrCode.service';
 
 dayjs.extend(utc)
 class Schedule {
@@ -29,7 +30,7 @@ class Schedule {
                             outTime: dayjs(attendance.shiftData.endTime, 'HH:mm:ss').toDate(),
                             shiftId: attendance.shiftId,
                         }
-                        await attendanceService.logoutAttendance(body, attendance, attendance.shiftData);
+                        await attendanceService.logoutAttendance(body, attendance);
                     })
                 }
 
@@ -40,32 +41,14 @@ class Schedule {
         });
     }
 
-    runningProjects() {
-        schedule.scheduleJob('1 0 * * *', async () => {
-            // try {
-            //     const current = dayjs();
-            //     const projectList = await projectServer.findAll({
-            //         where: {
-            //             startDate: {
-            //                 $between: [
-            //                     current.subtract(1, 'day').utc().format(),
-            //                     current.add(1, 'day').utc().format()
-            //                 ]
-            //             },
-            //             status: 'Upcoming'
-            //         }
-            //     })
-            //     projectList.forEach(async (project) => {
-            //         if (dayjs(project.startDate) <= current) {
-            //             await projectServer.updateProject(project.id, {
-            //                 status: 'Running'
-            //             });
-            //         }
-            //     })
-            //     logger.info("Update Running Projects");
-            // } catch (error) {
-            //     logger.error(error);
-            // }
+    deleteAllQRCodes() {
+        schedule.scheduleJob('0 0 * * *', async () => {
+            try {
+                await qrCodeService.deleteAllQRCodes();
+                logger.info("Delete all QR Codes during the day");
+            } catch (error) {
+                logger.error(error);
+            }
         });
     }
 }

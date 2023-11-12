@@ -1,22 +1,16 @@
 const Joi = require('joi');
 
-const attendanceByShiftSchema = Joi.object({
-    attendanceDate: Joi.date().required(),
-    shiftId: Joi.number().integer().required(),
-});
-
-const inTimeAttendanceSchema = Joi.object({
-    attendanceDate: Joi.date().required(),
+const loginAttendanceSchema = Joi.object({
+    token: Joi.string().required(),
     inTime: Joi.date().required(),
-    shiftId: Joi.number().integer().required(),
+    employeeId: Joi.string().max(10).required(),
     managerStatus: Joi.string().default('Pending'),
     adminStatus: Joi.string().default('Pending'),
 });
 
-const outTimeAttendanceSchema = Joi.object({
-    attendanceDate: Joi.date().required(),
+const logoutAttendanceSchema = Joi.object({
+    attendanceId: Joi.number().integer().required(),
     outTime: Joi.date().required(),
-    shiftId: Joi.number().integer().required(),
 });
 
 const managerUpdateAttendanceSchema = Joi.object({
@@ -30,9 +24,8 @@ const adminUpdateAttendanceSchema = Joi.object({
 });
 
 module.exports = {
-    attendanceByShiftSchema,
-    inTimeAttendanceSchema,
-    outTimeAttendanceSchema,
+    loginAttendanceSchema,
+    logoutAttendanceSchema,
     managerUpdateAttendanceSchema,
     adminUpdateAttendanceSchema,
 };

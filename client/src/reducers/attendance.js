@@ -30,7 +30,6 @@ const initialState = {
     total: 0,
     currentPage: 1,
     editAttendanceId: null,
-    attendanceTimekeeper: null
 }
 
 export const attendanceSlice = createSlice({
@@ -51,9 +50,6 @@ export const attendanceSlice = createSlice({
         setEditAttendanceId: (state, action) => {
             state.editAttendanceId = action.payload;
         },
-        setAttendanceTimekeeper: (state, action) => {
-            state.attendanceTimekeeper = action.payload;
-        }
     },
 })
 
@@ -62,6 +58,5 @@ export const {
     setData,
     setDefaultFilterData,
     setEditAttendanceId,
-    setAttendanceTimekeeper
 } = attendanceSlice.actions;
 export default attendanceSlice.reducer;

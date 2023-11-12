@@ -2,11 +2,11 @@ import createError from 'http-errors';
 import userService from "./../services/user.service";
 import employeeService from "./../services/employee.service";
 import config from '../config/configServer';
-import { 
-    MSG_INVALID_TOKEN, 
+import {
+    MSG_INVALID_TOKEN,
     MSG_ERROR_USER_NOT_FOUND,
     MSG_NOT_TOKEN_FOR_AUTH
- } from './../utils/message.util';
+} from './../utils/message.util';
 import { verifyToken } from './../utils/jwt.util';
 
 exports.verifyAccessToken = async (req, res, next) => {
@@ -28,8 +28,14 @@ exports.verifyAccessToken = async (req, res, next) => {
         req.user = user;
         next();
     } catch (error) {
+        if (error.message === 'jwt expired') {
+            return next(
+                createError.Unauthorized(error.message)
+            );
+        }
+
         return next(
-            createError.InternalServerError(error)
+            createError.InternalServerError(error.message)
         );
     }
 }
@@ -56,10 +62,10 @@ exports.verifyAdminOrSelf = async (req, res, next) => {
 
 exports.verifyAdminOrDepartmentManager = async (req, res, next) => {
     const employee = await employeeService.getManageDepartment(req.user.employeeId);
-    if(employee.manageDepartment.id || req.user.isAdmin){
+    if (employee.manageDepartment.id || req.user.isAdmin) {
         req.manageDepartmentId = employee.manageDepartment.id;
         next();
-    }else{
+    } else {
         return next(createError.Unauthorized('You are not a department manager to perform this function'));
     }
 }

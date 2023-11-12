@@ -31,6 +31,10 @@ axiosClient.interceptors.response.use((response) => {
     return response;
 }, (error) => {
     // Handle errors
+    console.log(error.response);
+    if (error.response.status === 401) {
+        window.location.replace('/auth/login')
+    }
     toast.error(error.response.data.message.toString());
     throw error;
 });

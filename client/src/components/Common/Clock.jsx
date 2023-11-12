@@ -8,16 +8,18 @@ import { Col, Row } from 'antd';
 
 Clock.propTypes = {
   h24: PropTypes.bool,
+  backgroundColor: PropTypes.string,
 };
 
 Clock.defaultProps = {
   h24: true,
+  backgroundColor: '#00132e',
 };
 
 const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
 function Clock(props) {
-  const { h24 } = props;
+  const { h24, backgroundColor } = props;
   const [hour, setHour] = useState(0);
   const [minute, setMinute] = useState(0);
   const [second, setSecond] = useState(0);
@@ -48,7 +50,7 @@ function Clock(props) {
   }, [h24]);
 
   return (
-    <Row gutter={[0, 0]} className="clock">
+    <Row gutter={[0, 0]} className="clock" style={{ backgroundColor }}>
       <Col span={24} className="calendar day">
         {days.map((value, index) => (
           <Word key={value} value={value} hidden={index != day} />

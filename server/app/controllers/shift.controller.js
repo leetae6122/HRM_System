@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import {
     MSG_DELETE_SUCCESSFUL,
     MSG_ERROR_DELETE,
@@ -73,13 +72,9 @@ exports.deleteShift = async (req, res, next) => {
     }
 }
 
-exports.getCurrentShift = async (req, res, next) => {
+exports.getCurrentShiftList = async (req, res, next) => {
     try {
-        const data = await shiftService.getCurrentShift();
-        const currentDay = dayjs().day();
-        if (!data || !data.days.includes(currentDay)) {
-            return res.send({ data: null });
-        }
+        const data = await shiftService.getCurrentShiftList();
         return res.send({ data });
     } catch (error) {
         return next(error);

@@ -18,6 +18,7 @@ import _ from 'lodash';
 import { setDefaultFilterData } from 'reducers/attendance';
 import FilterDrawer from './components/Filter/FilterDrawer';
 import ModalExportFile from './components/ExportFile/ModalExportFile';
+import ModalTimekeeper from './components/Timekeeper/ModalTimekeeper';
 
 const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
   {
@@ -198,6 +199,7 @@ function AttendancePage() {
   const [openModalEditAttendance, setOpenModalEditAttendance] = useState(false);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openExportFile, setOpenExportFile] = useState(false);
+  const [openTimekeeper, setOpenTimekeeper] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -255,8 +257,13 @@ function AttendancePage() {
   const toggleShowFilterDrawer = () => {
     setOpenFilterDrawer(!openFilterDrawer);
   };
+
   const toggleModalExportFile = () => {
     setOpenExportFile(!openExportFile);
+  };
+
+  const toggleModalTimekeeper = () => {
+    setOpenTimekeeper(!openTimekeeper);
   };
 
   const toggleModalEditAttendance = (id) => {
@@ -331,7 +338,8 @@ function AttendancePage() {
           <AttendanceTableHeader
             setFilter={setFilter}
             toggleShowFilterDrawer={toggleShowFilterDrawer}
-            toggleShowExportFile={toggleModalExportFile}
+            toggleModalExportFile={toggleModalExportFile}
+            toggleModalTimekeeper={toggleModalTimekeeper}
           />
         )}
         pagination={{
@@ -361,6 +369,12 @@ function AttendancePage() {
         <ModalExportFile
           toggleShowModal={toggleModalExportFile}
           openModal={openExportFile}
+        />
+      )}
+      {openTimekeeper && (
+        <ModalTimekeeper
+          toggleShowModal={toggleModalTimekeeper}
+          openModal={openTimekeeper}
         />
       )}
     </>

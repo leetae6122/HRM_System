@@ -17,9 +17,9 @@ const attendanceApi = {
         const url = `/attendance/${id}`;
         return axiosClient.get(url);
     },
-    getAttendanceByShift: (data) => {
-        const url = '/attendance/by-shift';
-        return axiosClient.post(url, data);
+    getCurrentAttendance:() => {
+        const url = '/attendance/current';
+        return axiosClient.get(url);
     },
     employeeGetList: (data) => {
         const url = '/attendance/filter';

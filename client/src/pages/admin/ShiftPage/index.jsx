@@ -99,7 +99,7 @@ const createColumns = (toggleModalEditShift, handleDeleteShift) => [
     dataIndex: 'wageRate',
     key: 'wageRate',
     sorter: true,
-    render: (value) => `${value * 100}%`,
+    render: (value) => `${(value * 100).toFixed()}%`,
   },
   {
     title: 'Shift Type',

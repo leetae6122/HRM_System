@@ -1,5 +1,6 @@
 import app from "./app";
 import connectDB from './connectDB';
+import logger from './logger';
 
 //Start Server
 async function startServer() {
@@ -14,19 +15,13 @@ async function startServer() {
             }
         });
         io.on('connection', (socket) => {
-            console.log('a user connected', socket.id);
-            console.log('Client connected');
-
-            // Lắng nghe sự kiện điểm danh từ máy khách
+            logger.info(`Client connected ${socket.id}`);
             socket.on('check-in', (employeeId) => {
-                console.log(`Employee ${employeeId} checked in`);
-                // Gửi sự kiện điểm danh đến tất cả các máy khách
                 io.emit('check-in', employeeId);
             });
 
-            // Xử lý sự kiện khi máy khách ngắt kết nối
             socket.on('disconnect', () => {
-                console.log('Client disconnected');
+                logger.info(`Client disconnected ${socket.id}`);
             });
         });
 

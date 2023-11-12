@@ -15,9 +15,9 @@ router.route("/")
     .post(verifyAdmin, validation(createShiftSchema), shiftController.createShift)
     .patch(verifyAdmin, validation(updateShiftSchema), shiftController.updateShift)
 
-router.route("/current")
-    .get(shiftController.getCurrentShift)
-
+router.route("/current/list")
+    .get(verifyAdmin, shiftController.getCurrentShiftList)
+    
 router.route("/filter")
     .post(verifyAdmin, validation(filterSchema), shiftController.getListShift)
 

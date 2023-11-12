@@ -1,6 +1,6 @@
 import { Col, Divider, Row, Table } from 'antd';
-import Clock from './components/Clock';
-import Timekeeper from './components/Timekeeper';
+import Clock from '../../../components/Common/Clock';
+import HandleTimekeeper from './components/HandleTimekeeper';
 import { useEffect, useState } from 'react';
 import attendanceApi from 'api/attendanceApi';
 import dayjs from 'dayjs';
@@ -97,7 +97,9 @@ function TimekeeperPage() {
       }
     };
     fetchData();
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+    };
   }, [dispatch]);
   return (
     <>
@@ -107,7 +109,7 @@ function TimekeeperPage() {
           <Clock h24={true} />
         </Col>
         <Col span={24}>
-          <Timekeeper refreshAttendance={getAttendance} />
+          <HandleTimekeeper refreshAttendance={getAttendance} />
         </Col>
         <Col span={24}>
           <Table

@@ -9,8 +9,8 @@ const shiftApi = {
         const url = `/shift/${id}`;
         return axiosClient.get(url);
     },
-    getCurrentShift: () => {
-        const url = '/shift/current';
+    getCurrentShiftList: () => {
+        const url = '/shift/current/list';
         return axiosClient.get(url);
     },
     getList: (data) => {

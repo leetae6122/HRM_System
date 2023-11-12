@@ -5,16 +5,19 @@ import {
     MSG_ERROR_NOT_FOUND,
     MSG_ERROR_ID_EMPTY,
     MSG_UPDATE_SUCCESSFUL,
-    MSG_CREATED_SUCCESSFUL,
     MSG_ATTENDANCE_STATUS_NOT_PENDING,
-    MSG_ERROR_NOT_HAVE_PERMISSION
+    MSG_ERROR_NOT_HAVE_PERMISSION,
+    MSG_TOKEN_DOES_NOT_MATCH
 } from "../utils/message.util";
 import attendanceService from "./../services/attendance.service";
 import employeeService from "./../services/employee.service";
 import shiftService from "./../services/shift.service";
 import createError from 'http-errors';
 import _ from 'lodash';
-
+import { verifyToken } from "../utils/jwt.util";
+import config from '../config/configServer';
+import qrCodeService from "./../services/qrCode.service"
+import { compareHashedData } from "../utils/hash.util";
 exports.findById = async (req, res, next) => {
     try {
         const data = await attendanceService.findById(req.params.id);
@@ -51,6 +54,15 @@ exports.filterAll = async (req, res, next) => {
             }
         }
         const data = await attendanceService.findAll(payload);
+        return res.send({ data });
+    } catch (error) {
+        return next(error);
+    }
+}
+
+exports.currentAttendance = async (req, res, next) => {
+    try {
+        const data = await attendanceService.currentAttendance(req.user.employeeId);
         return res.send({ data });
     } catch (error) {
         return next(error);
@@ -108,27 +120,43 @@ exports.employeeGetListAttendance = async (req, res, next) => {
 
 exports.logInAttendance = async (req, res, next) => {
     try {
-        if (!dayjs().isSame(dayjs(req.body.attendanceDate), 'day')) {
+        let payload = verifyToken(req.body.token, config.jwt.qr_code.secret);
+        const foundQRCode = await qrCodeService.findById(payload.qrCodeId);
+        if (!foundQRCode) {
+            return next(createError.NotFound(MSG_ERROR_NOT_FOUND("QRCode")));
+        }
+
+        const isMatch = await compareHashedData(
+            req.body.token.slice(req.body.token.lastIndexOf('.')),
+            foundQRCode.hashQRCodeToken,
+        );
+        if (!isMatch) {
+            return next(createError.BadRequest(MSG_TOKEN_DOES_NOT_MATCH));
+        }
+        payload = {
+            ...payload,
+            ...req.body,
+        }
+
+        if (!dayjs().isSame(dayjs(payload.attendanceDate), 'day')) {
             return next(createError.BadRequest('Invalid login date'));
         }
-        let payload = {
-            ...req.body,
-            employeeId: req.user.employeeId
-        }
         const foundShift = await shiftService.foundShift(payload.shiftId, next);
-        const foundAttendance = await attendanceService.findAttendanceByDateShiftIdEmployeeId(
+        const foundAttendance = await attendanceService.findAttendanceByDateEmployeeId(
             payload.attendanceDate,
-            payload.shiftId,
             payload.employeeId
         );
         if (foundAttendance) {
-            return next(createError.BadRequest(`Logged in!!! Shift: ${foundShift.name} (${foundShift.startTime} - ${foundShift.endTime})`));
+            return next(createError.BadRequest(
+                `Logged in!!! Shift: ${foundAttendance.shiftData.name} (${foundAttendance.shiftData.startTime} - ${foundAttendance.shiftData.endTime})`
+            ));
         }
 
         payload.inStatus = attendanceService.checkInTime(payload.inTime, foundShift);
 
-        const data = await attendanceService.createAttendance(payload);
-        return res.send({ message: MSG_CREATED_SUCCESSFUL("Attendance"), data });
+        await attendanceService.createAttendance(payload);
+        await qrCodeService.deleteQRCode(payload.qrCodeId);
+        return res.send({ message: "Successful Attendance" });
     } catch (error) {
         return next(error);
     }
@@ -136,21 +164,18 @@ exports.logInAttendance = async (req, res, next) => {
 
 exports.logOutAttendance = async (req, res, next) => {
     try {
-        const foundAttendance = await attendanceService.findAttendanceByDateShiftIdEmployeeId(
-            req.body.attendanceDate,
-            req.body.shiftId,
-            req.user.employeeId
-        );
+        const foundAttendance = await attendanceService.findById(req.body.attendanceId);
         if (!foundAttendance) {
             return next(createError.BadRequest("You're not logged in to your shift"));
         }
-        const foundShift = await shiftService.foundShift(req.body.shiftId, next);
         if (foundAttendance.outTime) {
-            return next(createError.BadRequest(`Logged out!!! Shift: ${foundShift.name} (${foundShift.startTime} - ${foundShift.endTime})`));
+            return next(createError.BadRequest(
+                `Logged out!!! Shift: ${foundAttendance.shiftData.name} (${foundAttendance.shiftData.startTime} - ${foundAttendance.shiftData.endTime})`
+            ));
         }
 
-        await attendanceService.logoutAttendance(req.body, foundAttendance, foundShift);
-        return res.send({ message: MSG_UPDATE_SUCCESSFUL });
+        await attendanceService.logoutAttendance(req.body, foundAttendance);
+        return res.send({ message: "Logout successfully" });
     } catch (error) {
         return next(error);
     }
@@ -220,19 +245,6 @@ exports.deleteAttendance = async (req, res, next) => {
 exports.countAttendance = async (req, res, next) => {
     try {
         const data = await attendanceService.countAttendance();
-        return res.send({ data })
-    } catch (error) {
-        return next(error);
-    }
-}
-
-exports.getAttendanceByShift = async (req, res, next) => {
-    try {
-        const data = await attendanceService.findAttendanceByDateShiftIdEmployeeId(
-            req.body.attendanceDate,
-            req.body.shiftId,
-            req.user.employeeId
-        );
         return res.send({ data })
     } catch (error) {
         return next(error);
