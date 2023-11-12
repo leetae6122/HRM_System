@@ -68,5 +68,6 @@ app.use((error, req, res, next) => {
 });
 
 Schedule.cronJobForAttendance();
+Schedule.deleteAllQRCodes();
 
 module.exports = app;

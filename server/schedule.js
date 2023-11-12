@@ -16,25 +16,24 @@ class Schedule {
                         inTime: { $not: null },
                         outTime: { $is: null },
                     },
-                    shiftFilter: {
-                        where: {
-                            endTime: { $lte: dayjs().subtract(15, 'minute').toDate() },
-                        }
-                    }
                 })
-
+                let count = 0;
                 if (attendanceList && attendanceList.length > 0) {
                     attendanceList.forEach(async (attendance) => {
-                        const body = {
-                            attendanceDate: dayjs().toDate(),
-                            outTime: dayjs(attendance.shiftData.endTime, 'HH:mm:ss').toDate(),
-                            shiftId: attendance.shiftId,
+                        const endShift = dayjs(`${attendance.attendanceDate} ${attendance.shiftData.endTime}`, 'YYYY-MM-DD HH:mm:ss').toDate();
+                        if (dayjs().subtract(15, 'minute').toDate() >= endShift) {
+                            const body = {
+                                attendanceDate: dayjs().toDate(),
+                                outTime: dayjs(attendance.shiftData.endTime, 'HH:mm:ss').toDate(),
+                                shiftId: attendance.shiftId,
+                            }
+                            await attendanceService.logoutAttendance(body, attendance);
+                            count++;
                         }
-                        await attendanceService.logoutAttendance(body, attendance);
                     })
                 }
 
-                logger.info(`Logout Attendance: ${attendanceList.length} attendees`);
+                logger.info(`Logout Attendance: ${count} attendees`);
             } catch (error) {
                 logger.error(error);
             }

@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import 'assets/styles/authPage.scss';
 import logoHrm from 'assets/images/logo-app.jpg';
-import { Col, Row } from 'antd';
+import { Col, Row, Typography } from 'antd';
 import Clock from 'components/Common/Clock';
 import TimekeeperLoginForm from './components/TimekeeperLoginForm';
 import Swal from 'sweetalert2';
@@ -60,8 +60,14 @@ function TimekeeperPage() {
             <div className="logo">
               <img src={logoHrm} alt="logo" />
             </div>
+            <Typography.Title
+              level={1}
+              style={{ fontWeight: 'bolder', marginInline: 15 }}
+            >
+              Timekeeper
+            </Typography.Title>
           </Col>
-          <Col className="gutter-row" style={{ marginBottom: 10 }} span={24}>
+          <Col className="gutter-row" style={{ marginBlock: 10 }} span={24}>
             <Clock h24={true} />
           </Col>
           <Col className="gutter-row" span={24}>
