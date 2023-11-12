@@ -19,7 +19,7 @@ module.exports = {
     {
       id: 2,
       username: 'trung.dinh',
-      password: await hashPassword('Steven123@'),
+      password: await hashPassword('Trung123@'),
       isAdmin: false,
       isActive: true,
       employeeId: 'NV20230002'
@@ -27,7 +27,7 @@ module.exports = {
     {
       id: 3,
       username: 'hanh.dao',
-      password: await hashPassword('Tatiana123@'),
+      password: await hashPassword('Hanh123@'),
       isAdmin: false,
       isActive: true,
       employeeId: 'NV20230003'

@@ -19,6 +19,8 @@ import shiftRouter from "./app/routes/shift.route";
 import payrollRouter from "./app/routes/payroll.route";
 import allowanceRouter from "./app/routes/allowance.route";
 import rewardPunishmentRouter from "./app/routes/rewardPunishment.route";
+import fileRouter from "./app/routes/file.route";
+// import qrCodeRouter from "./app/routes/qrCode.route";
 
 const app = express();
 
@@ -48,6 +50,8 @@ app.use("/api/reward-punishment", verifyAccessToken, rewardPunishmentRouter);
 app.use("/api/position", verifyAccessToken, verifyAdmin, positionRouter);
 app.use("/api/wage", verifyAccessToken, verifyAdmin, wageRouter);
 app.use("/api/department", verifyAccessToken, verifyAdmin, departmentRouter);
+app.use("/api/file", verifyAccessToken, verifyAdmin, fileRouter);
+// app.use('/api/qr-code', verifyAccessToken, verifyAdmin, qrCodeRouter);
 
 // handle 404 response 
 app.use((req, res, next) => {

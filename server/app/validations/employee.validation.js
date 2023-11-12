@@ -36,7 +36,7 @@ const adminUpdateEmployeeSchema = updateEmployeeSchema.keys({
     gender: Joi.boolean().truthy('male').falsy('female').optional(),
     citizenshipId: Joi.string().max(20).optional(),
     dateHired: Joi.date().max('now').optional(),
-    dateOff: Joi.date().allow(null).optional(),
+    dateOff: Joi.date().optional().default(null),
     avatar: Joi.any().optional(),
     positionId: Joi.number().integer().optional(),
     departmentId: Joi.number().integer().optional(),

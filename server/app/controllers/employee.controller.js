@@ -13,6 +13,7 @@ import {
     MSG_ERROR_ID_EMPTY,
     MSG_UPDATE_SUCCESSFUL
 } from "../utils/message.util";
+import dayjs from "dayjs";
 
 
 exports.findProfileById = async (req, res, next) => {
@@ -98,20 +99,20 @@ exports.createEmployee = async (req, res, next) => {
 
 exports.updateEmployee = async (req, res, next) => {
     try {
-        const employee = await employeeService.foundEmployee(req.body.employeeId, next)
+        const foundEmployee = await employeeService.foundEmployee(req.body.employeeId, next)
 
-        if (req.body.email && employee.email !== req.body.email) {
+        if (req.body.email && foundEmployee.email !== req.body.email) {
             await employeeService.checkEmailExisted(req.body.email, next);
         }
 
-        if (req.body.phoneNumber && employee.phoneNumber !== req.body.phoneNumber) {
+        if (req.body.phoneNumber && foundEmployee.phoneNumber !== req.body.phoneNumber) {
             await employeeService.checkPhoneNumberExisted(req.body.phoneNumber, next);
         }
-        if (employee.departmentId !== req.body.departmentId) {
+        if (foundEmployee.departmentId !== req.body.departmentId) {
             await departmentService.foundDepartment(req.body.departmentId, next);
         }
 
-        if (employee.positionId !== req.body.positionId) {
+        if (foundEmployee.positionId !== req.body.positionId) {
             await positionService.foundPosition(req.body.positionId, next);
         }
 
@@ -122,15 +123,18 @@ exports.updateEmployee = async (req, res, next) => {
                 ...payload,
                 avatarUrl: fileData.path,
             }
-            if (employee.avatarUrl) {
-                cloudinary.uploader.destroy(employeeService.getFileName(employee.avatarUrl));
+            if (foundEmployee.avatarUrl) {
+                cloudinary.uploader.destroy(employeeService.getFileName(foundEmployee.avatarUrl));
             }
         }
 
         await employeeService.updateEmployee(req.body.employeeId, payload);
         if (payload.dateOff) {
             await userService.deactivateUserByEmployeeId(req.body.employeeId);
-            await wageService.deleteWageByEmployeeId(req.body.employeeId);
+            await wageService.updateWageWithEmployeeIdAndToDateNull(req.body.employeeId, { toDate: dayjs() });
+            if (foundEmployee.manageDepartment.id) {
+                await departmentService.updateDepartment(foundEmployee.manageDepartment.id, { managerId: null })
+            }
         }
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {

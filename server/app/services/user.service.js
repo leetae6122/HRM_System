@@ -14,10 +14,6 @@ class UserService {
                         attributes: ['name'],
                     },
                     {
-                        model: db.Wage, as: 'wageData',
-                        where: { toDate: null }
-                    },
-                    {
                         model: db.Department, as: 'departmentData',
                         attributes: ['name', 'shortName'],
                         include: [
@@ -71,10 +67,9 @@ class UserService {
                 model: db.Employee,
                 as: 'profile',
                 include: [
-                    { model: db.Position, as: 'positionData', attributes: ['name'], },
                     {
-                        model: db.Wage, as: 'wageData',
-                        where: { toDate: null }
+                        model: db.Position, as: 'positionData',
+                        attributes: ['name'],
                     },
                     {
                         model: db.Department, as: 'departmentData',
@@ -82,9 +77,13 @@ class UserService {
                         include: [
                             {
                                 model: db.Employee, as: 'managerData',
-                                attributes: ['firstName', 'lastName', 'email']
+                                attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
                             },
                         ],
+                    },
+                    {
+                        model: db.Department, as: 'manageDepartment',
+                        attributes: ['id', 'managerId'],
                     },
                 ]
             },

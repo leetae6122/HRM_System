@@ -53,6 +53,7 @@ class EmployeeService {
 
     async findAll() {
         const result = await db.Employee.findAll({
+            where: { dateOff: null },
             include: [
                 {
                     model: db.Department, as: 'departmentData',
@@ -181,7 +182,7 @@ class EmployeeService {
         const countEmployees = await db.Employee.count({});
         const countCurrentEmployees = await db.Employee.count({
             where: {
-                dateOff: { $is: null }
+                dateOff: null
             }
         });
         return {

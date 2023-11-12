@@ -25,7 +25,7 @@ class WageService {
 
     async findAllByEmployeeIdWithDate(employeeId, startDate, endDate) {
         const result = await db.Wage.findAll({
-            where: { 
+            where: {
                 employeeId,
                 fromDate: { $gte: startDate },
                 toDate: { $lte: endDate }
@@ -135,6 +135,16 @@ class WageService {
             ,
             {
                 where: { id },
+            }
+        );
+    }
+
+    async updateWageWithEmployeeIdAndToDateNull(employeeId, payload) {
+        await db.Wage.update(
+            payload
+            ,
+            {
+                where: { employeeId, toDate: { $is: null } },
             }
         );
     }

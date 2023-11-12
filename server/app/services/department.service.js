@@ -103,12 +103,12 @@ class DepartmentService {
     async countEmployees() {
         const departments = await db.Department.findAll({
             attributes: [
-                'id', 'shortName',
+                'id', 'shortName', 'name',
                 [sequelize.fn("COUNT", sequelize.col("employeeData.id")), "employeeCount"]
             ],
             include: [
                 {
-                    model: db.Employee, as: 'employeeData', attributes: []
+                    model: db.Employee, as: 'employeeData', where: { dateOff: null }, attributes: []
                 },
             ],
             group: ['Department.id'],

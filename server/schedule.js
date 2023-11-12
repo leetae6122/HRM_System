@@ -7,8 +7,8 @@ import attendanceService from './app/services/attendance.service';
 dayjs.extend(utc)
 class Schedule {
     cronJobForAttendance() {
-        //Execute a cron job every 15 Minutes
-        schedule.scheduleJob('*/15 * * * *', async () => {
+        //Execute a cron job every 10 Minutes
+        schedule.scheduleJob('*/10 * * * *', async () => {
             try {
                 const attendanceList = await attendanceService.findAll({
                     where: {
@@ -17,7 +17,7 @@ class Schedule {
                     },
                     shiftFilter: {
                         where: {
-                            endTime: { $lte: dayjs().subtract(30, 'minute').toDate() },
+                            endTime: { $lte: dayjs().subtract(15, 'minute').toDate() },
                         }
                     }
                 })
@@ -26,7 +26,7 @@ class Schedule {
                     attendanceList.forEach(async (attendance) => {
                         const body = {
                             attendanceDate: dayjs().toDate(),
-                            outTime: dayjs(attendance.shiftData.endTime, 'HH:mm:ss').add(1, 'minute').toDate(),
+                            outTime: dayjs(attendance.shiftData.endTime, 'HH:mm:ss').toDate(),
                             shiftId: attendance.shiftId,
                         }
                         await attendanceService.logoutAttendance(body, attendance, attendance.shiftData);

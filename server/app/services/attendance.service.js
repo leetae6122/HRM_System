@@ -54,6 +54,10 @@ class AttendanceService {
                     {
                         model: db.Shift, as: 'shiftData', ...shiftFilter
                     },
+                    {
+                        model: db.Employee, as: 'employeeData',
+                        attributes: ['id', 'firstName', 'lastName']
+                    },
                 ],
                 raw: true,
                 nest: true
