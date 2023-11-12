@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import FilterLeaveForm from './FilterLeaveForm';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import _ from 'lodash';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
@@ -29,32 +28,26 @@ function FilterDrawer(props) {
   const handleFilter = async (values) => {
     setConfirmLoading(true);
     let filter;
-    if(values.employeeId){
+    if (values.employeeId) {
       filter = {
         employeeId: values.employeeId,
       };
     }
 
-    if (!_.isEmpty(_.omitBy(values.leaveFrom, _.isNil))) {
+    if (values.leaveFrom) {
       filter = {
         ...filter,
         leaveFrom: {
-          $between: [
-            values.leaveFrom[0].utc().format(),
-            values.leaveFrom[1].utc().format(),
-          ],
+          $gte: values.leaveFrom.utc().format(),
         },
       };
     }
 
-    if (!_.isEmpty(_.omitBy(values.leaveTo, _.isNil))) {
+    if (values.leaveTo) {
       filter = {
         ...filter,
         leaveTo: {
-          $between: [
-            values.leaveTo[0].utc().format(),
-            values.leaveTo[1].utc().format(),
-          ],
+          $lte: values.leaveTo.utc().format(),
         },
       };
     }
@@ -77,7 +70,19 @@ function FilterDrawer(props) {
       open={openDrawer}
       width={'70vh'}
     >
-      <FilterLeaveForm onSubmit={handleFilter} loading={confirmLoading} />
+      <FilterLeaveForm
+        onSubmit={handleFilter}
+        loading={confirmLoading}
+        initialValues={{
+          leaveFrom: filterData.where.leaveFrom
+            ? dayjs(filterData.where.leaveFrom.$gte)
+            : null,
+          leaveTo: filterData.where.leaveTo
+            ? dayjs(filterData.where.leaveTo.$lte)
+            : null,
+          employeeId: filterData.where.employeeId ?? null,
+        }}
+      />
     </Drawer>
   );
 }

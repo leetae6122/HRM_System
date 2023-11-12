@@ -12,6 +12,22 @@ import ShiftTableHeader from './components/ShiftTableHeader';
 import ModalAddShift from './components/ComponentAddEdit/ModalAddShift';
 import ModalEditShift from './components/ComponentAddEdit/ModalEditShift';
 
+const daysName = (arrDays) => {
+  const days = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+
+  const daysName = [];
+  arrDays.forEach((day) => daysName.push(days[day]));
+  return daysName.join(', ');
+};
+
 const createColumns = (toggleModalEditShift, handleDeleteShift) => [
   {
     title: 'Id',
@@ -38,6 +54,45 @@ const createColumns = (toggleModalEditShift, handleDeleteShift) => [
     dataIndex: 'endTime',
     key: 'endTime',
     sorter: true,
+  },
+  {
+    title: 'Days',
+    dataIndex: 'days',
+    key: 'days',
+    render: (days) => daysName(days),
+    filters: [
+      {
+        text: 'Sunday',
+        value: 0,
+      },
+      {
+        text: 'Monday',
+
+        value: 1,
+      },
+      {
+        text: 'Tuesday',
+
+        value: 2,
+      },
+      {
+        text: 'Wednesday',
+
+        value: 3,
+      },
+      {
+        text: 'Thursday',
+        value: 4,
+      },
+      {
+        text: 'Friday',
+        value: 5,
+      },
+      {
+        text: 'Saturday',
+        value: 6,
+      },
+    ],
   },
   {
     title: 'Wage Rate',
@@ -198,6 +253,7 @@ function ShiftPage() {
       {
         ...where,
         overtimeShift: filters.overtimeShift,
+        days: { $like: `%${filters.days.join(';')}%` },
       },
       _.isNil,
     );

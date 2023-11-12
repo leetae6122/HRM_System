@@ -28,12 +28,12 @@ function FilterDrawer(props) {
   const handleFilter = async (values) => {
     setConfirmLoading(true);
     let filter;
-    if(values.employeeId){
+    if (values.employeeId) {
       filter = {
         employeeId: values.employeeId,
       };
     }
-    if(values.shiftId){
+    if (values.shiftId) {
       filter = {
         ...filter,
         shiftId: values.shiftId,
@@ -69,7 +69,17 @@ function FilterDrawer(props) {
       open={openDrawer}
       width={'70vh'}
     >
-      <FilterAttendanceForm onSubmit={handleFilter} loading={confirmLoading} />
+      <FilterAttendanceForm
+        onSubmit={handleFilter}
+        loading={confirmLoading}
+        initialValues={{
+          attendanceDate: filterData.where.attendanceDate
+            ? dayjs(filterData.where.attendanceDate.$between[0])
+            : null,
+          employeeId: filterData.where.employeeId ?? null,
+          shiftId: filterData.where.shiftId ?? null,
+        }}
+      />
     </Drawer>
   );
 }

@@ -17,6 +17,7 @@ import ModalEditAttendance from './components/ComponentEditAttendance/ModalEditA
 import _ from 'lodash';
 import { setDefaultFilterData } from 'reducers/attendance';
 import FilterDrawer from './components/Filter/FilterDrawer';
+import ModalExportFile from './components/ExportFile/ModalExportFile';
 
 const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
   {
@@ -196,6 +197,7 @@ function AttendancePage() {
   const [loadingData, setLoadingData] = useState(false);
   const [openModalEditAttendance, setOpenModalEditAttendance] = useState(false);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
+  const [openExportFile, setOpenExportFile] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -252,6 +254,9 @@ function AttendancePage() {
 
   const toggleShowFilterDrawer = () => {
     setOpenFilterDrawer(!openFilterDrawer);
+  };
+  const toggleModalExportFile = () => {
+    setOpenExportFile(!openExportFile);
   };
 
   const toggleModalEditAttendance = (id) => {
@@ -326,6 +331,7 @@ function AttendancePage() {
           <AttendanceTableHeader
             setFilter={setFilter}
             toggleShowFilterDrawer={toggleShowFilterDrawer}
+            toggleShowExportFile={toggleModalExportFile}
           />
         )}
         pagination={{
@@ -349,6 +355,12 @@ function AttendancePage() {
           toggleShowDrawer={toggleShowFilterDrawer}
           openDrawer={openFilterDrawer}
           setFilter={setFilter}
+        />
+      )}
+      {openExportFile && (
+        <ModalExportFile
+          toggleShowModal={toggleModalExportFile}
+          openModal={openExportFile}
         />
       )}
     </>

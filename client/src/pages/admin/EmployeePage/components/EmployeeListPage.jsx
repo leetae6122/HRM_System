@@ -86,6 +86,13 @@ const createColumns = (
     render: (date) => getFullDate(date),
   },
   {
+    title: 'Day Off',
+    dataIndex: 'dateOff',
+    key: 'dateOff',
+    sorter: true,
+    render: (date) => (date ? getFullDate(date) : ''),
+  },
+  {
     title: 'Action',
     key: 'action',
     width: 145,
@@ -115,16 +122,18 @@ const createColumns = (
 
 EmployeeListPage.propTypes = {
   toggleModalEditEmployee: PropTypes.func,
+  refreshEmployeeList: PropTypes.func,
 };
 
 EmployeeListPage.defaultProps = {
   toggleModalEditEmployee: null,
+  refreshEmployeeList: null,
 };
 
 function EmployeeListPage(props) {
   const navigator = useNavigate();
   const dispatch = useDispatch();
-  const { toggleModalEditEmployee } = props;
+  const { toggleModalEditEmployee, refreshEmployeeList } = props;
   const { filterData, employeeList, total, currentPage, defaultFilter } =
     useSelector((state) => state.employee);
   const [loadingData, setLoadingData] = useState(false);
@@ -164,18 +173,6 @@ function EmployeeListPage(props) {
 
   const setFilter = (filter) => {
     dispatch(setFilterData(filter));
-  };
-
-  const refreshEmployeeList = async () => {
-    const response = (await employeeApi.getList(defaultFilter)).data;
-    const data = response.data.map((item) => ({ key: item.id, ...item }));
-    dispatch(
-      setData({
-        employeeList: data,
-        total: response.total,
-        currentPage: response.currentPage,
-      }),
-    );
   };
 
   const handleDeleteEmployee = async (employeeId) => {
@@ -249,6 +246,7 @@ function EmployeeListPage(props) {
           <EmployeeTableHeader
             toggleModalAddEmployee={toggleModalAddEmployee}
             setFilter={setFilter}
+            refreshEmployeeList={refreshEmployeeList}
           />
         )}
         pagination={{

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Button, Space, DatePicker, Select } from 'antd';
 import _ from 'lodash';
-import dayjs from 'dayjs';
 import { getMonthName } from 'utils/handleDate';
 import employeeApi from 'api/employeeApi';
 import shiftApi from 'api/shiftApi';
@@ -18,7 +17,7 @@ FilterAttendanceForm.defaultProps = {
   onSubmit: null,
   loading: false,
   initialValues: {
-    attendanceDate: dayjs(),
+    attendanceDate: '',
     employeeId: null,
     shiftId: null,
   },

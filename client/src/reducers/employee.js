@@ -4,18 +4,14 @@ const initialState = {
     defaultFilter: {
         page: 1,
         size: 10,
-        where: {
-            dateOff: { $is: null }
-        },
-        order: [['firstName', 'ASC']],
+        where: {},
+        order: [['firstName', 'ASC'], ['dateOff', 'DESC']],
     },
     filterData: {
         page: 1,
         size: 10,
-        where: {
-            dateOff: { $is: null }
-        },
-        order: [['firstName', 'ASC']],
+        where: {},
+        order: [['firstName', 'ASC'], ['dateOff', 'DESC']],
     },
     employeeList: [],
     total: 0,

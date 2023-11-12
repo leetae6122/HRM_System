@@ -109,6 +109,10 @@ function RewardPunishmentForm(props) {
     onCancel();
   };
 
+  const disabledDate = (current) => {
+    return current && current.valueOf() >= Date.now();
+  };
+
   return (
     <Form
       name="normal_reward_punishment"
@@ -260,6 +264,7 @@ function RewardPunishmentForm(props) {
               disabled={loading}
               style={{ width: '100%' }}
               format={dateFormat}
+              disabledDate={disabledDate}
             />
           </Form.Item>
         </>

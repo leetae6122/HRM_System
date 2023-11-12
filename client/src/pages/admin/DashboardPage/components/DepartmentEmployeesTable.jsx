@@ -17,6 +17,11 @@ const columns = [
     key: 'shortName',
   },
   {
+    title: 'Department Name',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
     title: 'Employees',
     dataIndex: 'employeeCount',
     key: 'employees',

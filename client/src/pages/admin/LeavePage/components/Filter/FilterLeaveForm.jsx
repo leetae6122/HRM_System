@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Button, Space, DatePicker, Select } from 'antd';
 import _ from 'lodash';
-import dayjs from 'dayjs';
 import employeeApi from 'api/employeeApi';
 import { toast } from 'react-toastify';
 
@@ -16,32 +15,14 @@ FilterLeaveForm.defaultProps = {
   onSubmit: null,
   loading: false,
   initialValues: {
-    leaveFrom: [],
-    leaveTo: [],
+    leaveFrom: '',
+    leaveTo: '',
     employeeId: null,
   },
 };
 
 const wrapperCol = { offset: 8, span: 16 };
 const dateFormat = 'DD/MM/YYYY';
-const rangePresets = [
-  {
-    label: 'Last 7 Days',
-    value: [dayjs().add(-7, 'd'), dayjs()],
-  },
-  {
-    label: 'Last 14 Days',
-    value: [dayjs().add(-14, 'd'), dayjs()],
-  },
-  {
-    label: 'Last 30 Days',
-    value: [dayjs().add(-30, 'd'), dayjs()],
-  },
-  {
-    label: 'Last 90 Days',
-    value: [dayjs().add(-90, 'd'), dayjs()],
-  },
-];
 
 function FilterLeaveForm(props) {
   const { onSubmit, loading, initialValues } = props;
@@ -120,23 +101,21 @@ function FilterLeaveForm(props) {
         />
       </Form.Item>
       <Form.Item name="leaveFrom" label="Leave From">
-        <DatePicker.RangePicker
+        <DatePicker
           disabled={loading}
           format={dateFormat}
           style={{
             width: '100%',
           }}
-          presets={rangePresets}
         />
       </Form.Item>
       <Form.Item name="leaveTo" label="Leave To">
-        <DatePicker.RangePicker
+        <DatePicker
           disabled={loading}
           format={dateFormat}
           style={{
             width: '100%',
           }}
-          presets={rangePresets}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>

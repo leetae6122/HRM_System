@@ -68,7 +68,7 @@ function DashboardPage() {
 
   return (
     <Row gutter={[16, 8]}>
-      <Col className="link-card" span={12} key="employees">
+      <Col className="link-card" span={6} key="employees">
         <LinkIconCard
           link={'/admin/employee'}
           Icon={<TeamOutlined style={iconStyle} />}
@@ -76,7 +76,15 @@ function DashboardPage() {
           title={`${countEmployees.currentEmployees} Employees`}
         />
       </Col>
-      <Col className="link-card" span={12} key="users">
+      <Col className="quality-card" span={6}>
+        <QualityCard
+          backgroundColor={purple[5]}
+          quality={countEmployees.formerEmployees}
+          content={'Former Employees'}
+        />
+      </Col>
+      
+      <Col className="link-card" span={6} key="users">
         <LinkIconCard
           link={'/admin/user'}
           Icon={<UnlockOutlined style={iconStyle} />}
@@ -85,14 +93,7 @@ function DashboardPage() {
         />
       </Col>
 
-      <Col className="quality-card" span={12}>
-        <QualityCard
-          backgroundColor={purple[5]}
-          quality={countEmployees.formerEmployees}
-          content={'Former Employees'}
-        />
-      </Col>
-      <Col className="quality-card" span={12}>
+      <Col className="quality-card" span={6}>
         <QualityCard
           backgroundColor={gold[5]}
           quality={countUser.notActivedUsers}

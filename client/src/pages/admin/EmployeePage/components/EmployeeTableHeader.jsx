@@ -11,11 +11,13 @@ import _ from 'lodash';
 EmployeeTableHeader.propTypes = {
   toggleModalAddEmployee: PropTypes.func,
   setFilter: PropTypes.func,
+  refreshEmployeeList: PropTypes.func,
 };
 
 EmployeeTableHeader.defaultProps = {
   toggleModalAddEmployee: null,
   setFilter: null,
+  refreshEmployeeList: null,
 };
 
 function EmployeeTableHeader(props) {
