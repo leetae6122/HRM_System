@@ -8,7 +8,7 @@ import {
   TeamOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Card, Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -62,9 +62,9 @@ function AdminSideBar() {
       ),
       getItem(
         <Link to={'/admin/reward-punishment'} replace>
-            Reward
-            <br />
-            Punishment
+          Reward
+          <br />
+          Punishment
         </Link>,
         '/admin/reward-punishment',
       ),
@@ -88,14 +88,14 @@ function AdminSideBar() {
         Department
       </Link>,
       '/admin/department',
-      <ClusterOutlined />
+      <ClusterOutlined />,
     ),
     getItem(
       <Link to={'/admin/position'} replace>
         Position
       </Link>,
       '/admin/position',
-      <SolutionOutlined />
+      <SolutionOutlined />,
     ),
     getItem('Attendance', 'sub3', <CalendarOutlined />, [
       getItem(
@@ -127,9 +127,12 @@ function AdminSideBar() {
       collapsed={collapsed}
       onCollapse={toggleCollapsed}
     >
-      <div className="demo-logo-vertical">
-        <img src={logoHrm} alt="logo" />
-      </div>
+      <Card title="Administration" bordered={false} style={{ margin: 5 }}>
+        <div className="demo-logo-vertical">
+          <img src={logoHrm} alt="logo" />
+        </div>
+      </Card>
+
       <Menu
         theme="dark"
         selectedKeys={pathname}

@@ -30,8 +30,14 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
     width: 80,
   },
   {
+    title: 'Employee Id',
+    dataIndex: 'employeeId',
+    key: 'employeeId',
+    sorter: true,
+  },
+  {
     title: 'Employee Name',
-    dataIndex: ['employeeData', 'firstName'],
+    dataIndex: 'employeeId',
     key: 'employeeData',
     sorter: true,
     render: (_, record) =>
@@ -99,36 +105,6 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
       },
     ],
     filterMultiple: false,
-  },
-  {
-    title: 'Processing Status (Manager)',
-    dataIndex: 'managerStatus',
-    key: 'managerStatus',
-    render: (managerStatus) => (
-      <>
-        {managerStatus === 'Pending' ? (
-          <Tag color="default">{managerStatus}</Tag>
-        ) : managerStatus === 'Approved' ? (
-          <Tag color="success">{managerStatus}</Tag>
-        ) : (
-          <Tag color="error">{managerStatus}</Tag>
-        )}
-      </>
-    ),
-    filters: [
-      {
-        text: 'Pending',
-        value: 'Pending',
-      },
-      {
-        text: 'Approved',
-        value: 'Approved',
-      },
-      {
-        text: 'Reject',
-        value: 'Reject',
-      },
-    ],
   },
   {
     title: 'Processing Status (Admin)',
@@ -307,8 +283,9 @@ function AttendancePage() {
     where = _.omitBy(
       {
         ...where,
-        place: filters.place,
-        status: filters.status,
+        inStatus: filters.inStatus,
+        outStatus: filters.outStatus,
+        adminStatus: filters.adminStatus
       },
       _.isNil,
     );

@@ -30,7 +30,7 @@ exports.verifyAccessToken = async (req, res, next) => {
     } catch (error) {
         if (error.message === 'jwt expired') {
             return next(
-                createError.Unauthorized(error.message)
+                createError.Unauthorized('Access Token expired')
             );
         }
 

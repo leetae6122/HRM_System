@@ -10,33 +10,36 @@ import Loading from 'components/Common/Loading';
 import RequireAuth from 'components/ProtectRoute/RequireAuth';
 import DepartmentManagerAuth from 'components/ProtectRoute/DepartmentManagerAuth';
 import AdminAuth from 'components/ProtectRoute/AdminAuth';
-import ProfilePage from 'pages/ProfilePage';
 
-import EmployeeDashboardPage from 'pages/employee/DashboardPage';
-import EmployeeLeavePage from 'pages/employee/LeavePage';
-import EmployeeAttendancePage from 'pages/employee/AttendancePage';
-import EmployeeTimekeeperPage from 'pages/employee/TimekeeperPage';
-import ManageAttendancePage from 'pages/employee/ManageAttendancePage';
-import EmployeePayrollPage from 'pages/employee/PayrollPage';
-import EmployeeAllowancePage from 'pages/employee/AllowancePage';
-import EmployeeRewardPunishmentPage from 'pages/employee/RewardPunishmentPage';
+// Employee Page
+const EmployeeDashboardPage = React.lazy(() => import('pages/employee/DashboardPage'));
+const EmployeeLeavePage = React.lazy(() => import('pages/employee/LeavePage'));
+const EmployeeAttendancePage = React.lazy(() => import('pages/employee/AttendancePage'));
+const EmployeeTimekeeperPage = React.lazy(() => import('pages/employee/TimekeeperPage'));
+const EmployeePayrollPage = React.lazy(() => import('pages/employee/PayrollPage'));
+const EmployeeAllowancePage = React.lazy(() => import('pages/employee/AllowancePage'));
+const EmployeeRewardPunishmentPage = React.lazy(() => import('pages/employee/RewardPunishmentPage'));
 
-import AdminDashboardPage from 'pages/admin/DashboardPage';
-import UserPage from 'pages/admin/UserPage';
-import PositionPage from 'pages/admin/PositionPage';
-import EmployeePage from 'pages/admin/EmployeePage';
-import WagePage from 'pages/admin/WagePage';
-import DepartmentPage from 'pages/admin/DepartmentPage';
-import AdminLeavePage from 'pages/admin/LeavePage';
-import AdminAttendancePage from 'pages/admin/AttendancePage';
-import ShiftPage from 'pages/admin/ShiftPage';
-import AdminPayrollPage from 'pages/admin/PayrollPage';
-import AdminAllowancePage from 'pages/admin/AllowancePage';
-import AdminRewardPunishmentPage from 'pages/admin/RewardPunishmentPage';
-import TimekeeperPage from 'pages/TimekeeperPage';
+// Admin Page
+const AdminDashboardPage = React.lazy(() => import('pages/admin/DashboardPage'));
+const UserPage = React.lazy(() => import('pages/admin/UserPage'));
+const PositionPage = React.lazy(() => import('pages/admin/PositionPage'));
+const AdminEmployeePage = React.lazy(() => import('pages/admin/EmployeePage'));
+const WagePage = React.lazy(() => import('pages/admin/WagePage'));
+const DepartmentPage = React.lazy(() => import('pages/admin/DepartmentPage'));
+const AdminLeavePage = React.lazy(() => import('pages/admin/LeavePage'));
+const AdminAttendancePage = React.lazy(() => import('pages/admin/AttendancePage'));
+const ShiftPage = React.lazy(() => import('pages/admin/ShiftPage'));
+const AdminPayrollPage = React.lazy(() => import('pages/admin/PayrollPage'));
+const AdminAllowancePage = React.lazy(() => import('pages/admin/AllowancePage'));
+const AdminRewardPunishmentPage = React.lazy(() => import('pages/admin/RewardPunishmentPage'));
 
+// Other
 const AuthPage = React.lazy(() => import('pages/AuthPage'));
 const PageLayout = React.lazy(() => import('components/Common/PageLayout'));
+const ProfilePage = React.lazy(() => import('pages/ProfilePage'));
+const TimekeeperPage = React.lazy(() => import('pages/TimekeeperPage'));
+const ManageAttendancePage = React.lazy(() => import('pages/employee/ManageAttendancePage'));
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -45,6 +48,7 @@ function App() {
       <ToastContainer
         position="top-right"
         autoClose={3000}
+        limit={3}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -80,7 +84,7 @@ function App() {
             >
               <Route path="dashboard" element={<AdminDashboardPage />} />
               <Route path="user" element={<UserPage />} />
-              <Route exact path="employee/*" element={<EmployeePage />} />
+              <Route exact path="employee/*" element={<AdminEmployeePage />} />
               <Route path="position" element={<PositionPage />} />
               <Route path="wage" element={<WagePage />} />
               <Route path="department" element={<DepartmentPage />} />

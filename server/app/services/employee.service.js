@@ -59,7 +59,9 @@ class EmployeeService {
                     model: db.Department, as: 'departmentData',
                     attributes: ['name', 'shortName'],
                 },
-            ]
+            ],
+            raw: true,
+            nest: true
         });
         return result;
     }
@@ -176,6 +178,18 @@ class EmployeeService {
             );
         }
         return foundEmployee;
+    }
+
+    async checkEmployeeIsWorking(employeeId) {
+        return await db.Employee.findOne({
+            where: {
+                id: employeeId,
+                dateOff: { $is: null }
+            },
+            raw: true,
+            nest: true
+        });
+
     }
 
     async countEmployee() {

@@ -4,6 +4,7 @@ import utc from 'dayjs/plugin/utc';
 import logger from './logger';
 import attendanceService from './app/services/attendance.service';
 import qrCodeService from './app/services/qrCode.service';
+import _ from 'lodash';
 
 dayjs.extend(utc)
 class Schedule {
@@ -17,23 +18,24 @@ class Schedule {
                         outTime: { $is: null },
                     },
                 })
-                let count = 0;
+                let handleList = [];
                 if (attendanceList && attendanceList.length > 0) {
-                    attendanceList.forEach(async (attendance) => {
+                    handleList = await Promise.all(attendanceList.map(async (attendance) => {
                         const endShift = dayjs(`${attendance.attendanceDate} ${attendance.shiftData.endTime}`, 'YYYY-MM-DD HH:mm:ss').toDate();
-                        if (dayjs().subtract(15, 'minute').toDate() >= endShift) {
-                            const body = {
-                                attendanceDate: dayjs().toDate(),
-                                outTime: dayjs(attendance.shiftData.endTime, 'HH:mm:ss').toDate(),
-                                shiftId: attendance.shiftId,
-                            }
-                            await attendanceService.logoutAttendance(body, attendance);
-                            count++;
+                        if (dayjs().subtract(10, 'minute').toDate() < endShift) {
+                            return;
                         }
-                    })
+                        const body = {
+                            attendanceDate: dayjs().toDate(),
+                            outTime: dayjs(attendance.shiftData.endTime, 'HH:mm:ss').toDate(),
+                            shiftId: attendance.shiftId,
+                        }
+                        await attendanceService.logoutAttendance(body, attendance);
+                        return attendance;
+                    }))
                 }
-
-                logger.info(`Logout Attendance: ${count} attendees`);
+                const list = _.compact(handleList);
+                logger.info(`Logout Attendance: ${list.length} attendees`);
             } catch (error) {
                 logger.error(error);
             }

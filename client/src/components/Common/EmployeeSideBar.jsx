@@ -8,7 +8,7 @@ import {
   RedEnvelopeOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Card, Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -106,9 +106,11 @@ function EmployeeSideBar() {
       collapsed={collapsed}
       onCollapse={toggleCollapsed}
     >
-      <div className="demo-logo-vertical">
-        <img src={logoHrm} alt="logo" />
-      </div>
+      <Card title="Employee" bordered={false} style={{ margin: 5 }}>
+        <div className="demo-logo-vertical">
+          <img src={logoHrm} alt="logo" />
+        </div>
+      </Card>
       <Menu
         theme="dark"
         selectedKeys={pathname}

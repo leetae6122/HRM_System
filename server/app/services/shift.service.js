@@ -87,14 +87,13 @@ class ShiftService {
     }
 
     async getCurrentShiftList() {
-        const start = dayjs().add(30, 'minute').toDate();
-        const end = dayjs().subtract(30, 'minute').toDate();
+        const time = dayjs().add(30, 'minute').toDate();
         const day = dayjs().day();
         const result = await db.Shift.findAll({
             where: {
-                startTime: { $lte: start },
-                endTime: { $gte: end },
-                days: { $like: `%${day}%` }
+                startTime: { $lte: time },
+                endTime: { $gte: time },
+                days: { $like: `%${day}%`}
             },
             raw: true,
             nest: true

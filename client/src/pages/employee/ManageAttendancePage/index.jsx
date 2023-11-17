@@ -28,6 +28,12 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
     width: 80,
   },
   {
+    title: 'Employee Id',
+    dataIndex: 'employeeId',
+    key: 'employeeId',
+    sorter: true,
+  },
+  {
     title: 'Employee Name',
     dataIndex: ['employeeData', 'firstName'],
     key: 'employeeData',
@@ -110,36 +116,6 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
           <Tag color="success">{managerStatus}</Tag>
         ) : (
           <Tag color="error">{managerStatus}</Tag>
-        )}
-      </>
-    ),
-    filters: [
-      {
-        text: 'Pending',
-        value: 'Pending',
-      },
-      {
-        text: 'Approved',
-        value: 'Approved',
-      },
-      {
-        text: 'Reject',
-        value: 'Reject',
-      },
-    ],
-  },
-  {
-    title: 'Processing Status (Admin)',
-    dataIndex: 'adminStatus',
-    key: 'adminStatus',
-    render: (adminStatus) => (
-      <>
-        {adminStatus === 'Pending' ? (
-          <Tag color="default">{adminStatus}</Tag>
-        ) : adminStatus === 'Approved' ? (
-          <Tag color="success">{adminStatus}</Tag>
-        ) : (
-          <Tag color="error">{adminStatus}</Tag>
         )}
       </>
     ),
@@ -298,7 +274,6 @@ function ManageAttendancePage() {
         inStatus: filters.inStatus,
         outStatus: filters.outStatus,
         managerStatus: filters.managerStatus,
-        adminStatus: filters.adminStatus,
       },
       _.isNil,
     );

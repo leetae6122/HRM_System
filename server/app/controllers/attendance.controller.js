@@ -18,6 +18,7 @@ import { verifyToken } from "../utils/jwt.util";
 import config from '../config/configServer';
 import qrCodeService from "./../services/qrCode.service"
 import { compareHashedData } from "../utils/hash.util";
+
 exports.findById = async (req, res, next) => {
     try {
         const data = await attendanceService.findById(req.params.id);
@@ -120,6 +121,12 @@ exports.employeeGetListAttendance = async (req, res, next) => {
 
 exports.logInAttendance = async (req, res, next) => {
     try {
+        const foundEmployee = await employeeService.checkEmployeeIsWorking(req.body.employeeId, next);
+        if (!foundEmployee) {
+            return next(
+                createError.NotFound("The employee code is incorrect or the employee has left work")
+            );
+        }
         let payload = verifyToken(req.body.token, config.jwt.qr_code.secret);
         const foundQRCode = await qrCodeService.findById(payload.qrCodeId);
         if (!foundQRCode) {
@@ -220,12 +227,13 @@ exports.managerUpdateAttendance = async (req, res, next) => {
 
 exports.deleteAttendance = async (req, res, next) => {
     try {
+        const foundEmployee = await employeeService.foundEmployee(req.user.employeeId, next);
         if (!req.params.id && Number(req.params.id)) {
             return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("AttendanceId")));
         }
         const foundAttendance = await attendanceService.foundAttendance(req.params.id, next);
 
-        if (foundAttendance.employeeId !== req.user.employeeId) {
+        if (!foundEmployee.userData.isAdmin) {
             return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
         if ((foundAttendance.managerStatus !== 'Pending' && foundAttendance.adminStatus !== 'Pending')

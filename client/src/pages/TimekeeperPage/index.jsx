@@ -20,8 +20,8 @@ function TimekeeperPage() {
   const [loading, setLoading] = useState(false);
 
   const handleTimekeeperLogin = async (values) => {
+    const socket = io(import.meta.env.VITE_API_URL);
     try {
-      const socket = io(import.meta.env.VITE_API_URL);
       setLoading(true);
       const token = searchParams.get('token');
       if (!token) {
@@ -35,6 +35,7 @@ function TimekeeperPage() {
         token,
       };
       const response = await attendanceApi.logInAttendance(data);
+      socket.emit('check-in', values.employeeId, dayjs());
       Swal.fire({
         icon: 'success',
         title: response.message,
@@ -42,13 +43,13 @@ function TimekeeperPage() {
         confirmButtonText: 'Back to Login',
       }).then((result) => {
         setLoading(false);
-        socket.emit('check-in', data.employeeId);
         if (result.isConfirmed) {
-          socket.disconnect();
           navigate('/login');
         }
+        socket.disconnect();
       });
     } catch (error) {
+      socket.disconnect();
       setLoading(false);
     }
   };
