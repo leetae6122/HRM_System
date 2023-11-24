@@ -23,6 +23,7 @@ module.exports = {
                 type: Sequelize.DATEONLY,
             },
             endDate: {
+                allowNull: false,
                 type: Sequelize.DATEONLY,
             },
             employeeId: {

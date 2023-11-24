@@ -22,7 +22,7 @@ function ModalExportFile(props) {
   const { openModal, toggleShowModal } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const handleEditAttendance = async (values) => {
+  const handleExportFile = async (values) => {
     try {
       setConfirmLoading(true);
       let response;
@@ -82,7 +82,7 @@ function ModalExportFile(props) {
       >
         <ExportFileForm
           onCancel={handleCancel}
-          onSubmit={handleEditAttendance}
+          onSubmit={handleExportFile}
           loading={confirmLoading}
         />
       </Modal>

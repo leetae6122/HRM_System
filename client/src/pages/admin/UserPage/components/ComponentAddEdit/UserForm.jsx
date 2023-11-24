@@ -31,7 +31,7 @@ function UserForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
   const [employeeOptions, setEmployeeOptions] = useState([]);
   const [submittable, setSubmittable] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState();
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isChangePass, setIsChangePass] = useState(
     initialValues.userId ? false : true,
   );
@@ -63,7 +63,8 @@ function UserForm(props) {
         const data = (await employeeApi.getEmployeeNotHaveUser()).data;
         const options = data.map((employee) => ({
           value: employee.id,
-          label: `${employee.firstName} ${employee.lastName}`,
+          label: `#${employee.id} - ${employee.firstName} ${employee.lastName}`,
+          username: `${employee.firstName} ${employee.lastName}`,
         }));
         setEmployeeOptions(options);
       } catch (error) {
@@ -96,7 +97,7 @@ function UserForm(props) {
 
   const onEmployeeChange = (value) => {
     const findEmployee = employeeOptions.find((item) => item.value === value);
-    const data = _.lowerCase(findEmployee.label).replace(/\s/g, '.');
+    const data = _.lowerCase(findEmployee.username).replace(/\s/g, '.');
     form.setFieldValue('username', data);
   };
 
@@ -128,7 +129,7 @@ function UserForm(props) {
         <Form.Item label="Employee">
           <Input
             disabled={true}
-            value={`${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`}
+            value={`#${selectedEmployee?.id} - ${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`}
             style={{
               color: 'black',
             }}

@@ -57,13 +57,18 @@ exports.adminGetListRewardPunishment = async (req, res, next) => {
 
 exports.createRewardPunishment = async (req, res, next) => {
     try {
-        await employeeService.foundEmployee(req.body.employeeId, next);
         const payload = {
-            ...req.body,
+            type: req.body.type,
+            reason: req.body.reason,
+            amount: req.body.amount,
+            date: req.body.date,
             addedBy: req.user.employeeId,
         }
-        const data = await rewardPunishmentService.createRewardPunishment(payload);
-        return res.send({ message: MSG_CREATED_SUCCESSFUL("Reward or Punishment"), data });
+        await Promise.all(req.body.employees.map(async (employeeId) => {
+            await employeeService.foundEmployee(employeeId, next);
+            await rewardPunishmentService.createRewardPunishment({ ...payload, employeeId });
+        }));
+        return res.send({ message: MSG_CREATED_SUCCESSFUL("Reward or Punishment") });
     } catch (error) {
         return next(error);
     }

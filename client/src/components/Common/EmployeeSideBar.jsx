@@ -1,6 +1,5 @@
 import {
   AlertOutlined,
-  AuditOutlined,
   CalendarOutlined,
   DesktopOutlined,
   DollarOutlined,
@@ -62,13 +61,6 @@ function EmployeeSideBar() {
       </Link>,
       '/employee/leave',
       <UserDeleteOutlined />,
-    ),
-    getItem(
-      <Link to={'/employee/payroll'} replace>
-        Payroll
-      </Link>,
-      '/employee/payroll',
-      <AuditOutlined />,
     ),
     getItem(
       <Link to={'/employee/allowance'} replace>

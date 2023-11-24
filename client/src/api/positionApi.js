@@ -1,6 +1,10 @@
 import axiosClient from "./axiosClient";
 
 const positionApi = {
+    countEmployees: () => {
+        const url = '/position/count-employees';
+        return axiosClient.get(url);
+    },
     getAll: () => {
         const url = '/position';
         return axiosClient.get(url);

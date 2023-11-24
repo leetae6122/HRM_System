@@ -14,6 +14,7 @@ import { setData, setFilterData } from 'reducers/employee';
 import ModalAddEmployee from './ComponentAddEdit/ModalAddEmployee';
 import defaultAvatar from 'assets/images/avatar-user.jpg';
 import _ from 'lodash';
+import ModalExportFile from './ExportFile/ModalExportFile';
 
 const createColumns = (
   navigator,
@@ -138,6 +139,7 @@ function EmployeeListPage(props) {
     useSelector((state) => state.employee);
   const [loadingData, setLoadingData] = useState(false);
   const [openModalAddEmployee, setOpenModalAddEmployee] = useState(false);
+  const [openExportFile, setOpenExportFile] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -201,6 +203,10 @@ function EmployeeListPage(props) {
     setOpenModalAddEmployee(!openModalAddEmployee);
   };
 
+  const toggleModalExportFile = () => {
+    setOpenExportFile(!openExportFile);
+  };
+
   const columns = createColumns(
     navigator,
     toggleModalEditEmployee,
@@ -246,7 +252,7 @@ function EmployeeListPage(props) {
           <EmployeeTableHeader
             toggleModalAddEmployee={toggleModalAddEmployee}
             setFilter={setFilter}
-            refreshEmployeeList={refreshEmployeeList}
+            toggleModalExportFile={toggleModalExportFile}
           />
         )}
         pagination={{
@@ -263,6 +269,12 @@ function EmployeeListPage(props) {
           openModal={openModalAddEmployee}
           toggleShowModal={toggleModalAddEmployee}
           refreshEmployeeList={refreshEmployeeList}
+        />
+      )}
+      {openExportFile && (
+        <ModalExportFile
+          toggleShowModal={toggleModalExportFile}
+          openModal={openExportFile}
         />
       )}
     </>

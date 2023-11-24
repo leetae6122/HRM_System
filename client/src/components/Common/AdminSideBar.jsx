@@ -1,10 +1,9 @@
 import {
   CalendarOutlined,
   ClusterOutlined,
-  FundViewOutlined,
   IdcardOutlined,
   PieChartOutlined,
-  SolutionOutlined,
+  RedEnvelopeOutlined,
   TeamOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons';
@@ -55,47 +54,40 @@ function AdminSideBar() {
         '/admin/employee',
       ),
       getItem(
-        <Link to={'/admin/allowance'} replace>
-          Allowance
-        </Link>,
-        '/admin/allowance',
-      ),
-      getItem(
-        <Link to={'/admin/reward-punishment'} replace>
-          Reward
-          <br />
-          Punishment
-        </Link>,
-        '/admin/reward-punishment',
-      ),
-    ]),
-    getItem('Payroll', 'sub2', <FundViewOutlined />, [
-      getItem(
-        <Link to={'/admin/payroll'} replace>
-          Payroll
-        </Link>,
-        '/admin/payroll',
-      ),
-      getItem(
         <Link to={'/admin/wage'} replace>
           Wage
         </Link>,
         '/admin/wage',
       ),
+      getItem(
+        <Link to={'/admin/allowance'} replace>
+          Allowance
+        </Link>,
+        '/admin/allowance',
+      ),
+    ]),
+    getItem('Organization', 'sub2', <ClusterOutlined />, [
+      getItem(
+        <Link to={'/admin/department'} replace>
+          Department
+        </Link>,
+        '/admin/department',
+      ),
+      getItem(
+        <Link to={'/admin/position'} replace>
+          Position
+        </Link>,
+        '/admin/position',
+      ),
     ]),
     getItem(
-      <Link to={'/admin/department'} replace>
-        Department
+      <Link to={'/admin/reward-punishment'} replace>
+        Reward
+        <br />
+        Punishment
       </Link>,
-      '/admin/department',
-      <ClusterOutlined />,
-    ),
-    getItem(
-      <Link to={'/admin/position'} replace>
-        Position
-      </Link>,
-      '/admin/position',
-      <SolutionOutlined />,
+      '/admin/reward-punishment',
+      <RedEnvelopeOutlined />,
     ),
     getItem('Attendance', 'sub3', <CalendarOutlined />, [
       getItem(

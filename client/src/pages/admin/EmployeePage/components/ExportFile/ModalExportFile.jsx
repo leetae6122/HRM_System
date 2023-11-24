@@ -2,44 +2,49 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import Swal from 'sweetalert2';
-import AddPayrollForm from './AddPayrollForm';
 import { toast } from 'react-toastify';
-import payrollApi from 'api/payrollApi';
+import ExportFileForm from './ExportFileForm';
+import fileApi from 'api/fileApi';
+import { saveAs } from 'file-saver';
+import dayjs from 'dayjs';
 
-ModalAddPayroll.propTypes = {
+ModalExportFile.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
-  refreshPayrollList: PropTypes.func,
 };
 
-ModalAddPayroll.defaultProps = {
+ModalExportFile.defaultProps = {
   openModal: false,
   toggleShowModal: null,
-  refreshPayrollList: null,
 };
 
-function ModalAddPayroll(props) {
-  const { openModal, toggleShowModal, refreshPayrollList } = props;
+function ModalExportFile(props) {
+  const { openModal, toggleShowModal } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const handleAddPayroll = async (values) => {
+  const handleExportFile = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = {
+      let response;
+
+      response = await fileApi.exportExcelMonthStatistics({
         month: values.month,
-        startDate: values.payrollDateRange[0],
-        endDate: values.payrollDateRange[1],
-        deductions: values.deductions,
-        employeeId: values.employeeId,
-      };
-      const response = await payrollApi.create(data);
+      });
+      const fileName = `MonthStatistics_${dayjs(values.month).format(
+        'MM-YYYY',
+      )}.xlsx`;
+
+      const blob = new Blob([response], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      saveAs(blob, fileName);
+
       Swal.fire({
         icon: 'success',
-        title: response.message,
+        title: 'Export file successfully',
         showConfirmButton: true,
         confirmButtonText: 'Done',
       }).then(async (result) => {
-        await refreshPayrollList();
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
@@ -58,19 +63,22 @@ function ModalAddPayroll(props) {
   return (
     <>
       <Modal
-        title="Create Payroll"
+        title="Export Statistics File"
         open={openModal}
         onCancel={handleCancel}
         footer={null}
         width={'100vh'}
+        style={{
+          top: 40,
+        }}
       >
-        <AddPayrollForm
+        <ExportFileForm
           onCancel={handleCancel}
-          onSubmit={handleAddPayroll}
+          onSubmit={handleExportFile}
           loading={confirmLoading}
         />
       </Modal>
     </>
   );
 }
-export default ModalAddPayroll;
+export default ModalExportFile;

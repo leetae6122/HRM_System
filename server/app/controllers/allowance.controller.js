@@ -57,14 +57,20 @@ exports.adminGetListAllowance = async (req, res, next) => {
 
 exports.createAllowance = async (req, res, next) => {
     try {
-        await employeeService.foundEmployee(req.body.employeeId, next);
         const payload = {
-            ...req.body,
+            title: req.body.title,
+            amount: req.body.amount,
+            startDate: req.body.startDate,
+            endDate: req.body.endDate,
             addedBy: req.user.employeeId,
         }
-        const data = await allowanceService.createAllowance(payload);
-        return res.send({ message: MSG_CREATED_SUCCESSFUL("Allowance"), data });
+        await Promise.all(req.body.employees.map(async (employeeId) =>{
+            await employeeService.foundEmployee(employeeId, next);
+            await allowanceService.createAllowance({ ...payload, employeeId });
+        }));
+        return res.send({ message: MSG_CREATED_SUCCESSFUL("Allowance") });
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }

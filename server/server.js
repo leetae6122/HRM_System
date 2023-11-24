@@ -16,8 +16,9 @@ async function startServer() {
         });
         io.on('connection', (socket) => {
             logger.info(`Client connected ${socket.id}`);
-            socket.on('check-in', (employeeId) => {
-                io.emit('check-in', employeeId);
+
+            socket.on('check-in', (...arr) => {
+                io.emit('check-in', arr);
             });
 
             socket.on('disconnect', () => {

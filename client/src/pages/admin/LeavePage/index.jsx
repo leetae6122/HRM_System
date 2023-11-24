@@ -180,6 +180,7 @@ function LeavePage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   const toggleShowFilterDrawer = () => {

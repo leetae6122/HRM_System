@@ -136,6 +136,7 @@ function WagePage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   const handleDeleteWage = async (wageId) => {

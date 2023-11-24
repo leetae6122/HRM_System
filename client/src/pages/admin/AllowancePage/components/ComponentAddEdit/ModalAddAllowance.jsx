@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import AllowanceForm from './AllowanceForm';
 import allowanceApi from 'api/allowanceApi';
-import _ from 'lodash';
 
 ModalAddAllowance.propTypes = {
   openModal: PropTypes.bool,
@@ -26,13 +25,13 @@ function ModalAddAllowance(props) {
   const handleAddAllowance = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = _.omitBy(
-        {
-          ...values,
-          endDate: values.endDate === '' ? null : values.endDate,
-        },
-        _.isNil,
-      );
+      const data = {
+        title: values.title,
+        amount: values.amount,
+        employees: values.employees,
+        startDate: values.timeApplication[0].startOf('month'),
+        endDate: values.timeApplication[1].endOf('month'),
+      };
       const response = await allowanceApi.create(data);
       Swal.fire({
         icon: 'success',

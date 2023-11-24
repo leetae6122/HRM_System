@@ -4,8 +4,8 @@ const createAllowanceSchema = Joi.object({
     title: Joi.string().max(60).required(),
     amount: Joi.number().min(0).required(),
     startDate: Joi.date().required(),
-    endDate: Joi.date().optional(),
-    employeeId: Joi.string().max(10).required(),
+    endDate: Joi.date().required(),
+    employees: Joi.array().items(Joi.string()).required(),
 });
 
 const updateAllowanceSchema = Joi.object({

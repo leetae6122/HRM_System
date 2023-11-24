@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Row, Space } from 'antd';
-import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
+import {
+  FileExcelFilled,
+  PlusCircleFilled,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/employee';
@@ -11,17 +15,17 @@ import _ from 'lodash';
 EmployeeTableHeader.propTypes = {
   toggleModalAddEmployee: PropTypes.func,
   setFilter: PropTypes.func,
-  refreshEmployeeList: PropTypes.func,
+  toggleModalExportFile: PropTypes.func,
 };
 
 EmployeeTableHeader.defaultProps = {
   toggleModalAddEmployee: null,
   setFilter: null,
-  refreshEmployeeList: null,
+  toggleModalExportFile: null,
 };
 
 function EmployeeTableHeader(props) {
-  const { toggleModalAddEmployee, setFilter } = props;
+  const { toggleModalAddEmployee, setFilter, toggleModalExportFile } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector((state) => state.employee);
@@ -85,6 +89,13 @@ function EmployeeTableHeader(props) {
             onClick={toggleModalAddEmployee}
           >
             Add Employee
+          </Button>
+          <Button
+            type="primary"
+            icon={<FileExcelFilled />}
+            onClick={toggleModalExportFile}
+          >
+            Export statistics file
           </Button>
         </Space>
       </Col>

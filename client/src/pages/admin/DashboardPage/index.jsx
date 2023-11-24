@@ -16,6 +16,7 @@ import DepartmentEmployeesTable from './components/DepartmentEmployeesTable';
 import leaveApi from 'api/leaveApi';
 import attendanceApi from 'api/attendanceApi';
 import userApi from 'api/userApi';
+import PositionEmployeesTable from './components/PositionEmployeesTable';
 
 const iconStyle = { fontSize: 40, color: 'white' };
 
@@ -83,7 +84,7 @@ function DashboardPage() {
           content={'Former Employees'}
         />
       </Col>
-      
+
       <Col className="link-card" span={6} key="users">
         <LinkIconCard
           link={'/admin/user'}
@@ -131,10 +132,10 @@ function DashboardPage() {
           content={'Pending Leave Application'}
         />
       </Col>
-      <Col span={12}>
- 
+      <Col span={10}>
+        <PositionEmployeesTable />
       </Col>
-      <Col span={12}>
+      <Col span={14}>
         <DepartmentEmployeesTable />
       </Col>
     </Row>

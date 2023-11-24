@@ -182,6 +182,7 @@ function RewardPunishmentPage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   const toggleModalEditRewardPunishment = (id) => {

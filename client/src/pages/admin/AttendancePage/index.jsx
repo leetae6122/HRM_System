@@ -228,6 +228,7 @@ function AttendancePage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   const toggleShowFilterDrawer = () => {
@@ -285,7 +286,7 @@ function AttendancePage() {
         ...where,
         inStatus: filters.inStatus,
         outStatus: filters.outStatus,
-        adminStatus: filters.adminStatus
+        adminStatus: filters.adminStatus,
       },
       _.isNil,
     );

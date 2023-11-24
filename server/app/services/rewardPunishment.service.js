@@ -15,7 +15,19 @@ class RewardPunishmentService {
         return result;
     }
 
-    async findAll() {
+    async findAll(body) {
+        if (body) {
+            const where = body.where;
+            const order = body.order;
+
+            const result = await db.RewardPunishment.findAll({
+                where,
+                order,
+                raw: true,
+                nest: true
+            })
+            return result;
+        }
         const result = await db.RewardPunishment.findAll({});
         return result;
     }

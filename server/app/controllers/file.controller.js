@@ -39,3 +39,17 @@ exports.excelFileAttendanceStatisticsEmployee = async (req, res, next) => {
         return next(error);
     }
 }
+
+exports.excelFileEmployeeMonthStatistics = async (req, res, next) => {
+    try {
+        const data = await employeeService.findAll();
+        const { buffer, fileName } = await fileService.excelFileEmployeeMonthStatistics(
+            req.body.month, data
+        );
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename=${fileName}.xlsx`);
+        res.end(buffer, 'binary');
+    } catch (error) {
+        return next(error);
+    }
+}

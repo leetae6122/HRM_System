@@ -126,6 +126,7 @@ function PositionPage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   const handleDeletePosition = async (positionId) => {

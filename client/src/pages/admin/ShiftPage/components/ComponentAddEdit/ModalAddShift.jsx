@@ -25,10 +25,14 @@ function ModalAddShift(props) {
   const handleAddShift = async (values) => {
     try {
       setConfirmLoading(true);
-      const response = await shiftApi.create({
-        ...values,
-        wageRate: values.wageRate / 100,
-      });
+      const data = {
+        name: values.name,
+        startTime: values.rangeTime[0].second(0),
+        endTime: values.rangeTime[1].second(0),
+        overtimeShift: values.overtimeShift,
+        days: values.days,
+      }
+      const response = await shiftApi.create(data);
       Swal.fire({
         icon: 'success',
         title: response.message,

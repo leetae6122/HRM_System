@@ -1,4 +1,4 @@
-import { Badge, Button, Calendar, Card, Tag } from 'antd';
+import { Badge, Button, Calendar, Card, Col, Divider, Row, Tag } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -169,46 +169,78 @@ function AttendancesLeavesCalendar() {
   }, [filterLeave, filterAttendance]);
 
   const dateCellRender = (date) => {
+    const dayOfWeek = date.day();
     const listData = getListData(value, date, attendanceList, leaveList);
-    return (
-      <ul className="events">
-        {listData.map((item) => (
-          <li key={item.key}>
-            {item.title === 'attendance' ? (
-              <Badge status={item.type} text={item.content} />
-            ) : (
-              <Tag
-                icon={
-                  item.type === 'success' ? (
-                    <CheckCircleOutlined />
-                  ) : item.type === 'warning' ? (
-                    <ClockCircleOutlined />
-                  ) : (
-                    <CloseCircleOutlined />
-                  )
-                }
-                color={item.type}
-              >
-                {`#${item.key} ${item.content}`}
-              </Tag>
-            )}
-          </li>
-        ))}
-      </ul>
-    );
+    if (dayOfWeek === 6 || dayOfWeek === 0) {
+      return (
+        <div
+          style={{ backgroundColor: 'rgba(255, 0, 0, 0.1)', padding: '5px' }}
+        >
+          <ul className="events">
+            {listData.map((item) => (
+              <li key={item.key}>
+                {item.title === 'attendance' ? (
+                  <Badge
+                    status={item.type}
+                    text={`#${item.key} ${item.content}`}
+                  />
+                ) : (
+                  <Tag
+                    icon={
+                      item.type === 'success' ? (
+                        <CheckCircleOutlined />
+                      ) : item.type === 'warning' ? (
+                        <ClockCircleOutlined />
+                      ) : (
+                        <CloseCircleOutlined />
+                      )
+                    }
+                    color={item.type}
+                  >
+                    {`#${item.key} ${item.content}`}
+                  </Tag>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    } else {
+      return (
+        <ul className="events">
+          {listData.map((item) => (
+            <li key={item.key}>
+              {item.title === 'attendance' ? (
+                <Badge
+                  status={item.type}
+                  text={`#${item.key} ${item.content}`}
+                />
+              ) : (
+                <Tag
+                  icon={
+                    item.type === 'success' ? (
+                      <CheckCircleOutlined />
+                    ) : item.type === 'warning' ? (
+                      <ClockCircleOutlined />
+                    ) : (
+                      <CloseCircleOutlined />
+                    )
+                  }
+                  color={item.type}
+                >
+                  {`#${item.key} ${item.content}`}
+                </Tag>
+              )}
+            </li>
+          ))}
+        </ul>
+      );
+    }
   };
 
   const cellRender = (current, info) => {
     if (info.type === 'date') return dateCellRender(current);
     return info.originNode;
-  };
-
-  const disabledDate = (date) => {
-    const day = dayjs(date).day();
-    if (day !== 0 && day !== 6) {
-      return false;
-    }
-    return true;
   };
 
   const onPanelChange = (newValue) => {
@@ -253,12 +285,35 @@ function AttendancesLeavesCalendar() {
       }
     >
       {showCalendar ? (
-        <Calendar
-          value={value}
-          cellRender={cellRender}
-          disabledDate={disabledDate}
-          onPanelChange={onPanelChange}
-        />
+        <>
+          <Row>
+            <Col span={12}>
+              <span style={{ fontWeight: 'bold' }}>Attendances : </span>
+              <Badge status="default" text="Pending" />
+              <Divider type="vertical" style={{ backgroundColor: '#434343' }} />
+              <Badge status="success" text="Approved" />
+              <Divider type="vertical" style={{ backgroundColor: '#434343' }} />
+              <Badge status="error" text="Reject" />
+            </Col>
+            <Col span={12}>
+              <span style={{ fontWeight: 'bold' }}>Leaves : </span>
+              <Tag color="warning" icon={<ClockCircleOutlined />}>
+                Pending
+              </Tag>
+              <Tag color="success" icon={<CheckCircleOutlined />}>
+                Approved
+              </Tag>
+              <Tag color="error" icon={<CloseCircleOutlined />}>
+                Reject
+              </Tag>
+            </Col>
+          </Row>
+          <Calendar
+            value={value}
+            cellRender={cellRender}
+            onPanelChange={onPanelChange}
+          />
+        </>
       ) : null}
     </Card>
   );

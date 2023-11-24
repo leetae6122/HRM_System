@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Button, Divider, Space, Table } from 'antd';
 import allowanceApi from 'api/allowanceApi';
 import { toast } from 'react-toastify';
-import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { setData, setEditAllowanceId, setFilterData } from 'reducers/allowance';
@@ -13,6 +12,7 @@ import { numberWithDot } from 'utils/format';
 import AllowanceTableHeader from './components/AllowanceTableHeader';
 import ModalAddAllowance from './components/ComponentAddEdit/ModalAddAllowance';
 import ModalEditAllowance from './components/ComponentAddEdit/ModalEditAllowance';
+import { getMonthName } from 'utils/handleDate';
 
 const createColumns = (toggleModalEditAllowance, handleDeleteAllowance) => [
   {
@@ -49,14 +49,14 @@ const createColumns = (toggleModalEditAllowance, handleDeleteAllowance) => [
     dataIndex: 'startDate',
     key: 'startDate',
     sorter: true,
-    render: (date) => getFullDate(date),
+    render: (date) => getMonthName(date),
   },
   {
     title: 'End Date',
     dataIndex: 'endDate',
     key: 'endDate',
     sorter: true,
-    render: (date) => (date ? getFullDate(date) : ''),
+    render: (date) =>  getMonthName(date),
   },
   {
     title: 'Added By',
@@ -141,6 +141,7 @@ function AllowancePage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   const toggleModalEditAllowance = (id) => {

@@ -37,8 +37,7 @@ function ModalEditAllowance(props) {
             allowanceId: data.id,
             title: data.title,
             amount: data.amount,
-            startDate: dayjs(data.startDate),
-            endDate: data.endDate ? dayjs(data.endDate) : '',
+            timeApplication:[dayjs(data.startDate), dayjs(data.endDate)],
             employeeId: data.employeeId,
           });
         }
@@ -53,13 +52,14 @@ function ModalEditAllowance(props) {
   const handleEditAllowance = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = _.omitBy(
-        {
-          ...values,
-          endDate: values.endDate === '' ? null : values.endDate,
-        },
-        _.isNil,
-      );
+      const data = {
+        allowanceId: values.allowanceId,
+        title: values.title,
+        amount: values.amount,
+        employeeId: values.employeeId,
+        startDate: values.timeApplication[0].startOf('month'),
+        endDate: values.timeApplication[1].endOf('month'),
+      };
       const response = await allowanceApi.update(data);
       Swal.fire({
         icon: 'success',

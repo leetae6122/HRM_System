@@ -7,6 +7,7 @@ import EmployeeListPage from './components/EmployeeListPage';
 import EmployeeDetailPage from './components/EmployeeDetailPage';
 import employeeApi from 'api/employeeApi';
 import { setData } from 'reducers/employee';
+import { setFilterData } from 'reducers/employee';
 
 function EmployeePage() {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ function EmployeePage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   return (

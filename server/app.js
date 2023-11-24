@@ -16,7 +16,6 @@ import departmentRouter from "./app/routes/department.route";
 import leaveRouter from "./app/routes/leave.route";
 import attendanceRouter from "./app/routes/attendance.route";
 import shiftRouter from "./app/routes/shift.route";
-import payrollRouter from "./app/routes/payroll.route";
 import allowanceRouter from "./app/routes/allowance.route";
 import rewardPunishmentRouter from "./app/routes/rewardPunishment.route";
 import fileRouter from "./app/routes/file.route";
@@ -43,7 +42,6 @@ app.use("/api/employee", verifyAccessToken, employeeRouter);
 app.use("/api/leave", verifyAccessToken, leaveRouter);
 app.use("/api/attendance", verifyAccessToken, attendanceRouter);
 app.use("/api/shift", verifyAccessToken, shiftRouter);
-app.use("/api/payroll", verifyAccessToken, payrollRouter);
 app.use("/api/allowance", verifyAccessToken, allowanceRouter);
 app.use("/api/reward-punishment", verifyAccessToken, rewardPunishmentRouter);
 

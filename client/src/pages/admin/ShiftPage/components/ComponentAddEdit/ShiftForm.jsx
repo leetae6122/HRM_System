@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button, Space, DatePicker, Radio, Checkbox, InputNumber } from 'antd';
+import {
+  Form,
+  Input,
+  Button,
+  Space,
+  Radio,
+  TimePicker,
+} from 'antd';
 import _ from 'lodash';
+import CheckAllCheckboxGroup from 'components/CheckAllCheckboxGroup';
 
 ShiftForm.propTypes = {
   onCancel: PropTypes.func,
@@ -16,10 +24,8 @@ ShiftForm.defaultProps = {
   loading: false,
   initialValues: {
     name: '',
-    startTime: null,
-    endTime: null,
+    rangeTime: [],
     overtimeShift: false,
-    wageRate: 0,
     days: [],
   },
 };
@@ -86,8 +92,8 @@ function ShiftForm(props) {
 
   return (
     <Form
-      name="normal_task"
-      className="task-form"
+      name="normal_shift"
+      className="shift-form"
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
@@ -122,50 +128,15 @@ function ShiftForm(props) {
         />
       </Form.Item>
       <Form.Item
-        name="startTime"
-        label="Start Time"
+        name="rangeTime"
+        label="Range Time"
         hasFeedback
-        rules={[{ required: true, message: 'Please select a start time!' }]}
+        rules={[{ required: true, message: 'Please select range time!' }]}
       >
-        <DatePicker
-          picker={'time'}
+        <TimePicker.RangePicker
+          format="HH:mm A"
           disabled={loading}
           style={{ width: '100%' }}
-        />
-      </Form.Item>
-      <Form.Item
-        name="endTime"
-        label="End Time"
-        hasFeedback
-        rules={[{ required: true, message: 'Please select a end time!' }]}
-      >
-        <DatePicker
-          picker={'time'}
-          disabled={loading}
-          style={{ width: '100%' }}
-        />
-      </Form.Item>
-      <Form.Item
-        name="wageRate"
-        label="Wage Rate"
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
-        hasFeedback
-        rules={[
-          {
-            required: true,
-            message: "Please input wage rate!",
-          },
-        ]}
-      >
-        <InputNumber
-          style={{
-            width: '100%',
-          }}
-          controls={false}
-          min={0}
-          disabled={loading}
-          formatter={(value) => `${value} %`}
         />
       </Form.Item>
       <Form.Item
@@ -174,7 +145,8 @@ function ShiftForm(props) {
         hasFeedback
         rules={[{ required: true, message: 'Please select days!' }]}
       >
-        <Checkbox.Group options={optionsDays} />
+        {/* <Checkbox.Group options={optionsDays} /> */}
+        <CheckAllCheckboxGroup options={optionsDays} />
       </Form.Item>
       <Form.Item label="Shift Type" name="overtimeShift">
         <Radio.Group>

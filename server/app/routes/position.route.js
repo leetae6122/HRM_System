@@ -17,6 +17,9 @@ router.route("/")
 router.route("/filter")
     .post(validation(modelFilterSchema), positionController.getListPosition)
 
+router.route("/count-employees")
+    .get(positionController.countEmployees)
+
 router.route("/:id")
     .get(positionController.findById)
     .delete(positionController.deletePosition)

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Col, Row, Space } from "antd";
 import ProfileCard from "./components/ProfileCard";
-import BasicInformation from "./components/Information/BasicInformation";
 import PersonalInformation from "./components/Information/PersonalInfomation";
 import EmployeeInformation from "./components/Information/EmployeeInformation";
 import ModalEditProfile from "./components/EditProfile/ModalEditProfile";
@@ -21,7 +20,6 @@ function ProfilePage() {
         </Col>
         <Col span={18}>
           <Space direction="vertical" style={{ marginLeft: 8 }}>
-            <BasicInformation />
             <PersonalInformation
               toggleModalEditProfile={toggleModalEditProfile}
             />

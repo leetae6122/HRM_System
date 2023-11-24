@@ -12,6 +12,7 @@ import {
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 import employeeApi from 'api/employeeApi';
+import { getMonthName } from 'utils/handleDate';
 
 AllowanceForm.propTypes = {
   onCancel: PropTypes.func,
@@ -26,14 +27,12 @@ AllowanceForm.defaultProps = {
   loading: false,
   initialValues: {
     title: '',
-    amount: 0,
-    startDate: '',
-    endDate: '',
+    amount: null,
+    timeApplication: [],
     employeeId: null,
+    employees: [],
   },
 };
-
-const dateFormat = 'DD/MM/YYYY';
 
 const wrapperCol = { offset: 8, span: 16 };
 
@@ -45,17 +44,12 @@ function AllowanceForm(props) {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
 
-  const getSelectedEmployee = async (id) => {
-    const data = (await employeeApi.getById(id)).data;
-    setSelectedEmployee(data);
-  };
   useEffect(() => {
     const defaultValues = {
       allowanceId: initialValues.allowanceId,
       title: initialValues.title,
+      timeApplication: initialValues.timeApplication,
       amount: initialValues.amount,
-      startDate: initialValues.startDate,
-      endDate: initialValues.endDate,
     };
     form.validateFields({ validateOnly: true }).then(
       () => {
@@ -77,6 +71,7 @@ function AllowanceForm(props) {
         const options = data.map((employee) => ({
           value: employee.id,
           label: `${employee.firstName} ${employee.lastName}`,
+          desc: `#${employee.id} - ${employee.firstName} ${employee.lastName}`,
         }));
         setEmployeeOptions(options);
       } catch (error) {
@@ -137,7 +132,7 @@ function AllowanceForm(props) {
             disabled={true}
             value={
               selectedEmployee
-                ? `${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`
+                ? `#${selectedEmployee.id} - ${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`
                 : ''
             }
             style={{
@@ -147,17 +142,23 @@ function AllowanceForm(props) {
         </Form.Item>
       ) : (
         <Form.Item
-          name="employeeId"
-          label="Employee"
+          name="employees"
+          label="Employees"
           hasFeedback
-          rules={[{ required: true, message: 'Please select an employee!' }]}
+          rules={[
+            {
+              required: true,
+              message: 'Please select an employee!',
+              type: 'array',
+            },
+          ]}
         >
           <Select
-            showSearch
+            mode="multiple"
+            allowClear
             style={{
               width: '100%',
             }}
-            placeholder="Search to Select"
             optionFilterProp="children"
             filterOption={(input, option) =>
               (option?.label ?? '').includes(input)
@@ -167,75 +168,82 @@ function AllowanceForm(props) {
                 .toLowerCase()
                 .localeCompare((optionB?.label ?? '').toLowerCase())
             }
+            placeholder="Please select"
             options={employeeOptions}
             disabled={loading}
-            onChange={getSelectedEmployee}
+            optionRender={(option) => option.data.desc}
           />
         </Form.Item>
       )}
-      {selectedEmployee ? (
-        <>
-          <Form.Item
-            name="title"
-            label="Title"
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: 'Please enter the title of the allowance!',
-              },
-            ]}
-          >
-            <Input
-              placeholder="Enter the title of the allowance"
-              disabled={loading}
-              showCount
-              maxLength={60}
-            />
-          </Form.Item>
-          <Form.Item
-            name="amount"
-            label="Amount"
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: 'Please enter the amount!',
-              },
-            ]}
-          >
-            <InputNumber
-              style={{
-                width: '100%',
-              }}
-              min={0}
-              controls={false}
-              disabled={loading}
-              formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              addonAfter={'VNĐ'}
-            />
-          </Form.Item>
-          <Form.Item
-            name="startDate"
-            label="Start Date"
-            hasFeedback
-            rules={[{ required: true, message: 'Please select a start date!' }]}
-          >
-            <DatePicker
-              disabled={loading}
-              style={{ width: '100%' }}
-              format={dateFormat}
-            />
-          </Form.Item>
-          <Form.Item name="endDate" label="End Date" hasFeedback>
-            <DatePicker
-              disabled={loading}
-              style={{ width: '100%' }}
-              format={dateFormat}
-            />
-          </Form.Item>
-        </>
-      ) : null}
+
+      <Form.Item
+        name="title"
+        label="Title"
+        hasFeedback
+        rules={[
+          {
+            required: true,
+            message: 'Please enter the title of the allowance!',
+          },
+        ]}
+      >
+        <Input
+          placeholder="Enter the title of the allowance"
+          disabled={loading}
+          showCount
+          maxLength={60}
+        />
+      </Form.Item>
+      <Form.Item
+        name="amount"
+        label="Amount"
+        hasFeedback
+        rules={[
+          {
+            required: true,
+            message: 'Please enter the amount!',
+          },
+          () => ({
+            validator(_, value) {
+              if (!value || (value && Number(value) >= 50000)) {
+                return Promise.resolve();
+              }
+              return Promise.reject(
+                new Error('Amount must be greater than 50.000 VNĐ!'),
+              );
+            },
+          }),
+        ]}
+      >
+        <InputNumber
+          style={{
+            width: '100%',
+          }}
+          min={0}
+          controls={false}
+          disabled={loading}
+          formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          addonAfter={'VNĐ'}
+          placeholder="Enter the allowance amount"
+        />
+      </Form.Item>
+      <Form.Item
+        name="timeApplication"
+        label="Time Application"
+        labelCol={{ span: 5 }}
+        wrapperCol={{ span: 19 }}
+        rules={[{ required: true, message: 'Please select date!' }]}
+      >
+        <DatePicker.RangePicker
+          disabled={loading}
+          format={(value) => getMonthName(value)}
+          style={{
+            width: '100%',
+          }}
+          picker="month"
+        />
+      </Form.Item>
+
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
           <Button htmlType="button" onClick={handleCancel} loading={loading}>

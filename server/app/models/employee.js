@@ -21,9 +21,6 @@ module.exports = (sequelize, DataTypes) => {
             Employee.hasMany(models.Attendance, { foreignKey: 'employeeId' });
             Employee.hasMany(models.Attendance, { foreignKey: 'adminId' });
 
-            Employee.hasMany(models.Payroll, { foreignKey: 'employeeId' });
-            Employee.hasMany(models.Payroll, { foreignKey: 'handledBy' });
-
             Employee.hasMany(models.Allowance, { foreignKey: 'employeeId' });
             Employee.hasMany(models.Allowance, { foreignKey: 'addedBy' });
 

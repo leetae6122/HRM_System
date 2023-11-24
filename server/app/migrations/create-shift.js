@@ -26,11 +26,6 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.TIME,
             },
-            wageRate: {
-                allowNull: false,
-                type: Sequelize.FLOAT,
-                defaultValue: 1
-            },
             overtimeShift: {
                 type: Sequelize.BOOLEAN,
                 defaultValue: false

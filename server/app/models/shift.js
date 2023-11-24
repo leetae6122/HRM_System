@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
         days: DataTypes.STRING,
         startTime: DataTypes.TIME,
         endTime: DataTypes.TIME,
-        wageRate: DataTypes.FLOAT,
         overtimeShift: DataTypes.BOOLEAN,
     }, {
         sequelize,

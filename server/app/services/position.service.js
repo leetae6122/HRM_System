@@ -1,6 +1,7 @@
 import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
 import db from "./../models/index";
 import createError from 'http-errors';
+import sequelize from "sequelize";
 
 class PositionService {
     async findById(id) {
@@ -92,6 +93,25 @@ class PositionService {
             );
         }
         return foundPosition;
+    }
+
+    async countEmployees() {
+        const positions = await db.Position.findAll({
+            attributes: [
+                'id', 'name',
+                [sequelize.fn("COUNT", sequelize.col("Position.id")), "employeeCount"]
+            ],
+            include: [
+                {
+                    model: db.Employee, where: { dateOff: null }, attributes: []
+                },
+            ],
+            group: ['Position.id'],
+            order: [[sequelize.col('employeeCount'), 'DESC']],
+            raw: true,
+            nest: true
+        });
+        return positions;
     }
 }
 

@@ -9,6 +9,15 @@ import {
 import positionService from "./../services/position.service";
 import createError from 'http-errors';
 
+exports.countEmployees = async (req, res, next) => {
+    try {
+        const data = await positionService.countEmployees();
+        res.send({ data })
+    } catch (error) {
+        return next(next);
+    }
+}
+
 exports.findById = async (req, res, next) => {
     try {
         const data = await positionService.foundPosition(req.params.id, next);

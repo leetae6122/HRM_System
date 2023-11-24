@@ -31,6 +31,7 @@ RewardPunishmentForm.defaultProps = {
     reason: '',
     date: '',
     employeeId: null,
+    employees: [],
   },
 };
 
@@ -46,10 +47,6 @@ function RewardPunishmentForm(props) {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
 
-  const getSelectedEmployee = async (id) => {
-    const data = (await employeeApi.getById(id)).data;
-    setSelectedEmployee(data);
-  };
   useEffect(() => {
     const defaultValues = {
       rewardPunishmentId: initialValues.rewardPunishmentId,
@@ -58,7 +55,6 @@ function RewardPunishmentForm(props) {
       reason: initialValues.reason,
       date: initialValues.date,
     };
-
     form.validateFields({ validateOnly: true }).then(
       () => {
         if (!_.isEqual(defaultValues, values)) {
@@ -79,6 +75,7 @@ function RewardPunishmentForm(props) {
         const options = data.map((employee) => ({
           value: employee.id,
           label: `${employee.firstName} ${employee.lastName}`,
+          desc: `#${employee.id} - ${employee.firstName} ${employee.lastName}`,
         }));
         setEmployeeOptions(options);
       } catch (error) {
@@ -148,7 +145,7 @@ function RewardPunishmentForm(props) {
             disabled={true}
             value={
               selectedEmployee
-                ? `${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`
+                ? `#${selectedEmployee.id} - ${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`
                 : ''
             }
             style={{
@@ -158,17 +155,23 @@ function RewardPunishmentForm(props) {
         </Form.Item>
       ) : (
         <Form.Item
-          name="employeeId"
-          label="Employee"
+          name="employees"
+          label="Employees"
           hasFeedback
-          rules={[{ required: true, message: 'Please select an employee!' }]}
+          rules={[
+            {
+              required: true,
+              message: 'Please select an employee!',
+              type: 'array',
+            },
+          ]}
         >
           <Select
-            showSearch
+            mode="multiple"
+            allowClear
             style={{
               width: '100%',
             }}
-            placeholder="Search to Select"
             optionFilterProp="children"
             filterOption={(input, option) =>
               (option?.label ?? '').includes(input)
@@ -178,97 +181,93 @@ function RewardPunishmentForm(props) {
                 .toLowerCase()
                 .localeCompare((optionB?.label ?? '').toLowerCase())
             }
+            placeholder="Please select"
             options={employeeOptions}
             disabled={loading}
-            onChange={getSelectedEmployee}
+            optionRender={(option) => option.data.desc}
           />
         </Form.Item>
       )}
-      {selectedEmployee ? (
-        <>
-          {!initialValues.rewardPunishmentId ? (
-            <Form.Item
-              name="type"
-              label="Type"
-              hasFeedback
-              rules={[{ required: true, message: 'Please select type!' }]}
-            >
-              <Radio.Group disabled={loading} buttonStyle="solid">
-                <Radio.Button value={'Reward'}>Reward</Radio.Button>
-                <Radio.Button value={'Punishment'}>Punishment</Radio.Button>
-              </Radio.Group>
-            </Form.Item>
-          ) : (
-            <Form.Item label="Type">
-              <Input
-                disabled={true}
-                style={{
-                  color: initialValues.type === 'Reward' ? 'green' : 'red',
-                }}
-                value={initialValues.type}
-              />
-            </Form.Item>
-          )}
-          <Form.Item
-            name="reason"
-            label="Reason"
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: 'Please enter a reason!',
-              },
-            ]}
-          >
-            <Input.TextArea
-              rows={2}
-              placeholder="Enter reason"
-              disabled={loading}
-              showCount
-              maxLength={200}
-            />
-          </Form.Item>
-          <Form.Item
-            name="amount"
-            label="Amount"
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: 'Please enter the amount!',
-              },
-            ]}
-          >
-            <InputNumber
-              style={{
-                width: '100%',
-              }}
-              min={0}
-              controls={false}
-              disabled={loading}
-              formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              addonAfter={'VNĐ'}
-            />
-          </Form.Item>
-          <Form.Item
-            name="date"
-            label="Effective Date"
-            hasFeedback
-            rules={[
-              { required: true, message: 'Please select an effective date!' },
-            ]}
-            labelCol={{ span: 5 }}
-            wrapperCol={{ span: 19 }}
-          >
-            <DatePicker
-              disabled={loading}
-              style={{ width: '100%' }}
-              format={dateFormat}
-              disabledDate={disabledDate}
-            />
-          </Form.Item>
-        </>
-      ) : null}
+      {!initialValues.rewardPunishmentId ? (
+        <Form.Item
+          name="type"
+          label="Type"
+          hasFeedback
+          rules={[{ required: true, message: 'Please select type!' }]}
+        >
+          <Radio.Group disabled={loading} buttonStyle="solid">
+            <Radio.Button value={'Reward'}>Reward</Radio.Button>
+            <Radio.Button value={'Punishment'}>Punishment</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+      ) : (
+        <Form.Item name="type" label="Type">
+          <Input
+            disabled={true}
+            style={{
+              color: initialValues.type === 'Reward' ? 'green' : 'red',
+            }}
+          />
+        </Form.Item>
+      )}
+      <Form.Item
+        name="reason"
+        label="Reason"
+        hasFeedback
+        rules={[
+          {
+            required: true,
+            message: 'Please enter a reason!',
+          },
+        ]}
+      >
+        <Input.TextArea
+          rows={2}
+          placeholder="Enter reason"
+          disabled={loading}
+          showCount
+          maxLength={200}
+        />
+      </Form.Item>
+      <Form.Item
+        name="amount"
+        label="Amount"
+        hasFeedback
+        rules={[
+          {
+            required: true,
+            message: 'Please enter the amount!',
+          },
+        ]}
+      >
+        <InputNumber
+          style={{
+            width: '100%',
+          }}
+          min={0}
+          controls={false}
+          disabled={loading}
+          formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          addonAfter={'VNĐ'}
+        />
+      </Form.Item>
+      <Form.Item
+        name="date"
+        label="Effective Date"
+        hasFeedback
+        rules={[
+          { required: true, message: 'Please select an effective date!' },
+        ]}
+        labelCol={{ span: 5 }}
+        wrapperCol={{ span: 19 }}
+      >
+        <DatePicker
+          disabled={loading}
+          style={{ width: '100%' }}
+          format={dateFormat}
+          disabledDate={disabledDate}
+        />
+      </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
           <Button htmlType="button" onClick={handleCancel} loading={loading}>

@@ -129,6 +129,7 @@ function DepartmentPage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   const handleDeleteDepartment = async (departmentId) => {

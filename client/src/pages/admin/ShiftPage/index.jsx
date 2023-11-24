@@ -11,7 +11,10 @@ import shiftApi from 'api/shiftApi';
 import ShiftTableHeader from './components/ShiftTableHeader';
 import ModalAddShift from './components/ComponentAddEdit/ModalAddShift';
 import ModalEditShift from './components/ComponentAddEdit/ModalEditShift';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
+dayjs.extend(customParseFormat);
 const daysName = (arrDays) => {
   const days = [
     'Sunday',
@@ -47,12 +50,14 @@ const createColumns = (toggleModalEditShift, handleDeleteShift) => [
     title: 'Start Time',
     dataIndex: 'startTime',
     key: 'startTime',
+    render: (time) => dayjs(time, 'HH:mm:ss').format('HH:mm A'),
     sorter: true,
   },
   {
     title: 'End Time',
     dataIndex: 'endTime',
     key: 'endTime',
+    render: (time) => dayjs(time, 'HH:mm:ss').format('HH:mm A'),
     sorter: true,
   },
   {
@@ -93,13 +98,6 @@ const createColumns = (toggleModalEditShift, handleDeleteShift) => [
         value: 6,
       },
     ],
-  },
-  {
-    title: 'Wage Rate',
-    dataIndex: 'wageRate',
-    key: 'wageRate',
-    sorter: true,
-    render: (value) => `${(value * 100).toFixed()}%`,
   },
   {
     title: 'Shift Type',
@@ -208,6 +206,7 @@ function ShiftPage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   const toggleModalEditShift = (id) => {

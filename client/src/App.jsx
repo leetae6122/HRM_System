@@ -16,7 +16,6 @@ const EmployeeDashboardPage = React.lazy(() => import('pages/employee/DashboardP
 const EmployeeLeavePage = React.lazy(() => import('pages/employee/LeavePage'));
 const EmployeeAttendancePage = React.lazy(() => import('pages/employee/AttendancePage'));
 const EmployeeTimekeeperPage = React.lazy(() => import('pages/employee/TimekeeperPage'));
-const EmployeePayrollPage = React.lazy(() => import('pages/employee/PayrollPage'));
 const EmployeeAllowancePage = React.lazy(() => import('pages/employee/AllowancePage'));
 const EmployeeRewardPunishmentPage = React.lazy(() => import('pages/employee/RewardPunishmentPage'));
 
@@ -30,7 +29,6 @@ const DepartmentPage = React.lazy(() => import('pages/admin/DepartmentPage'));
 const AdminLeavePage = React.lazy(() => import('pages/admin/LeavePage'));
 const AdminAttendancePage = React.lazy(() => import('pages/admin/AttendancePage'));
 const ShiftPage = React.lazy(() => import('pages/admin/ShiftPage'));
-const AdminPayrollPage = React.lazy(() => import('pages/admin/PayrollPage'));
 const AdminAllowancePage = React.lazy(() => import('pages/admin/AllowancePage'));
 const AdminRewardPunishmentPage = React.lazy(() => import('pages/admin/RewardPunishmentPage'));
 
@@ -91,7 +89,6 @@ function App() {
               <Route path="leave" element={<AdminLeavePage />} />
               <Route path="attendance" element={<AdminAttendancePage />} />
               <Route path="shift" element={<ShiftPage />} />
-              <Route path="payroll" element={<AdminPayrollPage />} />
               <Route path="allowance" element={<AdminAllowancePage />} />
               <Route path="reward-punishment" element={<AdminRewardPunishmentPage />} />
             </Route>
@@ -108,7 +105,6 @@ function App() {
               <Route path="attendance" element={<EmployeeAttendancePage />} />
               <Route path="leave" element={<EmployeeLeavePage />} />
               <Route path="timekeeper" element={<EmployeeTimekeeperPage />} />
-              <Route path="payroll" element={<EmployeePayrollPage />} />
               <Route path="allowance" element={<EmployeeAllowancePage />} />
               <Route path="reward-punishment" element={<EmployeeRewardPunishmentPage />} />
               <Route

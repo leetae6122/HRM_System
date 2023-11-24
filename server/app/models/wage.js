@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Wage.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
       Wage.belongsTo(models.Employee, { foreignKey: 'addedBy', as: 'adderData' });
-      Wage.hasMany(models.Payroll, { foreignKey: 'wageId', as: 'wageData' });
     }
   }
   Wage.init({

@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             RewardPunishment.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
             RewardPunishment.belongsTo(models.Employee, { foreignKey: 'addedBy', as: 'adderData' });
-            // RewardPunishment.hasMany(models.Payroll, { foreignKey: 'rewardPunishmentId', as: 'rewardPunishmentData' });
         }
     }
     RewardPunishment.init({

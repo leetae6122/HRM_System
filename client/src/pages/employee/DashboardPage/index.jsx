@@ -60,12 +60,18 @@ function DashboardPage() {
         const response = await leaveApi.filterAll({
           where: {
             status: ['Approved'],
-            leaveFrom: {
-              $between: [startDate, endDate],
-            },
-            leaveTo: {
-              $between: [startDate, endDate],
-            },
+            $or: [
+              {
+                leaveFrom: {
+                  $between: [startDate, endDate],
+                },
+              },
+              {
+                leaveTo: {
+                  $between: [startDate, endDate],
+                },
+              },
+            ],
           },
         });
         const data = response.data.map((item) => ({ key: item.id, ...item }));

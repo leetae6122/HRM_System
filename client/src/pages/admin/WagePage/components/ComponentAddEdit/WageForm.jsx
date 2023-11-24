@@ -74,7 +74,7 @@ function WageForm(props) {
         const data = (await employeeApi.getAll()).data;
         const options = data.map((employee) => ({
           value: employee.id,
-          label: `${employee.firstName} ${employee.lastName}`,
+          label: `#${employee.id} - ${employee.firstName} ${employee.lastName}`,
         }));
         setEmployeeOptions(options);
       } catch (error) {
@@ -135,7 +135,7 @@ function WageForm(props) {
             disabled={true}
             value={
               selectedEmployee
-                ? `${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`
+                ? `#${selectedEmployee.id} - ${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`
                 : ''
             }
             style={{

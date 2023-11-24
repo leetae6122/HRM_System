@@ -9,7 +9,13 @@ const createExcelFileAttendanceStatisticsEmployee = Joi.object({
     month: Joi.date().required(),
 });
 
+const createExcelFileEmployeeMonthStatistics = Joi.object({
+    month: Joi.date().required(),
+});
+
+
 module.exports = {
     createExcelFileAttendanceStatisticsDate,
-    createExcelFileAttendanceStatisticsEmployee
+    createExcelFileAttendanceStatisticsEmployee,
+    createExcelFileEmployeeMonthStatistics
 };

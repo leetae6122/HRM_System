@@ -182,6 +182,7 @@ function UserPage() {
         currentPage: response.currentPage,
       }),
     );
+    dispatch(setFilterData(defaultFilter));
   };
 
   const handleDeleteUser = async (userId) => {

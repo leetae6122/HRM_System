@@ -10,6 +10,11 @@ const fileApi = {
         const url = '/file/excel/employee';
         return axiosClient.post(url, data, { responseType: 'arraybuffer' });
     },
+
+    exportExcelMonthStatistics: (data) => {
+        const url = '/file/excel/month-statistics';
+        return axiosClient.post(url, data, { responseType: 'arraybuffer' });
+    },
 }
 
 export default fileApi;
