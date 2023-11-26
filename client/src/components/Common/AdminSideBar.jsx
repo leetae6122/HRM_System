@@ -80,15 +80,6 @@ function AdminSideBar() {
         '/admin/position',
       ),
     ]),
-    getItem(
-      <Link to={'/admin/reward-punishment'} replace>
-        Reward
-        <br />
-        Punishment
-      </Link>,
-      '/admin/reward-punishment',
-      <RedEnvelopeOutlined />,
-    ),
     getItem('Attendance', 'sub3', <CalendarOutlined />, [
       getItem(
         <Link to={'/admin/attendance'} replace>
@@ -109,6 +100,15 @@ function AdminSideBar() {
       </Link>,
       '/admin/leave',
       <UserDeleteOutlined />,
+    ),
+    getItem(
+      <Link to={'/admin/reward-punishment'} replace>
+        Reward
+        <br />
+        Punishment
+      </Link>,
+      '/admin/reward-punishment',
+      <RedEnvelopeOutlined />,
     ),
   ];
 

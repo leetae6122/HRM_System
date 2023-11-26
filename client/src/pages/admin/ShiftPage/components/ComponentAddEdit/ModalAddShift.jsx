@@ -27,8 +27,8 @@ function ModalAddShift(props) {
       setConfirmLoading(true);
       const data = {
         name: values.name,
-        startTime: values.rangeTime[0].second(0),
-        endTime: values.rangeTime[1].second(0),
+        startTime: values.rangeTime[0],
+        endTime: values.rangeTime[1],
         overtimeShift: values.overtimeShift,
         days: values.days,
       }

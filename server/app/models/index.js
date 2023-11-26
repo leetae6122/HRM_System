@@ -48,18 +48,18 @@ const operatorsAliases = {
   $col: Op.col
 };
 
-const hook = {
-  beforeUpdate: (record) => {
-    record.dataValues.updatedAt = Sequelize.fn('statement_timestamp');
-  }
-}
+// const hook = {
+//   beforeUpdate: (record) => {
+//     record.dataValues.updatedAt = Sequelize.fn('statement_timestamp');
+//   }
+// }
 
 let sequelize;
 if (config.url) {
-  sequelize = new Sequelize(config.url, { operatorsAliases, ...config, hook });
+  sequelize = new Sequelize(config.url, { operatorsAliases, ...config });
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password,
-    { operatorsAliases, ...config, hook }
+    { operatorsAliases, ...config }
   );
 }
 fs

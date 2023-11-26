@@ -3,6 +3,7 @@ import { Form, Button, Select } from 'antd';
 import { useEffect, useState } from 'react';
 import shiftApi from 'api/shiftApi';
 import { toast } from 'react-toastify';
+import { PlayCircleFilled } from '@ant-design/icons';
 
 CreateQRCodeForm.propTypes = {
   onSubmit: PropTypes.func,
@@ -85,6 +86,7 @@ function CreateQRCodeForm(props) {
           htmlType="submit"
           loading={loading}
           style={{ width: '100%', marginLeft: 10 }}
+          icon={<PlayCircleFilled />}
         >
           Create
         </Button>

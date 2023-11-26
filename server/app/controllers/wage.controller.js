@@ -45,7 +45,7 @@ exports.createWage = async (req, res, next) => {
         if (wageExisted) {
             await wageService.updateWage(wageExisted.id, { toDate: req.body.fromDate });
         }
-        let payload = { ...req.body, addedBy: req.user.employeeId }
+        let payload = { ...req.body, adminEId: req.user.employeeId }
 
         const data = await wageService.createWage(payload);
         return res.send({ message: MSG_ADDED_WAGE_SUCCESSFUL, data });
@@ -60,7 +60,7 @@ exports.updateWage = async (req, res, next) => {
         if (!foundWage) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Wage")));
         }
-        let payload = { ...req.body, addedBy: req.user.employeeId }
+        let payload = { ...req.body, adminEId: req.user.employeeId }
 
         await wageService.updateWage(req.body.wageId, payload);
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });

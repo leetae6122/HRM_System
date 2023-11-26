@@ -38,7 +38,10 @@ function AttendanceTableHeader(props) {
       ...filterData,
       page: 1,
       size: 10,
-      where: {},
+      where: {
+        attendanceDate: defaultFilter.where.attendanceDate,
+        employeeId: value,
+      },
       modelEmployee: {
         where: {
           $or: _.flatten(
@@ -73,11 +76,15 @@ function AttendanceTableHeader(props) {
     });
   };
 
+  const disabledDate = (current) => {
+    return current && current.valueOf() > Date.now();
+  };
+
   return (
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search employee name"
+          placeholder="Input search employee name or employee id"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}
@@ -97,13 +104,6 @@ function AttendanceTableHeader(props) {
               Reset
             </Button>
           )}
-          <DatePicker
-            picker="month"
-            value={value}
-            onChange={onChangeDate}
-            allowClear={false}
-            format={(value) =>  getMonthName(value)}
-          />
           <Button
             type="primary"
             icon={<FilterFilled />}
@@ -111,6 +111,14 @@ function AttendanceTableHeader(props) {
           >
             Filter
           </Button>
+          <DatePicker
+            picker="month"
+            value={value}
+            onChange={onChangeDate}
+            allowClear={false}
+            format={(value) => getMonthName(value)}
+            disabledDate={disabledDate}
+          />
         </Space>
       </Col>
     </Row>

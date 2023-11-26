@@ -1,12 +1,14 @@
 import { Drawer } from 'antd';
 import PropTypes from 'prop-types';
-import FilterPositionForm from './FilterPositionForm';
+import FilterShiftForm from './FilterShiftForm';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
+dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 FilterDrawer.propTypes = {
   toggleShowDrawer: PropTypes.func,
@@ -22,29 +24,23 @@ FilterDrawer.defaultProps = {
 
 function FilterDrawer(props) {
   const { toggleShowDrawer, openDrawer, setFilter } = props;
-  const { filterData } = useSelector((state) => state.position);
+  const { filterData } = useSelector((state) => state.shift);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const handleFilter = async (values) => {
     setConfirmLoading(true);
     let filter;
-    if (!_.isEmpty(_.omitBy(values.minHourlyWage, _.isNil))) {
+    if (!_.isEmpty(_.omitBy(values.rangeTime, _.isNil))) {
       filter = {
-        minHourlyWage: {
-          $gte: values.minHourlyWage.from,
-          $lte: values.minHourlyWage.to,
+        startTime: {
+          $gte: values.rangeTime[0].format('HH:mm:ss'),
+        },
+        endTime: {
+          $lte: values.rangeTime[1].format('HH:mm:ss'),
         },
       };
     }
-    if (!_.isEmpty(_.omitBy(values.maxHourlyWage, _.isNil))) {
-      filter = {
-        ...filter,
-        maxHourlyWage: {
-          $gte: values.maxHourlyWage.from,
-          $lte: values.maxHourlyWage.to,
-        },
-      };
-    }
+
     if (!_.isEmpty(_.omitBy(values.createdAt, _.isNil))) {
       filter = {
         ...filter,
@@ -78,6 +74,7 @@ function FilterDrawer(props) {
     setConfirmLoading(false);
     toggleShowDrawer();
   };
+  console.log(filterData.where);
 
   return (
     <Drawer
@@ -87,22 +84,16 @@ function FilterDrawer(props) {
       open={openDrawer}
       width={'70vh'}
     >
-      <FilterPositionForm
+      <FilterShiftForm
         onSubmit={handleFilter}
         loading={confirmLoading}
         initialValues={{
-          minHourlyWage: filterData.where.minHourlyWage
-            ? {
-                from: null,
-                to: null,
-              }
-            : {},
-          maxHourlyWage: filterData.where.maxHourlyWage
-            ? {
-                from: null,
-                to: null,
-              }
-            : {},
+          rangeTime: filterData.where.startTime
+            ? [
+                dayjs(filterData.where.startTime.$gte, 'HH:mm:ss'),
+                dayjs(filterData.where.endTime.$lte, 'HH:mm:ss'),
+              ]
+            : [],
           createdAt: filterData.where.createdAt
             ? [
                 dayjs(filterData.where.createdAt.$between[0]),

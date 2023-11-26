@@ -23,6 +23,7 @@ FilterPositionForm.defaultProps = {
       to: null,
     },
     createdAt: [],
+    updatedAt: [],
   },
 };
 const dateFormat = 'DD/MM/YYYY';
@@ -78,14 +79,18 @@ function FilterPositionForm(props) {
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 18 }}
       style={{
         maxWidth: 600,
       }}
       size="large"
     >
-      <Form.Item label="Min Hourly Wage">
+      <Form.Item
+        label="Min Hourly Wage"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+      >
         <Form.Item
           name={['minHourlyWage', 'from']}
           hasFeedback
@@ -94,13 +99,13 @@ function FilterPositionForm(props) {
               validator(_, value) {
                 if (
                   !value ||
-                  !form.getFieldValue('minHourlyWage').to ||
-                  value < form.getFieldValue('minHourlyWage').to
+                  !form.getFieldValue(['minHourlyWage', 'to']) ||
+                  value < form.getFieldValue(['minHourlyWage', 'to'])
                 ) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error('Salary From must be less than Salary To!'),
+                  new Error('Wage From must be less than Wage To!'),
                 );
               },
             }),
@@ -115,6 +120,7 @@ function FilterPositionForm(props) {
             disabled={loading}
             placeholder="From (number)"
             formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            addonAfter={'VNĐ/hr'}
           />
         </Form.Item>
 
@@ -126,12 +132,12 @@ function FilterPositionForm(props) {
               validator(_, value) {
                 if (
                   !value ||
-                  value > form.getFieldValue('minHourlyWage').from
+                  value > form.getFieldValue(['minHourlyWage', 'from'])
                 ) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error('Salary To must be less than Salary From!'),
+                  new Error('Wage To must be less than Wage From!'),
                 );
               },
             }),
@@ -146,11 +152,16 @@ function FilterPositionForm(props) {
             disabled={loading}
             placeholder="To (number)"
             formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            addonAfter={'VNĐ/hr'}
           />
         </Form.Item>
       </Form.Item>
 
-      <Form.Item label="Max Hourly Wage">
+      <Form.Item
+        label="Max Hourly Wage"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+      >
         <Form.Item
           name={['maxHourlyWage', 'from']}
           hasFeedback
@@ -159,13 +170,13 @@ function FilterPositionForm(props) {
               validator(_, value) {
                 if (
                   !value ||
-                  !form.getFieldValue('maxHourlyWage').to ||
-                  value < form.getFieldValue('maxHourlyWage').to
+                  !form.getFieldValue(['maxHourlyWage', 'to']) ||
+                  value < form.getFieldValue(['maxHourlyWage', 'to'])
                 ) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error('Salary From must be less than Salary To!'),
+                  new Error('Wage From must be less than Wage To!'),
                 );
               },
             }),
@@ -180,6 +191,7 @@ function FilterPositionForm(props) {
             disabled={loading}
             placeholder="From (number)"
             formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            addonAfter={'VNĐ/hr'}
           />
         </Form.Item>
 
@@ -191,12 +203,12 @@ function FilterPositionForm(props) {
               validator(_, value) {
                 if (
                   !value ||
-                  value > form.getFieldValue('maxHourlyWage').from
+                  value > form.getFieldValue(['maxHourlyWage', 'from'])
                 ) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error('Salary To must be less than Salary From!'),
+                  new Error('Wage To must be less than Wage From!'),
                 );
               },
             }),
@@ -211,16 +223,22 @@ function FilterPositionForm(props) {
             disabled={loading}
             placeholder="To (number)"
             formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            addonAfter={'VNĐ/hr'}
           />
         </Form.Item>
       </Form.Item>
 
-      <Form.Item
-        name="createdAt"
-        label="Date created"
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
-      >
+      <Form.Item name="createdAt" label="Date Created">
+        <DatePicker.RangePicker
+          disabled={loading}
+          format={dateFormat}
+          style={{
+            width: '100%',
+          }}
+          presets={rangePresets}
+        />
+      </Form.Item>
+      <Form.Item name="updatedAt" label="Date Updated">
         <DatePicker.RangePicker
           disabled={loading}
           format={dateFormat}

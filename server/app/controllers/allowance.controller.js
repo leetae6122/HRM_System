@@ -62,7 +62,7 @@ exports.createAllowance = async (req, res, next) => {
             amount: req.body.amount,
             startDate: req.body.startDate,
             endDate: req.body.endDate,
-            addedBy: req.user.employeeId,
+            adminEId: req.user.employeeId,
         }
         await Promise.all(req.body.employees.map(async (employeeId) =>{
             await employeeService.foundEmployee(employeeId, next);
@@ -79,7 +79,7 @@ exports.updateAllowance = async (req, res, next) => {
     try {
         const payload = {
             ...req.body,
-            addedBy: req.user.employeeId
+            adminEId: req.user.employeeId
         };
         await allowanceService.foundAllowance(payload.allowanceId, next);
 

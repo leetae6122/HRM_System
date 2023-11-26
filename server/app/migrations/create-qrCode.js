@@ -14,16 +14,15 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.STRING(60),
             },
+            expiredAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE,
                 defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
             },
-            updatedAt: {
-                allowNull: false,
-                type: Sequelize.DATE,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-            }
         });
     },
 

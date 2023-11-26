@@ -35,7 +35,7 @@ module.exports = {
                     key: 'id'
                 }
             },
-            addedBy: {
+            adminEId: {
                 allowNull: false,
                 type: Sequelize.STRING,
                 references: {

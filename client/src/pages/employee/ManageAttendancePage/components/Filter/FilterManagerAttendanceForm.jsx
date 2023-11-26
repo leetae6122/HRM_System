@@ -6,31 +6,24 @@ import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import shiftApi from 'api/shiftApi';
 
-FilterAttendanceForm.propTypes = {
+FilterManagerAttendanceForm.propTypes = {
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
+  initialValues: PropTypes.object,
 };
 
-FilterAttendanceForm.defaultProps = {
+FilterManagerAttendanceForm.defaultProps = {
   onSubmit: null,
   loading: false,
+  initialValues: {
+    attendanceDate: '',
+    shiftId: null,
+  },
 };
 
 const dateFormat = 'DD/MM/YYYY';
 
 const wrapperCol = { offset: 8, span: 16 };
-
-const initialValues = {
-  minHourlyWage: {
-    from: null,
-    to: null,
-  },
-  maxHourlyWage: {
-    from: null,
-    to: null,
-  },
-  createdAt: [],
-};
 
 const rangePresets = [
   {
@@ -51,8 +44,8 @@ const rangePresets = [
   },
 ];
 
-function FilterAttendanceForm(props) {
-  const { onSubmit, loading } = props;
+function FilterManagerAttendanceForm(props) {
+  const { onSubmit, loading, initialValues } = props;
   const [submittable, setSubmittable] = useState(false);
   const [shiftOptions, setShiftOptions] = useState([]);
 
@@ -70,7 +63,7 @@ function FilterAttendanceForm(props) {
       },
       () => setSubmittable(false),
     );
-  }, [values, form]);
+  }, [values, initialValues, form]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -96,19 +89,24 @@ function FilterAttendanceForm(props) {
 
   return (
     <Form
-      name="normal_filter_position"
-      className="filter_position-form"
+      name="normal_filter_manager_attendance"
+      className="filter-manager-attendance-form"
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
-      labelCol={{ span: 7 }}
-      wrapperCol={{ span: 17 }}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 18 }}
       style={{
         maxWidth: 600,
       }}
       size="large"
     >
-      <Form.Item name="attendanceDate" label="Attendance Date">
+      <Form.Item
+        name="attendanceDate"
+        label="Attendance Date"
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
+      >
         <DatePicker.RangePicker
           disabled={loading}
           format={dateFormat}
@@ -149,4 +147,4 @@ function FilterAttendanceForm(props) {
   );
 }
 
-export default FilterAttendanceForm;
+export default FilterManagerAttendanceForm;

@@ -93,7 +93,7 @@ exports.createLeave = async (req, res, next) => {
             await employeeService.foundEmployee(req.body.employeeId, next);
             payload = {
                 ...req.body,
-                handledBy: employeeId
+                adminEId: employeeId
             }
         }
 
@@ -120,7 +120,7 @@ exports.adminUpdateLeave = async (req, res, next) => {
         }
         const payload = {
             ...req.body,
-            handledBy: req.user.employeeId
+            adminEId: req.user.employeeId
         }
 
         await leaveService.updateLeave(req.body.leaveId, payload);

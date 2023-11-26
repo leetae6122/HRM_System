@@ -6,7 +6,7 @@ module.exports = {
             id: 1,
             title: 'Sick',
             description: 'Not feeling well enough to work',
-            status: 'Pending',
+            status: 'Approved',
             leaveFrom: '2023-10-16',
             leaveTo: '2023-10-16',
             employeeId: 'NV20230002',
@@ -19,7 +19,7 @@ module.exports = {
             leaveFrom: '2023-10-25',
             leaveTo: '2023-10-27',
             employeeId: 'NV20230002',
-            handledBy: 'NV20230001',
+            adminEId: 'NV20230001',
         },
         {
             id: 3,
@@ -29,7 +29,7 @@ module.exports = {
             leaveFrom: '2023-10-04',
             leaveTo: '2023-10-06',
             employeeId: 'NV20230001',
-            handledBy: 'NV20230001',
+            adminEId: 'NV20230001',
         },
         {
             id: 4,
@@ -39,7 +39,7 @@ module.exports = {
             leaveFrom: '2023-10-17',
             leaveTo: '2023-10-17',
             employeeId: 'NV20230001',
-            handledBy: 'NV20230001',
+            adminEId: 'NV20230001',
         },
         ], {
 

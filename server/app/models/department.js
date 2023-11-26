@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Department extends Model {
     static associate(models) {
       Department.hasMany(models.Employee, { foreignKey: 'departmentId', as: 'employeeData' });
-      Department.belongsTo(models.Employee, { foreignKey: 'managerId', as: 'managerData'});
+      Department.belongsTo(models.Employee, { foreignKey: 'managerEId', as: 'managerData'});
     }
   }
   Department.init({
@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     shortName: DataTypes.STRING,
-    managerId: DataTypes.STRING,
+    managerEId: DataTypes.STRING,
     createdAt: DataTypes.DATE
   }, {
     sequelize,

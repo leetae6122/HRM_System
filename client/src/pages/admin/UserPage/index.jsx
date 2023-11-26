@@ -28,6 +28,12 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
     sorter: true,
   },
   {
+    title: 'Employee Id',
+    key: 'employeeId',
+    dataIndex: ['profile', 'id'],
+    sorter: true,
+  },
+  {
     title: 'Employee',
     key: 'employee',
     dataIndex: ['profile', 'firstName'],
@@ -94,16 +100,9 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
     filterMultiple: false,
   },
   {
-    title: 'Date created',
+    title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    sorter: true,
-    render: (date) => getFullDate(date),
-  },
-  {
-    title: 'Date update',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
     sorter: true,
     render: (date) => getFullDate(date),
   },

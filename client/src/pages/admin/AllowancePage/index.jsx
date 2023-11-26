@@ -13,6 +13,7 @@ import AllowanceTableHeader from './components/AllowanceTableHeader';
 import ModalAddAllowance from './components/ComponentAddEdit/ModalAddAllowance';
 import ModalEditAllowance from './components/ComponentAddEdit/ModalEditAllowance';
 import { getMonthName } from 'utils/handleDate';
+import FilterDrawer from './components/Filter/FilterDrawer';
 
 const createColumns = (toggleModalEditAllowance, handleDeleteAllowance) => [
   {
@@ -22,6 +23,12 @@ const createColumns = (toggleModalEditAllowance, handleDeleteAllowance) => [
     sorter: true,
     render: (id) => `#${id}`,
     width: 80,
+  },
+  {
+    title: 'Employee Id',
+    dataIndex: 'employeeId',
+    key: 'employeeId',
+    sorter: true,
   },
   {
     title: 'Employee',
@@ -56,15 +63,15 @@ const createColumns = (toggleModalEditAllowance, handleDeleteAllowance) => [
     dataIndex: 'endDate',
     key: 'endDate',
     sorter: true,
-    render: (date) =>  getMonthName(date),
+    render: (date) => getMonthName(date),
   },
   {
     title: 'Added By',
-    dataIndex: ['adderData', 'firstName'],
+    dataIndex: ['adderData', 'id'],
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
-      `${record.adderData.firstName} ${record.adderData.lastName}`,
+      `#${record.adderData.id} - ${record.adderData.firstName} ${record.adderData.lastName}`,
   },
   {
     title: 'Action',
@@ -94,6 +101,7 @@ function AllowancePage() {
   const [loadingData, setLoadingData] = useState(false);
   const [openModalAddAllowance, setOpenModalAddAllowance] = useState(false);
   const [openModalEditAllowance, setOpenModalEditAllowance] = useState(false);
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -142,6 +150,10 @@ function AllowancePage() {
       }),
     );
     dispatch(setFilterData(defaultFilter));
+  };
+
+  const toggleShowFilterDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
   };
 
   const toggleModalEditAllowance = (id) => {
@@ -210,6 +222,7 @@ function AllowancePage() {
           <AllowanceTableHeader
             toggleModalAddAllowance={toggleModalAddAllowance}
             setFilter={setFilter}
+            toggleShowFilterDrawer={toggleShowFilterDrawer}
           />
         )}
         pagination={{
@@ -233,6 +246,13 @@ function AllowancePage() {
           openModal={openModalEditAllowance}
           toggleShowModal={toggleModalEditAllowance}
           refreshAllowanceList={refreshAllowanceList}
+        />
+      )}
+      {openFilterDrawer && (
+        <FilterDrawer
+          toggleShowDrawer={toggleShowFilterDrawer}
+          openDrawer={openFilterDrawer}
+          setFilter={setFilter}
         />
       )}
     </>

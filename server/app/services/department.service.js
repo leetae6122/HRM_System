@@ -15,7 +15,7 @@ class DepartmentService {
     async findByEmployeeId(employeeId) {
         const result = await db.Department.findOne({
             where: {
-                managerId: employeeId
+                managerEId: employeeId
             },
             raw: true,
             nest: true

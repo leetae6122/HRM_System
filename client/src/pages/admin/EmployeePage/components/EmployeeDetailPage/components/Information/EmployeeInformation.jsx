@@ -3,7 +3,6 @@ import { getFullDate } from 'utils/handleDate';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { now } from 'lodash';
 import { calcDate } from 'utils/handleDate';
 
 dayjs.extend(relativeTime);
@@ -24,20 +23,23 @@ const createItems = (employee) => [
     label: <span style={labelStyle}>Date Hired</span>,
     children: `${getFullDate(employee.dateHired)} ( ${calcDate(
       employee.dateHired,
-      now(),
+      employee.dateOff ? dayjs(employee.dateOff) : dayjs(),
     )} )`,
+    span: 2,
   },
   {
     key: '3',
     label: <span style={labelStyle}>Days off work</span>,
     children: employee.dateOff ? getFullDate(employee.dateOff) : '',
+    span: 2,
   },
   {
     key: '4',
     label: <span style={labelStyle}>Department Manager</span>,
     children: employee.departmentData.managerData?.firstName
-      ? `${employee.departmentData.managerData.firstName} ${employee.departmentData.managerData.lastName}`
+      ? `#${employee.departmentData.managerData.id} - ${employee.departmentData.managerData.firstName} ${employee.departmentData.managerData.lastName}`
       : '',
+    span: 2,
   },
   {
     key: '5',
@@ -48,7 +50,6 @@ const createItems = (employee) => [
     key: '6',
     label: <span style={labelStyle}>Position</span>,
     children: employee.positionData.name,
-    span: 2,
   },
 ];
 
@@ -64,7 +65,7 @@ EmployeeInformation.defaultProps = {
 
 function EmployeeInformation(props) {
   const { employee, loading } = props;
-  
+
   const items = createItems(employee, employee.departmentData);
   return (
     <>

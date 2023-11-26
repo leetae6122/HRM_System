@@ -25,7 +25,13 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
     width: 80,
   },
   {
-    title: 'Name',
+    title: 'Employee Id',
+    dataIndex: 'employeeId',
+    key: 'employeeId',
+    sorter: true,
+  },
+  {
+    title: 'Employee',
     dataIndex: ['employeeData', 'firstName'],
     key: 'employeeData',
     sorter: true,
@@ -83,7 +89,7 @@ const createColumns = (toggleModalEditLeave, handleDeleteLeave) => [
     render: (date) => getFullDate(date),
   },
   {
-    title: 'Date created',
+    title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
     sorter: true,

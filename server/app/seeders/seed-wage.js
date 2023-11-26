@@ -7,21 +7,21 @@ module.exports = {
             basicHourlyWage: 150000,
             fromDate: '2023-11-01',
             employeeId: 'NV20230001',
-            addedBy: 'NV20230001',
+            adminEId: 'NV20230001',
         },
         {
             id: 2,
             basicHourlyWage: 10000,
             fromDate: '2023-11-01',
             employeeId: 'NV20230002',
-            addedBy: 'NV20230001',
+            adminEId: 'NV20230001',
         },
         {
             id: 3,
             basicHourlyWage: 10000,
             fromDate: '2023-11-01',
             employeeId: 'NV20230003',
-            addedBy: 'NV20230001',
+            adminEId: 'NV20230001',
         }
         ], {
 

@@ -203,6 +203,7 @@ function UserForm(props) {
                 required: true,
                 message: 'Please input the password of the employee!',
               },
+              { min: 8, message: 'Password must be minimum 8 characters.' },
               {
                 pattern: new RegExp(
                   '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$',

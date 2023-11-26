@@ -41,6 +41,7 @@ function ModalEditLeave(props) {
             leaveTo: getFullDate(data.leaveTo),
             status: data.status,
             employeeData: data.employeeData,
+            handlerData: data.handlerData
           });
         }
       } catch (error) {

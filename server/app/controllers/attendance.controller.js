@@ -79,11 +79,17 @@ exports.managerGetListAttendance = async (req, res, next) => {
             return employee.id;
         });
 
+        const employeeIdFilter = req.body.where.employeeId
+            ? _.filter(_.without(arrEmployeeId, undefined),
+                (employeeId) => employeeId === req.body.where.employeeId
+            )
+            : { $in: _.without(arrEmployeeId, undefined) };
+
         const payload = {
             ...req.body,
             where: {
                 ...req.body.where,
-                employeeId: { $in: _.without(arrEmployeeId, undefined) }
+                employeeId: employeeIdFilter
             }
         }
 

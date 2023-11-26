@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Row, Space } from 'antd';
-import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
+import {
+  FilterFilled,
+  PlusCircleFilled,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/shift';
@@ -10,16 +14,18 @@ import _ from 'lodash';
 
 ShiftTableHeader.propTypes = {
   toggleModalAddShift: PropTypes.func,
+  toggleShowFilterDrawer: PropTypes.func,
   setFilter: PropTypes.func,
 };
 
 ShiftTableHeader.defaultProps = {
   toggleModalAddShift: null,
+  toggleShowFilterDrawer: null,
   setFilter: null,
 };
 
 function ShiftTableHeader(props) {
-  const { toggleModalAddShift, setFilter } = props;
+  const { toggleModalAddShift, setFilter, toggleShowFilterDrawer } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector((state) => state.shift);
@@ -74,6 +80,13 @@ function ShiftTableHeader(props) {
             onClick={toggleModalAddShift}
           >
             Add Shift
+          </Button>
+          <Button
+            type="primary"
+            icon={<FilterFilled />}
+            onClick={toggleShowFilterDrawer}
+          >
+            Filter
           </Button>
         </Space>
       </Col>

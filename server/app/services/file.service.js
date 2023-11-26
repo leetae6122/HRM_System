@@ -47,14 +47,38 @@ class FileService {
         data.forEach((row, index) => {
             worksheet.getCell(`A${index + 3}`).value = `${row.shiftData.name} (${row.shiftData.startTime} - ${row.shiftData.endTime})`;
             worksheet.getCell(`B${index + 3}`).value = row.shiftData.overtimeShift ? 'Overtime Shift' : 'Main Shift';
+            worksheet.getCell(`B${index + 3}`).font = {
+                color: {
+                    argb: row.shiftData.overtimeShift ? 'F39C12' : '229954'
+                },
+            }
+
             worksheet.getCell(`C${index + 3}`).value = row.employeeData.id;
             worksheet.getCell(`D${index + 3}`).value = `${row.employeeData.firstName} ${row.employeeData.lastName}`;
             worksheet.getCell(`E${index + 3}`).value = row.inTime;
+            worksheet.getCell(`E${index + 3}`).font = {
+                color: { argb: row.inStatus === 'On Time' ? '229954' : 'C0392B' },
+            }
             worksheet.getCell(`F${index + 3}`).value = row.outTime;
+            worksheet.getCell(`F${index + 3}`).font = {
+                color: { argb: row.outStatus === 'On Time' ? '229954' : 'C0392B' },
+            }
             worksheet.getCell(`G${index + 3}`).value = `${row.inStatus}/${row.outStatus ? row.outStatus : ''}`;
             worksheet.getCell(`H${index + 3}`).value = row.totalHours ? row.totalHours : 0;
             worksheet.getCell(`I${index + 3}`).value = row.managerStatus;
+            worksheet.getCell(`I${index + 3}`).font = {
+                color: {
+                    argb: row.managerStatus === 'Pending' ? 'F39C12' :
+                        row.managerStatus === 'Reject' ? 'C0392B' : '229954'
+                },
+            }
             worksheet.getCell(`J${index + 3}`).value = row.adminStatus;
+            worksheet.getCell(`J${index + 3}`).font = {
+                color: {
+                    argb: row.adminStatus === 'Pending' ? 'F39C12' :
+                        row.adminStatus === 'Reject' ? 'C0392B' : '229954'
+                },
+            }
         });
 
         // AutoFit column width
@@ -66,7 +90,7 @@ class FileService {
                     maxColumnLength = columnLength;
                 }
             });
-            column.width = maxColumnLength < 10 ? 10 : maxColumnLength + 5;
+            column.width = maxColumnLength < 10 ? 10 : maxColumnLength + 3;
         });
         const buffer = await workbook.xlsx.writeBuffer();
         return { buffer, fileName: `AttendanceStatisticsDate_${dayjs(date).format('DD-MM-YYYY')}.xlsx` };
@@ -97,7 +121,7 @@ class FileService {
             }
         });
 
-        worksheet.getCell('A1').value = 'Attendance Statistics Month:';
+        worksheet.getCell('A1').value = 'Statistics Month:';
         worksheet.getCell('A1').font = font;
         worksheet.getCell('B1').value = getMonthName(startDate);
         worksheet.getCell('C1').value = `${dayjs(startDate).format('DD/MM/YYYY')} -> ${dayjs(endDate).format('DD/MM/YYYY')}`;
@@ -117,16 +141,6 @@ class FileService {
         worksheet.getCell('D3').value = `${(Math.round(hoursOvertime * 100) / 100).toFixed(2)} hrs`;
 
         const headerCells = ['A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4', 'I4'];
-        for (let i = 2; i <= 6; i++) {
-            worksheet.mergeCells(`B${i}:E${i}`);
-            worksheet.getCell(i, 4).font = {
-                bold: true,
-                size: 12,
-            };
-            worksheet.getCell(i, 1).border = {
-                right: { style: 'medium', color: { argb: 'FF1F00' } },
-            };
-        }
         headerCells.forEach((cell) => {
             worksheet.getCell(cell).font = font;
             worksheet.getCell(cell).border = border;
@@ -146,12 +160,36 @@ class FileService {
             worksheet.getCell(`A${index + 5}`).value = dayjs(row.attendanceDate).format('DD/MM/YYYY');
             worksheet.getCell(`B${index + 5}`).value = `${row.shiftData.name} (${row.shiftData.startTime} - ${row.shiftData.endTime})`;
             worksheet.getCell(`C${index + 5}`).value = row.shiftData.overtimeShift ? 'Overtime Shift' : 'Main Shift';
+            worksheet.getCell(`C${index + 5}`).font = {
+                color: {
+                    argb: row.shiftData.overtimeShift ? 'F39C12' : '229954'
+                },
+            }
+
             worksheet.getCell(`D${index + 5}`).value = row.inTime;
+            worksheet.getCell(`D${index + 5}`).font = {
+                color: { argb: row.inStatus === 'On Time' ? '229954' : 'C0392B' },
+            }
             worksheet.getCell(`E${index + 5}`).value = row.outTime;
+            worksheet.getCell(`E${index + 5}`).font = {
+                color: { argb: row.outStatus === 'On Time' ? '229954' : 'C0392B' },
+            }
             worksheet.getCell(`F${index + 5}`).value = `${row.inStatus}/${row.outStatus ? row.outStatus : ''}`;
             worksheet.getCell(`G${index + 5}`).value = row.totalHours ? row.totalHours : 0;
             worksheet.getCell(`H${index + 5}`).value = row.managerStatus;
+            worksheet.getCell(`H${index + 5}`).font = {
+                color: {
+                    argb: row.managerStatus === 'Pending' ? 'F39C12' :
+                        row.managerStatus === 'Reject' ? 'C0392B' : '229954'
+                },
+            }
             worksheet.getCell(`I${index + 5}`).value = row.adminStatus;
+            worksheet.getCell(`I${index + 5}`).font = {
+                color: {
+                    argb: row.adminStatus === 'Pending' ? 'F39C12' :
+                        row.adminStatus === 'Reject' ? 'C0392B' : '229954'
+                },
+            }
         });
 
         worksheet.columns.forEach(column => {
@@ -162,7 +200,7 @@ class FileService {
                     maxColumnLength = columnLength;
                 }
             });
-            column.width = maxColumnLength < 10 ? 10 : maxColumnLength + 5;
+            column.width = maxColumnLength < 10 ? 10 : maxColumnLength + 3;
         });
         const buffer = await workbook.xlsx.writeBuffer();
         return { buffer, fileName: `AttendanceStatistics_EmployeeId-${employee.id}.xlsx` };
@@ -173,7 +211,7 @@ class FileService {
         const endDate = dayjs(month).endOf('month').toDate();
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet(dayjs(month).format('MM-YYYY'));
-        const font = { size: 13, bold: true }
+        const font = { size: 13, bold: true };
         const alignment = { vertical: 'middle', horizontal: 'center' };
         const border = {
             top: { style: 'thick', color: { argb: '1E8449' } },
@@ -182,11 +220,11 @@ class FileService {
             right: { style: 'thick', color: { argb: '1E8449' } }
         }
 
+
         worksheet.getCell('A1').value = 'Attendance Statistics Month:';
         worksheet.getCell('A1').font = font;
         worksheet.getCell('B1').value = getMonthName(month);
         worksheet.getCell('C1').value = `${dayjs(startDate).format('DD/MM/YYYY')} -> ${dayjs(endDate).format('DD/MM/YYYY')}`;
-
 
         const headerCells = ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2', 'J2'];
         headerCells.forEach((cell) => {
@@ -213,7 +251,9 @@ class FileService {
             const attendances = await attendanceService.findAll({
                 where: {
                     employeeId: row.id,
-                    attendanceDate: { $between: [startDate, endDate] }
+                    attendanceDate: { $between: [startDate, endDate] },
+                    managerStatus: 'Approved',
+                    adminStatus: 'Approved'
                 }
             });
 
@@ -235,14 +275,15 @@ class FileService {
                     $or: [
                         { leaveFrom: { $between: [startDate, endDate] } },
                         { leaveTo: { $between: [startDate, endDate] } }
-                    ]
+                    ],
+                    status: 'Approved'
                 }
             });
             const daysLeaves = leaves.map((leave) =>
                 `#${leave.id} - ${leave.title} (${dayjs(leave.leaveFrom).format('DD/MM/YYYY')} - ${dayjs(leave.leaveTo).format('DD/MM/YYYY')})`
             )
                 .toString()
-                .replace(/,+/g, '\n');
+                .replace(/,+/g, '\r\n');
 
             const allowancesList = await allowanceService.findAll({
                 where: {
@@ -255,7 +296,7 @@ class FileService {
                 `#${allowance.id} - ${allowance.title} (${dayjs(allowance.startDate).format('MM/YYYY')} - ${dayjs(allowance.endDate).format('MM/YYYY')}): +${this.formatNumberCustom(allowance.amount)} VNĐ`
             )
                 .toString()
-                .replace(/,+/g, '\n');
+                .replace(/,+/g, '\r\n');
 
             const rewardPunishmentList = await rewardPunishmentService.findAll({
                 where: {
@@ -268,14 +309,14 @@ class FileService {
                 rewardPunishment.type === 'Reward' ? `#${rewardPunishment.id} - ${rewardPunishment.reason} (${dayjs(rewardPunishment.date).format('DD/MM/YYYY')}): +${this.formatNumberCustom(rewardPunishment.amount)} VNĐ` : null
             ))
                 .toString()
-                .replace(/,+/g, '\n');
+                .replace(/,+/g, '\r\n');
 
 
             const punishments = _.compact(rewardPunishmentList.map((rewardPunishment) =>
                 rewardPunishment.type === 'Punishment' ? `#${rewardPunishment.id} - ${rewardPunishment.reason} (${dayjs(rewardPunishment.date).format('DD/MM/YYYY')}): -${this.formatNumberCustom(rewardPunishment.amount)} VNĐ` : null
             ))
                 .toString()
-                .replace(/,+/g, '\n');
+                .replace(/,+/g, '\r\n');
 
             worksheet.getCell(`A${index + 3}`).value = row.id;
             worksheet.getCell(`B${index + 3}`).value = `${row.firstName} ${row.lastName}`;
@@ -305,7 +346,7 @@ class FileService {
                     maxColumnLength = columnLength;
                 }
             });
-            column.width = maxColumnLength < 10 ? 10 : maxColumnLength + 5;
+            column.width = maxColumnLength < 10 ? 10 : maxColumnLength < 60 ? maxColumnLength + 3 : 60;
         });
         const buffer = await workbook.xlsx.writeBuffer();
         return { buffer, fileName: `MonthStatistics_${dayjs(month).format('MM-YYYY')}.xlsx` };

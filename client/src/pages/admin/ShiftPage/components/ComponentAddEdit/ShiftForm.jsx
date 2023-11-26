@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Form,
-  Input,
-  Button,
-  Space,
-  Radio,
-  TimePicker,
-} from 'antd';
+import { Form, Input, Button, Space, Radio, TimePicker } from 'antd';
 import _ from 'lodash';
-import CheckAllCheckboxGroup from 'components/CheckAllCheckboxGroup';
+import CheckAllCheckboxGroup from 'components/Common/CheckAllCheckboxGroup';
 
 ShiftForm.propTypes = {
   onCancel: PropTypes.func,
@@ -52,11 +45,11 @@ const optionsDays = [
     value: 5,
   },
   {
-    label: <span style={{ color: 'red' }}>Saturday</span>,
+    label: <span style={{ color: 'red', fontWeight: 'bold' }}>Saturday</span>,
     value: 6,
   },
   {
-    label: <span style={{ color: 'red' }}>Sunday</span>,
+    label: <span style={{ color: 'red', fontWeight: 'bold' }}>Sunday</span>,
     value: 0,
   },
 ];
@@ -88,6 +81,10 @@ function ShiftForm(props) {
 
   const handleCancel = () => {
     onCancel();
+  };
+
+  const onChange = (value) => {
+    form.setFieldValue('rangeTime',[value[0].second(0), value[1].second(0)])
   };
 
   return (
@@ -137,6 +134,7 @@ function ShiftForm(props) {
           format="HH:mm A"
           disabled={loading}
           style={{ width: '100%' }}
+          onChange={onChange}
         />
       </Form.Item>
       <Form.Item
@@ -145,7 +143,6 @@ function ShiftForm(props) {
         hasFeedback
         rules={[{ required: true, message: 'Please select days!' }]}
       >
-        {/* <Checkbox.Group options={optionsDays} /> */}
         <CheckAllCheckboxGroup options={optionsDays} />
       </Form.Item>
       <Form.Item label="Shift Type" name="overtimeShift">

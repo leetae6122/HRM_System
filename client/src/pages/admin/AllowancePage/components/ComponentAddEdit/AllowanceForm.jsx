@@ -243,7 +243,6 @@ function AllowanceForm(props) {
           picker="month"
         />
       </Form.Item>
-
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
           <Button htmlType="button" onClick={handleCancel} loading={loading}>

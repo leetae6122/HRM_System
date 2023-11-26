@@ -1,28 +1,36 @@
 import { Card, Descriptions } from 'antd';
+import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
+import { calcDate } from 'utils/handleDate';
 import { getFullDate } from 'utils/handleDate';
 
 const labelStyle = {
   fontWeight: 'bold',
   color: 'grey',
 };
-const createItems = (profile, department, wage, position) => [
+const createItems = (profile, department, position) => [
   {
     key: '1',
     label: <span style={labelStyle}>Employee Id</span>,
     children: profile.id,
+    span: 2,
   },
   {
     key: '2',
     label: <span style={labelStyle}>Date Hired</span>,
-    children: getFullDate(profile.dateHired),
+    children: `${getFullDate(profile.dateHired)} ( ${calcDate(
+      profile.dateHired,
+      profile.dateOff ? dayjs(profile.dateOff) : dayjs(),
+    )} )`,
+    span: 2,
   },
   {
     key: '3',
     label: <span style={labelStyle}>Department Manager</span>,
     children: department.managerData?.firstName
-      ? `${department.managerData.firstName} ${department.managerData.lastName}`
+      ? `#${department.managerData.id} - ${department.managerData.firstName} ${department.managerData.lastName}`
       : '',
+    span: 2,
   },
   {
     key: '4',
@@ -33,7 +41,6 @@ const createItems = (profile, department, wage, position) => [
     key: '5',
     label: <span style={labelStyle}>Position</span>,
     children: position.name,
-    span: 2,
   },
 ];
 
@@ -43,7 +50,6 @@ function EmployeeInformation() {
   const items = createItems(
     user.profile,
     user.profile.departmentData,
-    user.profile.wageData,
     user.profile.positionData,
   );
   return (

@@ -58,7 +58,7 @@ const createColumns = () => [
       `${record.adderData.firstName} ${record.adderData.lastName}`,
   },
   {
-    title: 'Created Date',
+    title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
     sorter: true,

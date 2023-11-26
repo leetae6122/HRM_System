@@ -56,7 +56,7 @@ function DepartmentTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search name"
+          placeholder="Input search name or short name"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}

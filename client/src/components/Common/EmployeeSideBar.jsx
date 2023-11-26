@@ -78,7 +78,7 @@ function EmployeeSideBar() {
       '/employee/reward-punishment',
       <RedEnvelopeOutlined />,
     ),
-    user?.profile.manageDepartment.managerId === user?.employeeId
+    user?.profile.manageDepartment.managerEId === user?.employeeId
       ? getItem(
           <Link to={'/employee/manage-attendance'} replace>
             Manage

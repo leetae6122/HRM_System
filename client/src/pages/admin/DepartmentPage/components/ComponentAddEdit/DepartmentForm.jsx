@@ -19,7 +19,7 @@ DepartmentForm.defaultProps = {
   initialValues: {
     name: '',
     shortName: '',
-    managerId: null,
+    managerEId: null,
   },
 };
 
@@ -52,11 +52,11 @@ function DepartmentForm(props) {
         const response = await employeeApi.getAll();
         const options = response.data.map((employee) => ({
           value: employee.id,
-          label: `${employee.firstName} ${employee.lastName}`,
+          label: `#${employee.id} - ${employee.firstName} ${employee.lastName}`,
         }));
         options.unshift({
           value: '',
-          label: 'There is no manager',
+          label: '# No manager',
         });
         setEmployeeOptions(options);
       } catch (error) {
@@ -135,7 +135,7 @@ function DepartmentForm(props) {
           maxLength={8}
         />
       </Form.Item>
-      <Form.Item name="managerId" label="Manager" hasFeedback>
+      <Form.Item name="managerEId" label="Manager" hasFeedback>
         <Select
           showSearch
           style={{

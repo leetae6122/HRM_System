@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Divider, Space, Table } from 'antd';
 import { toast } from 'react-toastify';
-import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled } from '@ant-design/icons';
 import positionApi from 'api/positionApi';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +12,7 @@ import ModalAddPosition from './components/ComponentAddEdit/ModalAddPosition';
 import ModalEditPosition from './components/ComponentAddEdit/ModalEditPosition';
 import PositionTableHeader from './components/PositionTableHeader';
 import _ from 'lodash';
+import { getFullDate } from 'utils/handleDate';
 
 const createColumns = (toggleModalEditPosition, handleDeletePosition) => [
   {
@@ -44,9 +44,16 @@ const createColumns = (toggleModalEditPosition, handleDeletePosition) => [
     render: (value) => (value ? `${numberWithDot(value)} VNĐ/hr` : ''),
   },
   {
-    title: 'Date created',
+    title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
+    sorter: true,
+    render: (date) => getFullDate(date),
+  },
+  {
+    title: 'Date Updated',
+    dataIndex: 'updatedAt',
+    key: 'updatedAt',
     sorter: true,
     render: (date) => getFullDate(date),
   },

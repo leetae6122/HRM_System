@@ -13,8 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     hashQRCodeToken: DataTypes.STRING,
+    expiredAt: DataTypes.DATE
   }, {
     sequelize,
+    updatedAt: false,
     modelName: 'QRCode'
   });
 

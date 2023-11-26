@@ -6,6 +6,7 @@ import employeeApi from 'api/employeeApi';
 import dayjs from 'dayjs';
 import qrCodeApi from 'api/qrcodeApi';
 import io from 'socket.io-client';
+import { CloseCircleFilled } from '@ant-design/icons';
 
 QRCodeTimekeeper.propTypes = {
   onClose: PropTypes.func,
@@ -85,6 +86,7 @@ function QRCodeTimekeeper(props) {
             fontSize: 20,
             fontWeight: 'bold',
           }}
+          icon={<CloseCircleFilled />}
         >
           Stop
         </Button>

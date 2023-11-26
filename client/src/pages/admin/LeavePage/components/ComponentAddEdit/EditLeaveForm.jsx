@@ -82,6 +82,11 @@ const createItems = (data) => [
     label: 'Leave To',
     children: data.leaveTo,
   },
+  {
+    key: '8',
+    label: 'Handler',
+    children: `#${data.handlerData.id} - ${data.handlerData.firstName} ${data.handlerData.lastName}`,
+  },
 ];
 
 const initialValues = {
@@ -104,7 +109,7 @@ function EditLeaveForm(props) {
   const handleCancel = () => {
     onCancel();
   };
-
+  console.log(infoLeave);
   return (
     <div>
       <Descriptions

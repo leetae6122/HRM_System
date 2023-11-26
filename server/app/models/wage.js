@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Wage extends Model {
     static associate(models) {
       Wage.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
-      Wage.belongsTo(models.Employee, { foreignKey: 'addedBy', as: 'adderData' });
+      Wage.belongsTo(models.Employee, { foreignKey: 'adminEId', as: 'adderData' });
     }
   }
   Wage.init({
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     fromDate: DataTypes.DATEONLY,
     toDate: DataTypes.DATEONLY,
     employeeId: DataTypes.STRING,
-    addedBy: DataTypes.STRING
+    adminEId: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Wage'

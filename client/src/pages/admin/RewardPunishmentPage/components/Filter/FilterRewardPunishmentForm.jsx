@@ -3,22 +3,21 @@ import PropTypes from 'prop-types';
 import { Form, Button, Space, InputNumber, DatePicker } from 'antd';
 import _ from 'lodash';
 
-FilterWageForm.propTypes = {
+FilterRewardPunishmentForm.propTypes = {
   onSubmit: PropTypes.func,
   loading: PropTypes.bool,
   initialValues: PropTypes.object,
 };
 
-FilterWageForm.defaultProps = {
+FilterRewardPunishmentForm.defaultProps = {
   onSubmit: null,
   loading: false,
   initialValues: {
-    basicHourlyWage: {
+    amount: {
       from: null,
       to: null,
     },
-    fromDate: '',
-    toDate: '',
+    date: '',
   },
 };
 
@@ -26,7 +25,7 @@ const dateFormat = 'DD/MM/YYYY';
 
 const wrapperCol = { offset: 8, span: 16 };
 
-function FilterWageForm(props) {
+function FilterRewardPunishmentForm(props) {
   const { onSubmit, loading, initialValues } = props;
   const [submittable, setSubmittable] = useState(false);
   const [form] = Form.useForm();
@@ -51,8 +50,8 @@ function FilterWageForm(props) {
 
   return (
     <Form
-      name="normal_filter_wage"
-      className="filter_wage-form"
+      name="normal_filter_reward_punishment"
+      className="filter-reward-punishment-form"
       initialValues={initialValues}
       onFinish={onFinish}
       form={form}
@@ -63,28 +62,22 @@ function FilterWageForm(props) {
       }}
       size="large"
     >
-      <Form.Item
-        label="Basic Hourly Wage"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-      >
+      <Form.Item label="Amount">
         <Form.Item
-          name={['basicHourlyWage', 'from']}
+          name={['amount', 'from']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
                 if (
                   !value ||
-                  !form.getFieldValue(['basicHourlyWage', 'to']) ||
-                  value < form.getFieldValue(['basicHourlyWage', 'to'])
+                  !form.getFieldValue(['amount', 'to']) ||
+                  value < form.getFieldValue(['amount', 'to'])
                 ) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error(
-                    'Basic Hourly Wage From must be less than Basic Hourly Wage To!',
-                  ),
+                  new Error('Amount From must be less than Amount To!'),
                 );
               },
             }),
@@ -99,36 +92,31 @@ function FilterWageForm(props) {
             disabled={loading}
             placeholder="From (number)"
             formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-            addonAfter={'VNĐ/hr'}
+            addonAfter={'VNĐ'}
           />
         </Form.Item>
 
         <Form.Item
-          name={['basicHourlyWage', 'to']}
+          name={['amount', 'to']}
           hasFeedback
           rules={[
             () => ({
               validator(_, value) {
-                if (!value || form.getFieldValue(['basicHourlyWage', 'from'])) {
+                if (!value || form.getFieldValue(['amount', 'from'])) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error('Please enter Basic Hourly Wage From first!'),
+                  new Error('Please enter Amount From first!'),
                 );
               },
             }),
             () => ({
               validator(_, value) {
-                if (
-                  !value ||
-                  value > form.getFieldValue(['basicHourlyWage', 'from'])
-                ) {
+                if (!value || value > form.getFieldValue(['amount', 'from'])) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error(
-                    'Basic Hourly Wage To must be greater than Basic Hourly Wage From!',
-                  ),
+                  new Error('Amount To must be greater than Amount From!'),
                 );
               },
             }),
@@ -143,20 +131,11 @@ function FilterWageForm(props) {
             disabled={loading}
             placeholder="To (number)"
             formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-            addonAfter={'VNĐ/hr'}
+            addonAfter={'VNĐ'}
           />
         </Form.Item>
       </Form.Item>
-      <Form.Item name="fromDate" label="From Date">
-        <DatePicker
-          disabled={loading}
-          format={dateFormat}
-          style={{
-            width: '100%',
-          }}
-        />
-      </Form.Item>
-      <Form.Item name="toDate" label="To Date">
+      <Form.Item name="date" label="Effective Date">
         <DatePicker
           disabled={loading}
           format={dateFormat}
@@ -176,4 +155,4 @@ function FilterWageForm(props) {
   );
 }
 
-export default FilterWageForm;
+export default FilterRewardPunishmentForm;

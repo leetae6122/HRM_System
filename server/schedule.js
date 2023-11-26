@@ -43,10 +43,14 @@ class Schedule {
     }
 
     deleteAllQRCodes() {
-        schedule.scheduleJob('0 0 * * *', async () => {
+        schedule.scheduleJob('*/30 * * * *', async () => {
             try {
-                await qrCodeService.deleteAllQRCodes();
-                logger.info("Delete all QR Codes during the day");
+                const qrCodeList = await qrCodeService.findAll({
+                    expiredAt: {$lte: dayjs().toDate()}
+                });
+                const idList = qrCodeList.map((qrCode) => qrCode.id);
+                await qrCodeService.deleteQRCode(idList);
+                logger.info(`Total number of QR Codes deleted: ${qrCodeList.length}`);
             } catch (error) {
                 logger.error(error);
             }

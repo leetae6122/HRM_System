@@ -1,6 +1,6 @@
 import { Drawer } from 'antd';
 import PropTypes from 'prop-types';
-import FilterPositionForm from './FilterWageForm';
+import FilterWageForm from './FilterWageForm';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
@@ -30,18 +30,14 @@ function FilterDrawer(props) {
     let filter;
     if (!_.isEmpty(_.omitBy(values.basicHourlyWage, _.isNil))) {
       filter = {
-        basicHourlyWage: values.basicHourlyWage.to
-          ? {
-              $between: [
-                values.basicHourlyWage.from,
-                values.basicHourlyWage.to,
-              ],
-            }
-          : { $gte: values.basicHourlyWage.from },
+        basicHourlyWage: {
+          $gte: values.basicHourlyWage.from,
+          $lte: values.basicHourlyWage.to,
+        },
       };
     }
 
-    if (!_.isEmpty(_.omitBy(values.fromDate, _.isNil))) {
+    if (values.fromDate) {
       filter = {
         ...filter,
         fromDate: {
@@ -50,7 +46,7 @@ function FilterDrawer(props) {
       };
     }
 
-    if (!_.isEmpty(_.omitBy(values.toDate, _.isNil))) {
+    if (values.toDate) {
       filter = {
         ...filter,
         toDate: {
@@ -77,7 +73,24 @@ function FilterDrawer(props) {
       open={openDrawer}
       width={'70vh'}
     >
-      <FilterPositionForm onSubmit={handleFilter} loading={confirmLoading} />
+      <FilterWageForm
+        onSubmit={handleFilter}
+        loading={confirmLoading}
+        initialValues={{
+          basicHourlyWage: filterData.where.basicHourlyWage
+            ? {
+              from: filterData.where.basicHourlyWage.$gte ?? null,
+              to: filterData.where.basicHourlyWage.$lte ?? null,
+              }
+            : {},
+          fromDate: filterData.where.fromDate
+            ? dayjs(filterData.where.fromDate.$gte)
+            : '',
+          toDate: filterData.where.toDate
+            ? dayjs(filterData.where.toDate.$lte)
+            : '',
+        }}
+      />
     </Drawer>
   );
 }

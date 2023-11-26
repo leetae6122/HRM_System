@@ -47,7 +47,9 @@ function AttendanceTableHeader(props) {
       ...filterData,
       page: 1,
       size: 10,
-      where: {},
+      where: {
+        employeeId: { $like: `%${value}%` },
+      },
       modelEmployee: {
         where: {
           $or: _.flatten(
@@ -72,7 +74,7 @@ function AttendanceTableHeader(props) {
     <Row>
       <Col span={9}>
         <Search
-          placeholder="Input search employee name"
+          placeholder="Input search employee name or employee id"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}

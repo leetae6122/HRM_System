@@ -84,18 +84,18 @@ function EmployeeTableHeader(props) {
           )}
           <Button
             type="primary"
+            icon={<FileExcelFilled />}
+            onClick={toggleModalExportFile}
+          >
+            Export statistics file
+          </Button>
+          <Button
+            type="primary"
             style={{ backgroundColor: green.primary }}
             icon={<PlusCircleFilled />}
             onClick={toggleModalAddEmployee}
           >
             Add Employee
-          </Button>
-          <Button
-            type="primary"
-            icon={<FileExcelFilled />}
-            onClick={toggleModalExportFile}
-          >
-            Export statistics file
           </Button>
         </Space>
       </Col>

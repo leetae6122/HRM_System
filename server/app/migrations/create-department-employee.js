@@ -15,7 +15,9 @@ module.exports = {
                 type: Sequelize.STRING(40),
             },
             shortName: {
+                allowNull: false,
                 type: Sequelize.STRING(8),
+                unique: true,
             },
         });
 
@@ -93,11 +95,11 @@ module.exports = {
             updatedAt: {
                 allowNull: false,
                 type: Sequelize.DATE,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
             }
         });
 
-        await queryInterface.addColumn('Department', 'managerId', {
+        await queryInterface.addColumn('Department', 'managerEId', {
             type: Sequelize.STRING,
             references: {
                 model: 'Employee',
@@ -112,7 +114,7 @@ module.exports = {
         await queryInterface.addColumn('Department', 'updatedAt', {
             allowNull: false,
             type: Sequelize.DATE,
-            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
         });
     },
 

@@ -88,7 +88,7 @@ const createColumns = (
     render: (date) => getFullDate(date),
   },
   {
-    title: 'Date created',
+    title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
     sorter: true,

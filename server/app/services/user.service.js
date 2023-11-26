@@ -25,7 +25,7 @@ class UserService {
                     },
                     {
                         model: db.Department, as: 'manageDepartment',
-                        attributes: ['id', 'managerId'],
+                        attributes: ['id', 'managerEId'],
                     },
                 ]
             },
@@ -83,7 +83,7 @@ class UserService {
                     },
                     {
                         model: db.Department, as: 'manageDepartment',
-                        attributes: ['id', 'managerId'],
+                        attributes: ['id', 'managerEId'],
                     },
                 ]
             },

@@ -31,6 +31,12 @@ const createColumns = (toggleModalEditWage, handleDeleteWage) => [
     render: (value) => `${numberWithDot(value)} VNĐ/hr`,
   },
   {
+    title: 'Employee Id',
+    dataIndex: 'employeeId',
+    key: 'employeeId',
+    sorter: true,
+  },
+  {
     title: 'Employee',
     dataIndex: ['employeeData', 'firstName'],
     key: 'employeeData',
@@ -54,11 +60,11 @@ const createColumns = (toggleModalEditWage, handleDeleteWage) => [
   },
   {
     title: 'Added By',
-    dataIndex: ['adderData', 'firstName'],
+    dataIndex: ['adderData', 'id'],
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
-      `${record.adderData.firstName} ${record.adderData.lastName}`,
+      `#${record.adderData.id} - ${record.adderData.firstName} ${record.adderData.lastName}`,
   },
   {
     title: 'Action',

@@ -1,6 +1,7 @@
 import sequelize from "sequelize";
 import db from "./../models/index";
 import dayjs from 'dayjs';
+import _ from 'lodash';
 
 class LeaveService {
     async findById(id) {
@@ -8,11 +9,11 @@ class LeaveService {
             include: [
                 {
                     model: db.Employee, as: 'employeeData',
-                    attributes: ['firstName', 'lastName', 'email']
+                    attributes: ['id', 'firstName', 'lastName', 'email']
                 },
                 {
                     model: db.Employee, as: 'handlerData',
-                    attributes: ['firstName', 'lastName', 'email']
+                    attributes: ['id', 'firstName', 'lastName', 'email']
                 },
             ],
             raw: true,
@@ -59,7 +60,9 @@ class LeaveService {
 
         const offset = (page - 1) * limit;
 
-        const { count, rows } = await db.Leave.findAndCountAll({
+        let count = 0;
+        let rows = [];
+        const data1 = await db.Leave.findAndCountAll({
             where,
             offset,
             limit,
@@ -68,20 +71,50 @@ class LeaveService {
                 ...order
             ],
             attributes,
-            raw: true,
-            nest: true,
             include: [
                 {
                     model: db.Employee, as: 'employeeData',
-                    attributes: ['firstName', 'lastName'],
-                    ...employeeFilter
+                    attributes: ['id', 'firstName', 'lastName'],
                 },
                 {
                     model: db.Employee, as: 'handlerData',
-                    attributes: ['firstName', 'lastName']
+                    attributes: ['id', 'firstName', 'lastName']
                 },
             ],
+            raw: true,
+            nest: true
         });
+
+        if ((data1.count === 0 || _.isEmpty(where)) && !_.isEmpty(employeeFilter)) {
+            const data2 = await db.Leave.findAndCountAll({
+                where: {},
+                offset,
+                limit,
+                order: [
+                    sequelize.fn('field', sequelize.col('status'), 'Pending', 'Reject', 'Approved'),
+                    ...order
+                ],
+                attributes,
+                include: [
+                    {
+                        model: db.Employee, as: 'employeeData',
+                        attributes: ['id', 'firstName', 'lastName'],
+                        ...employeeFilter
+                    },
+                    {
+                        model: db.Employee, as: 'handlerData',
+                        attributes: ['id', 'firstName', 'lastName']
+                    },
+                ],
+                raw: true,
+                nest: true
+            });
+            count = data2.count;
+            rows = data2.rows;
+        } else {
+            count = data1.count;
+            rows = data1.rows;
+        }
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;
         const prevPage = page - 1 < 1 ? null : page - 1;

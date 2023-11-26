@@ -18,12 +18,12 @@ const useAuth = () => {
       if (accessToken) {
         if (!_.isEmpty(user)) {
           setIsAuth(
-            user.profile.manageDepartment.managerId === user.employeeId,
+            user.profile.manageDepartment.managerEId === user.employeeId,
           );
         } else {
           const user = (await userApi.getUserProfile()).data;
           setIsAuth(
-            user.profile.manageDepartment.managerId === user.employeeId,
+            user.profile.manageDepartment.managerEId === user.employeeId,
           );
         }
       }

@@ -17,6 +17,7 @@ import { numberWithDot } from 'utils/format';
 import RewardPunishmentTableHeader from './components/RewardPunishmentTableHeader';
 import ModalAddRewardPunishment from './components/ComponentAddEdit/ModalAddRewardPunishment';
 import ModalEditRewardPunishment from './components/ComponentAddEdit/ModalEditRewardPunishment';
+import FilterDrawer from './components/Filter/FilterDrawer';
 
 const createColumns = (
   toggleModalEditRewardPunishment,
@@ -58,6 +59,12 @@ const createColumns = (
     filterMultiple: false,
   },
   {
+    title: 'Employee Id',
+    dataIndex: 'employeeId',
+    key: 'employeeId',
+    sorter: true,
+  },
+  {
     title: 'Employee',
     dataIndex: ['employeeData', 'firstName'],
     key: 'employeeData',
@@ -89,10 +96,10 @@ const createColumns = (
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
-      `${record.adderData.firstName} ${record.adderData.lastName}`,
+      `#${record.adderData.id} - ${record.adderData.firstName} ${record.adderData.lastName}`,
   },
   {
-    title: 'Created Date',
+    title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
     sorter: true,
@@ -133,6 +140,7 @@ function RewardPunishmentPage() {
     useState(false);
   const [openModalEditRewardPunishment, setOpenModalEditRewardPunishment] =
     useState(false);
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -185,6 +193,10 @@ function RewardPunishmentPage() {
     dispatch(setFilterData(defaultFilter));
   };
 
+  const toggleShowFilterDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
+  };
+
   const toggleModalEditRewardPunishment = (id) => {
     dispatch(setEditRewardPunishmentId(id));
     setOpenModalEditRewardPunishment(!openModalEditRewardPunishment);
@@ -207,7 +219,11 @@ function RewardPunishmentPage() {
       .then(async (result) => {
         if (result.isConfirmed) {
           await rewardPunishmentApi.delete(rewardId);
-          Swal.fire('Deleted!', 'Reward or Punishment has been deleted.', 'success');
+          Swal.fire(
+            'Deleted!',
+            'Reward or Punishment has been deleted.',
+            'success',
+          );
           await refreshRewardPunishmentList();
         }
       })
@@ -251,6 +267,7 @@ function RewardPunishmentPage() {
           <RewardPunishmentTableHeader
             toggleModalAddRewardPunishment={toggleModalAddRewardPunishment}
             setFilter={setFilter}
+            toggleShowFilterDrawer={toggleShowFilterDrawer}
           />
         )}
         pagination={{
@@ -274,6 +291,13 @@ function RewardPunishmentPage() {
           openModal={openModalEditRewardPunishment}
           toggleShowModal={toggleModalEditRewardPunishment}
           refreshRewardPunishmentList={refreshRewardPunishmentList}
+        />
+      )}
+      {openFilterDrawer && (
+        <FilterDrawer
+          toggleShowDrawer={toggleShowFilterDrawer}
+          openDrawer={openFilterDrawer}
+          setFilter={setFilter}
         />
       )}
     </>

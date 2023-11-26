@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Row, Space } from 'antd';
-import { PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
+import { FilterFilled, PlusCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDefaultFilterData } from 'reducers/allowance';
@@ -10,16 +10,18 @@ import _ from 'lodash';
 
 AllowanceTableHeader.propTypes = {
   toggleModalAddAllowance: PropTypes.func,
+  toggleShowFilterDrawer: PropTypes.func,
   setFilter: PropTypes.func,
 };
 
 AllowanceTableHeader.defaultProps = {
   toggleModalAddAllowance: null,
+  toggleShowFilterDrawer: null,
   setFilter: null,
 };
 
 function AllowanceTableHeader(props) {
-  const { toggleModalAddAllowance, setFilter } = props;
+  const { toggleModalAddAllowance, setFilter, toggleShowFilterDrawer } = props;
   const dispatch = useDispatch();
   const [loadingSearch, setLoadingSearch] = useState(false);
   const { filterData, defaultFilter } = useSelector((state) => state.allowance);
@@ -32,7 +34,10 @@ function AllowanceTableHeader(props) {
       page: 1,
       size: 10,
       where: {
-        title: { $like: `%${value}%` },
+        $or: [
+          { title: { $like: `%${value}%` } },
+          { employeeId: { $like: `%${value}%` } },
+        ],
       },
       modelEmployee: {
         where: {
@@ -58,7 +63,7 @@ function AllowanceTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search employee name or title"
+          placeholder="Input search employee name, employee id or title"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}
@@ -85,6 +90,13 @@ function AllowanceTableHeader(props) {
             onClick={toggleModalAddAllowance}
           >
             Add Allowance
+          </Button>
+          <Button
+            type="primary"
+            icon={<FilterFilled />}
+            onClick={toggleShowFilterDrawer}
+          >
+            Filter
           </Button>
         </Space>
       </Col>

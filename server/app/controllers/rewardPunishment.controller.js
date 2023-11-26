@@ -62,7 +62,7 @@ exports.createRewardPunishment = async (req, res, next) => {
             reason: req.body.reason,
             amount: req.body.amount,
             date: req.body.date,
-            addedBy: req.user.employeeId,
+            adminEId: req.user.employeeId,
         }
         await Promise.all(req.body.employees.map(async (employeeId) => {
             await employeeService.foundEmployee(employeeId, next);
@@ -78,7 +78,7 @@ exports.updateRewardPunishment = async (req, res, next) => {
     try {
         const payload = {
             ...req.body,
-            addedBy: req.user.employeeId
+            adminEId: req.user.employeeId
         };
         await rewardPunishmentService.foundRewardPunishment(payload.rewardPunishmentId, next);
 

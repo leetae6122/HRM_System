@@ -50,6 +50,7 @@ exports.excelFileEmployeeMonthStatistics = async (req, res, next) => {
         res.setHeader('Content-Disposition', `attachment; filename=${fileName}.xlsx`);
         res.end(buffer, 'binary');
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }

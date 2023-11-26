@@ -2,6 +2,7 @@ import db from "./../models/index";
 import dayjs from "dayjs";
 import createError from 'http-errors';
 import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
+import _ from 'lodash';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
@@ -103,19 +104,18 @@ class AttendanceService {
 
         const offset = (page - 1) * limit;
 
-        const { count, rows } = await db.Attendance.findAndCountAll({
+        let count = 0;
+        let rows = [];
+        const data1 = await db.Attendance.findAndCountAll({
             where,
             offset,
             limit,
             order,
             attributes,
-            raw: true,
-            nest: true,
             include: [
                 {
                     model: db.Employee, as: 'employeeData',
                     attributes: ['id', 'firstName', 'lastName'],
-                    ...employeeFilter,
                 },
                 {
                     model: db.Employee, as: 'adminData',
@@ -125,7 +125,40 @@ class AttendanceService {
                     model: db.Shift, as: 'shiftData',
                 },
             ],
+            raw: true,
+            nest: true
         });
+
+        if ((data1.count === 0 || _.isEmpty(where)) && !_.isEmpty(employeeFilter)) {
+            const data2 = await db.Attendance.findAndCountAll({
+                where: {},
+                offset,
+                limit,
+                order,
+                attributes,
+                include: [
+                    {
+                        model: db.Employee, as: 'employeeData',
+                        attributes: ['id', 'firstName', 'lastName'],
+                        ...employeeFilter,
+                    },
+                    {
+                        model: db.Employee, as: 'adminData',
+                        attributes: ['id', 'firstName', 'lastName'],
+                    },
+                    {
+                        model: db.Shift, as: 'shiftData',
+                    },
+                ],
+                raw: true,
+                nest: true
+            });
+            count = data2.count;
+            rows = data2.rows;
+        } else {
+            count = data1.count;
+            rows = data1.rows;
+        }
 
         const nextPage = page + 1 > Math.ceil(count / limit) ? null : page + 1;
         const prevPage = page - 1 < 1 ? null : page - 1;

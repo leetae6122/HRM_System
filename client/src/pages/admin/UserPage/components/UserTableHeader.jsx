@@ -40,7 +40,7 @@ function UserTableHeader(props) {
       modelEmployee: {
         where: {
           $or: _.flatten(
-            _.map(['firstName', 'lastName', 'email'], function (item) {
+            _.map(['firstName', 'lastName', 'email', 'id'], function (item) {
               return _.map(value.split(' '), function (q) {
                 return { [item]: { $like: '%' + q + '%' } };
               });
@@ -61,7 +61,7 @@ function UserTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search id, name, email or username"
+          placeholder="Input search id, employeeId, name, email or username"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}

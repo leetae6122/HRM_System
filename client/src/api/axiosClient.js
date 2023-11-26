@@ -31,7 +31,11 @@ axiosClient.interceptors.response.use((response) => {
     return response;
 }, (error) => {
     // Handle errors
-    toast.error(error.response.data.message.toString());
+    if (error.response.status === 500) {
+        toast.error(error.response.statusText);
+    } else {
+        toast.error(error.response.data.message.toString());
+    }
     if (error.response.data.status === 401
         && error.response.data.message === 'Access Token expired'
     ) {

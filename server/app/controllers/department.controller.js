@@ -42,9 +42,9 @@ exports.getListDepartment = async (req, res, next) => {
 
 exports.createDepartment = async (req, res, next) => {
     try {
-        if (req.body.managerId) {
-            const foundEmployee = await employeeService.foundEmployee(req.body.managerId, next, true);
-            if (foundEmployee.manageDepartment.id && foundEmployee.manageDepartment.managerId === foundEmployee.id) {
+        if (req.body.managerEId) {
+            const foundEmployee = await employeeService.foundEmployee(req.body.managerEId, next, true);
+            if (foundEmployee.manageDepartment.id && foundEmployee.manageDepartment.managerEId === foundEmployee.id) {
                 return next(createError.BadRequest("This employee is already a manager of another department"));
             }
         }
@@ -59,16 +59,16 @@ exports.createDepartment = async (req, res, next) => {
 exports.updateDepartment = async (req, res, next) => {
     try {
         const foundDepartment = await departmentService.foundDepartment(req.body.departmentId, next);
-        if (foundDepartment.managerId !== req.body.managerId && req.body.managerId) {
-            const foundEmployee = await employeeService.foundEmployee(req.body.managerId, next, true);
-            if (foundEmployee.manageDepartment.id && foundEmployee.manageDepartment.managerId === foundEmployee.id) {
+        if (foundDepartment.managerEId !== req.body.managerEId && req.body.managerEId) {
+            const foundEmployee = await employeeService.foundEmployee(req.body.managerEId, next, true);
+            if (foundEmployee.manageDepartment.id && foundEmployee.manageDepartment.managerEId === foundEmployee.id) {
                 return next(createError.BadRequest("This employee is already a manager of another department"));
             }
         }
 
         const payload = {
             ...req.body,
-            managerId: req.body.managerId === '' ? null : req.body.managerId
+            managerEId: req.body.managerEId === '' ? null : req.body.managerEId
         }
 
         await departmentService.updateDepartment(req.body.departmentId, payload);

@@ -140,8 +140,8 @@ const createItems = (data) => [
   {
     key: '13',
     label: 'Admin Name',
-    children: data.adminData.firstName
-      ? `${data.adminData.firstName} ${data.adminData.lastName}`
+    children: data.adminData.id
+      ? `#${data.adminData.id} - ${data.adminData.firstName} ${data.adminData.lastName}`
       : '',
     span: 2,
   },

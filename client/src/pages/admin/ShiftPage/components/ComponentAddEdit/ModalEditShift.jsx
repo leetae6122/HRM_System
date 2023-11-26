@@ -55,7 +55,15 @@ function ModalEditShift(props) {
   const handleEditShift = async (values) => {
     try {
       setConfirmLoading(true);
-      const response = await shiftApi.update(values);
+      const data = {
+        shiftId: values.shiftId,
+        name: values.name,
+        startTime: values.rangeTime[0].second(0),
+        endTime: values.rangeTime[1].second(0),
+        overtimeShift: values.overtimeShift,
+        days: values.days,
+      }
+      const response = await shiftApi.update(data);
       Swal.fire({
         icon: 'success',
         title: response.message,

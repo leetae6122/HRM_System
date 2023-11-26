@@ -16,6 +16,7 @@ exports.createQRCode = async (req, res, next) => {
         const qrCodeDataUrl = await QRCode.toDataURL(url);
         return res.send({ data: qrCodeDataUrl });
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }

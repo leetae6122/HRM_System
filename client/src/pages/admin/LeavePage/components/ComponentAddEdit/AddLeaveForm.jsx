@@ -55,7 +55,7 @@ function AddLeaveForm(props) {
         const data = (await employeeApi.getAll()).data;
         const options = data.map((employee) => ({
           value: employee.id,
-          label: `${employee.firstName} ${employee.lastName}`,
+          label: `#${employee.id} - ${employee.firstName} ${employee.lastName}`,
         }));
         setEmployeeOptions(options);
       } catch (error) {
@@ -92,6 +92,31 @@ function AddLeaveForm(props) {
       }}
       size="large"
     >
+      <Form.Item
+        name="employeeId"
+        label="Employee"
+        hasFeedback
+        rules={[{ required: true, message: 'Please select an employee!' }]}
+      >
+        <Select
+          showSearch
+          style={{
+            width: '100%',
+          }}
+          placeholder="Search to Select"
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            (option?.label ?? '').includes(input)
+          }
+          filterSort={(optionA, optionB) =>
+            (optionA?.label ?? '')
+              .toLowerCase()
+              .localeCompare((optionB?.label ?? '').toLowerCase())
+          }
+          options={employeeOptions}
+          disabled={loading}
+        />
+      </Form.Item>
       <Form.Item
         name="title"
         label="Title"
@@ -134,37 +159,17 @@ function AddLeaveForm(props) {
           }}
         />
       </Form.Item>
-      <Form.Item
-        name="employeeId"
-        label="Employee"
-        hasFeedback
-        rules={[{ required: true, message: 'Please select an employee!' }]}
-      >
-        <Select
-          showSearch
-          style={{
-            width: '100%',
-          }}
-          placeholder="Search to Select"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            (option?.label ?? '').includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? '')
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? '').toLowerCase())
-          }
-          options={employeeOptions}
-          disabled={loading}
-        />
-      </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>
         <Space style={{ float: 'right' }}>
           <Button htmlType="button" onClick={handleCancel} loading={loading}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" loading={loading} disabled={!submittable}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            disabled={!submittable}
+          >
             Add
           </Button>
         </Space>

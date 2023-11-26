@@ -38,7 +38,7 @@ function ModalEditDepartment(props) {
             departmentId: data.id,
             name: data.name,
             shortName: data.shortName,
-            managerId: data.managerId,
+            managerEId: data.managerEId ? data.managerEId : '',
           });
         }
       } catch (error) {

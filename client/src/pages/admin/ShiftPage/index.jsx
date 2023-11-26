@@ -13,6 +13,7 @@ import ModalAddShift from './components/ComponentAddEdit/ModalAddShift';
 import ModalEditShift from './components/ComponentAddEdit/ModalEditShift';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import FilterDrawer from './components/Filter/FilterDrawer';
 
 dayjs.extend(customParseFormat);
 const daysName = (arrDays) => {
@@ -125,9 +126,16 @@ const createColumns = (toggleModalEditShift, handleDeleteShift) => [
     filterMultiple: false,
   },
   {
-    title: 'Date created',
+    title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
+    sorter: true,
+    render: (date) => getFullDate(date),
+  },
+  {
+    title: 'Date Updated',
+    dataIndex: 'updatedAt',
+    key: 'updatedAt',
     sorter: true,
     render: (date) => getFullDate(date),
   },
@@ -159,6 +167,7 @@ function ShiftPage() {
   const [loadingData, setLoadingData] = useState(false);
   const [openModalAddShift, setOpenModalAddShift] = useState(false);
   const [openModalEditShift, setOpenModalEditShift] = useState(false);
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -207,6 +216,10 @@ function ShiftPage() {
       }),
     );
     dispatch(setFilterData(defaultFilter));
+  };
+
+  const toggleShowFilterDrawer = () => {
+    setOpenFilterDrawer(!openFilterDrawer);
   };
 
   const toggleModalEditShift = (id) => {
@@ -277,6 +290,7 @@ function ShiftPage() {
           <ShiftTableHeader
             toggleModalAddShift={toggleModalAddShift}
             setFilter={setFilter}
+            toggleShowFilterDrawer={toggleShowFilterDrawer}
           />
         )}
         pagination={{
@@ -300,6 +314,13 @@ function ShiftPage() {
           openModal={openModalEditShift}
           toggleShowModal={toggleModalEditShift}
           refreshShiftList={refreshShiftList}
+        />
+      )}
+      {openFilterDrawer && (
+        <FilterDrawer
+          toggleShowDrawer={toggleShowFilterDrawer}
+          openDrawer={openFilterDrawer}
+          setFilter={setFilter}
         />
       )}
     </>

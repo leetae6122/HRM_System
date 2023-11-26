@@ -22,7 +22,7 @@ class EmployeeService {
                 },
                 {
                     model: db.Department, as: 'manageDepartment',
-                    attributes: ['id', 'managerId'],
+                    attributes: ['id', 'managerEId'],
                 },
             ],
             raw: true,

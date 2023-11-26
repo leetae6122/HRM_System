@@ -52,7 +52,7 @@ function ModalEditWage(props) {
   const handleEditWage = async (values) => {
     try {
       setConfirmLoading(true);
-      const data = _.omitBy(values, _.isNil);
+      const data = _.omitBy(values, value => _.isString(value) && _.isEmpty(value));
       const response = await wageApi.update(data);
       Swal.fire({
         icon: 'success',

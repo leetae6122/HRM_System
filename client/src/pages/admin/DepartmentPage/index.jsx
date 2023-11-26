@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Divider, Space, Table } from 'antd';
 import { toast } from 'react-toastify';
-import { getFullDate } from 'utils/handleDate';
 import { DeleteFilled, EditFilled } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -15,6 +14,7 @@ import DepartmentTableHeader from './components/DepartmentTableHeader';
 import ModalAddDepartment from './components/ComponentAddEdit/ModalAddDepartment';
 import ModalEditDepartment from './components/ComponentAddEdit/ModalEditDepartment';
 import _ from 'lodash';
+import { getFullDate } from 'utils/handleDate';
 
 const createColumns = (toggleModalEditDepartment, handleDeleteDepartment) => [
   {
@@ -39,18 +39,25 @@ const createColumns = (toggleModalEditDepartment, handleDeleteDepartment) => [
   },
   {
     title: 'Manager',
-    dataIndex: ['managerData', 'firstName'],
+    dataIndex: ['managerData', 'id'],
     key: 'managerData',
     sorter: true,
     render: (_, record) =>
       record.managerData.id
-        ? `${record.managerData.firstName} ${record.managerData.lastName}`
-        : '',
+        ? `#${record.managerData.id} - ${record.managerData.firstName} ${record.managerData.lastName}`
+        : 'No manager',
   },
   {
-    title: 'Date created',
+    title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
+    sorter: true,
+    render: (date) => getFullDate(date),
+  },
+  {
+    title: 'Date Updated',
+    dataIndex: 'updatedAt',
+    key: 'updatedAt',
     sorter: true,
     render: (date) => getFullDate(date),
   },

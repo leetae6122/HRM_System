@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             Leave.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
-            Leave.belongsTo(models.Employee, { foreignKey: 'handledBy', as: 'handlerData' });
+            Leave.belongsTo(models.Employee, { foreignKey: 'adminEId', as: 'handlerData' });
         }
     }
     Leave.init({
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         leaveFrom: DataTypes.DATEONLY,
         leaveTo: DataTypes.DATEONLY,
         employeeId: DataTypes.STRING,
-        handledBy: DataTypes.STRING,
+        adminEId: DataTypes.STRING,
         reasonRejection: DataTypes.TEXT,
     }, {
         sequelize,

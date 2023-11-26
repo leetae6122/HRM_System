@@ -1,6 +1,6 @@
 import { Drawer } from 'antd';
 import PropTypes from 'prop-types';
-import FilterManagerAttendanceForm from './FilterManagerAttendanceForm';
+import FilterRewardPunishmentForm from './FilterRewardPunishmentForm';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
@@ -22,29 +22,25 @@ FilterDrawer.defaultProps = {
 
 function FilterDrawer(props) {
   const { toggleShowDrawer, openDrawer, setFilter } = props;
-  const { filterData } = useSelector((state) => state.attendance);
+  const { filterData } = useSelector((state) => state.rewardPunishment);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const handleFilter = async (values) => {
     setConfirmLoading(true);
     let filter;
-
-    if (!_.isEmpty(_.omitBy(values.attendanceDate, _.isNil))) {
+    if (!_.isEmpty(_.omitBy(values.amount, _.isNil))) {
       filter = {
-        ...filter,
-        attendanceDate: {
-          $between: [
-            values.attendanceDate[0].utc().format(),
-            values.attendanceDate[1].utc().format(),
-          ],
+        amount: {
+          $gte: values.amount.from,
+          $lte: values.amount.to,
         },
       };
     }
 
-    if (values.shiftId) {
+    if (values.date) {
       filter = {
         ...filter,
-        shiftId: values.shiftId,
+        date: values.date.utc().format(),
       };
     }
 
@@ -57,7 +53,7 @@ function FilterDrawer(props) {
     setConfirmLoading(false);
     toggleShowDrawer();
   };
-  console.log(filterData.where);
+
   return (
     <Drawer
       title="Filter"
@@ -66,17 +62,17 @@ function FilterDrawer(props) {
       open={openDrawer}
       width={'70vh'}
     >
-      <FilterManagerAttendanceForm
+      <FilterRewardPunishmentForm
         onSubmit={handleFilter}
         loading={confirmLoading}
         initialValues={{
-          attendanceDate: filterData.where.attendanceDate
-            ? [
-                dayjs(filterData.where.attendanceDate.$between[0]),
-                dayjs(filterData.where.attendanceDate.$between[1]),
-              ]
-            : [],
-          shiftId: filterData.where.shiftId ?? null,
+          amount: filterData.where.amount
+            ? {
+                from: filterData.where.amount.$gte ?? null,
+                to: filterData.where.amount.$lte ?? null,
+              }
+            : {},
+          date: filterData.where.date ? dayjs(filterData.where.date) : '',
         }}
       />
     </Drawer>
