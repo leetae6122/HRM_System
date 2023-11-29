@@ -199,7 +199,6 @@ exports.logOutAttendance = async (req, res, next) => {
 exports.adminUpdateAttendance = async (req, res, next) => {
     try {
         const foundAttendance = await attendanceService.foundAttendance(req.body.attendanceId, next);
-
         if (foundAttendance.adminStatus !== 'Pending') {
             return next(createError.BadRequest(MSG_ATTENDANCE_STATUS_NOT_PENDING));
         }
@@ -208,8 +207,12 @@ exports.adminUpdateAttendance = async (req, res, next) => {
             ...req.body,
             adminEId: req.user.employeeId
         }
+        if (foundAttendance.employeeData.id === foundAttendance.employeeData.departmentData.managerEId) {
+            payload.managerStatus = 'Approved';
+            payload.managerEId = foundAttendance.employeeData.id;
+        }
 
-        // await attendanceService.updateAttendance(req.body.attendanceId, payload);
+        await attendanceService.updateAttendance(req.body.attendanceId, payload);
 
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
