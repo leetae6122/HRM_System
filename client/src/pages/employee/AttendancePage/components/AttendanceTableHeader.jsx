@@ -12,6 +12,10 @@ import { getMonthName } from 'utils/handleDate';
 
 dayjs.extend(utc);
 
+const disabledDate = (current) => {
+  return current && current.valueOf() > Date.now();
+};
+
 AttendanceTableHeader.propTypes = {
   setFilter: PropTypes.func,
 };
@@ -57,6 +61,7 @@ function AttendanceTableHeader(props) {
           onChange={onChangeDate}
           allowClear={false}
           format={(value) =>  getMonthName(value)}
+          disabledDate={disabledDate}
         />
       </Col>
       <Col span={14}>

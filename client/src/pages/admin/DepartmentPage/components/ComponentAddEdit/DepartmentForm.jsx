@@ -52,7 +52,7 @@ function DepartmentForm(props) {
         const response = await employeeApi.getAll();
         const options = response.data.map((employee) => ({
           value: employee.id,
-          label: `#${employee.id} - ${employee.firstName} ${employee.lastName}`,
+          label: `#${employee.id} - ${employee.lastName} ${employee.firstName}`,
         }));
         options.unshift({
           value: '',

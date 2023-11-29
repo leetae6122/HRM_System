@@ -13,6 +13,7 @@ import ModalEditLeave from './components/ComponentAddEdit/ModalEditLeave';
 import { gold } from '@ant-design/colors';
 import ModalDetailLeave from './components/ModalDetailLeave';
 import _ from 'lodash';
+import { setDefaultFilterData } from 'reducers/leave';
 
 const createColumns = (
   toggleModalEditLeave,
@@ -33,8 +34,8 @@ const createColumns = (
     key: 'handlerData',
     sorter: true,
     render: (_, record) =>
-      record.handledBy
-        ? `${record.handlerData.firstName} ${record.handlerData.lastName}`
+      record.adminEId
+        ? `${record.handlerData.lastName} ${record.handlerData.firstName}`
         : '',
   },
   {
@@ -135,6 +136,11 @@ function LeavePage() {
   const [openModalEditLeave, setOpenModalEditLeave] = useState(false);
   const [openModalDetailLeave, setOpenModalDetailLeave] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

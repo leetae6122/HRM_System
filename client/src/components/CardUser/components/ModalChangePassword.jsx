@@ -1,22 +1,24 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Modal } from "antd";
-import ChangePasswordForm from "./ChangePasswordForm";
-import Swal from "sweetalert2";
-import userApi from "api/userApi";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Modal } from 'antd';
+import ChangePasswordForm from './ChangePasswordForm';
+import Swal from 'sweetalert2';
+import userApi from 'api/userApi';
 
 ModalChangePassword.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
+  handleLogout: PropTypes.func,
 };
 
 ModalChangePassword.defaultProps = {
   openModal: false,
   toggleShowModal: null,
+  handleLogout: PropTypes.func,
 };
 
 function ModalChangePassword(props) {
-  const { openModal, toggleShowModal } = props;
+  const { openModal, toggleShowModal, handleLogout } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const handleChangePassword = async (values) => {
@@ -28,16 +30,17 @@ function ModalChangePassword(props) {
       };
       const response = await userApi.changePassword(data);
       Swal.fire({
-        icon: "success",
+        icon: 'success',
         title: response.message,
         showConfirmButton: true,
-        confirmButtonText: "Done",
+        confirmButtonText: 'Done',
       }).then((result) => {
         setConfirmLoading(false);
         if (result.isConfirmed) {
           toggleShowModal();
         }
       });
+      handleLogout();
     } catch (error) {
       setConfirmLoading(false);
     }

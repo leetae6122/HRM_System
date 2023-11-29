@@ -55,8 +55,8 @@ function ModalAddEmployee(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={'100vh'}
-        style={{ top: 40 }}
+        width={'150vh'}
+        style={{ top: 30 }}
       >
         <EmployeeForm
           onCancel={handleCancel}

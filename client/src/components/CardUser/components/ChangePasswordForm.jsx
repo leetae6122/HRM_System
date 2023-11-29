@@ -59,6 +59,7 @@ function ChangePasswordForm(props) {
         hasFeedback
         rules={[
           { required: true, message: "Please input your new password!" },
+          { min: 8, message: 'New Password must be minimum 8 characters.' },
           {
             pattern: new RegExp(
               "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"

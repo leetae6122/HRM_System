@@ -18,19 +18,35 @@ module.exports = {
     },
     {
       id: 2,
-      username: 'trung.dinh',
-      password: await hashPassword('Trung123@'),
+      username: 'anh.nguyendiep',
+      password: await hashPassword('Anhnguyen123@'),
       isAdmin: false,
       isActive: true,
       employeeId: 'NV20230002'
     },
     {
       id: 3,
-      username: 'hanh.dao',
-      password: await hashPassword('Hanh123@'),
+      username: 'ha.tran',
+      password: await hashPassword('Hatran123@'),
       isAdmin: false,
       isActive: true,
-      employeeId: 'NV20230003'
+      employeeId: 'NV20230007'
+    },
+    {
+      id: 4,
+      username: 'nam.nguyen',
+      password: await hashPassword('Namnguyen123@'),
+      isAdmin: false,
+      isActive: true,
+      employeeId: 'NV20230012'
+    },
+    {
+      id: 5,
+      username: 'tri.le',
+      password: await hashPassword('Trile123@'),
+      isAdmin: false,
+      isActive: true,
+      employeeId: 'NV20230017'
     }
   ], {
 

@@ -9,6 +9,7 @@ import {
   Radio,
   Typography,
 } from 'antd';
+import dayjs from 'dayjs';
 
 EditLeaveForm.propTypes = {
   onCancel: PropTypes.func,
@@ -40,11 +41,6 @@ const createItems = (data) => [
   },
   {
     key: '2',
-    label: 'Employee Name',
-    children: `${data.employeeData.firstName} ${data.employeeData.lastName}`,
-  },
-  {
-    key: '3',
     label: 'Status',
     children: (
       <span
@@ -62,9 +58,16 @@ const createItems = (data) => [
     ),
   },
   {
+    key: '3',
+    label: 'Employee',
+    children: `#${data.employeeData.id} - ${data.employeeData.lastName} ${data.employeeData.firstName}`,
+    span: 2,
+  },
+  {
     key: '4',
     label: 'Title',
     children: data.title,
+    span: 2,
   },
   {
     key: '5',
@@ -75,17 +78,19 @@ const createItems = (data) => [
   {
     key: '6',
     label: 'Leave From',
-    children: data.leaveFrom,
+    children: dayjs(data.leaveFrom).format('DD/MM/YYYY'),
   },
   {
     key: '7',
     label: 'Leave To',
-    children: data.leaveTo,
+    children: dayjs(data.leaveTo).format('DD/MM/YYYY'),
   },
   {
     key: '8',
     label: 'Handler',
-    children: `#${data.handlerData.id} - ${data.handlerData.firstName} ${data.handlerData.lastName}`,
+    children: data.adminEId
+      ? `#${data.handlerData.id} - ${data.handlerData.lastName} ${data.handlerData.firstName}`
+      : '',
   },
 ];
 
@@ -109,7 +114,7 @@ function EditLeaveForm(props) {
   const handleCancel = () => {
     onCancel();
   };
-  console.log(infoLeave);
+
   return (
     <div>
       <Descriptions

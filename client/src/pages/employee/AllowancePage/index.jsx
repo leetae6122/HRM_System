@@ -12,6 +12,7 @@ import allowanceApi from 'api/allowanceApi';
 import _ from 'lodash';
 import { numberWithDot } from 'utils/format';
 import AllowanceTableHeader from './components/AllowanceTableHeader';
+import { getMonthName } from 'utils/handleDate';
 
 const createColumns = () => [
   {
@@ -40,14 +41,14 @@ const createColumns = () => [
     dataIndex: 'startDate',
     key: 'startDate',
     sorter: true,
-    render: (date) => getFullDate(date),
+    render: (date) => getMonthName(date),
   },
   {
     title: 'End Date',
     dataIndex: 'endDate',
     key: 'endDate',
     sorter: true,
-    render: (date) => (date ? getFullDate(date) : ''),
+    render: (date) => getMonthName(date),
   },
   {
     title: 'Added By',
@@ -55,12 +56,19 @@ const createColumns = () => [
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
-      `${record.adderData.firstName} ${record.adderData.lastName}`,
+      `#${record.adderData.id} - ${record.adderData.lastName} ${record.adderData.firstName}`,
   },
   {
     title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
+    sorter: true,
+    render: (date) => getFullDate(date),
+  },
+  {
+    title: 'Date Updated',
+    dataIndex: 'updatedAt',
+    key: 'updatedAt',
     sorter: true,
     render: (date) => getFullDate(date),
   },

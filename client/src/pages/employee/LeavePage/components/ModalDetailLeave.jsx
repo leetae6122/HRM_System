@@ -24,13 +24,6 @@ const createItems = (value) => [
   },
   {
     key: '2',
-    label: 'Handler',
-    children: value.handledBy
-      ? `${value.handlerData.firstName} ${value.handlerData.lastName}`
-      : '',
-  },
-  {
-    key: '3',
     label: 'Status',
     children: (
       <span style={{ color: value.status === 'Reject' ? 'red' : 'green' }}>
@@ -39,9 +32,18 @@ const createItems = (value) => [
     ),
   },
   {
+    key: '3',
+    label: 'Handler',
+    children: value.adminEId
+      ? `#${value.handlerData.id} - ${value.handlerData.lastName} ${value.handlerData.firstName}`
+      : '',
+    span: 2,
+  },
+  {
     key: '4',
     label: 'Date processing',
-    children: dayjs(value.updatedAt).format('YYYY-MM-DD HH:mm'),
+    children: dayjs(value.updatedAt).format('DD/MM/YYYY HH:mm'),
+    span: 2,
   },
   {
     key: '5',
@@ -58,12 +60,12 @@ const createItems = (value) => [
   {
     key: '7',
     label: 'Leave From',
-    children: value.leaveFrom,
+    children: dayjs(value.leaveFrom).format('DD/MM/YYYY'),
   },
   {
     key: '8',
     label: 'Leave To',
-    children: value.leaveTo,
+    children: dayjs(value.leaveTo).format('DD/MM/YYYY'),
   },
   value.status === 'Reject'
     ? {

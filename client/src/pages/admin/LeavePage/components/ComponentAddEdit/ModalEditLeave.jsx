@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 import _ from 'lodash';
 import leaveApi from 'api/leaveApi';
 import EditLeaveForm from './EditLeaveForm';
-import { getFullDate } from 'utils/handleDate';
 
 ModalEditLeave.propTypes = {
   openModal: PropTypes.bool,
@@ -37,8 +36,8 @@ function ModalEditLeave(props) {
             leaveId: data.id,
             title: data.title,
             description: data.description,
-            leaveFrom: getFullDate(data.leaveFrom),
-            leaveTo: getFullDate(data.leaveTo),
+            leaveFrom: data.leaveFrom,
+            leaveTo: data.leaveTo,
             status: data.status,
             employeeData: data.employeeData,
             handlerData: data.handlerData

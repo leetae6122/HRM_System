@@ -9,6 +9,10 @@ const positionApi = {
         const url = '/position';
         return axiosClient.get(url);
     },
+    getAllWithDepartmentId: (departmentId) => {
+        const url = `/position/department/${departmentId}`;
+        return axiosClient.get(url);
+    },
     getById: (id) => {
         const url = `/position/${id}`;
         return axiosClient.get(url);

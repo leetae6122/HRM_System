@@ -13,11 +13,19 @@ class AttendanceService {
             include: [
                 {
                     model: db.Employee, as: 'employeeData',
-                    attributes: ['id', 'firstName', 'lastName']
+                    attributes: ['id', 'firstName', 'lastName'],
+                    include:{
+                        model: db.Department, as: 'departmentData',
+                        attributes: ['id', 'managerEId'],
+                    },
                 },
                 {
                     model: db.Employee, as: 'adminData',
                     attributes: ['id', 'firstName', 'lastName']
+                },
+                {
+                    model: db.Employee, as: 'managerData',
+                    attributes: ['id', 'firstName', 'lastName'],
                 },
                 {
                     model: db.Shift, as: 'shiftData',
@@ -122,6 +130,10 @@ class AttendanceService {
                     attributes: ['id', 'firstName', 'lastName'],
                 },
                 {
+                    model: db.Employee, as: 'managerData',
+                    attributes: ['id', 'firstName', 'lastName'],
+                },
+                {
                     model: db.Shift, as: 'shiftData',
                 },
             ],
@@ -144,6 +156,10 @@ class AttendanceService {
                     },
                     {
                         model: db.Employee, as: 'adminData',
+                        attributes: ['id', 'firstName', 'lastName'],
+                    },
+                    {
+                        model: db.Employee, as: 'managerData',
                         attributes: ['id', 'firstName', 'lastName'],
                     },
                     {

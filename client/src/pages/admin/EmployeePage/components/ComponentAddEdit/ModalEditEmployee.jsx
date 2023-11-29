@@ -92,8 +92,8 @@ function ModalEditEmployee(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={'100vh'}
-        style={{ top: 20 }}
+        width={'150vh'}
+        style={{ top: 30 }}
       >
         {!_.isEmpty(editEmployee) && (
           <EmployeeForm

@@ -63,7 +63,7 @@ exports.verifyAdminOrSelf = async (req, res, next) => {
 exports.verifyAdminOrDepartmentManager = async (req, res, next) => {
     const employee = await employeeService.getManageDepartment(req.user.employeeId);
     if (employee.manageDepartment.id || req.user.isAdmin) {
-        req.manageDepartmentId = employee.manageDepartment.id;
+        // req.manageDepartmentId = employee.manageDepartment.id;
         next();
     } else {
         return next(createError.Unauthorized('You are not a department manager to perform this function'));

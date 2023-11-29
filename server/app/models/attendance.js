@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Attendance.belongsTo(models.Employee, { foreignKey: 'employeeId', as: 'employeeData' });
-      Attendance.belongsTo(models.Employee, { foreignKey: 'adminId', as: 'adminData' });
+      Attendance.belongsTo(models.Employee, { foreignKey: 'adminEId', as: 'adminData' });
+      Attendance.belongsTo(models.Employee, { foreignKey: 'managerEId', as: 'managerData' });
       Attendance.belongsTo(models.Shift, { foreignKey: 'shiftId', as: 'shiftData' });
     }
   }
@@ -29,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     managerStatus: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
     adminStatus: DataTypes.ENUM('Pending', 'Reject', 'Approved'),
     shiftId: DataTypes.INTEGER,
-    adminId: DataTypes.STRING,
+    adminEId: DataTypes.STRING,
+    managerEId: DataTypes.STRING,
     employeeId: DataTypes.STRING,
   }, {
     sequelize,

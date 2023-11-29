@@ -13,8 +13,14 @@ import ModalEditPosition from './components/ComponentAddEdit/ModalEditPosition';
 import PositionTableHeader from './components/PositionTableHeader';
 import _ from 'lodash';
 import { getFullDate } from 'utils/handleDate';
+import { setDefaultFilterData } from 'reducers/position';
+import departmentApi from 'api/departmentApi';
 
-const createColumns = (toggleModalEditPosition, handleDeletePosition) => [
+const createColumns = (
+  toggleModalEditPosition,
+  handleDeletePosition,
+  departmentFilter,
+) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -24,7 +30,7 @@ const createColumns = (toggleModalEditPosition, handleDeletePosition) => [
     width: 80,
   },
   {
-    title: 'Name',
+    title: 'Position Name',
     dataIndex: 'name',
     key: 'name',
     sorter: true,
@@ -42,6 +48,12 @@ const createColumns = (toggleModalEditPosition, handleDeletePosition) => [
     key: 'maxHourlyWage',
     sorter: true,
     render: (value) => (value ? `${numberWithDot(value)} VNĐ/hr` : ''),
+  },
+  {
+    title: 'Department',
+    dataIndex: ['departmentData', 'name'],
+    key: 'department',
+    filters: departmentFilter,
   },
   {
     title: 'Date Created',
@@ -86,7 +98,13 @@ function PositionPage() {
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [openModalAddPosition, setOpenModalAddPosition] = useState(false);
   const [openModalEditPosition, setOpenModalEditPosition] = useState(false);
+  const [departmentFilter, setDepartmentFilter] = useState([]);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -111,6 +129,24 @@ function PositionPage() {
     fetchData();
     return () => controller.abort();
   }, [filterData, dispatch]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchDepartmentFilter = async () => {
+      try {
+        const response = await departmentApi.getAll();
+        const options = response.data.map((department) => ({
+          value: department.id,
+          text: department.name,
+        }));
+        setDepartmentFilter(options);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchDepartmentFilter();
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (_.isEqual(defaultFilter, filterData)) {
@@ -171,17 +207,30 @@ function PositionPage() {
     setOpenModalAddPosition(!openModalAddPosition);
   };
 
-  const columns = createColumns(toggleModalEditPosition, handleDeletePosition);
+  const columns = createColumns(
+    toggleModalEditPosition,
+    handleDeletePosition,
+    departmentFilter,
+  );
 
   const onChangeTable = (pagination, filters, sorter) => {
     const page = pagination.current;
     const size = pagination.pageSize;
+    let where = filterData.where;
     let order = defaultFilter.order;
+
+    where = _.omitBy(
+      {
+        ...where,
+        departmentId: filters.department,
+      },
+      _.isNil,
+    );
 
     if (!_.isEmpty(sorter.column)) {
       order = [[sorter.field, sorter.order === 'descend' ? 'DESC' : 'ASC']];
     }
-    setFilter({ ...filterData, page, size, order });
+    setFilter({ ...filterData, page, size, where, order });
   };
 
   return (

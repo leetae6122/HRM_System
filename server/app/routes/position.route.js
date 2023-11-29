@@ -13,6 +13,8 @@ router.route("/")
     .get(positionController.findAll)
     .post(validation(createPositionSchema), positionController.createPosition)
     .patch(validation(updatePositionSchema), positionController.updatePosition)
+router.route("/department/:id")
+    .get(positionController.findAllWithDepartmentId)
 
 router.route("/filter")
     .post(validation(modelFilterSchema), positionController.getListPosition)

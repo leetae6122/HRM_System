@@ -39,6 +39,7 @@ function ModalEditPosition(props) {
             name: data.name,
             minHourlyWage: data.minHourlyWage,
             maxHourlyWage: data.maxHourlyWage,
+            departmentId: data.departmentId
           });
         }
       } catch (error) {

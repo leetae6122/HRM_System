@@ -12,6 +12,10 @@ import { getMonthName } from 'utils/handleDate';
 
 dayjs.extend(utc);
 
+const disabledDate = (current) => {
+  return current && current.valueOf() > Date.now();
+};
+
 RewardPunishmentTableHeader.propTypes = {
   setFilter: PropTypes.func,
 };
@@ -54,6 +58,7 @@ function RewardPunishmentTableHeader(props) {
           onChange={onChangeDate}
           allowClear={false}
           format={(value) =>  getMonthName(value)}
+          disabledDate={disabledDate}
         />
       </Col>
       <Col span={14}>

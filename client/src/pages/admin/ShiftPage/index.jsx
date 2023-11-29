@@ -14,6 +14,7 @@ import ModalEditShift from './components/ComponentAddEdit/ModalEditShift';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import FilterDrawer from './components/Filter/FilterDrawer';
+import { setDefaultFilterData } from 'reducers/shift';
 
 dayjs.extend(customParseFormat);
 const daysName = (arrDays) => {
@@ -169,6 +170,11 @@ function ShiftPage() {
   const [openModalEditShift, setOpenModalEditShift] = useState(false);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

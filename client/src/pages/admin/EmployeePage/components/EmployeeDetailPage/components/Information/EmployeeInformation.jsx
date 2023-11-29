@@ -37,7 +37,7 @@ const createItems = (employee) => [
     key: '4',
     label: <span style={labelStyle}>Department Manager</span>,
     children: employee.departmentData.managerData?.firstName
-      ? `#${employee.departmentData.managerData.id} - ${employee.departmentData.managerData.firstName} ${employee.departmentData.managerData.lastName}`
+      ? `#${employee.departmentData.managerData.id} - ${employee.departmentData.managerData.lastName} ${employee.departmentData.managerData.firstName}`
       : '',
     span: 2,
   },

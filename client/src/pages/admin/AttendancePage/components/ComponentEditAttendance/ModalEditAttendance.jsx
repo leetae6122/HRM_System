@@ -78,9 +78,9 @@ function ModalEditAttendance(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
-        width={'100vh'}
+        width={'110vh'}
         style={{
-          top: 40
+          top: 30
         }}
       >
         {!_.isEmpty(infoAttendance) && (

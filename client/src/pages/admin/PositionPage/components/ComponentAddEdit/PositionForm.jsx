@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button, Space, InputNumber } from 'antd';
+import { Form, Input, Button, Space, InputNumber, Select } from 'antd';
 import _ from 'lodash';
+import { toast } from 'react-toastify';
+import departmentApi from 'api/departmentApi';
 
 PositionForm.propTypes = {
   onCancel: PropTypes.func,
@@ -26,6 +28,7 @@ const wrapperCol = { offset: 8, span: 16 };
 function PositionForm(props) {
   const { onCancel, onSubmit, loading, initialValues } = props;
   const [submittable, setSubmittable] = useState(false);
+  const [departmentOptions, setDepartmentOptions] = useState([]);
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
 
@@ -41,6 +44,24 @@ function PositionForm(props) {
       () => setSubmittable(false),
     );
   }, [values, form, initialValues]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchDepartmentOptions = async () => {
+      try {
+        const response = await departmentApi.getAll();
+        const options = response.data.map((department) => ({
+          value: department.id,
+          label: department.name,
+        }));
+        setDepartmentOptions(options);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchDepartmentOptions();
+    return () => controller.abort();
+  }, []);
 
   const onFinish = (values) => {
     onSubmit(values);
@@ -154,6 +175,31 @@ function PositionForm(props) {
           disabled={loading}
           formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           addonAfter={'VNĐ/hr'}
+        />
+      </Form.Item>
+      <Form.Item
+        name="departmentId"
+        label="Department"
+        hasFeedback
+        rules={[{ required: true, message: 'Please select a department!' }]}
+      >
+        <Select
+          showSearch
+          style={{
+            width: '100%',
+          }}
+          placeholder="Search to Select"
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            (option?.label ?? '').includes(input)
+          }
+          filterSort={(optionA, optionB) =>
+            (optionA?.label ?? '')
+              .toLowerCase()
+              .localeCompare((optionB?.label ?? '').toLowerCase())
+          }
+          options={departmentOptions}
+          disabled={loading}
         />
       </Form.Item>
       <Form.Item wrapperCol={wrapperCol}>

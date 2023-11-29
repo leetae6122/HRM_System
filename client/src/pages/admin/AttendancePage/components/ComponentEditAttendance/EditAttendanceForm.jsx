@@ -31,7 +31,7 @@ const createItems = (data) => [
     key: '3',
     label: 'Employee Name',
     children: data
-      ? `${data.employeeData.firstName} ${data.employeeData.lastName}`
+      ? `${data.employeeData.lastName} ${data.employeeData.firstName}`
       : '',
     span: 2,
   },
@@ -98,7 +98,7 @@ const createItems = (data) => [
               ? 'red'
               : data.managerStatus === 'Approved'
               ? 'green'
-              : '',
+              : 'orange',
         }}
       >
         {data.managerStatus}
@@ -116,7 +116,7 @@ const createItems = (data) => [
               ? 'red'
               : data.adminStatus === 'Approved'
               ? 'green'
-              : '',
+              : 'orange',
         }}
       >
         {data.adminStatus}
@@ -135,13 +135,29 @@ const createItems = (data) => [
   {
     key: '12',
     label: 'Shift type',
-    children: data.shiftData.overtimeShift ? 'Overtime shift': 'Main shift',
+    children: (
+      <span
+        style={{
+          color: data.shiftData.overtimeShift ? 'orange' : 'green',
+        }}
+      >
+        {data.shiftData.overtimeShift ? 'Overtime shift' : 'Main shift'}
+      </span>
+    ),
   },
   {
     key: '13',
-    label: 'Admin Name',
-    children: data.adminData.id
-      ? `#${data.adminData.id} - ${data.adminData.firstName} ${data.adminData.lastName}`
+    label: 'Admin',
+    children: data.adminEId
+      ? `#${data.adminData.id} - ${data.adminData.lastName} ${data.adminData.firstName}`
+      : '',
+    span: 2,
+  },
+  {
+    key: '14',
+    label: 'Manager',
+    children: data.managerEId
+      ? `#${data.managerData.id} - ${data.managerData.lastName} ${data.managerData.firstName}`
       : '',
     span: 2,
   },
@@ -200,23 +216,27 @@ function EditAttendanceForm(props) {
                 >
                   Cancel
                 </Button>
-                <Button
-                  htmlType="submit"
-                  type="primary"
-                  danger
-                  onClick={() => onFinish({ adminStatus: 'Reject' })}
-                  loading={loading}
-                >
-                  Reject
-                </Button>
-                <Button
-                  htmlType="submit"
-                  type="primary"
-                  onClick={() => onFinish({ adminStatus: 'Approved' })}
-                  loading={loading}
-                >
-                  Approved
-                </Button>
+                {infoAttendance.outTime ? (
+                  <>
+                    <Button
+                      htmlType="submit"
+                      type="primary"
+                      danger
+                      onClick={() => onFinish({ adminStatus: 'Reject' })}
+                      loading={loading}
+                    >
+                      Reject
+                    </Button>
+                    <Button
+                      htmlType="submit"
+                      type="primary"
+                      onClick={() => onFinish({ adminStatus: 'Approved' })}
+                      loading={loading}
+                    >
+                      Approved
+                    </Button>
+                  </>
+                ) : null}
               </Space>
             </Form.Item>
           </Form>

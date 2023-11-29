@@ -8,6 +8,7 @@ import _ from 'lodash';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useState } from 'react';
+import { getMonthName } from 'utils/handleDate';
 
 dayjs.extend(utc);
 
@@ -36,7 +37,7 @@ function AllowanceTableHeader(props) {
       ...filterData,
       where: {
         ...filterData.where,
-        startDate: { $gte: value.utc().format() },
+        startDate: { $gte: value.startOf('month').utc().format() },
       },
     });
   };
@@ -47,7 +48,7 @@ function AllowanceTableHeader(props) {
       ...filterData,
       where: {
         ...filterData.where,
-        endDate: { $lte: value.utc().format() },
+        endDate: { $lte: value.endOf('month').utc().format() },
       },
     });
   };
@@ -57,17 +58,19 @@ function AllowanceTableHeader(props) {
       <Col span={12}>
         <Space>
           <DatePicker
+            picker="month"
             value={startValue}
             onChange={onChangeStartDate}
             allowClear={false}
-            format={'DD/MM/YYYY'}
+            format={(value) => getMonthName(value)}
             placeholder="Start Date"
           />
           <DatePicker
+            picker="month"
             value={endValue}
             onChange={onChangeEndDate}
             allowClear={false}
-            format={'DD/MM/YYYY'}
+            format={(value) => getMonthName(value)}
             placeholder="End Date"
           />
         </Space>

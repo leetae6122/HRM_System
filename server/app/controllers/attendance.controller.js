@@ -25,7 +25,9 @@ exports.findById = async (req, res, next) => {
         if (!data) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("Attendance")));
         }
-        if (req.user.employeeId !== data.employeeId && !req.user.isAdmin) {
+        if (data.employeeId !== req.user.employeeId
+            && !req.user.isAdmin
+            && req.user.employeeId !== data.employeeData.departmentData.managerEId) {
             return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
         }
 
@@ -34,7 +36,6 @@ exports.findById = async (req, res, next) => {
         return next(error);
     }
 }
-
 
 exports.findAll = async (req, res, next) => {
     try {
@@ -72,7 +73,8 @@ exports.currentAttendance = async (req, res, next) => {
 
 exports.managerGetListAttendance = async (req, res, next) => {
     try {
-        const listEmployee = await employeeService.getListEmployeeByDepartment(req.manageDepartmentId);
+        const managerDepartmentId = req.user.profile.manageDepartment.id;
+        const listEmployee = await employeeService.getListEmployeeByDepartment(managerDepartmentId);
         const arrEmployeeId = listEmployee.map((employee) => {
             if (employee.id === req.user.employeeId)
                 return;
@@ -204,10 +206,10 @@ exports.adminUpdateAttendance = async (req, res, next) => {
 
         const payload = {
             ...req.body,
-            adminId: req.user.employeeId
+            adminEId: req.user.employeeId
         }
 
-        await attendanceService.updateAttendance(req.body.attendanceId, payload);
+        // await attendanceService.updateAttendance(req.body.attendanceId, payload);
 
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {
@@ -222,8 +224,16 @@ exports.managerUpdateAttendance = async (req, res, next) => {
         if (foundAttendance.managerStatus !== 'Pending') {
             return next(createError.BadRequest(MSG_ATTENDANCE_STATUS_NOT_PENDING));
         }
+        if (req.user.profile.manageDepartment.id !== foundAttendance.employeeData.departmentData.id) {
+            return next(createError.Unauthorized(MSG_ERROR_NOT_HAVE_PERMISSION));
+        }
 
-        await attendanceService.updateAttendance(req.body.attendanceId, req.body);
+        const payload = {
+            ...req.body,
+            managerEId: req.user.employeeId
+        }
+
+        await attendanceService.updateAttendance(req.body.attendanceId, payload);
 
         return res.send({ message: MSG_UPDATE_SUCCESSFUL });
     } catch (error) {

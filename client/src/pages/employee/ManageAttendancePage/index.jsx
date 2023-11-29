@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import { Button, Divider, Space, Table, Tag } from 'antd';
 import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
-import { DeleteFilled, EditFilled, EyeOutlined } from '@ant-design/icons';
+import { EditFilled, EyeOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setData,
   setEditAttendanceId,
   setFilterData,
 } from 'reducers/attendance';
-import Swal from 'sweetalert2';
 import { gold, green, red } from '@ant-design/colors';
 import attendanceApi from 'api/attendanceApi';
 import AttendanceTableHeader from './components/AttendanceTableHeader';
@@ -18,7 +17,7 @@ import _ from 'lodash';
 import FilterDrawer from './components/Filter/FilterDrawer';
 import { setDefaultFilterData } from 'reducers/attendance';
 
-const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
+const createColumns = (toggleModalEditAttendance) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -153,13 +152,6 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
             onClick={() => toggleModalEditAttendance(record.id)}
           />
         )}
-
-        <Button
-          type="primary"
-          danger
-          icon={<DeleteFilled />}
-          onClick={() => handleDeleteAttendance(record.id)}
-        />
       </Space>
     ),
   },
@@ -236,32 +228,7 @@ function ManageAttendancePage() {
     setOpenModalEditAttendance(!openModalEditAttendance);
   };
 
-  const handleDeleteAttendance = async (attendanceId) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-    })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          await attendanceApi.delete(attendanceId);
-          Swal.fire('Deleted!', 'Attendance has been deleted.', 'success');
-          await refreshAttendanceList();
-        }
-      })
-      .catch((error) => {
-        toast.error(error);
-      });
-  };
-
-  const columns = createColumns(
-    toggleModalEditAttendance,
-    handleDeleteAttendance,
-  );
+  const columns = createColumns(toggleModalEditAttendance);
 
   const onChangeTable = (pagination, filters, sorter) => {
     const page = pagination.current;

@@ -13,6 +13,7 @@ import ModalAddWage from './components/ComponentAddEdit/ModalAddWage';
 import ModalEditWage from './components/ComponentAddEdit/ModalEditWage';
 import _ from 'lodash';
 import FilterDrawer from './components/Filter/FilterDrawer';
+import { setDefaultFilterData } from 'reducers/wage';
 
 const createColumns = (toggleModalEditWage, handleDeleteWage) => [
   {
@@ -42,7 +43,7 @@ const createColumns = (toggleModalEditWage, handleDeleteWage) => [
     key: 'employeeData',
     sorter: true,
     render: (_, record) =>
-      `${record.employeeData.firstName} ${record.employeeData.lastName}`,
+      `${record.employeeData.lastName} ${record.employeeData.firstName}`,
   },
   {
     title: 'From Date',
@@ -64,7 +65,7 @@ const createColumns = (toggleModalEditWage, handleDeleteWage) => [
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
-      `#${record.adderData.id} - ${record.adderData.firstName} ${record.adderData.lastName}`,
+      `#${record.adderData.id} - ${record.adderData.lastName} ${record.adderData.firstName}`,
   },
   {
     title: 'Action',
@@ -96,6 +97,11 @@ function WagePage() {
   const [openModalAddWage, setOpenModalAddWage] = useState(false);
   const [openModalEditWage, setOpenModalEditWage] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

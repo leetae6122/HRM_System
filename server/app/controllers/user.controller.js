@@ -13,7 +13,7 @@ import {
 
 exports.getUserProfile = async (req, res, next) => {
     try {
-        const data = await userService.findById(req.user.id);
+        const data = await userService.findByIdSecret(req.user.id);
         if (!data) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }
@@ -25,7 +25,7 @@ exports.getUserProfile = async (req, res, next) => {
 
 exports.findById = async (req, res, next) => {
     try {
-        const data = await userService.findById(req.params.id);
+        const data = await userService.findByIdSecret(req.params.id);
         if (!data) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }
@@ -75,7 +75,7 @@ exports.createUser = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
     try {
-        const foundUser = await userService.findById(req.body.userId);
+        const foundUser = await userService.findByIdSecret(req.body.userId);
         if (!foundUser) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }
@@ -98,7 +98,7 @@ exports.deleteUser = async (req, res, next) => {
         if (!req.params.id && Number(req.params.id)) {
             return next(createError.BadRequest(MSG_ERROR_ID_EMPTY("UserId")));
         }
-        const foundUser = await userService.findById(req.params.id);
+        const foundUser = await userService.findByIdSecret(req.params.id);
         if (!foundUser) {
             return next(createError.BadRequest(MSG_ERROR_NOT_FOUND("User")));
         }

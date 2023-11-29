@@ -37,7 +37,7 @@ function ProfileCard() {
       <Meta
         title={
           <Typography.Title level={3}>
-            {profile.firstName} {profile.lastName}
+            {profile.lastName} {profile.firstName}
           </Typography.Title>
         }
         description={

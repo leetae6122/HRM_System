@@ -38,7 +38,14 @@ function ShiftTableHeader(props) {
       page: 1,
       size: 10,
       where: {
-        name: { $like: `%${value}%` },
+        $or: [
+          {
+            id: { $like: `%${value}%` },
+          },
+          {
+            name: { $like: `%${value}%` },
+          },
+        ],
       },
     });
     setLoadingSearch(false);
@@ -53,7 +60,7 @@ function ShiftTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search name"
+          placeholder="Input search id or name"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}

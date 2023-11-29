@@ -7,6 +7,9 @@ class PositionService {
     async findById(id) {
         const result = await db.Position.findOne({
             where: { id },
+            include: {
+                model: db.Department, as: 'departmentData'
+            },
             raw: true,
             nest: true
         });
@@ -16,17 +19,33 @@ class PositionService {
     async findByPositionName(positionName) {
         const result = await db.Position.findOne({
             where: { name: positionName },
+            include: {
+                model: db.Department, as: 'departmentData'
+            },
             raw: true,
             nest: true
         });
         return result;
     }
 
-    async findAll() {
-        const result = await db.Position.findAll();
+    async findAll(body = null) {
+        if (body) {
+            const where = body.where;
+            const attributes = body.attributes;
+            const order = body.order;
+
+            const result = await db.Position.findAll({
+                where,
+                order,
+                attributes,
+                raw: true,
+                nest: true
+            })
+            return result;
+        }
+        const result = await db.Leave.findAll({});
         return result;
     }
-
     async filterListPosition(body) {
         const page = body.page || 1;
         const limit = body.size || 10;
@@ -41,6 +60,9 @@ class PositionService {
             offset,
             limit,
             order,
+            include: {
+                model: db.Department, as: 'departmentData'
+            },
             attributes,
             raw: true,
             nest: true

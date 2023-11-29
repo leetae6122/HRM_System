@@ -74,7 +74,6 @@ function FilterDrawer(props) {
     setConfirmLoading(false);
     toggleShowDrawer();
   };
-  console.log(filterData.where);
 
   return (
     <Drawer

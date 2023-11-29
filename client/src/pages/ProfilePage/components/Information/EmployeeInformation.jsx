@@ -27,8 +27,8 @@ const createItems = (profile, department, position) => [
   {
     key: '3',
     label: <span style={labelStyle}>Department Manager</span>,
-    children: department.managerData?.firstName
-      ? `#${department.managerData.id} - ${department.managerData.firstName} ${department.managerData.lastName}`
+    children: department.managerEId
+      ? `#${department.managerData.id} - ${department.managerData.lastName} ${department.managerData.firstName}`
       : '',
     span: 2,
   },

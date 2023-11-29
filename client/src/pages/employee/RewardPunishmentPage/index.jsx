@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Divider, Table, Tag } from 'antd';
+import { Button, Divider, Table, Tag } from 'antd';
 import { toast } from 'react-toastify';
 import { getFullDate } from 'utils/handleDate';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,8 +12,12 @@ import rewardPunishmentApi from 'api/rewardPunishmentApi';
 import _ from 'lodash';
 import { numberWithDot } from 'utils/format';
 import RewardPunishmentTableHeader from './components/RewardPunishmentTableHeader';
+import { setEditRewardPunishmentId } from 'reducers/rewardPunishment';
+import { EyeOutlined } from '@ant-design/icons';
+import { gold } from '@ant-design/colors';
+import ModalDetailRewardPunishment from './components/ModalDetailRewardPunishment';
 
-const createColumns = () => [
+const createColumns = (toggleModalDetailRewardPunishment) => [
   {
     title: 'Id',
     dataIndex: 'id',
@@ -73,7 +77,7 @@ const createColumns = () => [
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
-      `${record.adderData.firstName} ${record.adderData.lastName}`,
+      `${record.adderData.lastName} ${record.adderData.firstName}`,
   },
   {
     title: 'Date Created',
@@ -81,6 +85,18 @@ const createColumns = () => [
     key: 'createdAt',
     sorter: true,
     render: (date) => getFullDate(date),
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    render: (_, record) => (
+      <Button
+        type="primary"
+        style={{ background: gold[5] }}
+        icon={<EyeOutlined />}
+        onClick={() => toggleModalDetailRewardPunishment(record.id)}
+      />
+    ),
   },
 ];
 
@@ -94,6 +110,7 @@ function RewardPunishmentPage() {
     defaultFilter,
   } = useSelector((state) => state.rewardPunishment);
   const [loadingData, setLoadingData] = useState(false);
+  const [openModalDetailRewardPunishment, setOpenModalDetailRewardPunishment] = useState(false);
   const [tableKey, setTableKey] = useState(0);
 
   useEffect(() => {
@@ -137,7 +154,12 @@ function RewardPunishmentPage() {
     dispatch(setFilterData(filter));
   };
 
-  const columns = createColumns();
+  const toggleModalDetailRewardPunishment = (id) => {
+    dispatch(setEditRewardPunishmentId(id));
+    setOpenModalDetailRewardPunishment(!openModalDetailRewardPunishment);
+  };
+
+  const columns = createColumns(toggleModalDetailRewardPunishment);
 
   const onChangeTable = (pagination, filters, sorter) => {
     const page = pagination.current;
@@ -185,6 +207,12 @@ function RewardPunishmentPage() {
         scroll={{ y: 500 }}
         loading={loadingData}
       />
+      {openModalDetailRewardPunishment && (
+        <ModalDetailRewardPunishment
+          openModal={openModalDetailRewardPunishment}
+          toggleShowModal={toggleModalDetailRewardPunishment}
+        />
+      )}
     </>
   );
 }

@@ -98,7 +98,7 @@ const createItems = (data) => [
               ? 'red'
               : data.managerStatus === 'Approved'
               ? 'green'
-              : '',
+              : 'orange',
         }}
       >
         {data.managerStatus}
@@ -116,7 +116,7 @@ const createItems = (data) => [
               ? 'red'
               : data.adminStatus === 'Approved'
               ? 'green'
-              : '',
+              : 'orange',
         }}
       >
         {data.adminStatus}
@@ -135,13 +135,29 @@ const createItems = (data) => [
   {
     key: '12',
     label: 'Shift type',
-    children: data.shiftData.overtimeShift ? 'Overtime shift': 'Main shift',
+    children: (
+      <span
+        style={{
+          color: data.shiftData.overtimeShift ? 'orange' : 'green',
+        }}
+      >
+        {data.shiftData.overtimeShift ? 'Overtime shift' : 'Main shift'}
+      </span>
+    ),
   },
   {
     key: '13',
-    label: 'Admin Name',
+    label: 'Admin',
     children: data.adminData.firstName
-      ? `${data.adminData.firstName} ${data.adminData.lastName}`
+      ? `#${data.adminData.id} - ${data.adminData.firstName} ${data.adminData.lastName}`
+      : '',
+    span: 2,
+  },
+  {
+    key: '13',
+    label: 'Manager',
+    children: data.managerData.firstName
+      ? `#${data.managerData.id} - ${data.managerData.firstName} ${data.managerData.lastName}`
       : '',
     span: 2,
   },
@@ -182,7 +198,7 @@ function ModalDetailAttendance(props) {
         onCancel={handleCancel}
         footer={null}
         width={'110vh'}
-        style={{ top: 40}}
+        style={{ top: 30}}
       >
         <Descriptions layout="horizontal" bordered column={2} items={items} />
       </Modal>

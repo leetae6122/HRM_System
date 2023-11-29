@@ -15,6 +15,7 @@ import ModalAddEmployee from './ComponentAddEdit/ModalAddEmployee';
 import defaultAvatar from 'assets/images/avatar-user.jpg';
 import _ from 'lodash';
 import ModalExportFile from './ExportFile/ModalExportFile';
+import { setDefaultFilterData } from 'reducers/employee';
 
 const createColumns = (
   navigator,
@@ -25,6 +26,7 @@ const createColumns = (
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
+    sorter: true,
   },
   {
     title: 'Avatar',
@@ -141,6 +143,11 @@ function EmployeeListPage(props) {
   const [openModalAddEmployee, setOpenModalAddEmployee] = useState(false);
   const [openExportFile, setOpenExportFile] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

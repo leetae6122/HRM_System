@@ -4,6 +4,14 @@ import _ from 'lodash';
 
 class UserService {
     async findById(id) {
+        const result = await db.User.findByPk(id, {
+            raw: true,
+            nest: true
+        });
+        return result;
+    }
+
+    async findByIdSecret(id) {
         const result = await db.User.scope('secret').findByPk(id, {
             include: {
                 model: db.Employee,
@@ -29,14 +37,6 @@ class UserService {
                     },
                 ]
             },
-            raw: true,
-            nest: true
-        });
-        return result;
-    }
-
-    async findByIdSecret(id) {
-        const result = await db.User.scope('secret').findByPk(id, {
             raw: true,
             nest: true
         });

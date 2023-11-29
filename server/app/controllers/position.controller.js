@@ -7,6 +7,7 @@ import {
     MSG_UPDATE_SUCCESSFUL
 } from "../utils/message.util";
 import positionService from "./../services/position.service";
+import departmentService from "./../services/department.service";
 import createError from 'http-errors';
 
 exports.countEmployees = async (req, res, next) => {
@@ -36,6 +37,15 @@ exports.findAll = async (req, res, next) => {
     }
 }
 
+exports.findAllWithDepartmentId = async (req, res, next) => {
+    try {
+        const data = await positionService.findAll({ where: { departmentId: req.params.id } });
+        return res.send({ data });
+    } catch (error) {
+        return next(error);
+    }
+}
+
 exports.getListPosition = async (req, res, next) => {
     try {
         const data = await positionService.filterListPosition(req.body);
@@ -48,6 +58,7 @@ exports.getListPosition = async (req, res, next) => {
 
 exports.createPosition = async (req, res, next) => {
     try {
+        await departmentService.foundDepartment(req.body.departmentId, next);
         const positionExisted = await positionService.findByPositionName(req.body.name);
         if (positionExisted) {
             return next(createError.BadRequest(MSG_ERROR_EXISTED("Position name")));
@@ -66,7 +77,9 @@ exports.updatePosition = async (req, res, next) => {
         if (positionExisted && positionExisted.id !== req.body.positionId) {
             return next(createError.BadRequest(MSG_ERROR_EXISTED("Position name")));
         }
-
+        if (positionExisted.departmentId !== req.body.departmentId) {
+            await departmentService.foundDepartment(req.body.departmentId, next);
+        }
         await positionService.foundPosition(req.body.positionId, next);
 
         await positionService.updatePosition(req.body.positionId, req.body);

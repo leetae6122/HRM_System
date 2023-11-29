@@ -41,7 +41,7 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
     key: 'employeeData',
     sorter: true,
     render: (_, record) =>
-      `${record.employeeData.firstName} ${record.employeeData.lastName}`,
+      `${record.employeeData.lastName} ${record.employeeData.firstName}`,
   },
   {
     title: 'Shifts',
@@ -141,17 +141,17 @@ const createColumns = (toggleModalEditAttendance, handleDeleteAttendance) => [
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
-        {record.adminStatus !== 'Pending' ? (
+        {record.adminStatus === 'Pending' && record.outTime ? (
           <Button
             type="primary"
-            style={{ background: gold[5] }}
-            icon={<EyeOutlined />}
+            icon={<EditFilled />}
             onClick={() => toggleModalEditAttendance(record.id)}
           />
         ) : (
           <Button
             type="primary"
-            icon={<EditFilled />}
+            style={{ background: gold[5] }}
+            icon={<EyeOutlined />}
             onClick={() => toggleModalEditAttendance(record.id)}
           />
         )}

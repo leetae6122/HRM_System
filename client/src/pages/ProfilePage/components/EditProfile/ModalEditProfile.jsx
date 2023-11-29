@@ -32,7 +32,6 @@ function ModalEditProfile(props) {
     const fetchData = async () => {
       try {
         const data = (await employeeApi.getById(user.profile.id)).data;
-        console.log(data);
         setEditProfile({
           ...data,
           gender: !!data.gender,

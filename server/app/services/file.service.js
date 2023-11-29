@@ -131,7 +131,7 @@ class FileService {
         worksheet.getCell('B2').value = employee.id;
         worksheet.getCell('C2').value = 'Employee Name:';
         worksheet.getCell('C2').font = font;
-        worksheet.getCell('D2').value = `${employee.firstName} ${employee.lastName}`;
+        worksheet.getCell('D2').value = `${employee.lastName} ${employee.firstName}`;
 
         worksheet.getCell('A3').value = 'Total hours worked:';
         worksheet.getCell('A3').font = font;
@@ -319,7 +319,7 @@ class FileService {
                 .replace(/,+/g, '\r\n');
 
             worksheet.getCell(`A${index + 3}`).value = row.id;
-            worksheet.getCell(`B${index + 3}`).value = `${row.firstName} ${row.lastName}`;
+            worksheet.getCell(`B${index + 3}`).value = `${row.lastName} ${row.firstName}`;
             worksheet.getCell(`C${index + 3}`).value = totalWorkingHours;
             worksheet.getCell(`D${index + 3}`).value = totalOvertimeHours;
             worksheet.getCell(`E${index + 3}`).value = totalMainShift;

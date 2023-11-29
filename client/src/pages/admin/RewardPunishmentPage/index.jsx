@@ -18,6 +18,7 @@ import RewardPunishmentTableHeader from './components/RewardPunishmentTableHeade
 import ModalAddRewardPunishment from './components/ComponentAddEdit/ModalAddRewardPunishment';
 import ModalEditRewardPunishment from './components/ComponentAddEdit/ModalEditRewardPunishment';
 import FilterDrawer from './components/Filter/FilterDrawer';
+import { setDefaultFilterData } from 'reducers/rewardPunishment';
 
 const createColumns = (
   toggleModalEditRewardPunishment,
@@ -70,7 +71,7 @@ const createColumns = (
     key: 'employeeData',
     sorter: true,
     render: (_, record) =>
-      `${record.employeeData.firstName} ${record.employeeData.lastName}`,
+      `${record.employeeData.lastName} ${record.employeeData.firstName}`,
   },
   {
     title: 'Amount',
@@ -96,7 +97,7 @@ const createColumns = (
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
-      `#${record.adderData.id} - ${record.adderData.firstName} ${record.adderData.lastName}`,
+      `#${record.adderData.id} - ${record.adderData.lastName} ${record.adderData.firstName}`,
   },
   {
     title: 'Date Created',
@@ -142,6 +143,11 @@ function RewardPunishmentPage() {
     useState(false);
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

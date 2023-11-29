@@ -123,7 +123,7 @@ function CardUser() {
         >
           <Space style={{ fontSize: 18 }}>
             <Avatar size={40} src={user?.profile.avatarUrl ?? defaultAvatar} />
-            <span>{`${user?.profile.firstName} ${user?.profile.lastName}`}</span>
+            <span>{`${user?.profile.lastName} ${user?.profile.firstName}`}</span>
             {changeDropDown ? <UpOutlined /> : <DownOutlined />}
           </Space>
         </Button>
@@ -133,6 +133,7 @@ function CardUser() {
         <ModalChangePassword
           openModal={openModalChangePassword}
           toggleShowModal={toggleModalChangePassword}
+          handleLogout={handleLogout}
         />
       )}
     </>

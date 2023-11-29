@@ -104,7 +104,7 @@ class DepartmentService {
         const departments = await db.Department.findAll({
             attributes: [
                 'id', 'shortName', 'name',
-                [sequelize.fn("COUNT", sequelize.col("employeeData.id")), "employeeCount"]
+                [sequelize.fn("COUNT", sequelize.col("employeeData.id")), "employeeCount"],
             ],
             include: [
                 {

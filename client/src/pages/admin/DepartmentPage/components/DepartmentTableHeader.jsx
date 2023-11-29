@@ -36,6 +36,9 @@ function DepartmentTableHeader(props) {
       where: {
         $or: [
           {
+            id: { $like: `%${value}%` },
+          },
+          {
             name: { $like: `%${value}%` },
           },
           {
@@ -56,7 +59,7 @@ function DepartmentTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search name or short name"
+          placeholder="Input search id, name or short name"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}

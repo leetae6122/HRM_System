@@ -43,7 +43,7 @@ class Schedule {
     }
 
     deleteAllQRCodes() {
-        schedule.scheduleJob('*/30 * * * *', async () => {
+        schedule.scheduleJob('0 */1 * * *', async () => {
             try {
                 const qrCodeList = await qrCodeService.findAll({
                     expiredAt: {$lte: dayjs().toDate()}

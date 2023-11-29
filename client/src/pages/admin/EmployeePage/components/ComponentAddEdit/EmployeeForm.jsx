@@ -66,6 +66,7 @@ function EmployeeForm(props) {
   const [submittable, setSubmittable] = useState(false);
   const [positionOptions, setPositionOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [loadingPositionOption, setLoadingPositionOption] = useState(false);
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [imageUrl, setImageUrl] = useState(initialValues.avatar);
   const [form] = Form.useForm();
@@ -87,18 +88,6 @@ function EmployeeForm(props) {
 
   useEffect(() => {
     const controller = new AbortController();
-    const fetchPositionOptions = async () => {
-      try {
-        const response = await positionApi.getAll();
-        const options = response.data.map((position) => ({
-          value: position.id,
-          label: position.name,
-        }));
-        setPositionOptions(options);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
     const fetchDepartmentOptions = async () => {
       try {
         const response = await departmentApi.getAll();
@@ -111,10 +100,43 @@ function EmployeeForm(props) {
         toast.error(error);
       }
     };
-    fetchPositionOptions();
     fetchDepartmentOptions();
     return () => controller.abort();
   }, []);
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchDepartmentOptions = async () => {
+      try {
+        const response = await departmentApi.getAll();
+        const options = response.data.map((department) => ({
+          value: department.id,
+          label: department.name,
+        }));
+        setDepartmentOptions(options);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    const fetchPositionOptions = async () => {
+      try {
+        if (initialValues.departmentId) {
+          const response = await positionApi.getAllWithDepartmentId(
+            initialValues.departmentId,
+          );
+          const options = response.data.map((position) => ({
+            value: position.id,
+            label: position.name,
+          }));
+          setPositionOptions(options);
+        }
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchDepartmentOptions();
+    fetchPositionOptions();
+    return () => controller.abort();
+  }, [initialValues.departmentId]);
 
   const handleChange = (info) => {
     if (!checkFile) return;
@@ -145,6 +167,22 @@ function EmployeeForm(props) {
     </div>
   );
 
+  const onChangeDepartment = async (value) => {
+    try {
+      setLoadingPositionOption(true);
+      const response = await positionApi.getAllWithDepartmentId(value);
+      const options = response.data.map((position) => ({
+        value: position.id,
+        label: position.name,
+      }));
+      setPositionOptions(options);
+      form.setFieldValue('positionId', null);
+      setLoadingPositionOption(false);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   return (
     <Form
       name="normal_employee"
@@ -155,32 +193,12 @@ function EmployeeForm(props) {
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       style={{
-        maxWidth: 800,
+        maxWidth: '100%',
       }}
       size="large"
     >
       <Row>
-        <Col span={24}>
-          <Form.Item
-            name="employeeId"
-            label="Employee Id"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-            rules={[{ required: true, message: 'Please input employee Id!' }]}
-            hasFeedback
-          >
-            <Input
-              disabled={initialValues.employeeId ? true : loading}
-              style={{
-                color: 'black',
-              }}
-              placeholder="Enter employee Id"
-              showCount
-              maxLength={10}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={initialValues.employeeId ? 12 : 24}>
+        <Col span={12}>
           <Form.Item
             name="avatar"
             label="Avatar"
@@ -216,10 +234,50 @@ function EmployeeForm(props) {
                 disabled={loading}
                 placeholder="Enter days off work"
                 format={dateFormat}
+                style={{
+                  width: '100%',
+                }}
               />
             </Form.Item>
           </Col>
         ) : null}
+
+        <Col span={initialValues.employeeId ? 24 : 12}>
+          <Form.Item
+            name="employeeId"
+            label="Employee Id"
+            rules={[{ required: true, message: 'Please input employee Id!' }]}
+            hasFeedback
+            labelCol={{ span: initialValues.employeeId ? 4 : 6 }}
+            wrapperCol={{ span: initialValues.employeeId ? 20 : 18 }}
+          >
+            <Input
+              disabled={initialValues.employeeId ? true : loading}
+              style={{
+                color: 'black',
+              }}
+              placeholder="Enter employee Id"
+              showCount
+              maxLength={10}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="lastName"
+            label="Last Name"
+            rules={[{ required: true, message: 'Please input last name!' }]}
+            hasFeedback
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
+          >
+            <Input
+              placeholder="Enter last name"
+              disabled={loading}
+              maxLength={30}
+            />
+          </Form.Item>
+        </Col>
         <Col span={12}>
           <Form.Item
             name="firstName"
@@ -230,32 +288,14 @@ function EmployeeForm(props) {
             <Input
               placeholder="Enter first name"
               disabled={loading}
-              showCount
               maxLength={30}
             />
           </Form.Item>
         </Col>
         <Col span={12}>
           <Form.Item
-            name="lastName"
-            label="Last Name"
-            rules={[{ required: true, message: 'Please input last name!' }]}
-            hasFeedback
-          >
-            <Input
-              placeholder="Enter last name"
-              disabled={loading}
-              showCount
-              maxLength={30}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item
             name="email"
             label="Email"
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 21 }}
             rules={[
               { required: true, message: 'Please input email!' },
               {
@@ -264,6 +304,8 @@ function EmployeeForm(props) {
               },
             ]}
             hasFeedback
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
           >
             <Input
               placeholder="Enter email"
@@ -273,12 +315,30 @@ function EmployeeForm(props) {
             />
           </Form.Item>
         </Col>
-        <Col span={24}>
+        <Col span={12}>
+          <Form.Item
+            name="citizenshipId"
+            label="Citizenship ID"
+            rules={[
+              {
+                required: true,
+                message: 'Please input citizenship ID!',
+              },
+            ]}
+            hasFeedback
+          >
+            <Input
+              placeholder="Enter citizenship ID"
+              disabled={loading}
+              showCount
+              maxLength={20}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={16}>
           <Form.Item
             name="phoneNumber"
             label="Phone Number"
-            labelCol={{ span: 5 }}
-            wrapperCol={{ span: 19 }}
             rules={[
               { required: true, message: 'Please input phone number!' },
               () => ({
@@ -303,6 +363,8 @@ function EmployeeForm(props) {
               }),
             ]}
             hasFeedback
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
           >
             <Input
               placeholder="Enter phone number"
@@ -312,34 +374,14 @@ function EmployeeForm(props) {
             />
           </Form.Item>
         </Col>
-        <Col span={24}>
-          <Form.Item
-            name="citizenshipId"
-            label="Citizenship ID"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-            rules={[
-              {
-                required: true,
-                message: 'Please input citizenship ID!',
-              },
-            ]}
-            hasFeedback
-          >
-            <Input
-              placeholder="Enter citizenship ID"
-              disabled={loading}
-              showCount
-              maxLength={20}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={11}>
+        <Col span={8}>
           <Form.Item
             name="gender"
             label="Gender"
             rules={[{ required: true, message: 'Please select gender!' }]}
             hasFeedback
+            labelCol={{ span: 7 }}
+            wrapperCol={{ span: 17 }}
           >
             <Select disabled={loading} placeholder="Select gender">
               <Select.Option value={true}>Male</Select.Option>
@@ -347,7 +389,7 @@ function EmployeeForm(props) {
             </Select>
           </Form.Item>
         </Col>
-        <Col span={13}>
+        <Col span={12}>
           <Form.Item
             name="dateBirth"
             label="Date of birth"
@@ -360,15 +402,16 @@ function EmployeeForm(props) {
               disabled={loading}
               placeholder="Enter date of birth"
               format={dateFormat}
+              style={{
+                width: '100%',
+              }}
             />
           </Form.Item>
         </Col>
-        <Col span={24}>
+        <Col span={12}>
           <Form.Item
             name="dateHired"
             label="Date of hire"
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
             rules={[{ required: true, message: 'Please select date of hire!' }]}
             hasFeedback
           >
@@ -382,14 +425,12 @@ function EmployeeForm(props) {
             />
           </Form.Item>
         </Col>
-        <Col span={24}>
+        <Col span={12}>
           <Form.Item
             name="departmentId"
             label="Department"
             hasFeedback
             rules={[{ required: true, message: 'Please select a department!' }]}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
           >
             <Select
               showSearch
@@ -408,17 +449,18 @@ function EmployeeForm(props) {
               }
               options={departmentOptions}
               disabled={loading}
+              onChange={onChangeDepartment}
             />
           </Form.Item>
         </Col>
-        <Col span={24}>
+        <Col span={12}>
           <Form.Item
             name="positionId"
             label="Position"
             hasFeedback
             rules={[{ required: true, message: 'Please select a position!' }]}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
           >
             <Select
               showSearch
@@ -436,7 +478,11 @@ function EmployeeForm(props) {
                   .localeCompare((optionB?.label ?? '').toLowerCase())
               }
               options={positionOptions}
-              disabled={loading}
+              disabled={
+                loading ||
+                !form.getFieldValue('departmentId') ||
+                loadingPositionOption
+              }
             />
           </Form.Item>
         </Col>
@@ -448,7 +494,7 @@ function EmployeeForm(props) {
             wrapperCol={{ span: 20 }}
           >
             <Input.TextArea
-              rows={3}
+              rows={2}
               placeholder="Enter address"
               disabled={loading}
             />

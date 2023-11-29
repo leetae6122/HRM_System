@@ -74,8 +74,8 @@ function RewardPunishmentForm(props) {
         const data = (await employeeApi.getAll()).data;
         const options = data.map((employee) => ({
           value: employee.id,
-          label: `${employee.firstName} ${employee.lastName}`,
-          desc: `#${employee.id} - ${employee.firstName} ${employee.lastName}`,
+          label: `${employee.lastName} ${employee.firstName}`,
+          desc: `#${employee.id} - ${employee.lastName} ${employee.firstName}`,
         }));
         setEmployeeOptions(options);
       } catch (error) {
@@ -145,7 +145,7 @@ function RewardPunishmentForm(props) {
             disabled={true}
             value={
               selectedEmployee
-                ? `#${selectedEmployee.id} - ${selectedEmployee?.firstName} ${selectedEmployee?.lastName}`
+                ? `#${selectedEmployee.id} - ${selectedEmployee.lastName} ${selectedEmployee.firstName}`
                 : ''
             }
             style={{

@@ -28,18 +28,18 @@ module.exports = {
         },
         {
             id: 4,
-            name: 'Night',
-            days: '1;2;3;4;5',
-            startTime: '21:00:00',
-            endTime: '23:00:00',
-            overtimeShift: true
-        },
-        {
-            id: 5,
             name: 'Weekend - Morning',
             days: '0;6',
             startTime: '08:00:00',
             endTime: '12:00:00',
+            overtimeShift: true
+        },
+        {
+            id: 5,
+            name: 'Weekend - Afternoon',
+            days: '0;6',
+            startTime: '13:00:00',
+            endTime: '17:00:00',
             overtimeShift: true
         },
         ], {

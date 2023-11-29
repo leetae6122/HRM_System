@@ -55,7 +55,7 @@ function AddLeaveForm(props) {
         const data = (await employeeApi.getAll()).data;
         const options = data.map((employee) => ({
           value: employee.id,
-          label: `#${employee.id} - ${employee.firstName} ${employee.lastName}`,
+          label: `#${employee.id} - ${employee.lastName} ${employee.firstName}`,
         }));
         setEmployeeOptions(options);
       } catch (error) {

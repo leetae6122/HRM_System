@@ -67,7 +67,7 @@ function RewardPunishmentTableHeader(props) {
     <Row>
       <Col span={10}>
         <Search
-          placeholder="Input search employee name"
+          placeholder="Input search employee name or employee id"
           loading={loadingSearch}
           enterButton
           onSearch={handleSearch}

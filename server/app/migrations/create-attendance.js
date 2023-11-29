@@ -49,7 +49,14 @@ module.exports = {
                     key: 'id'
                 },
             },
-            adminId: {
+            adminEId: {
+                type: Sequelize.STRING,
+                references: {
+                    model: 'Employee',
+                    key: 'id'
+                },
+            },
+            managerEId: {
                 type: Sequelize.STRING,
                 references: {
                     model: 'Employee',
@@ -72,7 +79,7 @@ module.exports = {
             updatedAt: {
                 allowNull: false,
                 type: Sequelize.DATE,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
             }
         });
     },

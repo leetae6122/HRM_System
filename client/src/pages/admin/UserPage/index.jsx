@@ -11,6 +11,7 @@ import ModalAddUser from './components/ComponentAddEdit/ModalAddUser';
 import Swal from 'sweetalert2';
 import ModalEditUser from './components/ComponentAddEdit/ModalEditUser';
 import _ from 'lodash';
+import { setDefaultFilterData } from 'reducers/user';
 
 const createColumns = (toggleModalEditUser, handleDeleteUser) => [
   {
@@ -135,6 +136,11 @@ function UserPage() {
   const [openModalAddUser, setOpenModalAddUser] = useState(false);
   const [openModalEditUser, setOpenModalEditUser] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

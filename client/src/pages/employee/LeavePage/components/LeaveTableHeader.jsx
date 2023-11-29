@@ -9,6 +9,10 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 import { getMonthName } from 'utils/handleDate';
 
+const disabledDate = (current) => {
+  return current && current.valueOf() > Date.now();
+};
+
 LeaveTableHeader.propTypes = {
   toggleModalAddLeave: PropTypes.func,
   setFilter: PropTypes.func,
@@ -60,6 +64,7 @@ function LeaveTableHeader(props) {
           onChange={onChangeDate}
           allowClear={false}
           format={(value) =>  getMonthName(value)}
+          disabledDate={disabledDate}
         />
       </Col>
       <Col span={14}>

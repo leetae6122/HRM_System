@@ -15,6 +15,7 @@ import ModalAddDepartment from './components/ComponentAddEdit/ModalAddDepartment
 import ModalEditDepartment from './components/ComponentAddEdit/ModalEditDepartment';
 import _ from 'lodash';
 import { getFullDate } from 'utils/handleDate';
+import { setDefaultFilterData } from 'reducers/department';
 
 const createColumns = (toggleModalEditDepartment, handleDeleteDepartment) => [
   {
@@ -26,7 +27,7 @@ const createColumns = (toggleModalEditDepartment, handleDeleteDepartment) => [
     width: 80,
   },
   {
-    title: 'Name',
+    title: 'Department Name',
     dataIndex: 'name',
     key: 'name',
     sorter: true,
@@ -44,7 +45,7 @@ const createColumns = (toggleModalEditDepartment, handleDeleteDepartment) => [
     sorter: true,
     render: (_, record) =>
       record.managerData.id
-        ? `#${record.managerData.id} - ${record.managerData.firstName} ${record.managerData.lastName}`
+        ? `#${record.managerData.id} - ${record.managerData.lastName} ${record.managerData.firstName}`
         : 'No manager',
   },
   {
@@ -90,6 +91,11 @@ function DepartmentPage() {
   const [openModalAddDepartment, setOpenModalAddDepartment] = useState(false);
   const [openModalEditDepartment, setOpenModalEditDepartment] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+
+  useEffect(() => {
+    dispatch(setDefaultFilterData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

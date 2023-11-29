@@ -54,7 +54,7 @@ function ProfileCard(props) {
       <Meta
         title={
           <Typography.Title level={4}>
-            {employee.firstName} {employee.lastName}
+            {employee.lastName} {employee.firstName}
           </Typography.Title>
         }
         description={

@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Position.hasMany(models.Employee, { foreignKey: 'positionId' });
+      Position.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'departmentData' });
     }
   }
   Position.init({
@@ -21,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     minHourlyWage: DataTypes.FLOAT,
     maxHourlyWage: DataTypes.FLOAT,
+    departmentId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Position'
