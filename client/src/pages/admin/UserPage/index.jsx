@@ -40,7 +40,7 @@ const createColumns = (toggleModalEditUser, handleDeleteUser) => [
     dataIndex: ['profile', 'firstName'],
     sorter: true,
     render: (_, record) =>
-      `${record.profile.firstName} ${record.profile.lastName}`,
+      `${record.profile.lastName} ${record.profile.firstName}`,
   },
   {
     title: 'Email',

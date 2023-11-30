@@ -45,7 +45,7 @@ function QRCodeTimekeeper(props) {
         ).data;
         if (employee.id && employee.firstName) {
           toast.info(
-            `#${employee.id}-${employee.firstName} ${employee.lastName} took attendance at ${employeeIdCheckIn.date}`,
+            `#${employee.id}-${employee.lastName} ${employee.firstName} took attendance at ${employeeIdCheckIn.date}`,
           );
         }
       }

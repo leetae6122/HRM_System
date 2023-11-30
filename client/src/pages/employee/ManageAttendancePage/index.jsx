@@ -38,7 +38,7 @@ const createColumns = (toggleModalEditAttendance) => [
     key: 'employeeData',
     sorter: true,
     render: (_, record) =>
-      `${record.employeeData.firstName} ${record.employeeData.lastName}`,
+      `${record.employeeData.lastName} ${record.employeeData.firstName}`,
   },
   {
     title: 'Shifts',

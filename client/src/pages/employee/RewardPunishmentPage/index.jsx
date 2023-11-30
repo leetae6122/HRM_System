@@ -77,7 +77,7 @@ const createColumns = (toggleModalDetailRewardPunishment) => [
     key: 'adderData',
     sorter: true,
     render: (_, record) =>
-      `${record.adderData.lastName} ${record.adderData.firstName}`,
+      `#${record.adderData.id} -  ${record.adderData.lastName} ${record.adderData.firstName}`,
   },
   {
     title: 'Date Created',
