@@ -64,7 +64,7 @@ module.exports = {
             id: {
                 allowNull: false,
                 primaryKey: true,
-                type: Sequelize.STRING
+                type: Sequelize.STRING(10)
             },
             firstName: {
                 allowNull: false,
@@ -159,6 +159,7 @@ module.exports = {
 
     async down(queryInterface, Sequelize) {
         await queryInterface.dropTable('Department');
+        await queryInterface.dropTable('Position');
         await queryInterface.dropTable('Employee');
     }
 };

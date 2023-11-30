@@ -25,12 +25,10 @@ class Schedule {
                         if (dayjs().subtract(10, 'minute').toDate() < endShift) {
                             return;
                         }
-                        const body = {
-                            attendanceDate: dayjs().toDate(),
+                        const payload = {
                             outTime: dayjs(attendance.shiftData.endTime, 'HH:mm:ss').toDate(),
-                            shiftId: attendance.shiftId,
                         }
-                        await attendanceService.logoutAttendance(body, attendance);
+                        await attendanceService.logoutAttendance(payload, attendance);
                         return attendance;
                     }))
                 }

@@ -70,7 +70,6 @@ exports.createAllowance = async (req, res, next) => {
         }));
         return res.send({ message: MSG_CREATED_SUCCESSFUL("Allowance") });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 }

@@ -1,5 +1,4 @@
-npx sequelize-cli db:migrate --name create-position
-npx sequelize-cli db:migrate --name create-department-employee
+npx sequelize-cli db:migrate --name create-department-position-employee
 npx sequelize-cli db:migrate --name create-user
 npx sequelize-cli db:migrate --name create-wage
 npx sequelize-cli db:migrate --name create-leave
@@ -9,7 +8,7 @@ npx sequelize-cli db:migrate --name create-allowance
 npx sequelize-cli db:migrate --name create-rewardPunishment
 npx sequelize-cli db:migrate --name create-qrCode
 
-npx sequelize-cli db:seed --seed seed-position seed-department 
+npx sequelize-cli db:seed --seed seed-department seed-position 
 npx sequelize-cli db:seed --seed seed-employee seed-user seed-wage
 npx sequelize-cli db:seed --seed seed-shift seed-leave
 npx sequelize-cli db:seed --seed seed-attendance

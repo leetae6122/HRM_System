@@ -6,7 +6,6 @@ export const hashData = (data) => {
 }
 
 export const compareHashedData = async (data, hashedData) => {
-    console.log(data, hashedData);
     return bcrypt.compareSync(
         data,
         hashedData
