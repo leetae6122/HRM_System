@@ -1,7 +1,7 @@
-import config from '../config/configServer';
-import { createJwt } from './../utils/jwt.util';
-import { hashToken } from "./../utils/hash.util";
-import db from "./../models/index";
+import config from '../config/configServer.js';
+import { createJwt } from './../utils/jwt.util.js';
+import { hashToken } from "./../utils/hash.util.js";
+import db from "./../models/index.js";
 import dayjs from 'dayjs';
 
 class QRCodeService {
@@ -26,7 +26,10 @@ class QRCodeService {
         const result = await db.QRCode.create(
             {
                 hashQRCodeToken: '',
-                expiredAt: ''
+                expiredAt: dayjs().add(
+                    Number(config.jwt.qr_code.expire.slice(0, -1)),
+                    config.jwt.qr_code.expire.slice(-1),
+                ).toDate()
             },
             {
                 raw: true,
@@ -44,15 +47,10 @@ class QRCodeService {
             config.jwt.qr_code.expire
         );
 
-        const expiredAt = dayjs().add(
-            Number(config.jwt.qr_code.expire.slice(0, -1)),
-            config.jwt.qr_code.expire.slice(-1),
-        ).toDate();
         const hashQRCodeToken = await hashToken(qrCodeToken);
         await this.updateQRCode(result.null,
             {
                 hashQRCodeToken,
-                expiredAt
             }
         )
         return qrCodeToken;

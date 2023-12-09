@@ -1,20 +1,20 @@
-import userService from "./../services/user.service";
-import authService from "./../services/auth.service";
+import userService from "./../services/user.service.js";
+import authService from "./../services/auth.service.js";
 import createError from 'http-errors';
 import {
     MSG_ERROR_WRONG_LOGIN_INFORMATION,
-    MSG_ERROR_USER_NOT_FOUND,
+    MSG_ERROR_NOT_FOUND,
     MSG_INVALID_TOKEN,
     MSG_REFRESH_TOKEN_DOES_NOT_MATCH,
     MSG_SENT_MAIL_FORGOT_PASSWORD,
     MSG_TOKEN_DOES_NOT_MATCH,
     MSG_NOT_TOKEN_FOR_AUTH,
     MSG_ERROR_WRONG_FORGOT_PASS_INFORMATION
-} from '../utils/message.util';
-import { compareHashedData } from "../utils/hash.util";
-import config from '../config/configServer';
-import { verifyToken } from '../utils/jwt.util';
-import mailService from './../services/mail.service'
+} from '../utils/message.util.js';
+import { compareHashedData } from "../utils/hash.util.js";
+import config from '../config/configServer.js';
+import { verifyToken } from '../utils/jwt.util.js';
+import mailService from './../services/mail.service.js'
 
 exports.login = async (req, res, next) => {
     try {
@@ -73,7 +73,7 @@ exports.refreshToken = async (req, res, next) => {
 
         const foundUser = await userService.findById(payload.id);
         if (!foundUser) {
-            return next(createError.NotFound(MSG_ERROR_USER_NOT_FOUND));
+            return next(createError.NotFound(MSG_ERROR_NOT_FOUND("User")));
         }
         if (!foundUser.refreshTokenHash) {
             return next(createError.BadRequest(MSG_INVALID_TOKEN));
@@ -109,7 +109,7 @@ exports.logout = async (req, res, next) => {
         const { user } = req;
         const foundUser = await userService.findById(user.id);
         if (!foundUser) {
-            return next(createError.NotFound(MSG_ERROR_USER_NOT_FOUND));
+            return next(createError.NotFound(MSG_ERROR_NOT_FOUND("User")));
         }
 
         if (foundUser.refreshTokenHash) {
@@ -156,7 +156,7 @@ exports.resetPassword = async (req, res, next) => {
         const payload = verifyToken(token, config.jwt.reset_password.secret);
         const foundUser = await userService.findById(payload.id);
         if (!foundUser) {
-            return next(createError.NotFound(MSG_ERROR_USER_NOT_FOUND));
+            return next(createError.NotFound(MSG_ERROR_NOT_FOUND("User")));
         }
 
         const isMatch = await compareHashedData(

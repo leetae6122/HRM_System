@@ -3,11 +3,11 @@ import {
     MSG_ERROR_DELETE,
     MSG_ERROR_ID_EMPTY,
     MSG_ERROR_NOT_FOUND,
-} from "../utils/message.util";
-import qrCodeService from "./../services/qrCode.service";
+} from "../utils/message.util.js";
+import qrCodeService from "./../services/qrCode.service.js";
 import createError from 'http-errors';
 import QRCode from 'qrcode';
-import config from '../config/configServer';
+import config from '../config/configServer.js';
 
 exports.createQRCode = async (req, res, next) => {
     try {
@@ -16,6 +16,7 @@ exports.createQRCode = async (req, res, next) => {
         const qrCodeDataUrl = await QRCode.toDataURL(url);
         return res.send({ data: qrCodeDataUrl });
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }

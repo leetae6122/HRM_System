@@ -4,22 +4,22 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import createError from 'http-errors';
-import { verifyAccessToken, verifyAdmin } from './app/middlewares/auth.middleware';
-import Schedule from './schedule';
+import { verifyAccessToken, verifyAdmin } from './app/middlewares/auth.middleware.js';
+import Schedule from './schedule.js';
 
-import authRouter from "./app/routes/auth.route";
-import userRouter from "./app/routes/user.route";
-import employeeRouter from "./app/routes/employee.route";
-import positionRouter from "./app/routes/position.route";
-import wageRouter from "./app/routes/wage.route";
-import departmentRouter from "./app/routes/department.route";
-import leaveRouter from "./app/routes/leave.route";
-import attendanceRouter from "./app/routes/attendance.route";
-import shiftRouter from "./app/routes/shift.route";
-import allowanceRouter from "./app/routes/allowance.route";
-import rewardPunishmentRouter from "./app/routes/rewardPunishment.route";
-import fileRouter from "./app/routes/file.route";
-import qrCodeRouter from "./app/routes/qrCode.route";
+import authRouter from "./app/routes/auth.route.js";
+import userRouter from "./app/routes/user.route.js";
+import employeeRouter from "./app/routes/employee.route.js";
+import positionRouter from "./app/routes/position.route.js";
+import wageRouter from "./app/routes/wage.route.js";
+import departmentRouter from "./app/routes/department.route.js";
+import leaveRouter from "./app/routes/leave.route.js";
+import attendanceRouter from "./app/routes/attendance.route.js";
+import shiftRouter from "./app/routes/shift.route.js";
+import allowanceRouter from "./app/routes/allowance.route.js";
+import rewardPunishmentRouter from "./app/routes/rewardPunishment.route.js";
+import fileRouter from "./app/routes/file.route.js";
+import qrCodeRouter from "./app/routes/qrCode.route.js";
 
 const app = express();
 

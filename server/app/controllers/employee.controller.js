@@ -1,8 +1,8 @@
-import employeeService from "./../services/employee.service";
-import userService from "./../services/user.service";
-import wageService from "./../services/wage.service";
-import departmentService from "./../services/department.service";
-import positionService from "./../services/position.service";
+import employeeService from "./../services/employee.service.js";
+import userService from "./../services/user.service.js";
+import wageService from "./../services/wage.service.js";
+import departmentService from "./../services/department.service.js";
+import positionService from "./../services/position.service.js";
 import createError from 'http-errors';
 import cloudinary from 'cloudinary';
 import {
@@ -12,7 +12,7 @@ import {
     MSG_ERROR_EXISTED,
     MSG_ERROR_ID_EMPTY,
     MSG_UPDATE_SUCCESSFUL
-} from "../utils/message.util";
+} from "../utils/message.util.js";
 import dayjs from "dayjs";
 
 

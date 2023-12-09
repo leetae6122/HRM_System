@@ -1,11 +1,11 @@
 import express from "express";
-import positionController from "./../controllers/position.controller";
-import validation from '../middlewares/validation.middleware';
+import positionController from "./../controllers/position.controller.js";
+import validation from '../middlewares/validation.middleware.js';
 import {
     createPositionSchema,
     updatePositionSchema
-} from "../validations/position.validation";
-import { modelFilterSchema } from '../validations/filter.validation';
+} from "../validations/position.validation.js";
+import { modelFilterSchema } from '../validations/filter.validation.js';
 
 const router = express.Router();
 

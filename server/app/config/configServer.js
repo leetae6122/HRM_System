@@ -3,7 +3,8 @@ require('dotenv').config();
 const config = {
     app: {
         port: process.env.PORT || 3000,
-        client_url: process.env.CLIENT_URL
+        client_url: process.env.CLIENT_URL,
+        allowed_ips: process.env.ALLOWEDIPS
     },
     jwt: {
         access: {

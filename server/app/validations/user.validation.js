@@ -22,7 +22,7 @@ const changPasswordSchema = Joi.object({
 });
 
 const adminUpdateUserSchema = Joi.object({
-    userId: Joi.string().max(10).required(),
+    userId: Joi.number().integer().required(),
     username: Joi.string().max(60).optional(),
     password: Joi.string()
         .max(60)

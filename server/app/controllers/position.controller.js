@@ -5,9 +5,9 @@ import {
     MSG_ERROR_EXISTED,
     MSG_ERROR_ID_EMPTY,
     MSG_UPDATE_SUCCESSFUL
-} from "../utils/message.util";
-import positionService from "./../services/position.service";
-import departmentService from "./../services/department.service";
+} from "../utils/message.util.js";
+import positionService from "./../services/position.service.js";
+import departmentService from "./../services/department.service.js";
 import createError from 'http-errors';
 
 exports.countEmployees = async (req, res, next) => {

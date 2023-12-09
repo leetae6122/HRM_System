@@ -1,11 +1,11 @@
 import express from "express";
-import wageController from "../controllers/wage.controller";
-import validation from '../middlewares/validation.middleware';
+import wageController from "../controllers/wage.controller.js";
+import validation from '../middlewares/validation.middleware.js';
 import {
     createWageSchema,
     updateWageSchema
-} from "../validations/wage.validation";
-import { modelFilterSchema } from '../validations/filter.validation';
+} from "../validations/wage.validation.js";
+import { modelFilterSchema } from '../validations/filter.validation.js';
 
 const router = express.Router();
 

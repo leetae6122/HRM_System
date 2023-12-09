@@ -1,9 +1,9 @@
 import express from "express";
-import qrCodeController from "./../controllers/qrCode.controller";
-import validation from '../middlewares/validation.middleware';
+import qrCodeController from "./../controllers/qrCode.controller.js";
+import validation from '../middlewares/validation.middleware.js';
 import {
     createQRCodeSchema,
-} from "../validations/qrCode.validation";
+} from "../validations/qrCode.validation.js";
 
 const router = express.Router();
 

@@ -1,13 +1,13 @@
 import dayjs from 'dayjs';
 import ExcelJS from 'exceljs';
 import _ from 'lodash';
-import { getMonthName } from '../utils/handleDate';
-import attendanceService from '../services/attendance.service';
-import leaveService from '../services/leave.service';
-import allowanceService from '../services/allowance.service';
-import rewardPunishmentService from '../services/rewardPunishment.service';
+import { getMonthName } from '../utils/handleDate.js';
+import attendanceService from '../services/attendance.service.js';
+import leaveService from '../services/leave.service.js';
+import allowanceService from '../services/allowance.service.js';
+import rewardPunishmentService from '../services/rewardPunishment.service.js';
 
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 
 dayjs.extend(customParseFormat)
 class FileService {

@@ -1,6 +1,6 @@
-import fileService from '../services/file.service';
-import attendanceService from '../services/attendance.service';
-import employeeService from '../services/employee.service';
+import fileService from '../services/file.service.js';
+import attendanceService from '../services/attendance.service.js';
+import employeeService from '../services/employee.service.js';
 import dayjs from 'dayjs';
 
 exports.excelFileAttendanceStatisticsDate = async (req, res, next) => {

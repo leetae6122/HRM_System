@@ -74,7 +74,9 @@ function CardUser() {
             label: (
               <div
                 style={{ fontSize: 18, color: yellow[5] }}
-                onClick={() => navigate('/employee/dashboard', { replace: true })}
+                onClick={() =>
+                  navigate('/employee/dashboard', { replace: true })
+                }
               >
                 <UserOutlined />
                 <span style={{ marginLeft: 8 }}>Employee Page</span>
@@ -123,7 +125,9 @@ function CardUser() {
         >
           <Space style={{ fontSize: 18 }}>
             <Avatar size={40} src={user?.profile.avatarUrl ?? defaultAvatar} />
-            <span>{`${user?.profile.lastName} ${user?.profile.firstName}`}</span>
+            <span>
+              {user ? `${user.profile.lastName} ${user.profile.firstName}` : 'Employee Name'}
+            </span>
             {changeDropDown ? <UpOutlined /> : <DownOutlined />}
           </Space>
         </Button>

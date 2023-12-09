@@ -1,14 +1,14 @@
 import express from "express";
-import employeeController from "./../controllers/employee.controller";
-import { verifyAdmin, verifyAdminOrSelf } from './../middlewares/auth.middleware';
-import validation from '../middlewares/validation.middleware';
+import employeeController from "./../controllers/employee.controller.js";
+import { verifyAdmin, verifyAdminOrSelf } from './../middlewares/auth.middleware.js';
+import validation from '../middlewares/validation.middleware.js';
 import {
     adminCreateEmployeeSchema,
     updateEmployeeSchema,
     adminUpdateEmployeeSchema
-} from "../validations/employee.validation";
-import { filterSchema } from '../validations/filter.validation';
-import uploadCloud from "../middlewares/uploader.middleware";
+} from "../validations/employee.validation.js";
+import { filterSchema } from '../validations/filter.validation.js';
+import uploadCloud from "../middlewares/uploader.middleware.js";
 
 const router = express.Router();
 

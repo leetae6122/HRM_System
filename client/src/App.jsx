@@ -35,6 +35,7 @@ import AdminRewardPunishmentPage from 'pages/admin/RewardPunishmentPage';
 // Other
 import ManageAttendancePage from 'pages/employee/ManageAttendancePage';
 import TimekeeperPage from 'pages/TimekeeperPage';
+import Forbidden from 'pages/ErrorPage/Forbidden';
 
 const AuthPage = React.lazy(() => import('pages/AuthPage'));
 const PageLayout = React.lazy(() => import('components/Common/PageLayout'));
@@ -125,6 +126,7 @@ function App() {
             </Route>
             <Route path="/timekeeper" element={<TimekeeperPage />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/403" element={<Forbidden />} />
 
             <>
               {/* Redirect */}

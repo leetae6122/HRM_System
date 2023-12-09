@@ -1,11 +1,11 @@
 import express from "express";
-import departmentController from "./../controllers/department.controller";
-import validation from '../middlewares/validation.middleware';
+import departmentController from "./../controllers/department.controller.js";
+import validation from '../middlewares/validation.middleware.js';
 import {
     createDepartmentSchema,
     updateDepartmentSchema
-} from "../validations/department.validation";
-import { modelFilterSchema } from "../validations/filter.validation";
+} from "../validations/department.validation.js";
+import { modelFilterSchema } from "../validations/filter.validation.js";
 
 const router = express.Router();
 

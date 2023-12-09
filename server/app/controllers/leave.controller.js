@@ -7,11 +7,11 @@ import {
     MSG_CREATED_SUCCESSFUL,
     MSG_LEAVE_STATUS_NOT_PENDING,
     MSG_ERROR_NOT_HAVE_PERMISSION
-} from "../utils/message.util";
-import leaveService from "./../services/leave.service";
+} from "../utils/message.util.js";
+import leaveService from "./../services/leave.service.js";
 import createError from 'http-errors';
-import mailService from './../services/mail.service';
-import employeeService from "./../services/employee.service";
+import mailService from './../services/mail.service.js';
+import employeeService from "./../services/employee.service.js";
 
 exports.findById = async (req, res, next) => {
     try {

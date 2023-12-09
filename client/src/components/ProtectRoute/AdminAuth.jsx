@@ -35,7 +35,7 @@ function AdminAuth({ children }) {
   const isAuth = useAuth();
 
   if (isAuth === null) return null;
-  return isAuth ? children : <Navigate to="/employee/dashboard" replace />;
+  return isAuth ? children : <Navigate to="/403" replace />;
 }
 
 export default AdminAuth;

@@ -1,5 +1,5 @@
-import config from '../config/configServer';
-import { mailerSendMail } from '../utils/mailer/mailer.util';
+import config from '../config/configServer.js';
+import { mailerSendMail } from '../utils/mailer/mailer.util.js';
 
 class MailService {
     async sendMailForgotPassword(receiverEmail, token) {

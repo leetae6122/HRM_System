@@ -1,5 +1,5 @@
-import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
-import db from "./../models/index";
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util.js";
+import db from "./../models/index.js";
 import createError from 'http-errors';
 import _ from 'lodash';
 

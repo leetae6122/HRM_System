@@ -1,14 +1,18 @@
 import express from "express";
-import leaveController from "./../controllers/leave.controller";
-import validation from '../middlewares/validation.middleware';
+import leaveController from "./../controllers/leave.controller.js";
+import validation from '../middlewares/validation.middleware.js';
 import {
     employeeCreateLeaveSchema,
     adminCreateLeaveSchema,
     adminUpdateLeaveSchema,
     employeeUpdateLeaveSchema
-} from "../validations/leave.validation";
-import { filterAll, filterSchema, modelFilterSchema } from "../validations/filter.validation";
-import { verifyAdmin } from './../middlewares/auth.middleware';
+} from "../validations/leave.validation.js";
+import {
+    filterAll,
+    filterSchema,
+    modelFilterSchema
+} from "../validations/filter.validation.js";
+import { verifyAdmin } from './../middlewares/auth.middleware.js';
 
 const router = express.Router();
 

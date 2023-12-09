@@ -1,5 +1,5 @@
 import sequelize from "sequelize";
-import db from "./../models/index";
+import db from "./../models/index.js";
 import dayjs from 'dayjs';
 import _ from 'lodash';
 

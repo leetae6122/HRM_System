@@ -1,12 +1,12 @@
 import express from "express";
-import allowanceController from "./../controllers/allowance.controller";
-import validation from '../middlewares/validation.middleware';
+import allowanceController from "./../controllers/allowance.controller.js";
+import validation from '../middlewares/validation.middleware.js';
 import {
     createAllowanceSchema,
     updateAllowanceSchema
-} from "../validations/allowance.validation";
-import { modelFilterSchema } from "../validations/filter.validation";
-import { verifyAdmin } from '../middlewares/auth.middleware';
+} from "../validations/allowance.validation.js";
+import { modelFilterSchema } from "../validations/filter.validation.js";
+import { verifyAdmin } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 

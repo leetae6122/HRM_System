@@ -8,16 +8,16 @@ import {
     MSG_ATTENDANCE_STATUS_NOT_PENDING,
     MSG_ERROR_NOT_HAVE_PERMISSION,
     MSG_TOKEN_DOES_NOT_MATCH
-} from "../utils/message.util";
-import attendanceService from "./../services/attendance.service";
-import employeeService from "./../services/employee.service";
-import shiftService from "./../services/shift.service";
+} from "../utils/message.util.js";
+import attendanceService from "./../services/attendance.service.js";
+import employeeService from "./../services/employee.service.js";
+import shiftService from "./../services/shift.service.js";
 import createError from 'http-errors';
 import _ from 'lodash';
-import { verifyToken } from "../utils/jwt.util";
-import config from '../config/configServer';
-import qrCodeService from "./../services/qrCode.service"
-import { compareHashedData } from "../utils/hash.util";
+import { verifyToken } from "../utils/jwt.util.js";
+import config from '../config/configServer.js';
+import qrCodeService from "./../services/qrCode.service.js"
+import { compareHashedData } from "../utils/hash.util.js";
 
 exports.findById = async (req, res, next) => {
     try {

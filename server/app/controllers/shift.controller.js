@@ -4,8 +4,8 @@ import {
     MSG_ERROR_ID_EMPTY,
     MSG_UPDATE_SUCCESSFUL,
     MSG_CREATED_SUCCESSFUL
-} from "../utils/message.util";
-import shiftService from "./../services/shift.service";
+} from "../utils/message.util.js";
+import shiftService from "./../services/shift.service.js";
 import createError from 'http-errors';
 
 exports.findById = async (req, res, next) => {

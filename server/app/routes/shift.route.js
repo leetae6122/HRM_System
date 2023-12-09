@@ -1,12 +1,12 @@
 import express from "express";
-import shiftController from "./../controllers/shift.controller";
-import validation from '../middlewares/validation.middleware';
+import shiftController from "./../controllers/shift.controller.js";
+import validation from '../middlewares/validation.middleware.js';
 import {
     createShiftSchema,
     updateShiftSchema
-} from "../validations/shift.validation";
-import { filterSchema } from "../validations/filter.validation";
-import { verifyAdmin, verifyAdminOrDepartmentManager } from './../middlewares/auth.middleware';
+} from "../validations/shift.validation.js";
+import { filterSchema } from "../validations/filter.validation.js";
+import { verifyAdmin, verifyAdminOrDepartmentManager } from './../middlewares/auth.middleware.js';
 
 const router = express.Router();
 

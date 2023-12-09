@@ -1,12 +1,12 @@
 import express from "express";
-import rewardPunishmentController from "./../controllers/rewardPunishment.controller";
-import validation from '../middlewares/validation.middleware';
+import rewardPunishmentController from "./../controllers/rewardPunishment.controller.js";
+import validation from '../middlewares/validation.middleware.js';
 import {
     createRewardPunishmentSchema,
     updateRewardPunishmentSchema
-} from "../validations/rewardPunishment.validation";
-import { modelFilterSchema } from "../validations/filter.validation";
-import { verifyAdmin } from '../middlewares/auth.middleware';
+} from "../validations/rewardPunishment.validation.js";
+import { modelFilterSchema } from "../validations/filter.validation.js";
+import { verifyAdmin } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
-import db from "../models/index";
+import db from "../models/index.js";
 import createError from 'http-errors';
-import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util.js";
 
 class EmployeeService {
     async findById(id) {

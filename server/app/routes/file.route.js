@@ -1,11 +1,11 @@
 import express from "express";
-import fileController from "./../controllers/file.controller";
-import validation from '../middlewares/validation.middleware';
+import fileController from "./../controllers/file.controller.js";
+import validation from '../middlewares/validation.middleware.js';
 import {
     createExcelFileAttendanceStatisticsDate,
     createExcelFileAttendanceStatisticsEmployee,
     createExcelFileEmployeeMonthStatistics
-} from "../validations/file.validation";
+} from "../validations/file.validation.js";
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
-import userService from "./../services/user.service";
+import userService from "./../services/user.service.js";
 import createError from 'http-errors';
-import { compareHashedData } from './../utils/hash.util';
+import { compareHashedData } from './../utils/hash.util.js';
 import {
     MSG_CREATED_SUCCESSFUL,
     MSG_DELETE_SUCCESSFUL,
@@ -9,7 +9,7 @@ import {
     MSG_ERROR_ID_EMPTY,
     MSG_ERROR_NOT_FOUND,
     MSG_UPDATE_SUCCESSFUL
-} from "../utils/message.util";
+} from "../utils/message.util.js";
 
 exports.getUserProfile = async (req, res, next) => {
     try {

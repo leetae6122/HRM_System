@@ -1,5 +1,5 @@
-import db from "./../models/index";
-import { hashData } from "./../utils/hash.util";
+import db from "./../models/index.js";
+import { hashData } from "./../utils/hash.util.js";
 import _ from 'lodash';
 
 class UserService {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { toast } from 'react-toastify';
 import CreateQRCodeForm from './CreateQRCodeForm';
-import QRCodeTimekeeper from './qrCodeTimekeeper';
+import QRCodeTimekeeper from './QRCodeTimekeeper';
 
 ModalTimekeeper.propTypes = {
   openModal: PropTypes.bool,

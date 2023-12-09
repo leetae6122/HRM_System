@@ -1,9 +1,9 @@
-import db from "./../models/index";
+import db from "./../models/index.js";
 import dayjs from "dayjs";
 import createError from 'http-errors';
-import { MSG_ERROR_NOT_FOUND } from "../utils/message.util";
+import { MSG_ERROR_NOT_FOUND } from "../utils/message.util.js";
 import _ from 'lodash';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 
 dayjs.extend(customParseFormat);
 

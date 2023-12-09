@@ -5,8 +5,8 @@ import {
     MSG_ERROR_ID_EMPTY,
     MSG_ERROR_NOT_FOUND,
     MSG_UPDATE_SUCCESSFUL
-} from "../utils/message.util";
-import wageService from "../services/wage.service";
+} from "../utils/message.util.js";
+import wageService from "../services/wage.service.js";
 import createError from 'http-errors';
 
 exports.findById = async (req, res, next) => {

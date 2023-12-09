@@ -1,7 +1,7 @@
-import config from '../config/configServer';
-import { createJwt } from './../utils/jwt.util';
-import { hashToken } from "./../utils/hash.util";
-import userService from "./user.service";
+import config from '../config/configServer.js';
+import { createJwt } from './../utils/jwt.util.js';
+import { hashToken } from "./../utils/hash.util.js";
+import userService from "./user.service.js";
 
 class AuthService {
     async createJwtAccess(payload) {

@@ -1,12 +1,10 @@
 import schedule from 'node-schedule';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import logger from './logger';
-import attendanceService from './app/services/attendance.service';
-import qrCodeService from './app/services/qrCode.service';
+import logger from './logger.js';
+import attendanceService from './app/services/attendance.service.js';
+import qrCodeService from './app/services/qrCode.service.js';
 import _ from 'lodash';
 
-dayjs.extend(utc)
 class Schedule {
     cronJobForAttendance() {
         //Execute a cron job every 10 Minutes
