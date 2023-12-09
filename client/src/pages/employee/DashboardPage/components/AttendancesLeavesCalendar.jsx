@@ -18,7 +18,6 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
-  CloseOutlined,
   DownOutlined,
   UpOutlined,
 } from '@ant-design/icons';
@@ -72,8 +71,6 @@ const getListData = (current, value, attendances, leaves) => {
 };
 
 function AttendancesLeavesCalendar() {
-  const [visible, setVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
   const [attendanceList, setAttendanceList] = useState([]);
   const [filterAttendance, setFilterAttendance] = useState({
@@ -136,11 +133,6 @@ function AttendancesLeavesCalendar() {
     return () => controller.abort();
   }, [filterLeave, filterAttendance]);
 
-  const handleDateSelect = (date) => {
-    setSelectedDate(date);
-    setVisible(true);
-  };
-
   const dateCellRender = (date) => {
     const dayOfWeek = date.day();
     const listData = getListData(value, date, attendanceList, leaveList);
@@ -190,42 +182,26 @@ function AttendancesLeavesCalendar() {
       </li>
     ));
 
-    const title = (
-      <Row>
-        <Col span={12}>{dayjs(selectedDate).format('DD/MM/YYYY')}</Col>
-        <Col span={12} style={{ textAlign: 'right' }}>
-          <Button
-            type="default"
-            icon={<CloseOutlined />}
-            onClick={() => setVisible(false)}
-          />
-        </Col>
-      </Row>
-    );
-
     return (
       <Popover
         content={contentDetail}
-        title={title}
-        trigger="click"
-        open={visible && selectedDate && date.isSame(selectedDate, 'day')}
+        title={dayjs(date).format('DD/MM/YYYY')}
+        trigger="hover"
         placement="top"
       >
-        <div onClick={() => handleDateSelect(date)}>
-          {dayOfWeek === 6 || dayOfWeek === 0 ? (
-            <ul
-              style={{
-                backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                padding: '5px',
-              }}
-              className="events"
-            >
-              {contentDate}
-            </ul>
-          ) : (
-            <ul className="events">{contentDate}</ul>
-          )}
-        </div>
+        {dayOfWeek === 6 || dayOfWeek === 0 ? (
+          <ul
+            style={{
+              backgroundColor: 'rgba(255, 0, 0, 0.1)',
+              padding: '5px',
+            }}
+            className="events"
+          >
+            {contentDate}
+          </ul>
+        ) : (
+          <ul className="events">{contentDate}</ul>
+        )}
       </Popover>
     );
   };
