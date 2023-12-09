@@ -174,12 +174,12 @@ function RewardPunishmentForm(props) {
             }}
             optionFilterProp="children"
             filterOption={(input, option) =>
-              (option?.label ?? '').includes(input)
+              (option?.desc ?? '').includes(input)
             }
             filterSort={(optionA, optionB) =>
-              (optionA?.label ?? '')
+              (optionA?.desc ?? '')
                 .toLowerCase()
-                .localeCompare((optionB?.label ?? '').toLowerCase())
+                .localeCompare((optionB?.desc ?? '').toLowerCase())
             }
             placeholder="Please select"
             options={employeeOptions}
