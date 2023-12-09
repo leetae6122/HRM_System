@@ -84,6 +84,8 @@ function ModalEditPosition(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         {!_.isEmpty(editPosition) && (
           <PositionForm

@@ -80,6 +80,8 @@ function ModalEditProfile(props) {
         onCancel={handleCancel}
         footer={null}
         width={"100vh"}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         {!_.isEmpty(editProfile) && (
           <EditProfileForm

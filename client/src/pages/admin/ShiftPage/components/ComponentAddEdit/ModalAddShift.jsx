@@ -62,6 +62,8 @@ function ModalAddShift(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         <ShiftForm
           onCancel={handleCancel}

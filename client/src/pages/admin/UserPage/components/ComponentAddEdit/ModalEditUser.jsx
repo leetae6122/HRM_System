@@ -82,6 +82,8 @@ function ModalEditUser(props) {
         onCancel={handleCancel}
         footer={null}
         width={'100vh'}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         {!_.isEmpty(editUser) && (
           <UserForm

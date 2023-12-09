@@ -71,6 +71,8 @@ function ModalExportFile(props) {
         style={{
           top: 40,
         }}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         <ExportFileForm
           onCancel={handleCancel}

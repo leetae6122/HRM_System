@@ -92,6 +92,8 @@ function ModalEditLeave(props) {
         style={{
           top: 40
         }}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         {!_.isEmpty(infoLeave) && (
           <EditLeaveForm

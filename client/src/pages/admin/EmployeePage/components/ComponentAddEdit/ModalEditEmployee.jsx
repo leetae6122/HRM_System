@@ -94,6 +94,8 @@ function ModalEditEmployee(props) {
         footer={null}
         width={'150vh'}
         style={{ top: 30 }}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         {!_.isEmpty(editEmployee) && (
           <EmployeeForm

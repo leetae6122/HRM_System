@@ -21,9 +21,7 @@ ModalEditDepartment.defaultProps = {
 };
 
 function ModalEditDepartment(props) {
-  const { editDepartmentId } = useSelector(
-    (state) => state.department,
-  );
+  const { editDepartmentId } = useSelector((state) => state.department);
   const { openModal, toggleShowModal, refreshDepartmentList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [editDepartment, setEditDepartment] = useState({});
@@ -82,6 +80,8 @@ function ModalEditDepartment(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         {!_.isEmpty(editDepartment) && (
           <DepartmentForm

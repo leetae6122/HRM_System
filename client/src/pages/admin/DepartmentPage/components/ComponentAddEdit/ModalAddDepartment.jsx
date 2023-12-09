@@ -57,6 +57,8 @@ function ModalAddDepartment(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         <DepartmentForm
           onCancel={handleCancel}

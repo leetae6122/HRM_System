@@ -63,6 +63,8 @@ function ModalAddLeave(props) {
         onCancel={handleCancel}
         footer={null}
         width={'100vh'}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         <LeaveForm
           onCancel={handleCancel}

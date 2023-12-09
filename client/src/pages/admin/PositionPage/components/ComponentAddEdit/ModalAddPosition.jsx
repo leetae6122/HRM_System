@@ -57,6 +57,8 @@ function ModalAddPosition(props) {
         open={openModal}
         onCancel={handleCancel}
         footer={null}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         <PositionForm
           onCancel={handleCancel}

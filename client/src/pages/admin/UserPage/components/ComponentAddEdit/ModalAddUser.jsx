@@ -59,6 +59,8 @@ function ModalAddUser(props) {
         onCancel={handleCancel}
         footer={null}
         width={'100vh'}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         <UserForm
           onCancel={handleCancel}

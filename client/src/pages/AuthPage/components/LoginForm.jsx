@@ -1,8 +1,7 @@
-
-import PropTypes from "prop-types";
-import { Form, Input, Button, Checkbox, Card, Typography } from "antd";
-import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import PropTypes from 'prop-types';
+import { Form, Input, Button, Checkbox, Card, Typography } from 'antd';
+import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const { Title } = Typography;
 
@@ -19,14 +18,14 @@ LoginForm.defaultProps = {
 function LoginForm(props) {
   const { onSubmit, loading } = props;
   const initialValues = {
-    username: "",
-    password: "",
+    username: '',
+    password: '',
     isRemember: false,
   };
 
   return (
     <Card className="wrapper">
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Title level={1}>Login</Title>
       </div>
       <Form
@@ -38,7 +37,7 @@ function LoginForm(props) {
         <Form.Item
           name="username"
           hasFeedback
-          rules={[{ required: true, message: "Please input your Username!" }]}
+          rules={[{ required: true, message: 'Please input your Username!' }]}
         >
           <Input
             size="large"
@@ -50,7 +49,7 @@ function LoginForm(props) {
         <Form.Item
           name="password"
           hasFeedback
-          rules={[{ required: true, message: "Please input your Password!" }]}
+          rules={[{ required: true, message: 'Please input your Password!' }]}
         >
           <Input.Password
             size="large"
@@ -59,15 +58,17 @@ function LoginForm(props) {
             disabled={loading}
           />
         </Form.Item>
-        <Form.Item style={{ marginInline: "10px" }}>
+        <Form.Item style={{ marginInline: '10px' }}>
           <Form.Item name="isRemember" valuePropName="checked" noStyle>
             <Checkbox disabled={loading}>Remember me</Checkbox>
           </Form.Item>
           <Link
             to="/auth/forgot-password"
-            style={{ float: "right" }}
+            style={{
+              float: 'right',
+              pointerEvents: loading ? 'none' : 'visible',
+            }}
             className="login-form-forgot"
-            disabled={loading}
           >
             Forgot password?
           </Link>
@@ -78,7 +79,7 @@ function LoginForm(props) {
             htmlType="submit"
             className="submit-form-button"
             block
-            style={{ height: "auto", fontSize: 18, fontWeight: "bolder" }}
+            style={{ height: 'auto', fontSize: 18, fontWeight: 'bolder' }}
             loading={loading}
           >
             <LoginOutlined />

@@ -85,6 +85,8 @@ function ModalEditWage(props) {
         footer={null}
         width={'100vh'}
         style={{ top: 60 }}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         {!_.isEmpty(editWage) && (
           <WageForm

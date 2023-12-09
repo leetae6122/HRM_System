@@ -82,6 +82,8 @@ function ModalEditAttendance(props) {
         style={{
           top: 30
         }}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         {!_.isEmpty(infoAttendance) && (
           <EditAttendanceForm

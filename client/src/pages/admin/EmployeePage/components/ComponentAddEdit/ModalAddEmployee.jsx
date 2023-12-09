@@ -57,6 +57,8 @@ function ModalAddEmployee(props) {
         footer={null}
         width={'150vh'}
         style={{ top: 30 }}
+        maskClosable={!confirmLoading}
+        closable={!confirmLoading}
       >
         <EmployeeForm
           onCancel={handleCancel}
