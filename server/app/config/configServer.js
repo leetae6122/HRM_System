@@ -4,7 +4,7 @@ const config = {
     app: {
         port: process.env.PORT || 3000,
         client_url: process.env.CLIENT_URL,
-        allowed_ips: process.env.ALLOWEDIPS
+        range_ips: process.env.RANGE_IPS
     },
     jwt: {
         access: {

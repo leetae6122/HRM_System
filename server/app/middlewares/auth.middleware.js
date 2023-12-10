@@ -8,6 +8,8 @@ import {
     MSG_NOT_TOKEN_FOR_AUTH
 } from './../utils/message.util.js';
 import { verifyToken } from './../utils/jwt.util.js';
+import { BlockList } from "net";
+import _ from 'lodash';
 
 exports.verifyAccessToken = async (req, res, next) => {
     try {
@@ -71,12 +73,13 @@ exports.verifyAdminOrDepartmentManager = async (req, res, next) => {
 }
 
 exports.allowIPMiddleware = (req, res, next) => {
-    const allowedIPs = config.app.allowed_ips;
-    const xForwardedFor  = req.headers['x-forwarded-for'];
-    const ipList = xForwardedFor ? xForwardedFor.split(', ') : [];
-    const clientIP = ipList[0] || req.connection.remoteAddress;
-    if (allowedIPs.includes(clientIP)) {
-        next();
+    const rangeIPs = _.compact(config.app.range_ips.split(','));
+    if (_.isEmpty(rangeIPs)) return next();
+    const ip = req.headers['x-forwarded-for'].split(', ')[0];
+    const blockList = new BlockList();
+    blockList.addRange(rangeIPs[0], rangeIPs[1])
+    if (blockList.check(ip)) {
+        return next();
     } else {
         return next(createError.Forbidden('Access denied'));
     }

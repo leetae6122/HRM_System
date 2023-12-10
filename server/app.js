@@ -26,7 +26,8 @@ const app = express();
 app.use(cors({
     origin: process.env.CLIENT_URL,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    credentials: true
+    credentials: true,
+    exposeHeaders: ['x-forwarded-for']
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
