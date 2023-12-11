@@ -32,7 +32,7 @@ axiosClient.interceptors.response.use((response) => {
 }, (error) => {
     // Handle errors
     if (error.response.status === 500) {
-        toast.error(error.response.statusText);
+        toast.error(error.response.data.message ? error.response.data.message.toString() : error.response.statusText.toString());
     } else {
         toast.error(error.response.data.message.toString());
     }

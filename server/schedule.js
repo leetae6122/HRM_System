@@ -8,7 +8,7 @@ import _ from 'lodash';
 class Schedule {
     cronJobForAttendance() {
         //Execute a cron job every 10 Minutes
-        schedule.scheduleJob('*/10 * * * *', async () => {
+        schedule.scheduleJob('*/2 * * * *', async () => {
             try {
                 const attendanceList = await attendanceService.findAll({
                     where: {

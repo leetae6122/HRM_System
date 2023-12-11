@@ -73,11 +73,14 @@ exports.verifyAdminOrDepartmentManager = async (req, res, next) => {
 }
 
 exports.allowIPMiddleware = (req, res, next) => {
-    const rangeIPs = _.compact(config.app.range_ips.split(','));
-    if (_.isEmpty(rangeIPs)) return next();
+    const ipRange = _.compact(config.app.ip_range.split(','));
+    if (_.isEmpty(ipRange)) return next();
+    if(ipRange.length !== 2 || ipRange.length !== 0){
+        return next(createError.InternalServerError('Error setting ip range environment'));
+    }
     const ip = req.headers['x-forwarded-for'].split(', ')[0];
     const blockList = new BlockList();
-    blockList.addRange(rangeIPs[0], rangeIPs[1])
+    blockList.addRange(ipRange[0], ipRange[1])
     if (blockList.check(ip)) {
         return next();
     } else {

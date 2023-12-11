@@ -30,6 +30,7 @@ function AuthPage() {
       setLoadingLogin(false);
       navigate('/');
     } catch (error) {
+      toast.error(error);
       setLoadingLogin(false);
     }
   };
@@ -52,6 +53,7 @@ function AuthPage() {
         }
       });
     } catch (error) {
+      toast.error(error);
       setLoadingForgot(false);
     }
   };
@@ -82,6 +84,7 @@ function AuthPage() {
         }
       });
     } catch (error) {
+      toast.error(error);
       setLoadingReset(false);
     }
   };
