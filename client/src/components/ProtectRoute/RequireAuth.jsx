@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
-import authApi from "api/authApi";
-import { useDispatch } from "react-redux";
-import userApi from "api/userApi";
-import { login } from "reducers/auth";
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import jwtDecode from 'jwt-decode';
+import { useDispatch } from 'react-redux';
+import userApi from 'api/userApi';
+import { login } from 'reducers/auth';
 
 const cookies = new Cookies();
 
@@ -25,35 +24,24 @@ const useAuth = () => {
   useEffect(() => {
     const controller = new AbortController();
     const checkToken = async () => {
-      const accessToken = cookies.get("access_token");
-        const refreshToken = cookies.get("refresh_token");
+      const accessToken = cookies.get('access_token');
+      const refreshToken = cookies.get('refresh_token');
 
-        if (accessToken) {
-          const accessTokenExp = jwtDecode(accessToken).exp;
-          if (checkExp(accessTokenExp)) {
-            getUserProfile(dispatch);
-            return setIsAuth(true);
-          }
-
-          return setIsAuth(false);
+      if (accessToken) {
+        const accessTokenExp = jwtDecode(accessToken).exp;
+        if (checkExp(accessTokenExp)) {
+          getUserProfile(dispatch);
+          return setIsAuth(true);
         }
-
-        if (refreshToken) {
-          const refreshTokenExp = jwtDecode(refreshToken).exp;
-          if (checkExp(refreshTokenExp)) {
-            const response = await authApi.refreshToken(refreshToken);
-            cookies.set("access_token", response.accessToken, { path: "/" });
-            cookies.set("refresh_token", response.refreshToken, {
-              path: "/",
-            });
-            getUserProfile(dispatch);
-            return setIsAuth(true);
-          }
-
-          return setIsAuth(false);
+      }
+      if (refreshToken) {
+        const refreshTokenExp = jwtDecode(refreshToken).exp;
+        if (checkExp(refreshTokenExp)) {
+          getUserProfile(dispatch);
+          return setIsAuth(true);
         }
-
-        setIsAuth(false);
+      }
+      setIsAuth(false);
     };
     checkToken();
     return () => controller.abort();

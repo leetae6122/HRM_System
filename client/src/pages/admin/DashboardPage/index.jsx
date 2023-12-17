@@ -74,13 +74,13 @@ function DashboardPage() {
           link={'/admin/employee'}
           Icon={<TeamOutlined style={iconStyle} />}
           iconColor={purple[5]}
-          title={`${countEmployees.currentEmployees} Employees`}
+          title={`${countEmployees.currentEmployees ?? 0} Employees`}
         />
       </Col>
       <Col className="quality-card" span={6}>
         <QualityCard
           backgroundColor={purple[5]}
-          quality={countEmployees.formerEmployees}
+          quality={countEmployees.formerEmployees ?? 0}
           content={'Former Employees'}
         />
       </Col>
@@ -90,14 +90,14 @@ function DashboardPage() {
           link={'/admin/user'}
           Icon={<UnlockOutlined style={iconStyle} />}
           iconColor={gold[5]}
-          title={`${countUser.activeUsers} Users Active`}
+          title={`${countUser.activeUsers ?? 0} Users Active`}
         />
       </Col>
 
       <Col className="quality-card" span={6}>
         <QualityCard
           backgroundColor={gold[5]}
-          quality={countUser.notActivedUsers}
+          quality={countUser.notActivedUsers ?? 0}
           content={'Users are not activated'}
         />
       </Col>
@@ -107,7 +107,7 @@ function DashboardPage() {
           link={'/admin/attendance'}
           Icon={<IdcardOutlined style={iconStyle} />}
           iconColor={geekblue[5]}
-          title={`${countAttendance.totalAttendances} Attendances Today`}
+          title={`${countAttendance.totalAttendances ?? 0} Attendances Today`}
         />
       </Col>
       <Col className="link-card" span={12} key="leaves">
@@ -115,20 +115,20 @@ function DashboardPage() {
           link={'/admin/leave'}
           Icon={<UserDeleteOutlined style={iconStyle} />}
           iconColor={red[5]}
-          title={`${countLeaves.totalLeaves} Leaves Approved / Month`}
+          title={`${countLeaves.totalLeaves ?? 0} Leaves Approved / Month`}
         />
       </Col>
       <Col className="quality-card" span={12}>
         <QualityCard
           backgroundColor={geekblue[5]}
-          quality={countAttendance.pendingAttendances}
+          quality={countAttendance.pendingAttendances ?? 0}
           content={'Pending Attendance Application'}
         />
       </Col>
       <Col className="quality-card" span={12}>
         <QualityCard
           backgroundColor={red[5]}
-          quality={countLeaves.pendingLeaves}
+          quality={countLeaves.pendingLeaves ?? 0}
           content={'Pending Leave Application'}
         />
       </Col>

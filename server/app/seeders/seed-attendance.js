@@ -11,7 +11,7 @@ module.exports = {
                 employeeId: 'NV20230001',
                 managerStatus: 'Approved',
                 adminStatus: 'Approved',
-                managerEId: 'NV20230002',
+                managerEId: 'NV20230007',
                 adminEId: 'NV20230001',
                 shiftId: 1
             },
@@ -83,7 +83,7 @@ module.exports = {
                 employeeId: 'NV20230001',
                 managerStatus: 'Approved',
                 adminStatus: 'Approved',
-                managerEId: 'NV20230002',
+                managerEId: 'NV20230007',
                 adminEId: 'NV20230001',
                 shiftId: 2
             },
@@ -155,7 +155,7 @@ module.exports = {
                 employeeId: 'NV20230001',
                 managerStatus: 'Approved',
                 adminStatus: 'Approved',
-                managerEId: 'NV20230002',
+                managerEId: 'NV20230007',
                 adminEId: 'NV20230001',
                 shiftId: 1
             },
@@ -174,8 +174,8 @@ module.exports = {
             {
                 id: 15,
                 attendanceDate: '2023-11-29',
-                inTime: '07:55:33',
-                inStatus: 'On Time',
+                inTime: '08:01:33',
+                inStatus: 'Late In',
                 employeeId: 'NV20230003',
                 managerStatus: 'Approved',
                 adminStatus: 'Approved',
@@ -227,7 +227,7 @@ module.exports = {
                 employeeId: 'NV20230001',
                 managerStatus: 'Approved',
                 adminStatus: 'Approved',
-                managerEId: 'NV20230002',
+                managerEId: 'NV20230007',
                 adminEId: 'NV20230001',
                 shiftId: 2
             },
@@ -299,7 +299,7 @@ module.exports = {
                 employeeId: 'NV20230001',
                 managerStatus: 'Approved',
                 adminStatus: 'Approved',
-                managerEId: 'NV20230002',
+                managerEId: 'NV20230007',
                 adminEId: 'NV20230001',
                 shiftId: 1
             },
@@ -371,7 +371,7 @@ module.exports = {
                 employeeId: 'NV20230001',
                 managerStatus: 'Approved',
                 adminStatus: 'Approved',
-                managerEId: 'NV20230002',
+                managerEId: 'NV20230007',
                 adminEId: 'NV20230001',
                 shiftId: 2
             },
@@ -390,8 +390,8 @@ module.exports = {
             {
                 id: 33,
                 attendanceDate: '2023-11-30',
-                inTime: '12:58:35',
-                inStatus: 'On Time',
+                inTime: '13:02:35',
+                inStatus: 'Late In',
                 employeeId: 'NV20230003',
                 managerStatus: 'Approved',
                 adminStatus: 'Approved',

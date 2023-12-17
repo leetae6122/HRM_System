@@ -11,4 +11,5 @@ npx sequelize-cli db:migrate --name create-qrCode
 npx sequelize-cli db:seed --seed seed-department seed-position 
 npx sequelize-cli db:seed --seed seed-employee seed-user seed-wage
 npx sequelize-cli db:seed --seed seed-shift seed-leave
+npx sequelize-cli db:seed --seed seed-rewardPunishment seed-allowance
 npx sequelize-cli db:seed --seed seed-attendance

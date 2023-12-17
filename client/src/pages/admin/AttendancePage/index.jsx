@@ -353,6 +353,7 @@ function AttendancePage() {
         <ModalTimekeeper
           toggleShowModal={toggleModalTimekeeper}
           openModal={openTimekeeper}
+          refreshAttendanceList={refreshAttendanceList}
         />
       )}
     </>

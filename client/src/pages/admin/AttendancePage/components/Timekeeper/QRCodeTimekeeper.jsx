@@ -11,14 +11,16 @@ import { CloseCircleFilled } from '@ant-design/icons';
 QRCodeTimekeeper.propTypes = {
   onClose: PropTypes.func,
   shiftId: PropTypes.number,
+  refreshAttendanceList: PropTypes.func,
 };
 
 QRCodeTimekeeper.defaultProps = {
   onClose: null,
   shiftId: null,
+  refreshAttendanceList: null,
 };
 function QRCodeTimekeeper(props) {
-  const { onClose, shiftId } = props;
+  const { onClose, shiftId, refreshAttendanceList } = props;
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState('');
   const [employeeIdCheckIn, setEmployeeIdCheckIn] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,9 +33,11 @@ function QRCodeTimekeeper(props) {
           employeeId: arr[0],
           date: dayjs(arr[1]).format('DD/MM/YYYY HH:mm:ss'),
         });
+        refreshAttendanceList();
       }
     });
     return () => socket.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     const controller = new AbortController();

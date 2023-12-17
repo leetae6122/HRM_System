@@ -3,7 +3,6 @@ import './App.css';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSelector } from 'react-redux';
 
 import NotFound from 'pages/ErrorPage/NotFound';
 import Loading from 'components/Common/Loading';
@@ -42,7 +41,6 @@ const PageLayout = React.lazy(() => import('components/Common/PageLayout'));
 const ProfilePage = React.lazy(() => import('pages/ProfilePage'));
 
 function App() {
-  const { user } = useSelector((state) => state.auth);
   return (
     <div className="App">
       <ToastContainer
@@ -135,11 +133,7 @@ function App() {
                 path={'/'}
                 element={
                   <RequireAuth>
-                    {user?.isAdmin === 1 ? (
-                      <Navigate to="/admin/dashboard" replace />
-                    ) : (
-                      <Navigate to="/employee/dashboard" replace />
-                    )}
+                    <Navigate to="/employee/dashboard" replace />
                   </RequireAuth>
                 }
               />

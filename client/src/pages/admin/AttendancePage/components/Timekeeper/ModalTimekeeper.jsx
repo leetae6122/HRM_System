@@ -8,15 +8,17 @@ import QRCodeTimekeeper from './QRCodeTimekeeper';
 ModalTimekeeper.propTypes = {
   openModal: PropTypes.bool,
   toggleShowModal: PropTypes.func,
+  refreshAttendanceList: PropTypes.func,
 };
 
 ModalTimekeeper.defaultProps = {
   openModal: false,
   toggleShowModal: null,
+  refreshAttendanceList: null,
 };
 
 function ModalTimekeeper(props) {
-  const { openModal, toggleShowModal } = props;
+  const { openModal, toggleShowModal, refreshAttendanceList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [shiftSelected, setShiftSelected] = useState(null);
 
@@ -48,6 +50,7 @@ function ModalTimekeeper(props) {
           <QRCodeTimekeeper
             onClose={handleStopCreateQRCode}
             shiftId={shiftSelected}
+            refreshAttendanceList={refreshAttendanceList}
           />
         ) : (
           <CreateQRCodeForm

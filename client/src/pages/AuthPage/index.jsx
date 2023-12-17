@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import 'assets/styles/authPage.scss';
@@ -10,6 +10,14 @@ import ForgotPasswordForm from 'pages/AuthPage/components/ForgotPasswordForm';
 import authApi from 'api/authApi';
 import { Col, Row } from 'antd';
 import { toast } from 'react-toastify';
+import jwtDecode from 'jwt-decode';
+
+const cookies = new Cookies();
+
+const checkExp = (tokenExp) => {
+  const dateNow = new Date();
+  return tokenExp > dateNow.getTime() / 1000;
+};
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -18,9 +26,31 @@ function AuthPage() {
   const [loadingForgot, setLoadingForgot] = useState(false);
   const [loadingReset, setLoadingReset] = useState(false);
 
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      const accessToken = cookies.get('access_token');
+      const refreshToken = cookies.get('refresh_token');
+
+      if (accessToken) {
+        const accessTokenExp = jwtDecode(accessToken).exp;
+        if (checkExp(accessTokenExp)) {
+          navigate('/');
+        }
+      }
+      if (refreshToken) {
+        const refreshTokenExp = jwtDecode(refreshToken).exp;
+        if (checkExp(refreshTokenExp)) {
+          navigate('/');
+        }
+      }
+    };
+    checkLoggedIn();
+    return () => {};
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleLogin = async (values) => {
     try {
-      const cookies = new Cookies();
       setLoadingLogin(true);
       const response = await authApi.login(values);
       cookies.set('access_token', response.accessToken, { path: '/' });
